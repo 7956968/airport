@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title></title>
+
+    <!-- 页面字符编码 -->
+    <meta charset="utf-8">
+
+    <!-- 避免IE使用兼容模式 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!-- 启用360浏览器的极速模式(webkit) -->
+    <meta name="renderer" content="webkit">
+    <!-- 微软的老式浏览器 -->
+    <meta name="MobileOptimized" content="320">
+
+    <!-- 关键字描述 -->
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <!-- 设置移动端视图 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+    <meta name="HandheldFriendly" content="true">
+
+    <!-- 删除苹果默认的工具栏和菜单栏 -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <!-- 设置苹果工具栏颜色 -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+    <!-- 忽略页面中的数字识别为电话，忽略email识别 -->
+    <meta name="format-detection" content="telphone=no, email=no" />
+
+    <!-- uc强制竖屏 -->
+    <meta name="screen-orientation" content="portrait">
+    <!-- QQ强制竖屏 -->
+    <meta name="x5-orientation" content="portrait">
+    <!-- UC强制全屏 -->
+    <meta name="full-screen" content="yes">
+    <!-- QQ强制全屏 -->
+    <meta name="x5-fullscreen" content="true">
+    <!-- UC应用模式 -->
+    <meta name="browsermode" content="application">
+    <!-- QQ应用模式 -->
+    <meta name="x5-page-mode" content="app">
+    <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css" />
+</head>
+
+<body class="innerPage">
+    <div id="js-vue" class="tableContainer">
+        <div class="top">
+            <Row type="flex" justify="start" gutter="10">
+                <i-col span="16" class-name="">
+                    <div class="searchWrap">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <template>
+                                            <i-input :placeholder="{'CN':'请输入查询关键字','EN':'Please Input Query Key','TW':'請輸入查詢關鍵字'}[language]" style="width: 300px">
+                                                <i-select slot="prepend" :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:80px;">
+                                                    <i-option v-text="{'CN':'账户','EN':'Account','TW':'帳戶'}[language]"></i-option>
+                                                </i-select>
+                                            </i-input>
+                                        </template>
+                                    </td>
+                                    <td>
+                                        <template>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <i-button size="small" type="primary" icon="ios-search-outline">{{{'CN':'查询','EN':'Search','TW':'查詢'}[language]}}</i-button>
+                                        </template>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </i-col>
+                <i-col span="8" class-name="">
+                    <div class="actionWrap">
+                        <template>
+                            <i-buttonGroup>
+                                <i-button @click="refresh" size="small" icon="ios-refresh">{{{'CN':'刷新','EN':'Refresh','TW':'刷新'}[language]}}</i-button>
+                                <i-button @click="add" size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
+                                <i-button @click="edit" size="small" type="warning" icon="ios-paper-outline">{{{'CN':'编辑','EN':'Edit','TW':'編輯'}[language]}}</i-button>
+                                <i-button size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button>
+                                <i-button @click="resetPassword" size="small" type="info" icon="ios-link-outline">{{{'CN':'重置密码','EN':'Reset Password','TW':'重置密碼'}[language]}}</i-button>
+                            </i-buttonGroup>
+                        </template>
+                    </div>
+                </i-col>
+            </Row>
+        </div>
+
+        <div class="tableWrap">
+            <template>
+                <i-table :height="tableHeight" :loading="isTableLoading" highlight-row :columns="columnsList" :data="dataList" stripe="true"
+                    size="small" @on-current-change="setCurrentRowData($event)"></i-table>
+            </template>
+        </div>
+
+        <div class="pageWrap">
+            <template>
+                <Page :total="100" show-sizer show-total show-elevator />
+            </template>
+        </div>
+
+        <!-- 新增、修改 -->
+        <template>
+            <Modal v-model="isShowModal" :styles="{top: '20px'}" width="45" :title="modalTitle" :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
+                :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" :loading="isModalLoading" @on-ok="uploadDataToServer">
+                <div class="modifiedWrap">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="label">
+                                    <span class="request">＊</span>
+                                    <span v-text="{'CN':'账户','EN':'Account','TW':'帳戶'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input/>
+                                </td>
+                                <td class="label">
+                                    <span class="request">＊</span>
+                                    <span v-text="{'CN':'密码','EN':'Password','TW':'密碼'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <span class="request">＊</span>
+                                    <span v-text="{'CN':'公司','EN':'Head','TW':'公司'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <Cascader :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" :data="superiorCompanyList" trigger="hover"></Cascader>
+                                    </template>
+                                </td>
+                                <td class="label">
+                                    <span class="request">＊</span>
+                                    <span v-text="{'CN':'部门','EN':'Superior Company','TW':'部门'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <Cascader :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" :data="superiorCompanyList" trigger="hover"></Cascader>
+                                    </template>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <span v-text="{'CN':'岗位','EN':'Post','TW':'崗位'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <Cascader :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" :data="superiorCompanyList" trigger="hover"></Cascader>
+                                    </template>
+                                </td>
+                                <td class="label">
+                                    <span v-text="{'CN':'职位','EN':'Position','TW':'職位'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <Cascader :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" :data="superiorCompanyList" trigger="hover"></Cascader>
+                                    </template>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <span v-text="{'CN':'角色','EN':'Role','TW':'角色'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <Cascader :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" :data="superiorCompanyList" trigger="hover"></Cascader>
+                                    </template>
+                                </td>
+                                <td class="label">
+                                    <span v-text="{'CN':'主管','EN':'Superior','TW':'主管'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <Cascader :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" :data="superiorCompanyList" trigger="hover"></Cascader>
+                                    </template>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <span v-text="{'CN':'工号','EN':'Work No.','TW':'工號'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input />
+                                </td>
+                                <td class="label">
+                                    <span v-text="{'CN':'姓名','EN':'Name','TW':'姓名'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <span v-text="{'CN':'性別','EN':'Superior','TW':'性別'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-select clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                        <i-option>男</i-option>
+                                        <i-option>女</i-option>
+                                    </i-select>
+                                </td>
+                                <td class="label">
+                                    <span class="request">＊</span>
+                                    <span v-text="{'CN':'生日','EN':'Founding Time','TW':'生日'}[language]"></span>
+                                </td>
+                                <td>
+                                    <date-picker type="date" :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"></date-picker>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <span v-text="{'CN':'电子邮箱','EN':'Email','TW':'電子郵箱'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input />
+                                </td>
+                                <td class="label">
+                                    <span v-text="{'CN':'传真','EN':'Fax','TW':'傳真'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <span v-text="{'CN':'手机','EN':'Zip Code','TW':'手機'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input />
+                                </td>
+                                <td class="label">
+                                    <span v-text="{'CN':'固话','EN':'Official Website','TW':'固話'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input />
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="label">
+                                    <span v-text="{'CN':'邮箱','EN':'Zip Code','TW':'郵箱'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input />
+                                </td>
+                                <td class="label">
+                                    <span v-text="{'CN':'微信','EN':'Wei Xin','TW':'微信'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input />
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="label">
+                                    <span v-text="{'CN':'QQ','EN':'QQ','TW':'QQ'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input />
+                                </td>
+                                <td class="label">
+                                    <span v-text="{'CN':'MSN','EN':'MSN','TW':'MSN'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input />
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="label" style="vertical-align: top;">
+                                    <span v-text="{'CN':'备注','EN':'Remarks','TW':'備註'}[language]"></span>
+                                </td>
+                                <td colspan="3">
+                                    <i-input type="textarea" :rows="4" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </Modal>
+        </template>
+
+        <!-- 重置密码 -->
+        <template>
+            <Modal v-model="isShowReset" 
+                :styles="{top: '40px'}" 
+                width="25" 
+                title="重置密码" 
+                :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
+                :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
+                :loading="isModalLoading" 
+                @on-ok="uploadDataToServer">
+                <div class="modifiedWrap">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="label">
+                                    <span class="request">＊</span>
+                                    <span v-text="{'CN':'姓名','EN':'Name','TW':'姓名'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <span class="request">＊</span>
+                                    <span v-text="{'CN':'账户','EN':'Account','TW':'帳戶'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <span class="request">＊</span>
+                                    <span v-text="{'CN':'新密码','EN':'Password','TW':'新密碼'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </Modal>
+        </template>
+    </div>
+    <script src="/airport/assets/js/vue.min.js"></script>
+    <script src="/airport/assets/vender/iView/iview.min.js"></script>
+    <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
+    <script src="/airport/assets/js/config.min.js"></script>
+    <script src="/airport/assets/js/utility.min.js"></script>
+    <script src="/airport/www/module/userManage/userManage.min.js?v=093939"></script>
+</body>
+
+</html>

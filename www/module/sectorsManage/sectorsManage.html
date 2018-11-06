@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title></title>
+
+    <!-- 页面字符编码 -->
+    <meta charset="utf-8">
+
+    <!-- 避免IE使用兼容模式 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!-- 启用360浏览器的极速模式(webkit) -->
+    <meta name="renderer" content="webkit">
+    <!-- 微软的老式浏览器 -->
+    <meta name="MobileOptimized" content="320">
+
+    <!-- 关键字描述 -->
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <!-- 设置移动端视图 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+    <meta name="HandheldFriendly" content="true">
+
+    <!-- 删除苹果默认的工具栏和菜单栏 -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <!-- 设置苹果工具栏颜色 -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+    <!-- 忽略页面中的数字识别为电话，忽略email识别 -->
+    <meta name="format-detection" content="telphone=no, email=no" />
+
+    <!-- uc强制竖屏 -->
+    <meta name="screen-orientation" content="portrait">
+    <!-- QQ强制竖屏 -->
+    <meta name="x5-orientation" content="portrait">
+    <!-- UC强制全屏 -->
+    <meta name="full-screen" content="yes">
+    <!-- QQ强制全屏 -->
+    <meta name="x5-fullscreen" content="true">
+    <!-- UC应用模式 -->
+    <meta name="browsermode" content="application">
+    <!-- QQ应用模式 -->
+    <meta name="x5-page-mode" content="app">
+    <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css" />
+</head>
+
+<body class="innerPage">
+    <div id="js-vue" class="tableContainer">
+        <div class="top">
+            <Row type="flex" justify="start" gutter="10">
+                <i-col span="18" class-name="">
+                    <div class="searchWrap">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <template>
+                                            <i-input :placeholder="{'CN':'请输入查询关键字','EN':'Please Input Query Key','TW':'請輸入查詢關鍵字'}[language]" style="width: 300px"></i-input>
+                                        </template>
+                                    </td>
+                                    <td>
+                                        <template>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <i-button size="small" type="primary" icon="ios-search-outline">{{{'CN':'查询','EN':'Search','TW':'查詢'}[language]}}</i-button>
+                                        </template>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </i-col>
+                <i-col span="6" class-name="">
+                    <div class="actionWrap">
+                        <template>
+                            <i-buttonGroup>
+                                <i-button @click="refresh" size="small" icon="ios-refresh">{{{'CN':'刷新','EN':'Refresh','TW':'刷新'}[language]}}</i-button>
+                                <i-button @click="add" size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
+                                <i-button @click="edit" size="small" type="warning" icon="ios-paper-outline">{{{'CN':'编辑','EN':'Edit','TW':'編輯'}[language]}}</i-button>
+                                <i-button size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button>
+                            </i-buttonGroup>
+                        </template>
+                    </div>
+                </i-col>
+            </Row>
+        </div>
+
+        <div class="tableWrap">
+            <template>
+                <i-table :height="tableHeight" :loading="isTableLoading" highlight-row :columns="columnsList" :data="dataList" stripe="true"
+                    size="small" @on-current-change="setCurrentRowData($event)"></i-table>
+            </template>
+        </div>
+
+        <div class="pageWrap">
+            <template>
+                <Page :total="100" show-sizer show-total show-elevator />
+            </template>
+        </div>
+
+        <template>
+            <Modal v-model="isShowModal" :styles="{top: '50px'}" width="25" :title="modalTitle" :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
+                :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" :loading="isModalLoading" @on-ok="uploadDataToServer">
+                <div class="modifiedWrap">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="label">
+                                    <span v-text="{'CN':'编号','EN':'Number','TW':'編號'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <span v-text="{'CN':'名称','EN':'Name','TW':'名稱'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <span v-text="{'CN':'是否激活','EN':'Is It Activated','TW':'是否激活'}[language]"></span>
+                                </td>
+                                <td>
+                                    <p>
+                                        <i-select clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <i-option>{{{'CN':'是','EN':'Yes','TW':'是'}[language]}}</i-option>
+                                            <i-option>{{{'CN':'否','EN':'No','TW':'否'}[language]}}</i-option>
+                                        </i-select>
+                                    </p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </Modal>
+        </template>
+    </div>
+    <script src="/airport/assets/js/vue.min.js"></script>
+    <script src="/airport/assets/vender/iView/iview.min.js"></script>
+    <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
+    <script src="/airport/assets/js/config.min.js"></script>
+    <script src="/airport/assets/js/utility.min.js"></script>
+    <script src="/airport/www/module/sectorsManage/sectorsManage.min.js?v=djdjdj"></script>
+</body>
+
+</html>

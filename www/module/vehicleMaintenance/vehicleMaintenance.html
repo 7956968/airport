@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title></title>
+
+    <!-- 页面字符编码 -->
+    <meta charset="utf-8">
+
+    <!-- 避免IE使用兼容模式 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!-- 启用360浏览器的极速模式(webkit) -->
+    <meta name="renderer" content="webkit">
+    <!-- 微软的老式浏览器 -->
+    <meta name="MobileOptimized" content="320">
+
+    <!-- 关键字描述 -->
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <!-- 设置移动端视图 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+    <meta name="HandheldFriendly" content="true">
+
+    <!-- 删除苹果默认的工具栏和菜单栏 -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <!-- 设置苹果工具栏颜色 -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+    <!-- 忽略页面中的数字识别为电话，忽略email识别 -->
+    <meta name="format-detection" content="telphone=no, email=no" />
+
+    <!-- uc强制竖屏 -->
+    <meta name="screen-orientation" content="portrait">
+    <!-- QQ强制竖屏 -->
+    <meta name="x5-orientation" content="portrait">
+    <!-- UC强制全屏 -->
+    <meta name="full-screen" content="yes">
+    <!-- QQ强制全屏 -->
+    <meta name="x5-fullscreen" content="true">
+    <!-- UC应用模式 -->
+    <meta name="browsermode" content="application">
+    <!-- QQ应用模式 -->
+    <meta name="x5-page-mode" content="app">
+    <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css" />
+</head>
+
+<body class="innerPage">
+    <div id="js-vue" class="tableContainer">
+        <div class="top">
+            <Row type="flex" justify="start" gutter="10">
+                <i-col span="18">
+                    <div class="searchWrap">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <template>
+                                            <i-select :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100px;">
+                                                <i-option v-text="{'CN':'保养车辆','EN':'Maintenance Vehicles','TW':'保養車輛'}[language]"></i-option>
+                                            </i-select>
+                                        </template>
+                                    </td>
+                                    <td>
+                                        <template>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{{'CN':'车辆类型','EN':'Vehicle Type','TW':'車輛類型'}[language]}}：
+                                            <i-select clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100px;">
+                                                <i-option v-text="{'CN':'牵引车','EN':'Tractor','TW':'牽引車'}[language]"></i-option>
+                                                <i-option v-text="{'CN':'拖挂车','EN':'Trailer','TW':'拖掛車'}[language]"></i-option>
+                                                <i-option v-text="{'CN':'三面车','EN':'Three Side Car','TW':'三面車'}[language]"></i-option>
+                                            </i-select>
+                                        </template>
+                                    </td>
+                                    <td>
+                                        <template>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{{'CN':'开始时间','EN':'Start Time','TW':'開始時間'}[language]}}：
+                                            <date-picker type="date" confirm  :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"></date-picker>
+                                        </template>
+                                    </td>
+                                    <td>
+                                        <template>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{{'CN':'结束时间','EN':'Start Time','TW':'結束時間'}[language]}}：
+                                            <date-picker type="date" confirm  :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"></date-picker>
+                                        </template>
+
+                                        <template>
+                                            <i-button size="small" type="primary" icon="ios-search-outline">{{{'CN':'查询','EN':'Search','TW':'查詢'}[language]}}</i-button>
+                                        </template>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </i-col>
+                <i-col span="6">
+                    <div class="actionWrap">
+                        <template>
+                            <i-buttonGroup>
+                                <i-button @click="refresh" size="small" icon="ios-refresh">{{{'CN':'刷新','EN':'Refresh','TW':'刷新'}[language]}}</i-button>
+                                <i-button @click="add" size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
+                                <i-button @click="edit" size="small" type="warning" icon="ios-paper-outline">{{{'CN':'编辑','EN':'Edit','TW':'編輯'}[language]}}</i-button>
+                                <i-button size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button>
+                            </i-buttonGroup>
+                        </template>
+                    </div>
+                </i-col>
+            </Row>
+        </div>
+
+        <div class="tableWrap">
+            <template>
+                <i-table :height="tableHeight" :loading="isTableLoading" highlight-row :columns="columnsList" :data="dataList" stripe="true"
+                    size="small" @on-current-change="setCurrentRowData($event)"></i-table>
+            </template>
+        </div>
+
+        <div class="pageWrap">
+            <template>
+                <Page :total="100" show-sizer show-total show-elevator />
+            </template>
+        </div>
+
+        <template>
+            <Modal v-model="isShowModal" :styles="{top: '50px'}" width="55" :title="modalTitle" :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
+                :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" :loading="isModalLoading" @on-ok="uploadDataToServer">
+                <div class="modifiedWrap">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="label">
+                                    <span v-text="{'CN':'车辆编号','EN':'Vehicle Number','TW':'車輛编号'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input disabled>
+                                        <i-button @click="selectVehicleNumber" slot="append" icon="ios-more"></i-button>
+                                    </i-input>
+                                </td>
+
+                                <td class="label">
+                                    <span v-text="{'CN':'车辆类型','EN':'Vehicle Type','TW':'車輛類型'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <i-select disabled :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"></i-select>
+                                    </template>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <span v-text="{'CN':'本次保养日期','EN':'This Maintenance Date','TW':'本次保養日期'}[language]"></span>
+                                </td>
+                                <td>
+                                    <date-picker type="date" confirm :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"></date-picker>
+                                </td>
+                                <td class="label">
+                                    <span v-text="{'CN':'归属公司','EN':'OwnerShip Company','TW':'歸屬公司'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <i-select disabled :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"></i-select>
+                                    </template>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <span v-text="{'CN':'保养单位','EN':'Maintenance Company','TW':'保養單位'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input />
+                                </td>
+                                <td class="label">
+                                    <span v-text="{'CN':'当前里程数','EN':'Current Mileage','TW':'當前里程數'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <span v-text="{'CN':'上次保养日期','EN':'Last Maintenance Date','TW':'上次保養日期'}[language]"></span>
+                                </td>
+                                <td>
+                                    <date-picker type="date" confirm  :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"></date-picker>
+                                </td>
+                                <td class="label">
+                                    <span v-text="{'CN':'上次保养里程数','EN':'Number Of Miles Last Maintained','TW':'上次保養里程數'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <span v-text="{'CN':'保养责任人','EN':'Maintenance Responsible Person','TW':'保養責任人'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input />
+                                </td>
+                                <td class="label">
+                                    <span v-text="{'CN':'下次保养里程数','EN':'Number Of Miles Next Maintained','TW':'下次保養里程數'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="vertical-align: top;">
+                                    <span v-text="{'CN':'保养项目','EN':'Maintenance Projects','TW':'保養項目'}[language]"></span>
+                                </td>
+                                <td colspan="3">
+                                    <i-input :row="4" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </Modal>
+        </template>
+
+
+        <template>
+            <Modal v-model="isShowVehicleNumber" 
+                :styles="{top: '40px'}" 
+                width="50"
+                :title="{'CN':'选择终端','EN':'Select Terminal','TW':'選擇終端'}[language]" 
+                :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
+                :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
+                :loading="isModalLoading"
+                class-name="hasActionList"
+                @on-ok="uploadDataToServer">
+                <div class="modifiedWrap">
+                    <div class="top">
+                        <Row type="flex" justify="start" gutter="10">
+                            <i-col span="24">
+                                <div class="searchWrap">
+                                    <table style="width: auto;">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <template>
+                                                        <i-input :placeholder="{'CN':'请输入查询关键字','EN':'Please Input Query Key','TW':'請輸入查詢關鍵字'}[language]" style="width: 300px">
+                                                            <i-select slot="prepend" :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:80px;">
+                                                                <i-option v-text="{'CN':'名称','EN':'Company Name','TW':'名稱'}[language]"></i-option>
+                                                            </i-select>
+                                                        </i-input>
+                                                    </template>
+                                                </td>
+                                                <td>
+                                                    <template>
+                                                        &nbsp;&nbsp;&nbsp;
+                                                        <i-button size="small" type="primary" icon="ios-search-outline">{{{'CN':'查询','EN':'Search','TW':'查詢'}[language]}}</i-button>
+                                                    </template>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </i-col>
+                        </Row>
+                    </div>
+                    <div class="tableWrap">
+                        <template>
+                            <i-table height="300" :loading="isTableLoading" highlight-row :columns="columnsList" :data="dataList" stripe="true"
+                                size="small" @on-current-change="setCurrentRowData($event)"></i-table>
+                        </template>
+                    </div>
+                    <template>
+                        <div class="pageWrap">
+                            <Page :total="100" show-sizer show-total show-elevator />
+                        </div>
+                    </template>
+                </div>
+            </Modal>
+        </template>
+
+    </div>
+    <script src="/airport/assets/js/vue.min.js"></script>
+    <script src="/airport/assets/vender/iView/iview.min.js"></script>
+    <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
+    <script src="/airport/assets/js/config.min.js"></script>
+    <script src="/airport/assets/js/utility.min.js"></script>
+    <script src="/airport/www/module/vehicleMaintenance/vehicleMaintenance.min.js?v=093939"></script>
+</body>
+
+</html>

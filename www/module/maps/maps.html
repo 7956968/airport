@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>无动力</title>
+
+    <!-- 页面字符编码 -->
+    <meta charset="utf-8">
+
+    <!-- 避免IE使用兼容模式 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!-- 启用360浏览器的极速模式(webkit) -->
+    <meta name="renderer" content="webkit">
+    <!-- 微软的老式浏览器 -->
+    <meta name="MobileOptimized" content="320">
+
+    <!-- 关键字描述 -->
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <!-- 设置移动端视图 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+    <meta name="HandheldFriendly" content="true">
+
+    <!-- 删除苹果默认的工具栏和菜单栏 -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <!-- 设置苹果工具栏颜色 -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+    <!-- 忽略页面中的数字识别为电话，忽略email识别 -->
+    <meta name="format-detection" content="telphone=no, email=no" />
+
+    <!-- uc强制竖屏 -->
+    <meta name="screen-orientation" content="portrait">
+    <!-- QQ强制竖屏 -->
+    <meta name="x5-orientation" content="portrait">
+    <!-- UC强制全屏 -->
+    <meta name="full-screen" content="yes">
+    <!-- QQ强制全屏 -->
+    <meta name="x5-fullscreen" content="true">
+    <!-- UC应用模式 -->
+    <meta name="browsermode" content="application">
+    <!-- QQ应用模式 -->
+    <meta name="x5-page-mode" content="app">
+    <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
+    <link rel="stylesheet" href="/airport/assets/vender/openLayer/ol.min.css">
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.css" />
+    
+</head>
+
+<body>
+    <div id="js-vue" class="mapContainer">
+        
+        <!-- 地图容器 -->
+        <div class="mapWrap" id="map">
+            <!-- 鼠标位置 -->
+            <div id="mousePosition" class="mousePosition"></div>
+        </div>
+
+        <div class="searchWrap">
+            <template>
+                <i-input size="large" search enter-button placeholder="Enter something..." />
+            </template>
+        </div>
+
+        <div class="menuWrap">
+            <template>
+                <i-menu mode="horizontal">
+                    <menu-item name="1">
+                        <div @click="showModal('isVehicle')">
+                            <span class="icon"><Icon type="ios-bus-outline" /></span>
+                            <span class="label" v-text="{'CN':'车辆管理','EN':'Vehicle Management','TW':'車輛管理'}[language]"></span>
+                        </div>
+                    </menu-item>
+                    <menu-item name="2">
+                        <div @click="showModal('isHistory')">
+                            <span class="icon"><Icon type="ios-git-branch" /></span>
+                            <span class="label" v-text="{'CN':'历史轨迹','EN':'Historical Track','TW':'歷史軌跡'}[language]"></span>
+                        </div>
+                    </menu-item>
+                    <menu-item name="4">
+                        <div @click="showModal('isDefense')">
+                            <span class="icon"><Icon type="ios-qr-scanner" /></span>
+                            <span class="label" v-text="{'CN':'防区管理','EN':'Defense Area Management','TW':'防區管理'}[language]"></span>
+                        </div>
+                    </menu-item>
+                    <menu-item name="5">
+                        <div @click="showModal('isCamera')">
+                            <span class="icon"> <Icon type="ios-videocam-outline" /></span>
+                            <span class="label" v-text="{'CN':'摄像机管理','EN':'Camera Management','TW':'攝像機管理'}[language]"></span>
+                        </div>
+                    </menu-item>
+                    <menu-item name="6">
+                        <div @click="showModal('isLayer')">
+                            <span class="icon"><Icon type="ios-albums-outline" /></span>
+                            <span class="label" v-text="{'CN':'图层控制','EN':'Layer Control','TW':'圖層控制'}[language]"></span>
+                        </div>
+                    </menu-item>
+                    <menu-item name="7">
+                        <div @click="showModal('isAlarm')">
+                            <span class="icon"><Icon type="ios-alert-outline" /></span>
+                            <span class="label" v-text="{'CN':'告警管理','EN':'Alarm Management','TW':'告警管理'}[language]"></span>
+                        </div>
+                    </menu-item>
+                    <menu-item name="8">
+                        <div @click="showModal('isSearch')">
+                            <span class="icon"><Icon type="ios-search-outline" /></span>
+                            <span class="label" v-text="{'CN':'车辆查询','EN':'Vehicle Search','TW':'車輛查詢'}[language]"></span>
+                        </div>
+                    </menu-item>
+                </i-menu>
+            </template>
+        </div>
+
+        <!-- 车辆管理 -->
+        <template>
+            <Modal v-model="modal.isVehicle" 
+                :styles="{top: '70px', left: '50px', position: 'absolute'}" 
+                width="30"
+                footer-hide="true"
+                :mask="false"
+                class-name="mapModal">
+                <div slot="header" class="modalTitle">
+                    <span class="icon"><Icon type="ios-bus-outline" /></span>
+                    <span class="label" v-text="{'CN':'车辆管理','EN':'Vehicle Management','TW':'車輛管理'}[language]"></span>
+                </div>
+                <div class="mapSearch">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <span class="label" v-text="{'CN':'车牌号','EN':'License Plate','TW':'車牌號'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <i-input :placeholder="{'CN':'请输入车牌号','EN':'License Plate','TW':'請輸入車牌號'}[language]" style="width: 100%"></i-input>
+                                    </template>
+                                </td>
+                                <td>
+                                    <template>
+                                        <div class="btnList">
+                                            <i-button size="small" type="primary" icon="ios-search-outline">{{{'CN':'查询','EN':'Search','TW':'查詢'}[language]}}</i-button>
+                                            <i-button size="small" type="info" icon="ios-open-outline">{{{'CN':'导出','EN':'Export','TW':'導出'}[language]}}</i-button>
+                                        </div>
+                                    </template>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modifiedWrap">
+                    <div class="tableWrap">
+                        <template>
+                            <i-table height="400" highlight-row :columns="vehicleColumns" :data="vehicleDatas" stripe="true" size="small"></i-table>
+                        </template>
+                    </div>
+            
+                    <div class="pageWrap">
+                        <template>
+                            <Page :total="100" show-total />
+                        </template>
+                    </div>
+                </div>
+            </Modal>
+        </template>
+
+        <!-- 历史轨迹 -->
+        <template>
+            <Modal v-model="modal.isHistory" 
+                :styles="{top: '70px', left: '50px', position: 'absolute'}" 
+                width="30"
+                footer-hide="true"
+                :mask="false"
+                class-name="mapModal">
+                <div slot="header" class="modalTitle">
+                    <span class="icon"><Icon type="ios-git-branch" /></span>
+                    <span class="label" v-text="{'CN':'历史轨迹','EN':'Historical Track','TW':'歷史軌跡'}[language]"></span>
+                </div>
+                <div class="mapSearch">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td style="width: 100px;">
+                                    <span class="label" v-text="{'CN':'车辆','EN':'Vehicle','TW':'車輛'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <i-input :placeholder="{'CN':'请输入车辆','EN':'','TW':'請輸入車輛'}[language]" style="width: 100%"></i-input>
+                                    </template>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="label" v-text="{'CN':'开始时间','EN':'Start Time','TW':'開始時間'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <date-picker style="width: 100%;" type="date" confirm  :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"></date-picker>
+                                    </template>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="label" v-text="{'CN':'结束时间','EN':'Start Time','TW':'結束時間'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <date-picker style="width: 100%;" type="date" confirm  :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"></date-picker>
+                                    </template>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="label" v-text="{'CN':'播放速度','EN':'Playback Speed','TW':'播放速度'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <i-input :placeholder="{'CN':'请输入播放速度','EN':'Playback Speed','TW':'請輸入播放速度'}[language]" style="width: 100%"></i-input>
+                                    </template>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <template>
+                                        <div class="btnList">
+                                            <i-button size="small" type="primary" icon="ios-search-outline">{{{'CN':'查询','EN':'Search','TW':'查詢'}[language]}}</i-button>
+                                            <i-button size="small" type="warning" icon="ios-git-branch">{{{'CN':'轨迹回放','EN':'Track Replay','TW':'軌跡回放'}[language]}}</i-button>
+                                        </div>
+                                    </template>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modifiedWrap">
+                    <div class="sliderWrap">
+                        <Slider value="10"></Slider>
+                    </div>
+                </div>
+            </Modal>
+        </template>
+
+        <!-- 防区管理 -->
+        <template>
+            <Modal v-model="modal.isDefense" 
+                :styles="{top: '70px', left: '50px', position: 'absolute'}" 
+                width="30"
+                footer-hide="true"
+                :mask="false"
+                class-name="mapModal">
+                <div slot="header" class="modalTitle">
+                    <span class="icon"><Icon type="ios-qr-scanner" /></span>
+                    <span class="label" v-text="{'CN':'防区管理','EN':'Defense Area Management','TW':'防區管理'}[language]"></span>
+                </div>
+                <div class="mapSearch">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td style="width: 100px;">
+                                    <span class="label" v-text="{'CN':'选择图层','EN':'select layer','TW':'車輛'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <i-select clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100%;">
+                                            <i-option v-text="{'CN':'牵引车','EN':'Tractor','TW':'牽引車'}[language]"></i-option>
+                                            <i-option v-text="{'CN':'拖挂车','EN':'Trailer','TW':'拖掛車'}[language]"></i-option>
+                                            <i-option v-text="{'CN':'三面车','EN':'Three Side Car','TW':'三面車'}[language]"></i-option>
+                                        </i-select>
+                                    </template>
+                                </td>
+                                <td style="width: 100px;">
+                                    <template>
+                                        <div class="btnList">
+                                            <i-button size="small" type="primary" icon="ios-search-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
+                                        </div>
+                                    </template>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="tip" v-text="{'CN':'注:表格仅显示当前视域内数据','EN':'Notes:The table shows only the data in the current view.','TW':'注:表格僅顯示當前視域內數據'}[language]"></p>
+                <div class="modifiedWrap">
+                    <div class="tableWrap">
+                        <template>
+                            <i-table height="400" highlight-row :columns="defensColumns" :data="defensDatas" stripe="true" size="small"></i-table>
+                        </template>
+                    </div>
+            
+                    <div class="pageWrap">
+                        <template>
+                            <Page :total="100" show-total />
+                        </template>
+                    </div>
+                </div>
+            </Modal>
+        </template>
+
+        <!-- 摄像机管理 -->
+        <template>
+            <Modal v-model="modal.isCamera" 
+                :styles="{top: '70px', left: '50px', position: 'absolute'}" 
+                width="30"
+                footer-hide="true"
+                :mask="false"
+                class-name="mapModal">
+                <div slot="header" class="modalTitle">
+                    <span class="icon"> <Icon type="ios-videocam-outline" /></span>
+                            <span class="label" v-text="{'CN':'摄像机管理','EN':'Camera Management','TW':'攝像機管理'}[language]"></span>
+                </div>
+                <div class="mapSearch">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td style="width: 100px;">
+                                    <span class="label" v-text="{'CN':'选择图层','EN':'select layer','TW':'車輛'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <i-select clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100%;">
+                                            <i-option v-text="{'CN':'牵引车','EN':'Tractor','TW':'牽引車'}[language]"></i-option>
+                                            <i-option v-text="{'CN':'拖挂车','EN':'Trailer','TW':'拖掛車'}[language]"></i-option>
+                                            <i-option v-text="{'CN':'三面车','EN':'Three Side Car','TW':'三面車'}[language]"></i-option>
+                                        </i-select>
+                                    </template>
+                                </td>
+                                <td style="width: 100px;">
+                                    <template>
+                                        <div class="btnList">
+                                            <i-button size="small" type="primary" icon="ios-search-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
+                                        </div>
+                                    </template>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="tip" v-text="{'CN':'注:表格仅显示当前视域内数据','EN':'Notes:The table shows only the data in the current view.','TW':'注:表格僅顯示當前視域內數據'}[language]"></p>
+                <div class="modifiedWrap">
+                    <div class="tableWrap">
+                        <template>
+                            <i-table height="400" highlight-row :columns="cameraColumns" :data="camersDatas" stripe="true" size="small"></i-table>
+                        </template>
+                    </div>
+            
+                    <div class="pageWrap">
+                        <template>
+                            <Page :total="100" show-total />
+                        </template>
+                    </div>
+                </div>
+            </Modal>
+        </template>
+
+        <!-- 图层控制 -->
+        <template>
+            <Modal v-model="modal.isLayer" 
+                :styles="{top: '70px', left: '50px', position: 'absolute'}" 
+                width="30"
+                footer-hide="true"
+                :mask="false"
+                class-name="mapModal">
+                <div slot="header" class="modalTitle">
+                    <span class="icon"><Icon type="ios-albums-outline" /></span>
+                    <span class="label" v-text="{'CN':'图层控制','EN':'Layer Control','TW':'圖層控制'}[language]"></span>
+                </div>
+        
+                <div class="modifiedWrap">
+                    <Row type="flex" justify="start" class-name="layerWrap">
+                        <i-col span="12" class-name="layerMenu">
+                            <template>
+                                <radio-group value="1" style="width: 100%;">
+                                    <i-menu theme="light" active-name="1" mode="vertical" width="auto">
+                                        <menu-item name="1">
+                                            <Radio label="1">
+                                                <span class="label" v-text="{'CN':'矢量地图(在线)','EN':'Vector Map(On-line)','TW':'矢量地圖(在線)'}[language]"></span>
+                                            </Radio>
+                                        </menu-item>
+                                        <menu-item name="2">
+                                            <Radio label="2">
+                                                <span class="label" v-text="{'CN':'卫星(在线)','EN':'Satellite(On-line)','TW':'衛星(在線)'}[language]"></span>
+                                            </Radio>
+                                        </menu-item>
+                                        <menu-item name="3">
+                                            <Radio label="3">
+                                                <span class="label" v-text="{'CN':'离线影像地图','EN':'Offline Image Map','TW':'離線影像地圖'}[language]"></span>
+                                            </Radio>
+                                        </menu-item>
+                                        <menu-item name="4">
+                                            <Radio label="4">
+                                                <span class="label" v-text="{'CN':'离线电子地图','EN':'Offline Electronic Map','TW':'離線電子地圖'}[language]"></span>
+                                            </Radio>
+                                        </menu-item>
+                                    </i-menu>        
+                                </radio-group>
+                            </template>
+                        </i-col>
+                        <i-col span="12" class-name="layerMenu">
+                                <template>
+                                    <checkbox-group value="1" style="width: 100%;">
+                                        <i-menu theme="light" active-name="1" mode="vertical" width="auto">
+                                            <menu-item name="1">
+                                                <Checkbox label="1">
+                                                    <span class="label" v-text="{'CN':'背景','EN':'Background','TW':'背景'}[language]"></span>
+                                                </Checkbox>
+                                            </menu-item>
+                                            <menu-item name="2">
+                                                <Checkbox label="2">
+                                                    <span class="label" v-text="{'CN':'机位','EN':'Seat','TW':'機位'}[language]"></span>
+                                                </Checkbox>
+                                            </menu-item>
+                                            <menu-item name="3">
+                                                <Checkbox label="3">
+                                                    <span class="label" v-text="{'CN':'告警','EN':'Alarm','TW':'告警'}[language]"></span>
+                                                </Checkbox>
+                                            </menu-item>
+                                            <menu-item name="4">
+                                                <Checkbox label="4">
+                                                    <span class="label" v-text="{'CN':'车辆','EN':'Vehicle','TW':'車輛'}[language]"></span>
+                                                </Checkbox>
+                                            </menu-item>
+                                            <menu-item name="5">
+                                                <Checkbox label="5">
+                                                    <span class="label" v-text="{'CN':'告警防区','EN':'Warning Area','TW':'告警防區'}[language]"></span>
+                                                </Checkbox>
+                                            </menu-item>
+                                            <menu-item name="6">
+                                                <Checkbox label="6">
+                                                    <span class="label" v-text="{'CN':'摄像机','EN':'Video Camera','TW':'攝像機'}[language]"></span>
+                                                </Checkbox>
+                                            </menu-item>
+                                        </i-menu>        
+                                    </checkbox-group>
+                                </template>
+                        </i-col>
+                    </Row>
+                </div>
+            </Modal>
+        </template>
+
+        <!-- 告警管理 -->
+        <template>
+            <Modal v-model="modal.isAlarm" 
+                :styles="{top: '70px', left: '50px', position: 'absolute'}" 
+                width="30"
+                footer-hide="true"
+                :mask="false"
+                class-name="mapModal">
+                <div slot="header" class="modalTitle">
+                        <span class="icon"><Icon type="ios-alert-outline" /></span>
+                        <span class="label" v-text="{'CN':'告警管理','EN':'Alarm Management','TW':'告警管理'}[language]"></span>
+                </div>
+                <div class="mapSearch">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <span class="label" v-text="{'CN':'告警信息','EN':'Alarm Info','TW':'告警信息'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <i-input :placeholder="{'CN':'请输入防区名','EN':'Defense Name','TW':'請輸入防區名'}[language]" style="width: 100%"></i-input>
+                                    </template>
+                                </td>
+                                <td>
+                                    <template>
+                                        <div class="btnList">
+                                            <i-button size="small" type="primary" icon="ios-search-outline">{{{'CN':'查询','EN':'Search','TW':'查詢'}[language]}}</i-button>
+                                            <i-button size="small" type="info" icon="ios-open-outline">{{{'CN':'导出','EN':'Export','TW':'導出'}[language]}}</i-button>
+                                        </div>
+                                    </template>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modifiedWrap">
+                    <div class="tableWrap">
+                        <template>
+                            <i-table height="400" highlight-row :columns="vehicleColumns" :data="vehicleDatas" stripe="true" size="small"></i-table>
+                        </template>
+                    </div>
+            
+                    <div class="pageWrap">
+                        <template>
+                            <Page :total="100" show-total />
+                        </template>
+                    </div>
+                </div>
+            </Modal>
+        </template>
+
+        <!-- 车辆查询 -->
+        <template>
+            <Modal v-model="modal.isSearch" 
+                :styles="{top: '70px', left: '50px', position: 'absolute'}" 
+                width="30"
+                footer-hide="true"
+                :mask="false"
+                class-name="mapModal">
+                <div slot="header" class="modalTitle">
+                        <span class="icon"><Icon type="ios-search-outline" /></span>
+                        <span class="label" v-text="{'CN':'车辆查询','EN':'Vehicle Search','TW':'車輛查詢'}[language]"></span>
+                </div>
+                <div class="mapSearch">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td style="width: 80px;">
+                                    <span class="label" v-text="{'CN':'车辆类型','EN':'Vehicle Type','TW':'車輛類型'}[language]"></span>
+                                </td>
+                                <td style="width: 35%">
+                                    <template>
+                                        <i-select clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100%;">
+                                            <i-option v-text="{'CN':'牵引车','EN':'Tractor','TW':'牽引車'}[language]"></i-option>
+                                            <i-option v-text="{'CN':'拖挂车','EN':'Trailer','TW':'拖掛車'}[language]"></i-option>
+                                            <i-option v-text="{'CN':'三面车','EN':'Three Side Car','TW':'三面車'}[language]"></i-option>
+                                        </i-select>
+                                    </template>
+                                </td>
+                                <td style="width: 80px;">
+                                    <span class="label" v-text="{'CN':'归属公司','EN':'Ownership Company','TW':'歸屬公司'}[language]"></span>
+                                </td>
+                                <td style="width: 35%">
+                                    <template>
+                                        <i-select clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100%;">
+                                            <i-option v-text="{'CN':'机场地服','EN':'Airport Clothing','TW':'機場地服'}[language]"></i-option>
+                                        </i-select>
+                                    </template>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="label" v-text="{'CN':'车辆颜色','EN':'Vehicle Color','TW':'車輛顔色'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <i-select clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100%;">
+                                            <i-option v-text="{'CN':'白色','EN':'White','TW':'白色'}[language]"></i-option>
+                                            <i-option v-text="{'CN':'黑色','EN':'Black','TW':'黑色'}[language]"></i-option>
+                                            <i-option v-text="{'CN':'黃色','EN':'Yellow','TW':'黃色'}[language]"></i-option>
+                                            <i-option v-text="{'CN':'蓝色','EN':'Blue','TW':'藍色'}[language]"></i-option>
+                                        </i-select>
+                                    </template>
+                                </td>
+                                <td>
+                                    <span class="label" v-text="{'CN':'车辆品牌','EN':'Brand','TW':'車輛品牌'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <i-select clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <i-option v-text="{'CN':'HELI','EN':'HELI','TW':'HELI'}[language]"></i-option>
+                                        </i-select>
+                                    </template>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="label" v-text="{'CN':'车辆编号','EN':'Vehicle Number','TW':'車輛編號'}[language]"></span>
+                                </td>
+                                <td colspan="2">
+                                    <i-input :placeholder="{'CN':'请输入车辆编号','EN':'Please Input Query Key','TW':'請輸入車輛編號'}[language]" style="width: 100%"></i-input>
+                                </td>
+                                <td style="width: 100px;">
+                                    <template>
+                                        <div class="btnList">
+                                            <i-button long size="small" type="primary" icon="ios-search-outline">{{{'CN':'查询','EN':'Search','TW':'查詢'}[language]}}</i-button>
+                                        </div>
+                                    </template>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="tip" v-text="{'CN':'注:表格仅显示当前视域内数据','EN':'Notes:The table shows only the data in the current view.','TW':'注:表格僅顯示當前視域內數據'}[language]"></p>
+                <div class="modifiedWrap">
+                    <div class="tableWrap">
+                        <template>
+                            <i-table height="300" highlight-row :columns="searchColumns" :data="searchDatas" stripe="true" size="small"></i-table>
+                        </template>
+                    </div>
+            
+                    <div class="pageWrap">
+                        <template>
+                            <Page :total="100" show-total />
+                        </template>
+                    </div>
+                </div>
+            </Modal>
+        </template>
+    </div>
+    <script src="/airport/assets/js/vue.min.js"></script>
+    <script src="/airport/assets/vender/iView/iview.min.js"></script>
+    <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
+    <script src="/airport/assets/vender/openLayer/ol.min.js"></script>
+    <script src="/airport/assets/js/utility.min.js"></script>
+    <script src="/airport/www/module/maps/maps.min.js?v=9585848843"></script>
+</body>
+
+</html>

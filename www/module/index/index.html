@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title></title>
+
+    <!-- 页面字符编码 -->
+    <meta charset="utf-8">
+
+    <!-- 避免IE使用兼容模式 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!-- 启用360浏览器的极速模式(webkit) -->
+    <meta name="renderer" content="webkit">
+    <!-- 微软的老式浏览器 -->
+    <meta name="MobileOptimized" content="320">
+
+    <!-- 关键字描述 -->
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <!-- 设置移动端视图 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+    <meta name="HandheldFriendly" content="true">
+
+    <!-- 删除苹果默认的工具栏和菜单栏 -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <!-- 设置苹果工具栏颜色 -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+    <!-- 忽略页面中的数字识别为电话，忽略email识别 -->
+    <meta name="format-detection" content="telphone=no, email=no" />
+
+    <!-- uc强制竖屏 -->
+    <meta name="screen-orientation" content="portrait">
+    <!-- QQ强制竖屏 -->
+    <meta name="x5-orientation" content="portrait">
+    <!-- UC强制全屏 -->
+    <meta name="full-screen" content="yes">
+    <!-- QQ强制全屏 -->
+    <meta name="x5-fullscreen" content="true">
+    <!-- UC应用模式 -->
+    <meta name="browsermode" content="application">
+    <!-- QQ应用模式 -->
+    <meta name="x5-page-mode" content="app">
+    <link rel="icon" href="/airport/assets/img/favicon.ico">
+    <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css" />
+</head>
+
+<body>
+    <div id="js-vue" class="index">
+        <div class="header">
+            <div class="logo">
+                <img src="/airport/www/img/logo.png" style="position: relative; z-index: 0; top: 5px; left: -10px; width: 80%; height: 80%;"/>
+            </div>
+            <div class="navWrap">
+                <ul>
+                    <li>
+                        <div class="navIcon">
+                            <span class="icon"><Icon type="ios-globe" /></span>
+                            <span v-text="{'CN':'电子地图','EN':'Maps','TW':'電子地圖'}[language]"></span>
+                            <span class="arrow"><Icon type="md-arrow-dropdown" /></span>
+                        </div>
+                        <div class="subNav">
+                            <p @click="setTabItem('/airport/www/module/maps/maps.html', 'Maps', $event)" id="nav_Maps">
+                                <span><Icon type="ios-globe" /></span>
+                                <span v-text="{'CN':'电子地图','EN':'Maps','TW':'電子地圖'}[language]"></span>
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="navIcon">
+                            <span class="icon"><Icon type="md-people" /></span>
+                            <span v-text="{'CN':'单位组织','EN':'Organization','TW':'單位組織'}[language]"></span>
+                            <span class="arrow"><Icon type="md-arrow-dropdown" /></span>
+                        </div>
+                        <div class="subNav">
+                            <p @click="setTabItem('/airport/www/module/organizeManage/organizeManage.html', 'OrganizeManage', $event)" id="nav_OrganizeManage">
+                                <span><Icon type="ios-git-network" /></span>
+                                <span v-text="{'CN':'机构管理','EN':'OrganizeManage','TW':'機構管理'}[language]"></span>
+                            </p>
+                            <p @click="setTabItem('/airport/www/module/departmentManage/departmentManage.html', 'DepartmentManage', $event)" id="nav_DepartmentManage">
+                                <span><Icon type="ios-git-compare" /></span>
+                                <span v-text="{'CN':'部门管理','EN':'DepartmentManage','TW':'部門管理'}[language]"></span>
+                            </p>
+                            <p @click="setTabItem('/airport/www/module/roleManage/roleManage.html', 'RoleManage', $event)" id="nav_RoleManage">
+                                <span><Icon type="logo-javascript" /></span>
+                                <span v-text="{'CN':'角色管理','EN':'RoleManage','TW':'角色管理'}[language]"></span>
+                            </p>
+                            <p @click="setTabItem('/airport/www/module/userManage/userManage.html', 'UserManage', $event)" id="nav_UserManage">
+                                <span><Icon type="ios-contacts" /></span>
+                                <span v-text="{'CN':'用户管理','EN':'UserManage','TW':'用戶管理'}[language]"></span>
+                            </p>
+                            <p @click="setTabItem('/airport/www/module/dataGroup/dataGroup.html', 'DataGroup', $event)" id="nav_DataGroup">
+                                <span><Icon type="ios-magnet" /></span>
+                                <span v-text="{'CN':'数据权限组','EN':'DataGroup','TW':'數據權限組'}[language]"></span>
+                            </p>
+                            <p @click="setTabItem('/airport/www/module/deviceGrouping/deviceGrouping.html', 'DeviceGrouping', $event)" id="nav_DeviceGrouping">
+                                <span><Icon type="ios-keypad" /></span>
+                                <span v-text="{'CN':'设备分组','EN':'DeviceGrouping','TW':'設備分組'}[language]"></span>
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="navIcon">
+                            <span class="icon"><Icon type="md-construct" /></span>
+                            <span v-text="{'CN':'设备管理','EN':'Device ','TW':'設備管理'}[language]"></span>
+                            <span class="arrow"><Icon type="md-arrow-dropdown" /></span>
+                        </div>
+                        <div class="subNav">
+                            <p @click="setTabItem('/airport/www/module/vehicleManage/vehicleManage.html', 'VehicleManage', $event)" id="nav_VehicleManage">
+                                <span><Icon type="ios-car" /></span>
+                                <span v-text="{'CN':'车辆管理','EN':'VehicleManage','TW':'車輛管理'}[language]"></span>
+                            </p>
+                            <p @click="setTabItem('/airport/www/module/terminalManage/terminalManage.html', 'TerminalManage', $event)" id="nav_TerminalManage">
+                                <span><Icon type="ios-bus-outline" /></span>
+                                <span v-text="{'CN':'车载终端管理','EN':'TerminalManage ','TW':'車載終端管理'}[language]"></span>
+                            </p>
+                            <p @click="setTabItem('/airport/www/module/vehicleMaintenance/vehicleMaintenance.html', 'VehicleMaintenance', $event)" id="nav_VehicleMaintenance">
+                                <span><Icon type="ios-umbrella" /></span>
+                                <span v-text="{'CN':'车辆保养信息','EN':'Vehicle Maintenance','TW':'車輛保養信息'}[language]"></span>
+                            </p>
+                            <p @click="setTabItem('/airport/www/module/videoCamera/videoCamera.html', 'VideoCamera', $event)" id="nav_VideoCamera">
+                                <span><Icon type="ios-videocam" /></span>
+                                <span v-text="{'CN':'摄像机管理','EN':'VideoCamera','TW':'攝像機管理'}[language]"></span>
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="navIcon">
+                            <span class="icon"><Icon type="md-medkit" /></span>
+                            <span v-text="{'CN':'安全管理','EN':'Security ','TW':'安全管理'}[language]"></span>
+                            <span class="arrow"><Icon type="md-arrow-dropdown" /></span>
+                        </div>
+                        <div class="subNav">
+                            <p @click="setTabItem('/airport/www/module/irregularities/irregularities.html', 'Irregularities', $event)" id="nav_Irregularities">
+                                <span><Icon type="ios-warning" /></span>
+                                <span v-text="{'CN':'车辆违章情况','EN':'Irregularities','TW':'車輛違章情況'}[language]"></span>
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="navIcon">
+                            <span class="icon"><Icon type="md-lock" /></span>
+                            <span v-text="{'CN':'未启用','EN':'Not Enabled','TW':'未啟用'}[language]"></span>
+                            <span class="arrow"><Icon type="md-arrow-dropdown" /></span>
+                        </div>
+                        <div class="subNav">
+                            <p @click="setTabItem('/airport/www/module/sectorsManage/sectorsManage.html', 'SectorsManage', $event)" id="nav_SectorsManage">
+                                <span><Icon type="ios-qr-scanner" /></span>
+                                <span v-text="{'CN':'防区管理','EN':'Sectors Manage','TW':'防區管理'}[language]"></span>
+                            </p>
+                            <p @click="setTabItem('/airport/www/module/driverInfor/driverInfor.html', 'DriverInfor', $event)" id="nav_DriverInfor">
+                                <span><Icon type="ios-chatbubbles-outline" /></span>
+                                <span v-text="{'CN':'驾驶员信息','EN':'Driver Infor','TW':'駕駛員信息'}[language]"></span>
+                            </p>
+                            <p @click="setTabItem('/airport/www/module/monthlyStatistics/monthlyStatistics.html', 'MonthlyStatistics', $event)" id="nav_MonthlyStatistics">
+                                <span><Icon type="ios-calculator-outline" /></span>
+                                <span v-text="{'CN':'按月统计','EN':'Monthly Statistics','TW':'按月統計'}[language]"></span>
+                            </p>
+                            <p @click="setTabItem('/airport/www/module/homepageStatistics/homepageStatistics.html', 'HomepageStatistics', $event)" id="nav_HomepageStatistics">
+                                <span><Icon type="ios-stats" /></span>
+                                <span v-text="{'CN':'主页柱状图统计','EN':'Homepage Statistics','TW':'主頁柱狀圖統計'}[language]"></span>
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="navIcon">
+                            <span class="icon"><Icon type="md-pie" /></span>
+                            <span v-text="{'CN':'统计分析','EN':'Analysis ','TW':'統計分析'}[language]"></span>
+                            <span class="arrow"><Icon type="md-arrow-dropdown" /></span>
+                        </div>
+                        <div class="subNav">
+                            <p @click="setTabItem('/airport/www/module/usageStatistics/usageStatistics.html', 'UsageStatistics', $event)" id="nav_UsageStatistics">
+                                <span><Icon type="ios-analytics" /></span>
+                                <span v-text="{'CN':'使用情况分析','EN':'UsageStatistics','TW':'使用情況分析'}[language]"></span>
+                            </p>
+                            <p @click="setTabItem('/airport/www/module/terminalUse/terminalUse.html', 'TerminalUse', $event)" id="nav_TerminalUse">
+                                <span><Icon type="ios-speedometer-outline" /></span>
+                                <span v-text="{'CN':'终端使用统计','EN':'TerminalUse','TW':'終端使用統計'}[language]"></span>
+                            </p>
+                            <p @click="setTabItem('/airport/www/module/violationStatistics/violationStatistics.html', 'ViolationStatistics', $event)" id="nav_ViolationStatistics">
+                                <span><Icon type="ios-warning-outline" /></span>
+                                <span v-text="{'CN':'违章情况统计','EN':'Violation Statistics','TW':'違章情況統計'}[language]"></span>
+                            </p>
+                            <p @click="setTabItem('/airport/www/module/operationSituation/operationSituation.html', 'OperationSituation', $event)" id="nav_OperationSituation">
+                                <span><Icon type="ios-pulse-outline" /></span>
+                                <span v-text="{'CN':'运行情况统计','EN':'OperationSituation','TW':'運行情況統計'}[language]"></span>
+                            </p>
+                            <p @click="setTabItem('/airport/www/module/mileage/mileage.html', 'Mileage', $event)" id="nav_Mileage">
+                                <span><Icon type="ios-timer-outline" /></span>
+                                <span v-text="{'CN':'里程数统计','EN':'Mileage','TW':'里程統計'}[language]"></span>
+                            </p>
+                            <p @click="setTabItem('/airport/www/module/insideTheFence/insideTheFence.html', 'InsideTheFence', $event)" id="nav_InsideTheFence">
+                                <span><Icon type="ios-ionic-outline" /></span>
+                                <span v-text="{'CN':'围栏内的统计','EN':'InsideTheFence','TW':'圍欄的統計'}[language]"></span>
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="navIcon">
+                            <span class="icon"><Icon type="md-settings" /></span>
+                            <span v-text="{'CN':'系统管理','EN':'System ','TW':'系統管理'}[language]"></span>
+                            <span class="arrow"><Icon type="md-arrow-dropdown" /></span>
+                        </div>
+                        <div class="subNav">
+                            <p @click="setTabItem('/airport/www/module/systemLog/systemLog.html', 'SystemLog', $event)" id="nav_SystemLog">
+                                <span><Icon type="ios-paper-outline" /></span>
+                                <span v-text="{'CN':'系统日志','EN':'SystemLog','TW':'系統日誌'}[language]"></span>
+                            </p>
+                            <p @click="setTabItem('/airport/www/module/messageList/messageList.html', 'MessageList', $event)" id="nav_MessageList">
+                                <span><Icon type="ios-text-outline" /></span>
+                                <span v-text="{'CN':'消息管理','EN':'MessageList','TW':'消息管理'}[language]"></span>
+                            </p>
+                            <p @click="setTabItem('/airport/www/module/terminalParame/terminalParame.html', 'TerminalParame', $event)" id="nav_TerminalParame">
+                                <span><Icon type="ios-options-outline" /></span>
+                                <span v-text="{'CN':'终端参数设置','EN':'TerminalParame ','TW':'終端參數設置'}[language]"></span>
+                            </p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="userInfo">
+                <template>
+                    <div class="user"><span>
+                            <Icon type="ios-contact" /></span>用户名</div>
+                    <div class="logout" @click="logout">
+                        <Icon type="md-log-out" />
+                    </div>
+                </template>
+            </div>
+        </div>
+        <div class="fixedNav">
+            <template>
+                <div class="tabItem active" id="tab_Welcom" @click="switchTab('Welcom', $event)">
+                    <p class="item">
+                        <span><Icon type="ios-home-outline" /></span>
+                        <span v-text="{'CN':'欢迎首页','EN':'WelcomePage','TW':'歡迎首頁'}[language]"></span>
+                    </p>
+                </div>
+            </template>
+            <template v-if="tabList.length > 0">
+                <template v-for="item in tabList">
+                    <div class="tabItem" :id="'tab_'+item.id" @click="switchTab(item.id, $event)" v-html="item.html"></div>
+                </template>
+            </template>
+        </div>
+        <div class="mainWrap">
+            <iframe frameborder="0" id="iframe_Welcom" src="/airport/www/module/welcom/welcom.html"></iframe>
+            <template v-if="tabList.length > 0">
+                <template v-for="item in iframeList">
+                    <iframe frameborder="0" :id="'iframe_'+item.id" :src="item.src"></iframe>
+                </template>
+            </template>
+        </div>
+
+        <script src="/airport/assets/js/vue.min.js"></script>
+        <script src="/airport/assets/vender/iView/iview.min.js"></script>
+        <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
+        <script src="/airport/assets/js/config.min.js"></script>
+        <script src="/airport/assets/js/utility.min.js"></script>
+        <script src="/airport/www/module/index/index.min.js"></script>
+</body>
+
+</html>

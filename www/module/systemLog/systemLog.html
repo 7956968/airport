@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title></title>
+
+    <!-- 页面字符编码 -->
+    <meta charset="utf-8">
+
+    <!-- 避免IE使用兼容模式 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!-- 启用360浏览器的极速模式(webkit) -->
+    <meta name="renderer" content="webkit">
+    <!-- 微软的老式浏览器 -->
+    <meta name="MobileOptimized" content="320">
+
+    <!-- 关键字描述 -->
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <!-- 设置移动端视图 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+    <meta name="HandheldFriendly" content="true">
+
+    <!-- 删除苹果默认的工具栏和菜单栏 -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <!-- 设置苹果工具栏颜色 -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+    <!-- 忽略页面中的数字识别为电话，忽略email识别 -->
+    <meta name="format-detection" content="telphone=no, email=no" />
+
+    <!-- uc强制竖屏 -->
+    <meta name="screen-orientation" content="portrait">
+    <!-- QQ强制竖屏 -->
+    <meta name="x5-orientation" content="portrait">
+    <!-- UC强制全屏 -->
+    <meta name="full-screen" content="yes">
+    <!-- QQ强制全屏 -->
+    <meta name="x5-fullscreen" content="true">
+    <!-- UC应用模式 -->
+    <meta name="browsermode" content="application">
+    <!-- QQ应用模式 -->
+    <meta name="x5-page-mode" content="app">
+    <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css" />
+</head>
+
+<body class="innerPage">
+    <div id="js-vue" class="tableContainer">
+        <template>
+            <Row type="flex" justify="start">
+                <i-col span="4" class-name="menuWrap">
+                    <template>
+                        <i-menu theme="light" active-name="1" mode="vertical" width="auto">
+                            <menu-group title="基本日志">
+                                <menu-item name="1">
+                                    <span class="icon"><Icon type="ios-contact-outline" /></span>
+                                    <span class="label">登录日志</span>
+                                </menu-item>
+                                <menu-item name="2">
+                                    <span class="icon"><Icon type="ios-eye-outline" /></span>
+                                    <span class="label">访问日志</span>
+                                </menu-item>
+                                <menu-item name="3">
+                                    <span class="icon"><Icon type="ios-cube-outline" /></span>
+                                    <span class="label">操作日志</span>
+                                </menu-item>
+                            </menu-group>
+                            <menu-group title="系统日志">
+                                <menu-item name="4">
+                                    <span class="icon"><Icon type="ios-help-circle-outline" /></span>
+                                    <span class="label">异常日志</span>
+                                </menu-item>
+                                <menu-item name="5">
+                                    <span class="icon"><Icon type="ios-finger-print" /></span>
+                                    <span class="label">授权日志</span>
+                                </menu-item>
+                            </menu-group>
+                        </i-menu>
+                    </template>
+                </i-col>
+                <i-col span="20" class-name="logWrap">
+                        <div class="top">
+                            <Row type="flex" justify="start">
+                                <i-col span="18">
+                                    <div class="searchWrap">
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <template>
+                                                            查询条件：
+                                                            <i-input :placeholder="{'CN':'请输入查询关键字','EN':'Please Input Query Key','TW':'請輸入查詢關鍵字'}[language]" style="width: 200px"></i-input>
+                                                        </template>
+                                                    </td>
+                                                    <td>
+                                                        <template>&nbsp;&nbsp;&nbsp;&nbsp;
+                                                            <radio-group value="0" type="button">
+                                                                <Radio label="0">今天</Radio>
+                                                                <Radio label="1">近7天</Radio>
+                                                                <Radio label="2">近1个月</Radio>
+                                                                <Radio label="3">近3个月</Radio>
+                                                            </radio-group>
+                                                        </template>
+                                                    </td>
+                                                    <td>
+                                                        <template>
+                                                            &nbsp;&nbsp;&nbsp;&nbsp;
+                                                            <i-button size="small" type="primary" icon="ios-search-outline">{{{'CN':'查询','EN':'Search','TW':'查詢'}[language]}}</i-button>
+                                                        </template>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </i-col>
+                                <i-col span="6">
+                                    <div class="actionWrap">
+                                        <template>
+                                            <i-buttonGroup>
+                                                <i-button @click="refresh" size="small" icon="ios-refresh">{{{'CN':'刷新','EN':'Refresh','TW':'刷新'}[language]}}</i-button>
+                                                <i-button size="small" type="primary" icon="ios-loading">{{{'CN':'清空','EN':'Cleaned Out','TW':'清空'}[language]}}</i-button>
+                                                <i-button size="small" type="info" icon="ios-open-outline">{{{'CN':'导出','EN':'Export','TW':'導出'}[language]}}</i-button>
+                                            </i-buttonGroup>
+                                        </template>
+                                    </div>
+                                </i-col>
+                            </Row>
+                        </div>
+                    <div class="tableWrap">
+                        <template>
+                            <i-table :height="tableHeight" :loading="isTableLoading" highlight-row :columns="columnsList" :data="dataList" stripe="true"
+                                size="small" @on-current-change="setCurrentRowData($event)"></i-table>
+                        </template>
+                    </div>
+                    <div class="pageWrap">
+                        <template>
+                            <Page :total="100" show-sizer show-total show-elevator />
+                        </template>
+                    </div>
+                </i-col>
+            </Row>
+        </template>
+
+    </div>
+    <script src="/airport/assets/js/vue.min.js"></script>
+    <script src="/airport/assets/vender/iView/iview.min.js"></script>
+    <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
+    <script src="/airport/assets/js/config.min.js"></script>
+    <script src="/airport/assets/js/utility.min.js"></script>
+    <script src="/airport/www/module/systemLog/systemLog.min.js?v=093939"></script>
+</body>
+
+</html>

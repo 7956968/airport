@@ -1,0 +1,777 @@
+@color1: #182646;
+@bgColor: #eeeeee;
+@borderColor: #dcdee2;
+@fontColor: #dedede;
+@logoutColor: #333333;
+@pageActiveColor: #2d8cf0;
+@mainFontColor: #777E8E;
+@headerHeight: 50px;
+@tabHeight: 30px;
+*,
+*:before,
+*:after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-family: "Helvetica Neue", Helvetica, "微软雅黑", STHeiTi, sans-serif;
+    color: @mainFontColor;
+    font-size: 20px;
+    overflow-x: hidden; 
+}
+
+.innerPage {
+    background-color: @bgColor;
+}
+
+.clear {
+    clear: both;
+}
+
+li {
+    list-style: none;
+    ;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+.setBgColor(@percent: 20%) {
+    background-color: fade(@color1, @percent);
+}
+
+.request {
+    color: red;
+}
+
+// 登录页面样式
+.loginPage {
+    .login {
+        .header {
+            padding-top: 60px;
+            padding-left: 70px;
+        }
+        .wrap {
+            position: relative;
+            z-index: 0;
+            .bgInfo {
+                position: relative;
+                z-index: 10;
+                height: 524px;
+                background: url(../img/bg_02.jpg) no-repeat left center;
+                background-size: cover;
+            }
+            .inputInfo {
+                position: absolute;
+                z-index: 10000000;
+                background-color: rgba(255, 255, 255, .4);
+                width: 400px;
+                padding: 20px;
+                border-radius: 5px;
+                label {
+                    display: block;
+                    padding: 10px 0;
+                    &.ivu-checkbox-wrapper {
+                        padding-top: 0;
+                    }
+                    .ivu-input-prefix {
+                        width: 40px;
+                    }
+                    .ivu-input-with-prefix {
+                        padding-left: 40px;
+                    }
+                    .ivu-input-prefix i {
+                        font-size: 28px;
+                    }
+                    select {
+                        display: block;
+                        width: 100%;
+                        height: 36px;
+                    }
+                    .ivu-poptip {
+                        display: block;
+                        width: 100%;
+                        .ivu-poptip-rel {
+                            display: block;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 1366px) {
+    .login {
+        .header {
+            padding-left: 0;
+            text-align: center;
+        }
+        .wrap {
+            .bgInfo {
+                width: 100%;
+            }
+            .inputInfo {
+                left: 50%;
+                top: 150px;
+                margin-left: -200px;
+            }
+        }
+    }
+}
+
+@media (min-width: 1367px) {
+    .loginPage {
+        .login {
+            .wrap {
+                .bgInfo {
+                    width: 1024px;
+                }
+                .inputInfo {
+                    left: 1024px;
+                    right: 0;
+                    top: 0;
+                    bottom: 0;
+                    width: auto;
+                    padding: 100px 30px 0 30px;
+                    margin-left: 0;
+                    border-radius: 0;
+                    background-color: @color1;
+                    .ivu-checkbox-wrapper {
+                        color: #fff;
+                    }
+                }
+            }
+        }
+        .ivu-message-notice {
+            text-align: right;
+            .ivu-message-notice-content {
+                right: 130px;
+            }
+        }
+    }
+}
+
+@media (min-width: 1600px) {
+    .loginPage {
+        .login {
+            .header {
+                padding-top: 30px;
+            }
+            .wrap {
+                .bgInfo {
+                    width: 100%;
+                    height: 850px;
+                }
+                .inputInfo {
+                    left: 80%;
+                    right: 0;
+                    top: 0;
+                    bottom: 0;
+                    width: auto;
+                    padding: 250px 30px 0 30px;
+                    margin-left: 0;
+                    border-radius: 0;
+                    background-color: rgba(62, 84, 130, .5);
+                    .ivu-checkbox-wrapper {
+                        color: #fff;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.graphPage {
+    // background-color: @color1; // 首页样式
+    // 欢迎页样式
+    .welcomPage {
+        padding-top: 10px;
+        .layout {
+            padding: 0 10px 10px 10px; // .ivu-card {
+            //     background-color: @color1;
+            // }
+            .tile {
+                font-size: 18px;
+                color: @mainFontColor;
+            }
+            .infoList {
+                padding-bottom: 10px;
+                .infoItem {
+                    .info {
+                        height: 90px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.index {
+    // 头部样式
+    .header {
+        position: relative;
+        z-index: 100000000000;
+        height: @headerHeight;
+        background-color: @color1;
+        .logo {
+            float: left;
+            height: @headerHeight;
+            ;
+            line-height: @headerHeight;
+            padding-left: 20px;
+            i {
+                font-size: 28px;
+                color: white;
+            }
+        }
+        .navWrap {
+            float: left;
+            ul {
+                height: @headerHeight;
+                line-height: @headerHeight;
+                li {
+                    position: relative;
+                    z-index: 0;
+                    float: left;
+                    color: @fontColor;
+                    padding: 0 20px 0 5px;
+                    font-size: 13px;
+                    cursor: pointer;
+                    .navIcon {
+                        position: relative;
+                        z-index: 0;
+                        i {
+                            font-size: 18px;
+                        } 
+                        .icon {
+                            position: relative;
+                            z-index: 0;
+                            top: -2px;
+                        }
+                        .arrow {
+                            i {
+                                color: fade(@bgColor, 40%);
+                            }
+                        }
+                    }
+                    .subNav {
+                        display: none;
+                        position: absolute;
+                        z-index: 1000;
+                        top: 50px;
+                        left: -15%;
+                        width: 130%;
+                        padding: 0 0 5px 0;
+                        background-color: fade(@color1, 60%);
+                        p {
+                            padding: 0 0 0 10px;
+                            margin: 0;
+                            line-height: 32px;
+                            i {
+                                font-size: 16px;
+                                margin-right: 3px;
+                            }
+                            &:hover {
+                                text-decoration: underline;
+                            }
+                        }
+                    }
+                    &:hover {
+                        .navIcon {
+                            .arrow {
+                                i {
+                                    transform:rotate(-180deg);
+                                }
+                            }
+                        }
+                        .subNav {
+                            display: block;
+                        }
+                    }
+                }
+            }
+        }
+        .userInfo {
+            position: relative;
+            z-index: 0;
+            float: right;
+            font-size: 13px;
+            height: @headerHeight;
+            line-height: @headerHeight;
+            color: @fontColor;
+            cursor: pointer;
+            i {
+                font-size: 28px;
+                margin-right: 5px;
+            }
+            .user {
+                display: inline-block;
+                padding-right: 10px;
+            }
+            .logout {
+                display: inline-block;
+                height: @headerHeight;
+                padding: 0 10px;
+                background-color: @logoutColor;
+            }
+        }
+    } // 固定导航
+    .fixedNav {
+        position: fixed;
+        z-index: 1000;
+        top: 50px;
+        left: 0;
+        right: 0;
+        background-color: #D0DBF5;
+        height: 30px;
+        line-height: 30px;
+        padding-left: 80px;
+        box-shadow: 0 1px 5px rgba(62, 84, 130, .2);
+        i {
+            position: relative;
+            z-index: 0;
+            top: -1px;
+            font-size: 18px;
+            margin-right: 3px;
+        }
+        .tabItem {
+            position: relative;
+            z-index: 0;
+            float: left;
+            height: 30px;
+            line-height: 30px;
+            padding: 0 30px 0 10px;
+            cursor: pointer;
+            border-left: 1px solid fade(@color1, 30%);
+            &:first-child {
+                padding: 0 10px;
+            }
+            &:last-child {
+                border-right: 1px solid fade(@color1, 30%);
+            }
+            .item {
+                position: relative;
+                z-index: 0;
+            }
+            .close {
+                position: absolute;
+                z-index: 10000;
+                top: 0;
+                right: 0;
+                width: 30px;
+                height: 30px;
+                line-height: 30px;
+                i {
+                    display: inline-block;
+                    width: 15px;
+                    height: 15px;
+                    line-height: 15px;
+                    margin-left: 5px;
+                    font-size: 12px;
+                    text-align: center;
+                    font-style: normal;
+                    border-radius: 50%;
+                    color: fade(@mainFontColor, 20%);
+                    background-color: fade(@color1, 10%);
+                }
+            }
+            &.active {
+                background-color: white;
+                .close {
+                    i {
+                        color: fade(@mainFontColor, 50%);
+                        background-color: fade(@color1, 30%);
+                    }
+                }
+            }
+        }
+    }
+    .mainWrap {
+        position: fixed;
+        z-index: 10;
+        top: 80px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        iframe {
+            position: absolute;
+            z-index: 0;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+        }
+    }
+}
+
+.top {
+    padding: 10px;
+    button {
+        i {
+            font-size: 17px;
+        }
+        span {
+            margin-left: 0;
+            margin-right: 4px;
+        }
+    }
+}
+
+.searchWrap {
+    .ivu-input-group {
+        .ivu-input {
+            left: -2px;
+        }
+    }
+}
+
+.menuWrap {
+    border-right: 1px solid @borderColor;
+    .ivu-menu-vertical.ivu-menu-light:after {
+        display: none;
+    }
+    .icon {
+        i {
+            font-size: 24px;
+        }
+    }
+}
+.logWrap {
+    padding-left: 20px;
+}
+
+// 内容页样式
+.tableContainer {
+    position: absolute;
+    z-index: 100;
+    top: 10px;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    border-radius: 3px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, .4);
+    background-color: white;
+}
+
+.treeModel {
+    .ivu-modal-body {
+        padding: 0;
+        .treeWrap {
+            padding: 5px;
+            border-right: 1px solid @borderColor;
+            .ivu-tree {
+                ul {
+                    li {
+                        margin: 0;
+                        ul {
+                            li {
+                                margin: 8px 0;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .search {
+            padding: 10px 10px 0 0;
+        }
+        .memberWrap {
+            padding: 0 10px 10px 0;
+            margin-top: 10px;
+            .memberList {
+                .memberItem {
+                    margin-bottom: 10px;
+                    cursor: pointer;
+                    .ivu-card {
+                        overflow: hidden;
+                    }
+                    .left {
+                        background-color: fade(@color1, 20%);
+                        .head {
+                            font-size: 32px;
+                            text-align: center;
+                            i {
+                                position: relative;
+                                z-index: 0;
+                                top: 5px;
+                            }
+                        }
+                    }
+                    .info {
+                        padding: 5px;
+                        p {
+                            font-size: 12px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.tableWrap {
+    .ivu-table {
+        th {
+            .setBgColor(60%);
+            color: white;
+            font-size: 13px;
+        }
+        i {
+            font-size: 18px;
+        }
+    }
+    .ivu-table-stripe {
+        .ivu-table-body {
+            tr {
+                &.ivu-table-row-highlight:nth-child(2n) {
+                    td {
+                        .setBgColor
+                    }
+                }
+            }
+        }
+    }
+    tr {
+        &.ivu-table-row-highlight {
+            &.ivu-table-row-hover {
+                td {
+                    .setBgColor
+                }
+            }
+        }
+    }
+    .ivu-table-row-highlight {
+        td {
+            .setBgColor
+        }
+    }
+}
+
+.hasActionList {
+    .ivu-modal-body {
+        padding: 0;
+    }
+}
+
+// 弹出窗体内容样式
+.modifiedWrap {
+    .pageWrap {
+        padding: 15px;
+    }
+    table {
+        width: 100%;
+        td {
+            padding: 5px;
+            &.label {
+                width: 100px;
+                text-align: right;
+                padding: 5px 0;
+            }
+            .ivu-date-picker {
+                display: block;
+            }
+            .addressWrap {
+                .select {
+                    float: left;
+                    width: 50%;
+                }
+                .input {
+                    float: left;
+                    width: 50%;
+                }
+            }
+        }
+    }
+}
+
+.pageWrap {
+    padding: 5px;
+    .ivu-page-item-active {
+        background-color: @pageActiveColor;
+        a {
+            color: white;
+        }
+    }
+}
+
+// 地图页面样式
+.mapContainer {
+    .mapWrap {
+        position: fixed;
+        z-index: 5;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        .mousePosition {
+            position: absolute;
+            bottom: 5px;
+            left: 200px;
+            z-index: 200000;
+            .mousePositionInner {
+                color: red;
+                font-size: 16px;
+                font-family: "微软雅黑";
+            }
+        }
+        .overViewMap {
+            bottom: auto;
+            left: auto;
+            right: 100px;
+            bottom: 10px;
+            &:not(.ol-collapsed) {
+                border: 1px solid black;
+                button {
+                    bottom: auto;
+                    left: auto;
+                    right: 1px;
+                    top: 1px;
+                }
+            }
+            .ol-overviewmap-map {
+                border: none;
+                width: 300px;
+            }
+            .ol-overviewmap-box {
+                border: 2px solid red;
+            }
+        }
+        .ol-full-screen {
+            top: 400px;
+        }
+    }
+    .searchWrap {
+        position: absolute;
+        z-index: 100000000000;
+        top: 10px;
+        left: 50px;
+        width: 30%;
+        .ivu-input-group {
+            .ivu-input {
+                left: 0;
+                background-color: rgba(255, 255, 255, .8);
+            }
+        }
+    }
+    .menuWrap {
+        position: absolute;
+        z-index: 100000000;
+        top: 10px;
+        right: -2px;
+        ul {
+            height: 40px;
+            line-height: 40px;
+            border-radius: 25px 0 0 25px;
+            border: 1px solid @borderColor;
+            border-right: none;
+            border-bottom: none;
+            overflow: hidden;
+            &.ivu-menu-light {
+                background-color: rgba(255, 255, 255, .8);
+            }
+        }
+        i {
+            font-size: 24px;
+        }
+    }
+}
+.mapModal {
+    .ivu-modal-body {
+        padding: 0;
+    }
+    .ivu-modal-content {
+        background-color: rgba(255, 255, 255, .7);
+    }
+    .ivu-modal-header {
+        border-bottom-color: fade(@color1, 50%);
+    }
+    .tip {
+        color: red;
+        text-align: center;
+        font-size: 12px;
+        padding-bottom: 5px;
+    }
+    .modalTitle {
+        .icon {
+            i {
+                font-size: 24px;
+            }
+        }
+        .label {
+            position: relative;
+            z-index: 0;
+            top: 3px;
+            font-size: 16px;
+        }
+    }
+    .mapSearch {
+        padding: 10px 10px 5px 10px;
+        table {
+            width: 100%;
+            td {
+                line-height: 0;
+                padding: 5px;
+            }
+        }
+        .btnList {
+            position: relative;
+            z-index: 0;
+            i {
+                font-size: 16px;
+            }
+            button {
+                span {
+                    margin-left: 0;
+                }
+            }
+        }
+    }
+    .tableWrap {
+        padding: 5px 10px 10px 10px;
+        .ivu-table {
+            background-color: transparent;
+            thead {
+                tr {
+                    background-color: white;
+                }
+            }
+        }
+    }
+    .sliderWrap {
+        padding: 20px 20px 50px 20px;
+    }
+    .pageWrap {
+        padding: 0 10px 10px 10px;
+    }
+    .layerWrap {
+        .ivu-menu-light {
+            background-color: transparent;
+        }
+        .layerMenu {
+            border-right: 1px solid @borderColor;
+            ul {
+                position: relative;
+                z-index: 0;
+                height: 100%;
+                &.ivu-menu-vertical.ivu-menu-light:after {
+                    display: none;
+                }
+                &.ivu-menu-vertical {
+                    .ivu-menu-item {
+                        padding: 0;
+                        label {
+                            display: block;
+                            padding: 14px 24px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
