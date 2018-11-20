@@ -233,19 +233,23 @@
             </div>
         </div>
         <div class="fixedNav">
-            <template>
-                <div class="tabItem active" id="tab_Welcom" @click="switchTab('Welcom', $event)">
-                    <p class="item">
-                        <span><Icon type="ios-home-outline" /></span>
-                        <span v-text="{'CN':'欢迎首页','EN':'WelcomePage','TW':'歡迎首頁'}[language]"></span>
-                    </p>
+            <div class="fixedNavWrap">
+                <div class="fixedNavBox" :style="{width: ((tabList.length + 1) * 130) +'px'}">
+                    <template>
+                        <div class="tabItem active" id="tab_Welcom" @click="switchTab('Welcom', $event)">
+                            <p class="item">
+                                <span><Icon type="ios-home-outline" /></span>
+                                <span v-text="{'CN':'欢迎首页','EN':'WelcomePage','TW':'歡迎首頁'}[language]"></span>
+                            </p>
+                        </div>
+                    </template>
+                    <template v-if="tabList.length > 0">
+                        <template v-for="item in tabList">
+                            <div class="tabItem" :id="'tab_'+item.id" @click="switchTab(item.id, $event)" v-html="item.html"></div>
+                        </template>
+                    </template>
                 </div>
-            </template>
-            <template v-if="tabList.length > 0">
-                <template v-for="item in tabList">
-                    <div class="tabItem" :id="'tab_'+item.id" @click="switchTab(item.id, $event)" v-html="item.html"></div>
-                </template>
-            </template>
+            </div>
         </div>
         <div class="mainWrap">
             <iframe frameborder="0" id="iframe_Welcom" src="/airport/www/module/welcom/welcom.html"></iframe>

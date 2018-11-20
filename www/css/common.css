@@ -5,9 +5,26 @@
   padding: 0;
   box-sizing: border-box;
 }
+::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+  background-color: #F5F5F5;
+}
+/*定义滚动条轨道 内阴影+圆角*/
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: #F5F5F5; 
+}
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #555;
+}
 html {
   font-family: "Helvetica Neue", Helvetica, "微软雅黑", STHeiTi, sans-serif;
-  color: #777E8E; 
+  color: #777E8E;
   font-size: 20px;
   overflow-x: hidden;
 }
@@ -263,8 +280,17 @@ table {
   background-color: #D0DBF5;
   height: 30px;
   line-height: 30px;
-  padding-left: 80px;
+  padding: 0 80px;
   box-shadow: 0 1px 5px rgba(62, 84, 130, 0.2);
+}
+.index .fixedNav .fixedNavWrap {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.index .fixedNav .fixedNavWrap .fixedNavBox {
+  height: 30px;
+  line-height: 30px;
 }
 .index .fixedNav i {
   position: relative;
@@ -517,7 +543,11 @@ table {
   border: 2px solid red;
 }
 .mapContainer .mapWrap .ol-full-screen {
-  top: 400px;
+  top: auto;
+  bottom: 30px;
+}
+.mapContainer .mapWrap.cursorMouse {
+  cursor: url("/airport/assets/img/camera.png");
 }
 .mapContainer .searchWrap {
   position: absolute;
@@ -630,4 +660,11 @@ table {
 .mapModal .layerWrap .layerMenu ul.ivu-menu-vertical .ivu-menu-item label {
   display: block;
   padding: 14px 24px;
+}
+.mapModal.detailInfoModal .ivu-poptip {
+  text-align: left;
+  width: 100%;
+}
+.mapModal.detailInfoModal .ivu-poptip .ivu-poptip-rel {
+  width: 100%;
 }

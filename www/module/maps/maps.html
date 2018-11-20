@@ -59,12 +59,14 @@
             <div id="mousePosition" class="mousePosition"></div>
         </div>
 
+        <!-- 搜索 -->
         <div class="searchWrap">
             <template>
-                <i-input size="large" search enter-button placeholder="Enter something..." />
+                <i-input size="large" search enter-button :placeholder="{'CN':'搜索车名或编码','EN':'Search Vehicle Name Or Code','TW':'搜索車名或編碼'}[language]" />
             </template>
         </div>
 
+        <!-- 菜单 -->
         <div class="menuWrap">
             <template>
                 <i-menu mode="horizontal">
@@ -259,22 +261,27 @@
                     <table>
                         <tbody>
                             <tr>
-                                <td style="width: 100px;">
+                                <td style="width: 60px;">
                                     <span class="label" v-text="{'CN':'选择图层','EN':'select layer','TW':'車輛'}[language]"></span>
                                 </td>
-                                <td>
+                                <td style="width: 61%;">
                                     <template>
-                                        <i-select clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100%;">
+                                        <i-select disabled clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100%;">
                                             <i-option v-text="{'CN':'牵引车','EN':'Tractor','TW':'牽引車'}[language]"></i-option>
                                             <i-option v-text="{'CN':'拖挂车','EN':'Trailer','TW':'拖掛車'}[language]"></i-option>
                                             <i-option v-text="{'CN':'三面车','EN':'Three Side Car','TW':'三面車'}[language]"></i-option>
                                         </i-select>
                                     </template>
                                 </td>
-                                <td style="width: 100px;">
-                                    <template>
+                                <td>
+                                    <template v-if="!isAddDefensAction">
                                         <div class="btnList">
-                                            <i-button size="small" type="primary" icon="ios-search-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
+                                            <i-button @click="addDefensAction" long size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
+                                        </div>
+                                    </template>
+                                    <template v-if="isAddDefensAction">
+                                        <div class="btnList">
+                                            <i-button @click="deleteDefensAction" long size="small" type="warning" icon="ios-close-circle-outline">{{{'CN':'取消新增','EN':'cancel New','TW':'取消新增'}[language]}}</i-button>
                                         </div>
                                     </template>
                                 </td>
@@ -286,7 +293,7 @@
                 <div class="modifiedWrap">
                     <div class="tableWrap">
                         <template>
-                            <i-table height="400" highlight-row :columns="defensColumns" :data="defensDatas" stripe="true" size="small"></i-table>
+                            <i-table height="400" @on-row-click="selectDefensArea($event)" highlight-row :columns="defensColumns" :data="defensDatas" stripe="true" size="small"></i-table>
                         </template>
                     </div>
             
@@ -295,6 +302,67 @@
                             <Page :total="100" show-total />
                         </template>
                     </div>
+                </div>
+            </Modal>
+            <Modal v-model="isAddDefensDetailInfo" 
+                id="addDefensArea" 
+                width="20" 
+                :mask="false"
+                class-name="mapModal detailInfoModal">
+                <div slot="header" class="modalTitle">
+                    <span class="label" v-text="{'CN':'防区详细信息','EN':'Defense Area Detail Infomation','TW':'防區詳細信息'}[language]"></span>
+                </div>
+                <div slot="footer">
+                    <Row type="flex" justify="start" gutter="10">
+                        <i-col span="6"></i-col>
+                        <i-col span="9">
+                            <Poptip
+                                confirm
+                                width="200"
+                                :title="{'CN':'您确定删除防区?','EN':'Are You Sure You Want To Delete The Defense Area?','TW':'您確定要刪除防區嗎?'}[language]"
+                                @on-ok="deleteDefensArea">
+                                <i-button type="error" long>{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button>
+                            </Poptip>
+                        </i-col>
+                        <i-col span="9">
+                            <i-button type="primary" long :loading="addLoading" @click="uploadDefensAreaDetailInfoToServer">{{{'CN':'确定','EN':'Add Camera','TW':'確定'}[language]}}</i-button>
+                        </i-col>
+                    </Row>
+                </div>
+                <div class="mapSearch">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td style="width: 60px;">
+                                    <span class="label" v-text="{'CN':'名称','EN':'Name','TW':'名稱'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input v-model="defensAreaDetailInfo.name" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="label" v-text="{'CN':'限速','EN':'Speed limit','TW':'限速'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input v-model="defensAreaDetailInfo.speed" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="label" v-text="{'CN':'布防','EN':'protection','TW':'布防'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <radio-group v-model="defensAreaDetailInfo.protection">
+                                            <Radio :label="{'CN':'布防','EN':'protection','TW':'布防'}[language]"></Radio>
+                                            <Radio :label="{'CN':'撤防','EN':'Withdrawing','TW':'撤防'}[language]"></Radio>
+                                        </radio-group>
+                                    </template>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </Modal>
         </template>
@@ -306,31 +374,37 @@
                 width="30"
                 footer-hide="true"
                 :mask="false"
+                @on-visible-change="isAddCameraAction=false"
                 class-name="mapModal">
                 <div slot="header" class="modalTitle">
                     <span class="icon"> <Icon type="ios-videocam-outline" /></span>
-                            <span class="label" v-text="{'CN':'摄像机管理','EN':'Camera Management','TW':'攝像機管理'}[language]"></span>
+                    <span class="label" v-text="{'CN':'摄像机管理','EN':'Camera Management','TW':'攝像機管理'}[language]"></span>
                 </div>
                 <div class="mapSearch">
                     <table>
                         <tbody>
                             <tr>
-                                <td style="width: 100px;">
+                                <td style="width: 60px;">
                                     <span class="label" v-text="{'CN':'选择图层','EN':'select layer','TW':'車輛'}[language]"></span>
                                 </td>
-                                <td>
+                                <td style="width: 61%;">
                                     <template>
-                                        <i-select clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100%;">
+                                        <i-select disabled clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100%;">
                                             <i-option v-text="{'CN':'牵引车','EN':'Tractor','TW':'牽引車'}[language]"></i-option>
                                             <i-option v-text="{'CN':'拖挂车','EN':'Trailer','TW':'拖掛車'}[language]"></i-option>
                                             <i-option v-text="{'CN':'三面车','EN':'Three Side Car','TW':'三面車'}[language]"></i-option>
                                         </i-select>
                                     </template>
                                 </td>
-                                <td style="width: 100px;">
-                                    <template>
+                                <td>
+                                    <template v-if="!isAddCameraAction">
                                         <div class="btnList">
-                                            <i-button size="small" type="primary" icon="ios-search-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
+                                            <i-button @click="isAddCameraAction=true" long size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
+                                        </div>
+                                    </template>
+                                    <template v-if="isAddCameraAction">
+                                        <div class="btnList">
+                                            <i-button @click="isAddCameraAction=false" long size="small" type="warning" icon="ios-close-circle-outline">{{{'CN':'取消新增','EN':'cancel New','TW':'取消新增'}[language]}}</i-button>
                                         </div>
                                     </template>
                                 </td>
@@ -342,7 +416,7 @@
                 <div class="modifiedWrap">
                     <div class="tableWrap">
                         <template>
-                            <i-table height="400" highlight-row :columns="cameraColumns" :data="camersDatas" stripe="true" size="small"></i-table>
+                            <i-table @on-row-click="selectCamera($event)" height="400" highlight-row :columns="cameraColumns" :data="camersDatas" stripe="true" size="small"></i-table>
                         </template>
                     </div>
             
@@ -351,6 +425,87 @@
                             <Page :total="100" show-total />
                         </template>
                     </div>
+                </div>
+            </Modal>
+        
+            <Modal v-model="isAddcameraDetailInfo" 
+                id="addCamera" 
+                width="20" 
+                :mask="false"
+                class-name="mapModal detailInfoModal">
+                <div slot="header" class="modalTitle">
+                    <span class="label" v-text="{'CN':'摄像机详细信息','EN':'Camera Detail Infomation','TW':'攝像機詳細信息'}[language]"></span>
+                </div>
+                <div slot="footer">
+                    <Row type="flex" justify="start" gutter="10">
+                        <i-col span="6"></i-col>
+                        <i-col span="9">
+                            <Poptip
+                                confirm
+                                width="200"
+                                :title="{'CN':'您确定删除摄像机?','EN':'Are You Sure You Want To Delete The Camera?','TW':'您確定要刪除攝像機嗎?'}[language]"
+                                @on-ok="deleteCamera">
+                                <i-button type="error" long>{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button>
+                            </Poptip>
+                        </i-col>
+                        <i-col span="9">
+                            <i-button type="primary" long :loading="addLoading" @click="uploadCameraDetailInfoToServer">{{{'CN':'确定','EN':'Add Camera','TW':'確定'}[language]}}</i-button>
+                        </i-col>
+                    </Row>
+                </div>
+                <div class="mapSearch">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td style="width: 60px;">
+                                    <span class="label" v-text="{'CN':'名称','EN':'Name','TW':'名稱'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input v-model="cameraDetailInfo.name" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="label" v-text="{'CN':'描述','EN':'Account','TW':'描述'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input v-model="cameraDetailInfo.describe" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="label" v-text="{'CN':'trsp','EN':'trsp','TW':'trsp'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input v-model="cameraDetailInfo.rtsp"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="label" v-text="{'CN':'方向','EN':'direction','TW':'方向'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input v-model="cameraDetailInfo.direction" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="label" v-text="{'CN':'半径','EN':'raduis','TW':'半徑'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input v-model="cameraDetailInfo.raduis" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="label" v-text="{'CN':'视野角度','EN':'Angle of view','TW':'視野角度'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input v-model="cameraDetailInfo.view"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </Modal>
         </template>
@@ -400,35 +555,35 @@
                         </i-col>
                         <i-col span="12" class-name="layerMenu">
                                 <template>
-                                    <checkbox-group value="1" style="width: 100%;">
-                                        <i-menu theme="light" active-name="1" mode="vertical" width="auto">
-                                            <menu-item name="1">
-                                                <Checkbox label="1">
+                                    <checkbox-group v-model="layerControl" style="width: 100%;">
+                                        <i-menu theme="light" mode="vertical" width="auto">
+                                            <menu-item name="background">
+                                                <Checkbox label="background">
                                                     <span class="label" v-text="{'CN':'背景','EN':'Background','TW':'背景'}[language]"></span>
                                                 </Checkbox>
                                             </menu-item>
-                                            <menu-item name="2">
-                                                <Checkbox label="2">
+                                            <menu-item name="seat">
+                                                <Checkbox label="seat">
                                                     <span class="label" v-text="{'CN':'机位','EN':'Seat','TW':'機位'}[language]"></span>
                                                 </Checkbox>
                                             </menu-item>
-                                            <menu-item name="3">
-                                                <Checkbox label="3">
+                                            <menu-item name="alarm">
+                                                <Checkbox label="alarm">
                                                     <span class="label" v-text="{'CN':'告警','EN':'Alarm','TW':'告警'}[language]"></span>
                                                 </Checkbox>
                                             </menu-item>
-                                            <menu-item name="4">
-                                                <Checkbox label="4">
+                                            <menu-item name="vehicle">
+                                                <Checkbox label="vehicle">
                                                     <span class="label" v-text="{'CN':'车辆','EN':'Vehicle','TW':'車輛'}[language]"></span>
                                                 </Checkbox>
                                             </menu-item>
-                                            <menu-item name="5">
-                                                <Checkbox label="5">
+                                            <menu-item name="warning">
+                                                <Checkbox label="warning">
                                                     <span class="label" v-text="{'CN':'告警防区','EN':'Warning Area','TW':'告警防區'}[language]"></span>
                                                 </Checkbox>
                                             </menu-item>
-                                            <menu-item name="6">
-                                                <Checkbox label="6">
+                                            <menu-item name="camera">
+                                                <Checkbox label="camera">
                                                     <span class="label" v-text="{'CN':'摄像机','EN':'Video Camera','TW':'攝像機'}[language]"></span>
                                                 </Checkbox>
                                             </menu-item>
@@ -502,8 +657,8 @@
                 :mask="false"
                 class-name="mapModal">
                 <div slot="header" class="modalTitle">
-                        <span class="icon"><Icon type="ios-search-outline" /></span>
-                        <span class="label" v-text="{'CN':'车辆查询','EN':'Vehicle Search','TW':'車輛查詢'}[language]"></span>
+                    <span class="icon"><Icon type="ios-search-outline" /></span>
+                    <span class="label" v-text="{'CN':'车辆查询','EN':'Vehicle Search','TW':'車輛查詢'}[language]"></span>
                 </div>
                 <div class="mapSearch">
                     <table>
@@ -591,6 +746,7 @@
                 </div>
             </Modal>
         </template>
+
     </div>
     <script src="/airport/assets/js/vue.min.js"></script>
     <script src="/airport/assets/vender/iView/iview.min.js"></script>
