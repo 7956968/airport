@@ -53,7 +53,8 @@
     <div id="js-vue" class="index">
         <div class="header">
             <div class="logo">
-                <img src="/airport/www/img/logo.png" style="position: relative; z-index: 0; top: 5px; left: -10px; width: 80%; height: 80%;"/>
+                <img src="/airport/www/img/logo.png"/>
+                <p v-text="userInfo.userName"></p>
             </div>
             <div class="navWrap">
                 <ul>
@@ -61,7 +62,7 @@
                         <div class="navIcon">
                             <span class="icon"><Icon type="ios-globe" /></span>
                             <span v-text="{'CN':'电子地图','EN':'Maps','TW':'電子地圖'}[language]"></span>
-                            <span class="arrow"><Icon type="md-arrow-dropdown" /></span>
+                            <span class="arrow"><Icon type="md-arrow-dropright" /></span>
                         </div>
                         <div class="subNav">
                             <p @click="setTabItem('/airport/www/module/maps/maps.html', 'Maps', $event)" id="nav_Maps">
@@ -72,9 +73,9 @@
                     </li>
                     <li>
                         <div class="navIcon">
-                            <span class="icon"><Icon type="md-people" /></span>
+                            <span class="icon"><Icon type="ios-people" /></span>
                             <span v-text="{'CN':'单位组织','EN':'Organization','TW':'單位組織'}[language]"></span>
-                            <span class="arrow"><Icon type="md-arrow-dropdown" /></span>
+                            <span class="arrow"><Icon type="md-arrow-dropright" /></span>
                         </div>
                         <div class="subNav">
                             <p @click="setTabItem('/airport/www/module/organizeManage/organizeManage.html', 'OrganizeManage', $event)" id="nav_OrganizeManage">
@@ -93,21 +94,25 @@
                                 <span><Icon type="ios-contacts" /></span>
                                 <span v-text="{'CN':'用户管理','EN':'UserManage','TW':'用戶管理'}[language]"></span>
                             </p>
+                            <p @click="setTabItem('/airport/www/module/departUser/departUser.html', 'DepartUser', $event)" id="nav_DepartUser">
+                                <span><Icon type="md-people"/></span>
+                                <span v-text="{'CN':'部门员工管理','EN':'departmentUser','TW':'部門員工管理'}[language]"></span>
+                            </p>
                             <p @click="setTabItem('/airport/www/module/dataGroup/dataGroup.html', 'DataGroup', $event)" id="nav_DataGroup">
                                 <span><Icon type="ios-magnet" /></span>
                                 <span v-text="{'CN':'数据权限组','EN':'DataGroup','TW':'數據權限組'}[language]"></span>
                             </p>
-                            <p @click="setTabItem('/airport/www/module/deviceGrouping/deviceGrouping.html', 'DeviceGrouping', $event)" id="nav_DeviceGrouping">
+                            <!-- <p @click="setTabItem('/airport/www/module/deviceGrouping/deviceGrouping.html', 'DeviceGrouping', $event)" id="nav_DeviceGrouping">
                                 <span><Icon type="ios-keypad" /></span>
                                 <span v-text="{'CN':'设备分组','EN':'DeviceGrouping','TW':'設備分組'}[language]"></span>
-                            </p>
+                            </p> -->
                         </div>
                     </li>
                     <li>
                         <div class="navIcon">
                             <span class="icon"><Icon type="md-construct" /></span>
                             <span v-text="{'CN':'设备管理','EN':'Device ','TW':'設備管理'}[language]"></span>
-                            <span class="arrow"><Icon type="md-arrow-dropdown" /></span>
+                            <span class="arrow"><Icon type="md-arrow-dropright" /></span>
                         </div>
                         <div class="subNav">
                             <p @click="setTabItem('/airport/www/module/vehicleManage/vehicleManage.html', 'VehicleManage', $event)" id="nav_VehicleManage">
@@ -132,7 +137,7 @@
                         <div class="navIcon">
                             <span class="icon"><Icon type="md-medkit" /></span>
                             <span v-text="{'CN':'安全管理','EN':'Security ','TW':'安全管理'}[language]"></span>
-                            <span class="arrow"><Icon type="md-arrow-dropdown" /></span>
+                            <span class="arrow"><Icon type="md-arrow-dropright" /></span>
                         </div>
                         <div class="subNav">
                             <p @click="setTabItem('/airport/www/module/irregularities/irregularities.html', 'Irregularities', $event)" id="nav_Irregularities">
@@ -145,7 +150,7 @@
                         <div class="navIcon">
                             <span class="icon"><Icon type="md-lock" /></span>
                             <span v-text="{'CN':'未启用','EN':'Not Enabled','TW':'未啟用'}[language]"></span>
-                            <span class="arrow"><Icon type="md-arrow-dropdown" /></span>
+                            <span class="arrow"><Icon type="md-arrow-dropright" /></span>
                         </div>
                         <div class="subNav">
                             <p @click="setTabItem('/airport/www/module/sectorsManage/sectorsManage.html', 'SectorsManage', $event)" id="nav_SectorsManage">
@@ -170,7 +175,7 @@
                         <div class="navIcon">
                             <span class="icon"><Icon type="md-pie" /></span>
                             <span v-text="{'CN':'统计分析','EN':'Analysis ','TW':'統計分析'}[language]"></span>
-                            <span class="arrow"><Icon type="md-arrow-dropdown" /></span>
+                            <span class="arrow"><Icon type="md-arrow-dropright" /></span>
                         </div>
                         <div class="subNav">
                             <p @click="setTabItem('/airport/www/module/usageStatistics/usageStatistics.html', 'UsageStatistics', $event)" id="nav_UsageStatistics">
@@ -203,7 +208,7 @@
                         <div class="navIcon">
                             <span class="icon"><Icon type="md-settings" /></span>
                             <span v-text="{'CN':'系统管理','EN':'System ','TW':'系統管理'}[language]"></span>
-                            <span class="arrow"><Icon type="md-arrow-dropdown" /></span>
+                            <span class="arrow"><Icon type="md-arrow-dropright" /></span>
                         </div>
                         <div class="subNav">
                             <p @click="setTabItem('/airport/www/module/systemLog/systemLog.html', 'SystemLog', $event)" id="nav_SystemLog">
@@ -224,8 +229,6 @@
             </div>
             <div class="userInfo">
                 <template>
-                    <div class="user"><span>
-                            <Icon type="ios-contact" /></span>用户名</div>
                     <div class="logout" @click="logout">
                         <Icon type="md-log-out" />
                     </div>

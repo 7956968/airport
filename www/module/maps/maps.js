@@ -29,7 +29,8 @@
                     "defens": null, // 防区
                     "vehicle": null, // 车辆
                     "alarm": null, // 告警
-                    "camera": null // 摄像机
+                    "camera": null, // 摄像机
+                    "GPS": null, // GPS定位
                 },
                 // 资源信息
                 "sourceInfo": {
@@ -58,7 +59,7 @@
                 },
                 // 定位信息
                 "geolocationInfo": {
-
+                    "GPS": null, // gps控件
                 },
                 // 叠加
                 "overlayInfo": {
@@ -138,7 +139,7 @@
             "isAddDefensAction": false,
             "isAddDefensDetailInfo": false,
             "isDrawDefening": false,
-            "isDeleteDefens": false,
+            "isDeleteDefens": false, 
             "defensAreaDetailInfo": {
                 "featureId": null,
                 "coordinate": null,
@@ -367,8 +368,7 @@
             //#endregion
         },
 
-        //#region 
-        // 监听属性变化
+        //#region  监听属性变化
         "watch": {
             "layerControl": function (value) {
                 var self = this;
@@ -415,6 +415,9 @@
 
                 // 添加控件
                 self.createControls();
+
+                // 添加GPS
+                self.createdGPS();
             },
             // 创建地图
             "createdMap": function () {
@@ -428,8 +431,8 @@
                         })
                     ],
                     "view": new ol.View({
-                        "center": [113.8045, 22.6428], // 地图初始化中心点
-                        "zoom": 13, // 地图初始化显示级别
+                        "center": [113.8077, 22.6286], // 地图初始化中心点
+                        "zoom": 16, // 地图初始化显示级别
                         // "minZoom": 15, // 最小级别
                         // "maxZoom": 12, // 最大级别
                         "projection": "EPSG:4326"
@@ -510,8 +513,10 @@
 
                 // 创建摄像机图层
                 createLayer("camera");
-            },
 
+                // 创建GPS图层
+                createLayer("GPS");
+            },
             // 创建Pop层
             "createPop": function (id, type) {
                 var self = this;
@@ -527,7 +532,6 @@
                 self.mapContainer.map.addOverlay(self.mapContainer.overlayInfo[type]);
                 self.mapContainer.overlayInfo[type].setPosition(undefined);
             },
-
             // 生成各类型控件
             "createControls": function () {
                 var self = this;
@@ -565,7 +569,11 @@
                         "collapseLabel": "\u00BB",
                         "label": "\u00AB",
                         "collapsed": false,
-                        // "view": self.mapContainer.viewInfo.view
+                        "view": new ol.View({
+                            "center": [113.8077, 22.6286], // 地图初始化中心点
+                            "zoom": 25, // 地图初始化显示级别
+                            "projection": "EPSG:4326"
+                        })
                     });
                 }
 
@@ -577,7 +585,7 @@
                 self.mapContainer.map.addControl(self.mapContainer.controlsInfo.mousePosition);
                 self.mapContainer.map.addControl(self.mapContainer.controlsInfo.scaleLine);
                 self.mapContainer.map.addControl(self.mapContainer.controlsInfo.overviewMap);
-                self.mapContainer.map.addControl(self.mapContainer.controlsInfo.fullScreen);
+                // self.mapContainer.map.addControl(self.mapContainer.controlsInfo.fullScreen);
             },
             //#endregion
 
@@ -876,7 +884,64 @@
             "showModal": function (type) {
                 var self = this;
                 self.modal[type] = !self.modal[type];
+            },
+
+            //#region GPS 定位
+            "createdGPS": function() {
+                var self = this;
+                self.mapContainer.geolocationInfo.GPS = new ol.Geolocation({
+                    "projection": self.mapContainer.viewInfo.view.getProjection(),
+                    "trackingOptions": {
+                        "maximumAge": 10000,
+                        "enableHighAccuracy": true,
+                        "timeout": 600000
+                    }
+                });
+                self.mapContainer.geolocationInfo.GPS.setTracking(true); // 启动位置跟踪
+
+                console.log(self.mapContainer.geolocationInfo.GPS);
+
+                self.createdPositionFeature();
+                self.createdAccuracyFreature();
+
+                self.mapContainer.geolocationInfo.GPS.on("error", function(error) {
+                    console.log(error.message);
+                });
+
+            },
+            // 创建矢量点
+            "createdPositionFeature": function() {
+                var self = this;
+                var positionFeature = new ol.Feature();
+                positionFeature.setStyle(new ol.style.Style({
+                    "image": new ol.style.Circle({
+                        "raduis": 6,
+                        "fill": new ol.style.Fill({
+                            "color": "#3399cc"
+                        }),
+                        "stroke": new ol.style.Stroke({
+                            "color": "#fff",
+                            "width": 2
+                        })
+                    })
+                }));
+                self.mapContainer.sourceInfo.GPS.addFeature(positionFeature);
+
+                self.mapContainer.geolocationInfo.GPS.on("change:position", function() {
+                    var coordinates = self.mapContainer.geolocationInfo.GPS.getPosition();
+                    positionFeature.setGeometry(coordinates ? new ol.geom.Point(coordinates): null);
+                });
+            },
+            // 创建矢量圆
+            "createdAccuracyFreature": function() {
+                var self = this;
+                var accuracyFeature = new ol.Feature();
+                self.mapContainer.sourceInfo.GPS.addFeature(accuracyFeature);
+                self.mapContainer.geolocationInfo.GPS.on("change:accuracyGeometry", function() {
+                    accuracyFeature.setGeometry(self.mapContainer.geolocationInfo.GPS.getAccuracyGeometry());
+                });
             }
+            //#endregion
         },
         "created": function () {
             var self = this;

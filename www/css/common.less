@@ -169,7 +169,7 @@ table {
         .ivu-message-notice {
             text-align: right;
             .ivu-message-notice-content {
-                right: 130px;
+                right: 110px;
             }
         }
     }
@@ -209,11 +209,34 @@ table {
     // background-color: @color1; // 首页样式
     // 欢迎页样式
     .welcomPage {
-        padding-top: 10px;
+        position: absolute;
+        z-index: 10000;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #464545;
+        padding-top: 40px;
+        overflow-x: hidden;
+        overflow-y: auto;
         .layout {
-            padding: 0 10px 10px 10px; // .ivu-card {
-            //     background-color: @color1;
-            // }
+            padding: 0 10px 10px 10px; 
+            .ivu-card {
+                border-radius: 2px;
+                transition: none;
+                background-color: rgba(24, 38, 70, 0.8);
+                &:hover {
+                    box-shadow: none;
+                }
+                &.ivu-card-bordered {
+                    border-color: rgba(109, 106, 106, 0.7);
+                }
+                .ivu-card-head {
+                    border-bottom: 1px solid rgba(109, 106, 106, 0.5);
+                }
+            }
             .tile {
                 font-size: 18px;
                 color: @mainFontColor;
@@ -233,32 +256,37 @@ table {
 .index {
     // 头部样式
     .header {
-        position: relative;
+        position: fixed;
         z-index: 100000000000;
-        height: @headerHeight;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 110px;
+        height: 100%;
         background-color: @color1;
         .logo {
-            float: left;
-            height: @headerHeight;
-            ;
-            line-height: @headerHeight;
-            padding-left: 20px;
-            i {
-                font-size: 28px;
-                color: white;
+            padding: 10px 0 20px 0;
+            text-align: center;
+            background-color: rgb(35, 56, 103);
+            img {
+                width: 58px;
+                height: 50px;;
+            }
+            p{
+                color: #fff;
+                text-align: center;
+                font-size: 16px;
             }
         }
         .navWrap {
-            float: left;
             ul {
-                height: @headerHeight;
-                line-height: @headerHeight;
                 li {
                     position: relative;
                     z-index: 0;
-                    float: left;
+                    height: @headerHeight;
+                    line-height: @headerHeight;
                     color: @fontColor;
-                    padding: 0 20px 0 5px;
+                    padding: 0 0 0 5px;
                     font-size: 13px;
                     cursor: pointer;
                     .navIcon {
@@ -273,6 +301,8 @@ table {
                             top: -2px;
                         }
                         .arrow {
+                            float: right;
+                            margin-right: 5px;
                             i {
                                 color: fade(@bgColor, 40%);
                             }
@@ -281,30 +311,37 @@ table {
                     .subNav {
                         display: none;
                         position: absolute;
-                        z-index: 1000;
-                        top: 50px;
-                        left: -15%;
+                        z-index: 1000000;
+                        top: 0;
+                        left: 100%;
                         width: 130%;
-                        padding: 0 0 5px 0;
-                        background-color: fade(@color1, 60%);
+                        color: #333;
+                        border: 1px solid rgba(208,219,245,.7);
+                        border-left: none;
+                        background-color: rgba(208,219,245,.3);
                         p {
+                            height: 50px;
+                            line-height: 50px;
                             padding: 0 0 0 10px;
                             margin: 0;
-                            line-height: 32px;
+                            &:nth-child(2n) {
+                                background-color: rgba(208,219,245,.5);
+                            }
                             i {
                                 font-size: 16px;
                                 margin-right: 3px;
                             }
                             &:hover {
-                                text-decoration: underline;
+                                background-color: rgba(208,219,245,.8);
                             }
                         }
                     }
                     &:hover {
+                        background-color: rgba(208,219,245,.3);
                         .navIcon {
                             .arrow {
                                 i {
-                                    transform: rotate(-180deg);
+                                    transform: rotate(180deg);
                                 }
                             }
                         }
@@ -316,10 +353,11 @@ table {
             }
         }
         .userInfo {
-            position: relative;
+            position: fixed;
             z-index: 0;
-            float: right;
+            bottom: 0;
             font-size: 13px;
+            width: 110px;
             height: @headerHeight;
             line-height: @headerHeight;
             color: @fontColor;
@@ -328,12 +366,9 @@ table {
                 font-size: 28px;
                 margin-right: 5px;
             }
-            .user {
-                display: inline-block;
-                padding-right: 10px;
-            }
             .logout {
-                display: inline-block;
+                text-align: center;
+                cursor: pointer;
                 height: @headerHeight;
                 padding: 0 10px;
                 background-color: @logoutColor;
@@ -343,13 +378,11 @@ table {
     .fixedNav {
         position: fixed;
         z-index: 1000;
-        top: 50px;
-        left: 0;
+        top: 0;
+        left: 110px;
         right: 0;
-        background-color: #D0DBF5;
         height: 30px;
-        line-height: 30px;
-        padding: 0 80px;
+        background-color: rgba(208, 219, 245, .3);
         box-shadow: 0 1px 5px rgba(62, 84, 130, .2);
         .fixedNavWrap {
             width: 100%;
@@ -378,6 +411,7 @@ table {
             border-left: 1px solid fade(@color1, 30%);
             &:first-child {
                 padding: 0 10px;
+                border-left: none;
             }
             &:last-child {
                 border-right: 1px solid fade(@color1, 30%);
@@ -422,8 +456,8 @@ table {
     .mainWrap {
         position: fixed;
         z-index: 10;
-        top: 80px;
-        left: 0;
+        top: 0;
+        left: 110px;
         right: 0;
         bottom: 0;
         iframe {
@@ -440,7 +474,13 @@ table {
 }
 
 .top {
-    padding: 10px;
+    padding: 5px;
+    .actionWrap {
+        position: relative;
+        z-index: 0;
+        top: 4px;
+        text-align: right;
+    }
     button {
         i {
             font-size: 17px;
@@ -480,12 +520,12 @@ table {
 .tableContainer {
     position: absolute;
     z-index: 100;
-    top: 10px;
+    top: 40px;
     bottom: 10px;
     left: 10px;
     right: 10px;
     border-radius: 3px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, .4);
+    // box-shadow: 0 0 20px rgba(0, 0, 0, .4);
     background-color: white;
 }
 
@@ -584,22 +624,22 @@ table {
 }
 
 .hasActionList {
-    .ivu-modal-body {
+    .ivu-modal-body { 
         padding: 0;
     }
 }
 
 // 弹出窗体内容样式
-.modifiedWrap {
+.modifiedWrap { 
     .pageWrap {
-        padding: 15px;
+        padding: 5px 15px;
     }
     table {
         width: 100%;
         td {
             padding: 5px;
             &.label {
-                width: 100px;
+                min-width: 50px;
                 text-align: right;
                 padding: 5px 0;
             }
@@ -609,13 +649,18 @@ table {
             .addressWrap {
                 .select {
                     float: left;
-                    width: 50%;
+                    width: 70%;
                 }
                 .input {
                     float: left;
-                    width: 50%;
+                    width: 30%;
                 }
             }
+        }
+    }
+    .top {
+        .actionWrap {
+            top: 0;
         }
     }
 }
@@ -641,13 +686,24 @@ table {
         height: 100%;
         .mousePosition {
             position: absolute;
-            bottom: 5px;
-            left: 200px;
+            bottom: 7px;
+            left: 150px;
             z-index: 200000;
+            padding: 3px 8px;
+            background-color: rgba(0,60,136,.3);
+            border-radius: 3px;
+            overflow: hidden;
+            color: #fff;
+            font-size: 12px;
+            font-family: "微软雅黑";
+            border: 1px solid #fff;
+            border-top: none;
+            .mousePositionLabel {
+                float: left;
+            }
             .mousePositionInner {
-                color: red;
-                font-size: 16px;
-                font-family: "微软雅黑";
+                margin-left: 10px;
+                float: left;
             }
         }
         .overViewMap {
@@ -683,9 +739,9 @@ table {
     .searchWrap {
         position: absolute;
         z-index: 100000000000;
-        top: 10px;
+        top: 50px;
         left: 50px;
-        width: 30%;
+        width: 20%;
         .ivu-input-group {
             .ivu-input {
                 left: 0;
@@ -696,7 +752,7 @@ table {
     .menuWrap {
         position: absolute;
         z-index: 100000000;
-        top: 10px;
+        top: 50px;
         right: -2px;
         ul {
             height: 40px;

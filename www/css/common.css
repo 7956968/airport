@@ -130,7 +130,7 @@ table {
     text-align: right;
   }
   .loginPage .ivu-message-notice .ivu-message-notice-content {
-    right: 130px;
+    right: 110px;
   }
 }
 @media (min-width: 1600px) {
@@ -157,10 +157,35 @@ table {
   }
 }
 .graphPage .welcomPage {
-  padding-top: 10px;
+  position: absolute;
+  z-index: 10000;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #464545;
+  padding-top: 40px;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 .graphPage .welcomPage .layout {
   padding: 0 10px 10px 10px;
+}
+.graphPage .welcomPage .layout .ivu-card {
+  border-radius: 2px;
+  transition: none;
+  background-color: rgba(24, 38, 70, 0.8);
+}
+.graphPage .welcomPage .layout .ivu-card:hover {
+  box-shadow: none;
+}
+.graphPage .welcomPage .layout .ivu-card.ivu-card-bordered {
+  border-color: rgba(109, 106, 106, 0.7);
+}
+.graphPage .welcomPage .layout .ivu-card .ivu-card-head {
+  border-bottom: 1px solid rgba(109, 106, 106, 0.5);
 }
 .graphPage .welcomPage .layout .tile {
   font-size: 18px;
@@ -173,34 +198,36 @@ table {
   height: 90px;
 }
 .index .header {
-  position: relative;
+  position: fixed;
   z-index: 100000000000;
-  height: 50px;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 110px;
+  height: 100%;
   background-color: #182646;
 }
 .index .header .logo {
-  float: left;
+  padding: 10px 0 20px 0;
+  text-align: center;
+  background-color: #233867;
+}
+.index .header .logo img {
+  width: 58px;
   height: 50px;
-  line-height: 50px;
-  padding-left: 20px;
 }
-.index .header .logo i {
-  font-size: 28px;
-  color: white;
-}
-.index .header .navWrap {
-  float: left;
-}
-.index .header .navWrap ul {
-  height: 50px;
-  line-height: 50px;
+.index .header .logo p {
+  color: #fff;
+  text-align: center;
+  font-size: 16px;
 }
 .index .header .navWrap ul li {
   position: relative;
   z-index: 0;
-  float: left;
+  height: 50px;
+  line-height: 50px;
   color: #dedede;
-  padding: 0 20px 0 5px;
+  padding: 0 0 0 5px;
   font-size: 13px;
   cursor: pointer;
 }
@@ -216,42 +243,56 @@ table {
   z-index: 0;
   top: -2px;
 }
+.index .header .navWrap ul li .navIcon .arrow {
+  float: right;
+  margin-right: 5px;
+}
 .index .header .navWrap ul li .navIcon .arrow i {
   color: rgba(238, 238, 238, 0.4);
 }
 .index .header .navWrap ul li .subNav {
   display: none;
   position: absolute;
-  z-index: 1000;
-  top: 50px;
-  left: -15%;
+  z-index: 1000000;
+  top: 0;
+  left: 100%;
   width: 130%;
-  padding: 0 0 5px 0;
-  background-color: rgba(24, 38, 70, 0.6);
+  color: #333;
+  border: 1px solid rgba(208, 219, 245, 0.7);
+  border-left: none;
+  background-color: rgba(208, 219, 245, 0.3);
 }
 .index .header .navWrap ul li .subNav p {
+  height: 50px;
+  line-height: 50px;
   padding: 0 0 0 10px;
   margin: 0;
-  line-height: 32px;
+}
+.index .header .navWrap ul li .subNav p:nth-child(2n) {
+  background-color: rgba(208, 219, 245, 0.5);
 }
 .index .header .navWrap ul li .subNav p i {
   font-size: 16px;
   margin-right: 3px;
 }
 .index .header .navWrap ul li .subNav p:hover {
-  text-decoration: underline;
+  background-color: rgba(208, 219, 245, 0.8);
+}
+.index .header .navWrap ul li:hover {
+  background-color: rgba(208, 219, 245, 0.3);
 }
 .index .header .navWrap ul li:hover .navIcon .arrow i {
-  transform: rotate(-180deg);
+  transform: rotate(180deg);
 }
 .index .header .navWrap ul li:hover .subNav {
   display: block;
 }
 .index .header .userInfo {
-  position: relative;
+  position: fixed;
   z-index: 0;
-  float: right;
+  bottom: 0;
   font-size: 13px;
+  width: 110px;
   height: 50px;
   line-height: 50px;
   color: #dedede;
@@ -261,12 +302,9 @@ table {
   font-size: 28px;
   margin-right: 5px;
 }
-.index .header .userInfo .user {
-  display: inline-block;
-  padding-right: 10px;
-}
 .index .header .userInfo .logout {
-  display: inline-block;
+  text-align: center;
+  cursor: pointer;
   height: 50px;
   padding: 0 10px;
   background-color: #333333;
@@ -274,13 +312,11 @@ table {
 .index .fixedNav {
   position: fixed;
   z-index: 1000;
-  top: 50px;
-  left: 0;
+  top: 0;
+  left: 110px;
   right: 0;
-  background-color: #D0DBF5;
   height: 30px;
-  line-height: 30px;
-  padding: 0 80px;
+  background-color: rgba(208, 219, 245, 0.3);
   box-shadow: 0 1px 5px rgba(62, 84, 130, 0.2);
 }
 .index .fixedNav .fixedNavWrap {
@@ -311,6 +347,7 @@ table {
 }
 .index .fixedNav .tabItem:first-child {
   padding: 0 10px;
+  border-left: none;
 }
 .index .fixedNav .tabItem:last-child {
   border-right: 1px solid rgba(24, 38, 70, 0.3);
@@ -351,8 +388,8 @@ table {
 .index .mainWrap {
   position: fixed;
   z-index: 10;
-  top: 80px;
-  left: 0;
+  top: 0;
+  left: 110px;
   right: 0;
   bottom: 0;
 }
@@ -367,7 +404,13 @@ table {
   height: 100%;
 }
 .top {
-  padding: 10px;
+  padding: 5px;
+}
+.top .actionWrap {
+  position: relative;
+  z-index: 0;
+  top: 4px;
+  text-align: right;
 }
 .top button i {
   font-size: 17px;
@@ -394,12 +437,11 @@ table {
 .tableContainer {
   position: absolute;
   z-index: 100;
-  top: 10px;
+  top: 40px;
   bottom: 10px;
   left: 10px;
   right: 10px;
   border-radius: 3px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
   background-color: white;
 }
 .treeModel .ivu-modal-body {
@@ -468,7 +510,7 @@ table {
   padding: 0;
 }
 .modifiedWrap .pageWrap {
-  padding: 15px;
+  padding: 5px 15px;
 }
 .modifiedWrap table {
   width: 100%;
@@ -477,7 +519,7 @@ table {
   padding: 5px;
 }
 .modifiedWrap table td.label {
-  width: 100px;
+  min-width: 50px;
   text-align: right;
   padding: 5px 0;
 }
@@ -486,11 +528,14 @@ table {
 }
 .modifiedWrap table td .addressWrap .select {
   float: left;
-  width: 50%;
+  width: 70%;
 }
 .modifiedWrap table td .addressWrap .input {
   float: left;
-  width: 50%;
+  width: 30%;
+}
+.modifiedWrap .top .actionWrap {
+  top: 0;
 }
 .pageWrap {
   padding: 5px;
@@ -511,14 +556,25 @@ table {
 }
 .mapContainer .mapWrap .mousePosition {
   position: absolute;
-  bottom: 5px;
-  left: 200px;
+  bottom: 7px;
+  left: 150px;
   z-index: 200000;
+  padding: 3px 8px;
+  background-color: rgba(0, 60, 136, 0.3);
+  border-radius: 3px;
+  overflow: hidden;
+  color: #fff;
+  font-size: 12px;
+  font-family: "微软雅黑";
+  border: 1px solid #fff;
+  border-top: none;
+}
+.mapContainer .mapWrap .mousePosition .mousePositionLabel {
+  float: left;
 }
 .mapContainer .mapWrap .mousePosition .mousePositionInner {
-  color: red;
-  font-size: 16px;
-  font-family: "微软雅黑";
+  margin-left: 10px;
+  float: left;
 }
 .mapContainer .mapWrap .overViewMap {
   bottom: auto;
@@ -552,9 +608,9 @@ table {
 .mapContainer .searchWrap {
   position: absolute;
   z-index: 100000000000;
-  top: 10px;
+  top: 50px;
   left: 50px;
-  width: 30%;
+  width: 20%;
 }
 .mapContainer .searchWrap .ivu-input-group .ivu-input {
   left: 0;
@@ -563,7 +619,7 @@ table {
 .mapContainer .menuWrap {
   position: absolute;
   z-index: 100000000;
-  top: 10px;
+  top: 50px;
   right: -2px;
 }
 .mapContainer .menuWrap ul {

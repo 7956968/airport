@@ -4,6 +4,7 @@
     var pageVue = new Vue({
         "el": "#js-vue",
         "data": {
+            "userInfo": userInfo,
             "language": !!language ? language["language"] : "CN",
             "title": { "CN": "民贵无动力设备管理系统", 'EN': "Mingui Non-Powered Euipment Management System", 'TW': "民貴無動力管理系統" },
             "tabList": [],

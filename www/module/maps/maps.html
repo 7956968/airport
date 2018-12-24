@@ -56,7 +56,9 @@
         <!-- 地图容器 -->
         <div class="mapWrap" id="map">
             <!-- 鼠标位置 -->
-            <div id="mousePosition" class="mousePosition"></div>
+            <div id="mousePosition" class="mousePosition">
+                <div class="mousePositionLabel">[经度, 纬度]</div>
+            </div>
         </div>
 
         <!-- 搜索 -->
@@ -119,7 +121,7 @@
         <!-- 车辆管理 -->
         <template>
             <Modal v-model="modal.isVehicle" 
-                :styles="{top: '70px', left: '50px', position: 'absolute'}" 
+                :styles="{top: '130px', left: '50px', position: 'absolute'}" 
                 width="30"
                 footer-hide="true"
                 :mask="false"
@@ -171,7 +173,7 @@
         <!-- 历史轨迹 -->
         <template>
             <Modal v-model="modal.isHistory" 
-                :styles="{top: '70px', left: '50px', position: 'absolute'}" 
+                :styles="{top: '130px', left: '50px', position: 'absolute'}" 
                 width="30"
                 footer-hide="true"
                 :mask="false"
@@ -248,7 +250,7 @@
         <!-- 防区管理 -->
         <template>
             <Modal v-model="modal.isDefense" 
-                :styles="{top: '70px', left: '50px', position: 'absolute'}" 
+                :styles="{top: '130px', left: '50px', position: 'absolute'}" 
                 width="30"
                 footer-hide="true"
                 :mask="false"
@@ -370,7 +372,7 @@
         <!-- 摄像机管理 -->
         <template>
             <Modal v-model="modal.isCamera" 
-                :styles="{top: '70px', left: '50px', position: 'absolute'}" 
+                :styles="{top: '130px', left: '50px', position: 'absolute'}" 
                 width="30"
                 footer-hide="true"
                 :mask="false"
@@ -513,7 +515,7 @@
         <!-- 图层控制 -->
         <template>
             <Modal v-model="modal.isLayer" 
-                :styles="{top: '70px', left: '50px', position: 'absolute'}" 
+                :styles="{top: '130px', left: '50px', position: 'absolute'}" 
                 width="30"
                 footer-hide="true"
                 :mask="false"
@@ -599,7 +601,7 @@
         <!-- 告警管理 -->
         <template>
             <Modal v-model="modal.isAlarm" 
-                :styles="{top: '70px', left: '50px', position: 'absolute'}" 
+                :styles="{top: '130px', left: '50px', position: 'absolute'}" 
                 width="30"
                 footer-hide="true"
                 :mask="false"
@@ -651,7 +653,7 @@
         <!-- 车辆查询 -->
         <template>
             <Modal v-model="modal.isSearch" 
-                :styles="{top: '70px', left: '50px', position: 'absolute'}" 
+                :styles="{top: '130px', left: '50px', position: 'absolute'}" 
                 width="30"
                 footer-hide="true"
                 :mask="false"
@@ -753,7 +755,7 @@
     <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
     <script src="/airport/assets/vender/openLayer/ol.min.js"></script>
     <script src="/airport/assets/js/utility.min.js"></script>
-    <script src="/airport/www/module/maps/maps.min.js?v=9585848843"></script>
+    <script src="/airport/www/module/maps/maps.min.js?v=958584"></script>
 </body>
 
 </html>

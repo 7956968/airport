@@ -62,10 +62,10 @@
             <div class="inputInfo">
                 <template>
                     <label>
-                        <i-input prefix="ios-contact" v-model="loginInfo.userName" size="large" :placeholder="{'CN':'用户名','EN':'userName','TW':'用戶名'}[language]" />
+                        <i-input prefix="ios-contact" v-model="loginInfo.userCode" size="large" :placeholder="{'CN':'用户名','EN':'userName','TW':'用戶名'}[language]" />
                     </label>
                     <label>
-                        <i-input prefix="md-unlock" v-model="loginInfo.password" size="large" type="password" :placeholder="{'CN':'密码','EN':'password','TW':'密碼'}[language]" />
+                        <i-input prefix="md-unlock" v-model="loginInfo.userPwd" size="large" type="password" :placeholder="{'CN':'密码','EN':'password','TW':'密碼'}[language]" />
                     </label>
                     <label>
                         <i-select v-model="language" size="large">
@@ -86,6 +86,7 @@
     <script src="/airport/assets/js/vue.min.js"></script>
     <script src="/airport/assets/vender/iView/iview.min.js"></script>
     <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
+    <script src="/airport/assets/js/md5.min.js"></script>
     <script src="/airport/assets/js/config.min.js"></script>
     <script src="/airport/assets/js/utility.min.js"></script>
     <script src="/airport/www/action/login.min.js"></script>

@@ -52,14 +52,14 @@
     <div id="js-vue" class="tableContainer">
         <div class="top">
             <Row type="flex" justify="start" gutter="10">
-                <i-col span="16" class-name="">
+                <i-col span="14" class-name="">
                     <div class="searchWrap">
                         <table>
                             <tbody>
                                 <tr>
                                     <td>
                                         <template>
-                                            <i-input :placeholder="{'CN':'请输入查询关键字','EN':'Please Input Query Key','TW':'請輸入查詢關鍵字'}[language]" style="width: 300px">
+                                            <i-input v-model="pageInfo.roleName" :placeholder="{'CN':'请输入查询关键字','EN':'Please Input Query Key','TW':'請輸入查詢關鍵字'}[language]" style="width: 300px">
                                                 <i-select slot="prepend" :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:80px;">
                                                     <i-option v-text="{'CN':'角色名称','EN':'Company Name','TW':'角色名稱'}[language]"></i-option>
                                                 </i-select>
@@ -69,7 +69,7 @@
                                     <td>
                                         <template>
                                             &nbsp;&nbsp;&nbsp;
-                                            <i-button size="small" type="primary" icon="ios-search-outline">{{{'CN':'查询','EN':'Search','TW':'查詢'}[language]}}</i-button>
+                                            <i-button @click="getRoleDataList(true)" size="small" type="primary" icon="ios-search-outline">{{{'CN':'查询','EN':'Search','TW':'查詢'}[language]}}</i-button>
                                         </template>
                                     </td>
                                 </tr>
@@ -77,15 +77,15 @@
                         </table>
                     </div>
                 </i-col>
-                <i-col span="8" class-name="">
+                <i-col span="10">
                     <div class="actionWrap">
                         <template>
                             <i-buttonGroup>
                                 <i-button @click="refresh" size="small" icon="ios-refresh">{{{'CN':'刷新','EN':'Refresh','TW':'刷新'}[language]}}</i-button>
-                                <i-button @click="add" size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
-                                <i-button @click="edit" size="small" type="warning" icon="ios-paper-outline">{{{'CN':'编辑','EN':'Edit','TW':'編輯'}[language]}}</i-button>
-                                <i-button size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button>
-                                <i-button @click="selectMembers" size="small" type="info" icon="ios-people-outline">{{{'CN':'角色成员','EN':'Role Members','TW':'角色成員'}[language]}}</i-button>
+                                <i-button @click="addItem" size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
+                                <i-button @click="editItem" size="small" type="warning" icon="ios-paper-outline">{{{'CN':'编辑','EN':'Edit','TW':'編輯'}[language]}}</i-button>
+                                <i-button @click="delItem" size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button>
+                                <!-- <i-button @click="selectMembers" size="small" type="info" icon="ios-people-outline">{{{'CN':'角色成员','EN':'Role Members','TW':'角色成員'}[language]}}</i-button> -->
                             </i-buttonGroup>
                         </template>
                     </div>
@@ -95,22 +95,22 @@
 
         <div class="tableWrap">
             <template>
-                <i-table :height="tableHeight" :loading="isTableLoading" highlight-row :columns="columnsList" :data="dataList" stripe="true"
-                    size="small" @on-current-change="setCurrentRowData($event)"></i-table>
+                <i-table :height="tableHeight" :loading="isTableLoading" highlight-row :columns="columnsList" :data="tableRowList" stripe="true"
+                    size="small" @on-row-click="setCurrentRowData"></i-table>
             </template>
         </div>
 
         <div class="pageWrap">
             <template>
-                <Page :total="100" show-sizer show-total show-elevator />
+                <Page :total="pageInfo.count" @on-change="pageSizeChange" @on-page-size-change="pageRowChange" :page-size="20" show-sizer show-total />
             </template>
         </div>
 
         <!-- 新增或编辑 -->
         <template>
             <Modal v-model="isShowModal" 
-                :styles="{top: '20px'}" 
-                width="25" 
+                :styles="{top: '60px'}" 
+                width="30" 
                 :title="modalTitle" 
                 :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
                 :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
@@ -120,13 +120,15 @@
                     <table>
                         <tbody>
                             <tr>
-                                <td class="label">
+                                <td class="label" style="width: 90px;">
                                     <span class="request">＊</span>
                                     <span v-text="{'CN':'所在公司','EN':'Company Name','TW':'所在公司'}[language]"></span>
                                 </td>
                                 <td>
                                     <template>
-                                        <Cascader :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" :data="superiorCompanyList" trigger="hover"></Cascader>
+                                        <i-select v-model="itemInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <i-option v-for="item in companyList" :value="item.id">{{item.companyName}}</i-option>
+                                        </i-select>
                                     </template>
                                 </td>
                             </tr>
@@ -136,7 +138,7 @@
                                     <span v-text="{'CN':'角色编号','EN':'Role Number','TW':'角色編號'}[language]"></span>
                                 </td>
                                 <td>
-                                    <i-input />
+                                    <i-input v-model="itemInfo.roleCode" />
                                 </td>
                             </tr>
                             <tr>
@@ -145,17 +147,34 @@
                                     <span v-text="{'CN':'角色名称','EN':'Role Name','TW':'角色名稱'}[language]"></span>
                                 </td>
                                 <td>
-                                    <i-input/>
+                                    <i-input v-model="itemInfo.roleName"/>
                                 </td>
                             </tr>
                             <tr>
-                                <td class="label"></td>
+                                <td class="label">
+                                    <span class="request">＊</span>
+                                    <span v-text="{'CN':'是否公共角色','EN':'Public','TW':'是否公共角色'}[language]"></span>
+                                </td>
                                 <td>
                                     <template>
-                                        <Checkbox>{{{'CN':'公共','EN':'Public','TW':'公共'}[language]}}</Checkbox>
+                                        <i-select v-model="itemInfo.isPublic" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <i-option :value="1">{{{'CN':'是','EN':'Yes','TW':'是'}[language]}}</i-option>
+                                            <i-option :value="0">{{{'CN':'否','EN':'No','TW':'否'}[language]}}</i-option>
+                                        </i-select>
                                     </template>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <span class="request">＊</span>
+                                    <span v-text="{'CN':'是否可用','EN':'Effective','TW':'是否可用'}[language]"></span>
+                                </td>
+                                <td>
                                     <template>
-                                        <Checkbox>{{{'CN':'有效','EN':'Effective','TW':'有效'}[language]}}</Checkbox>
+                                        <i-select v-model="itemInfo.isValid" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <i-option :value="1">{{{'CN':'是','EN':'Yes','TW':'是'}[language]}}</i-option>
+                                            <i-option :value="0">{{{'CN':'否','EN':'No','TW':'否'}[language]}}</i-option>
+                                        </i-select>
                                     </template>
                                 </td>
                             </tr>
@@ -164,7 +183,7 @@
                                     <span v-text="{'CN':'角色描述','EN':'Role Description','TW':'角色描述'}[language]"></span>
                                 </td>
                                 <td colspan="3">
-                                    <i-input type="textarea" :rows="4" />
+                                    <i-input v-model="itemInfo.roleDesc" type="textarea" :rows="4" />
                                 </td>
                             </tr>
                         </tbody>
@@ -176,304 +195,144 @@
         <!-- 角色成员 -->
         <template>
             <Modal v-model="isShowMember" 
-                :styles="{top: '20px'}" width="60" 
+                :styles="{top: '60px'}" width="60" 
                 :title="{'CN':'角色成员','EN':'Role Members','TW':'角色成員'}[language]"
-                :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]" 
-                :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]"
+                :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
+                :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
                 :loading="isModalLoading"
-                class-name="treeModel"
-                @on-ok="uploadDataToServer">
+                :footer-hide="true"
+                class-name="treeModel">
                 <div class="modifiedWrap">
-                    <template>
+                    <div class="top">
                         <Row type="flex" justify="start" gutter="10">
-                            <i-col span="6">
-                                <div class="treeWrap" style="height: 400px; overflow: auto;">
+                            <i-col span="14"></i-col>
+                            <i-col span="10">
+                                <div class="actionWrap">
                                     <template>
-                                        <Tree :data="departmentList" show-checkbox multiple @on-check-change="treeChangeAction($event)"></Tree>
+                                        <i-buttonGroup>
+                                            <i-button @click="showUserLayer" size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'新增成员','EN':'Add Members','TW':'新增成員'}[language]}}</i-button>
+                                            <i-button @click="deleteRoleMember" size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除成员','EN':'Delete Members','TW':'刪除成員'}[language]}}</i-button>
+                                        </i-buttonGroup>
                                     </template>
                                 </div>
                             </i-col>
-                            <i-col span="18">
-                                <template>
-                                    <template>
-                                        <div class="search">
-                                            <i-input search enter-button placeholder="Enter something..." />
-                                        </div>
-                                    </template>
-                                    <div class="memberWrap" style="height: 350px; overflow-x: hidden; overflow-y: auto;">
-                                        <template>
-                                            <div class="memberList">
-                                                <Row type="flex" justify="start" gutter="10">
-                                                    <i-col span="8" class="memberItem">
-                                                        <Card bordered="false" style="width: 100%;" padding="0">
-                                                            <Row type="flex" justify="start" gutter="5">
-                                                                <i-col span="8" class="left">
-                                                                    <div class="head">
-                                                                        <Icon type="ios-man" />
-                                                                    </div>
-                                                                </i-col>
-                                                                <i-col span="16">
-                                                                    <div class="info">
-                                                                        <p>账号：account</p>
-                                                                        <p>姓名：name</p>
-                                                                        <p>部门：信息管理部</p>
-                                                                    </div>
-                                                                </i-col>
-                                                            </Row>
-                                                        </Card>
-                                                    </i-col>
-                                                    <i-col span="8" class="memberItem">
-                                                        <Card bordered="false" style="width: 100%;" padding="0">
-                                                            <Row type="flex" justify="start" gutter="5">
-                                                                <i-col span="8" class="left">
-                                                                    <div class="head">
-                                                                        <Icon type="ios-woman" />
-                                                                    </div>
-                                                                </i-col>
-                                                                <i-col span="16">
-                                                                    <div class="info">
-                                                                        <p>账号：account</p>
-                                                                        <p>姓名：name</p>
-                                                                        <p>部门：信息管理部</p>
-                                                                    </div>
-                                                                </i-col>
-                                                            </Row>
-                                                        </Card>
-                                                    </i-col>
-                                                    <i-col span="8" class="memberItem">
-                                                        <Card bordered="false" style="width: 100%;" padding="0">
-                                                            <Row type="flex" justify="start" gutter="5">
-                                                                <i-col span="8" class="left">
-                                                                    <div class="head">
-                                                                        <Icon type="ios-man" />
-                                                                    </div>
-                                                                </i-col>
-                                                                <i-col span="16">
-                                                                    <div class="info">
-                                                                        <p>账号：account</p>
-                                                                        <p>姓名：name</p>
-                                                                        <p>部门：信息管理部</p>
-                                                                    </div>
-                                                                </i-col>
-                                                            </Row>
-                                                        </Card>
-                                                    </i-col>
-                                                    <i-col span="8" class="memberItem">
-                                                        <Card bordered="false" style="width: 100%;" padding="0">
-                                                            <Row type="flex" justify="start" gutter="5">
-                                                                <i-col span="8" class="left">
-                                                                    <div class="head">
-                                                                        <Icon type="ios-woman" />
-                                                                    </div>
-                                                                </i-col>
-                                                                <i-col span="16">
-                                                                    <div class="info">
-                                                                        <p>账号：account</p>
-                                                                        <p>姓名：name</p>
-                                                                        <p>部门：信息管理部</p>
-                                                                    </div>
-                                                                </i-col>
-                                                            </Row>
-                                                        </Card>
-                                                    </i-col>
-                                                    <i-col span="8" class="memberItem">
-                                                        <Card bordered="false" style="width: 100%;" padding="0">
-                                                            <Row type="flex" justify="start" gutter="5">
-                                                                <i-col span="8" class="left">
-                                                                    <div class="head">
-                                                                        <Icon type="ios-woman" />
-                                                                    </div>
-                                                                </i-col>
-                                                                <i-col span="16">
-                                                                    <div class="info">
-                                                                        <p>账号：account</p>
-                                                                        <p>姓名：name</p>
-                                                                        <p>部门：信息管理部</p>
-                                                                    </div>
-                                                                </i-col>
-                                                            </Row>
-                                                        </Card>
-                                                    </i-col>
-                                                    <i-col span="8" class="memberItem">
-                                                        <Card bordered="false" style="width: 100%;" padding="0">
-                                                            <Row type="flex" justify="start" gutter="5">
-                                                                <i-col span="8" class="left">
-                                                                    <div class="head">
-                                                                        <Icon type="ios-woman" />
-                                                                    </div>
-                                                                </i-col>
-                                                                <i-col span="16">
-                                                                    <div class="info">
-                                                                        <p>账号：account</p>
-                                                                        <p>姓名：name</p>
-                                                                        <p>部门：信息管理部</p>
-                                                                    </div>
-                                                                </i-col>
-                                                            </Row>
-                                                        </Card>
-                                                    </i-col>
-                                                    <i-col span="8" class="memberItem">
-                                                        <Card bordered="false" style="width: 100%;" padding="0">
-                                                            <Row type="flex" justify="start" gutter="5">
-                                                                <i-col span="8" class="left">
-                                                                    <div class="head">
-                                                                        <Icon type="ios-woman" />
-                                                                    </div>
-                                                                </i-col>
-                                                                <i-col span="16">
-                                                                    <div class="info">
-                                                                        <p>账号：account</p>
-                                                                        <p>姓名：name</p>
-                                                                        <p>部门：信息管理部</p>
-                                                                    </div>
-                                                                </i-col>
-                                                            </Row>
-                                                        </Card>
-                                                    </i-col>
-                                                    <i-col span="8" class="memberItem">
-                                                        <Card bordered="false" style="width: 100%;" padding="0">
-                                                            <Row type="flex" justify="start" gutter="5">
-                                                                <i-col span="8" class="left">
-                                                                    <div class="head">
-                                                                        <Icon type="ios-woman" />
-                                                                    </div>
-                                                                </i-col>
-                                                                <i-col span="16">
-                                                                    <div class="info">
-                                                                        <p>账号：account</p>
-                                                                        <p>姓名：name</p>
-                                                                        <p>部门：信息管理部</p>
-                                                                    </div>
-                                                                </i-col>
-                                                            </Row>
-                                                        </Card>
-                                                    </i-col>
-                                                    <i-col span="8" class="memberItem">
-                                                        <Card bordered="false" style="width: 100%;" padding="0">
-                                                            <Row type="flex" justify="start" gutter="5">
-                                                                <i-col span="8" class="left">
-                                                                    <div class="head">
-                                                                        <Icon type="ios-woman" />
-                                                                    </div>
-                                                                </i-col>
-                                                                <i-col span="16">
-                                                                    <div class="info">
-                                                                        <p>账号：account</p>
-                                                                        <p>姓名：name</p>
-                                                                        <p>部门：信息管理部</p>
-                                                                    </div>
-                                                                </i-col>
-                                                            </Row>
-                                                        </Card>
-                                                    </i-col>
-                                                    <i-col span="8" class="memberItem">
-                                                        <Card bordered="false" style="width: 100%;" padding="0">
-                                                            <Row type="flex" justify="start" gutter="5">
-                                                                <i-col span="8" class="left">
-                                                                    <div class="head">
-                                                                        <Icon type="ios-woman" />
-                                                                    </div>
-                                                                </i-col>
-                                                                <i-col span="16">
-                                                                    <div class="info">
-                                                                        <p>账号：account</p>
-                                                                        <p>姓名：name</p>
-                                                                        <p>部门：信息管理部</p>
-                                                                    </div>
-                                                                </i-col>
-                                                            </Row>
-                                                        </Card>
-                                                    </i-col>
-                                                    <i-col span="8" class="memberItem">
-                                                        <Card bordered="false" style="width: 100%;" padding="0">
-                                                            <Row type="flex" justify="start" gutter="5">
-                                                                <i-col span="8" class="left">
-                                                                    <div class="head">
-                                                                        <Icon type="ios-woman" />
-                                                                    </div>
-                                                                </i-col>
-                                                                <i-col span="16">
-                                                                    <div class="info">
-                                                                        <p>账号：account</p>
-                                                                        <p>姓名：name</p>
-                                                                        <p>部门：信息管理部</p>
-                                                                    </div>
-                                                                </i-col>
-                                                            </Row>
-                                                        </Card>
-                                                    </i-col>
-                                                    <i-col span="8" class="memberItem">
-                                                        <Card bordered="false" style="width: 100%;" padding="0">
-                                                            <Row type="flex" justify="start" gutter="5">
-                                                                <i-col span="8" class="left">
-                                                                    <div class="head">
-                                                                        <Icon type="ios-woman" />
-                                                                    </div>
-                                                                </i-col>
-                                                                <i-col span="16">
-                                                                    <div class="info">
-                                                                        <p>账号：account</p>
-                                                                        <p>姓名：name</p>
-                                                                        <p>部门：信息管理部</p>
-                                                                    </div>
-                                                                </i-col>
-                                                            </Row>
-                                                        </Card>
-                                                    </i-col>
-                                                    <i-col span="8" class="memberItem">
-                                                        <Card bordered="false" style="width: 100%;" padding="0">
-                                                            <Row type="flex" justify="start" gutter="5">
-                                                                <i-col span="8" class="left">
-                                                                    <div class="head">
-                                                                        <Icon type="ios-woman" />
-                                                                    </div>
-                                                                </i-col>
-                                                                <i-col span="16">
-                                                                    <div class="info">
-                                                                        <p>账号：account</p>
-                                                                        <p>姓名：name</p>
-                                                                        <p>部门：信息管理部</p>
-                                                                    </div>
-                                                                </i-col>
-                                                            </Row>
-                                                        </Card>
-                                                    </i-col>
-                                                    <i-col span="8" class="memberItem">
-                                                        <Card bordered="false" style="width: 100%;" padding="0">
-                                                            <Row type="flex" justify="start" gutter="5">
-                                                                <i-col span="8" class="left">
-                                                                    <div class="head">
-                                                                        <Icon type="ios-woman" />
-                                                                    </div>
-                                                                </i-col>
-                                                                <i-col span="16">
-                                                                    <div class="info">
-                                                                        <p>账号：account</p>
-                                                                        <p>姓名：name</p>
-                                                                        <p>部门：信息管理部</p>
-                                                                    </div>
-                                                                </i-col>
-                                                            </Row>
-                                                        </Card>
-                                                    </i-col>
-                                                </Row>
-                                            </div>
-                                        </template>
-                                    </div>
-                                </template>
-                            </i-col>
                         </Row>
+                    </div>
+                    <div class="tableWrap">
+                        <template>
+                            <i-table height="400" :loading="isTableLoading" highlight-row :columns="roleMemberColumsList" :data="roleMemberTableRowList" stripe="true"
+                                size="small" @on-selection-change="selectMemberChange"></i-table>
+                        </template>
+                    </div>
+                    <template>
+                        <div class="pageWrap">
+                            <Page :total="roleMemberPageInfo.count" @on-change="roleMemberPageSizeChange" @on-page-size-change="roleMemberPageRowChange" :page-size="20" show-sizer show-total />
+                        </div>
                     </template>
                 </div>
             </Modal>
         </template>
+
+        <!-- 成员功能 -->
+        <template>
+            <Modal v-model="isShowFunctions" 
+                :styles="{top: '60px'}" width="60" 
+                :title="{'CN':'角色功能','EN':'Role Functions','TW':'角色功能'}[language]"
+                :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
+                :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
+                :loading="isModalLoading"
+                :footer-hide="true"
+                class-name="treeModel">
+                <div class="modifiedWrap">
+                    <div class="top">
+                        <Row type="flex" justify="start" gutter="10">
+                            <i-col span="14"></i-col>
+                            <i-col span="10">
+                                <div class="actionWrap">
+                                    <template>
+                                        <i-buttonGroup>
+                                            <i-button @click="showFunctionsLayer" size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'新增功能','EN':'Add Functions','TW':'新增功能'}[language]}}</i-button>
+                                            <i-button @click="deleteRoleFunctions" size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除功能','EN':'Delete Functions','TW':'刪除功能'}[language]}}</i-button>
+                                        </i-buttonGroup>
+                                    </template>
+                                </div>
+                            </i-col>
+                        </Row>
+                    </div>
+                    <div class="tableWrap">
+                        <template>
+                            <i-table height="400" @on-selection-change="selectRoleFunctionsChange" :loading="isTableLoading" highlight-row :columns="roleFunctionColumsList" :data="roleFunctionTableRowList" stripe="true" size="small"></i-table>
+                        </template>
+                    </div>
+                    <template>
+                        <div class="pageWrap">
+                            <Page :total="roleFunctionPageInfo.count" @on-change="roleFunctionsPageSizeChange" @on-page-size-change="roleFunctionsPageRowChange" :page-size="20" show-sizer show-total />
+                        </div>
+                    </template>
+                </div>
+            </Modal>
+        </template>
+
+        <!-- 用户列表 -->
+        <template>
+            <Modal v-model="isUserList" 
+                :styles="{top: '80px'}" 
+                width="58"
+                :title="{'CN':'用户列表','EN':'User List','TW':'用戶列表'}[language]" 
+                :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
+                :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
+                :loading="isModalLoading" 
+                class-name="hasActionList"
+                @on-ok="addRoleMember">
+                <div class="modifiedWrap">
+                    <div class="tableWrap">
+                        <template>
+                            <i-table height="300" @on-selection-change="selectUserChange" :loading="isTableLoading" highlight-row :columns="userColumnsList" :data="userTableRowList" stripe="true" size="small"></i-table>
+                        </template>
+                    </div>
+                    <template>
+                        <div class="pageWrap">
+                            <Page :total="userPageInfo.count" @on-change="userPageSizeChange" @on-page-size-change="userPageRowChange" :page-size="20" show-sizer show-total />
+                        </div>
+                    </template>
+                </div>
+            </Modal>
+        </template>
+
+        <!-- 所有功能列表 -->
+        <template>
+            <Modal v-model="isFunctionList" 
+                :styles="{top: '80px'}" 
+                width="58"
+                :title="{'CN':'用户列表','EN':'User List','TW':'用戶列表'}[language]" 
+                :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
+                :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
+                :loading="isModalLoading" 
+                class-name="hasActionList"
+                @on-ok="uploadFunctionDataToServer">
+                <div class="modifiedWrap">
+                    <div class="tableWrap">
+                        <template>
+                            <i-table height="300" @on-selection-change="selectFunctionsChange" :loading="isTableLoading" highlight-row :columns="functionsColumnsList" :data="functionsTableRowList" stripe="true" size="small"></i-table>
+                        </template>
+                    </div>
+                    <template>
+                        <div class="pageWrap">
+                            <Page :total="functionsPageInfo.count" @on-change="functionsPageSizeChange" @on-page-size-change="functionsPageRowChange" :page-size="20" show-sizer show-total />
+                        </div>
+                    </template>
+                </div>
+            </Modal>
+        </template>
+
     </div>
     <script src="/airport/assets/js/vue.min.js"></script>
     <script src="/airport/assets/vender/iView/iview.min.js"></script>
     <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
+    <script src="/airport/assets/js/md5.min.js"></script>
     <script src="/airport/assets/js/config.min.js"></script>
     <script src="/airport/assets/js/utility.min.js"></script>
-    <script src="/airport/www/module/roleManage/roleManage.min.js?v=djdjdj"></script>
+    <script src="/airport/www/module/roleManage/roleManage.min.js?v=383838"></script>
 </body>
 
 </html>

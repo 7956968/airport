@@ -200,15 +200,29 @@ window.utility = (function (utility) {
 
     //  从服务器获取数据或提交数据到服务器
     utility.interactWithServer = function (options) {
+        var timestamp = Date.parse(new Date());
+        var userInfo = utility.getLocalStorage("userInfo");
+        var language = { "CN": "cn", "EN": "en", "TW": "hk" };
+        var languageVer = !!utility.getLocalStorage("language") ? language[utility.getLocalStorage("language")["language"]] : "cn";
+
         $.ajax({
-            type: options.method || "POST",
+            dataType: "json",
             url: options.url,
             async: options.async || true,
-            dataType: "json",
+            type: options.method || "POST",
             timeout: options.timeout || 20000,
-            contentType: options.contentType || "application/json",
-            data: !!options.contentType ? options.dataObj || {} : JSON.stringify(options.dataObj || {}),
-            headers: options.headers || {},
+            contentType: options.contentType || "application/x-www-form-urlencoded",
+            data: options.dataObj || {},
+            headers: options.headers || {
+                version: 100, // 默认100
+                timestamp: timestamp,
+                languageVer: languageVer, // cn：中文简体 en：英语 hk：中文繁体
+                appType: options.appType || "WWW", // 请求来源类型：1:H5 2:WWW 3:android app 4: ios app
+                actionUrl: options.actionUrl || "", // 使用接口URL(注意：不包含http://ip:port的服务器域名/IP+端口这部分)
+                userId: !!userInfo ? userInfo["id"] : "",
+                userToken: !!userInfo ? userInfo["userToken"] : "", // 登陆后会有，如无则为空字符串
+                signStr: md5((!!userInfo ? userInfo["userToken"] : "") + (!!userInfo ? userInfo["id"] : "") + timestamp + "100").toUpperCase() // 算法：MD5(userToken + userid+ timestamp+languageVer +version)，安全Key由系统设定
+            },
             beforeSend: function (data) {
                 options.beforeSendCallback && options.beforeSendCallback(data);
             },
@@ -216,20 +230,11 @@ window.utility = (function (utility) {
                 options.completeCallback && options.completeCallback(XMLHttpRequest, textStatus);
             },
             success: function (data) {
-                if (data.code == 7) {
-                    $.toast(data.msg);
-                    utility.cleanSessionStorage();
-                    utility.cleanLocalStorage();
-                    setTimeout(function () {
-                        window.location.replace(CONFIG.SERVER.LOCATION + "view/uc/login.html");
-                    }, 1500);
-                }
                 options.successCallback && options.successCallback(data);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
                 console.log(textStatus);
                 options.errorCallback && options.errorCallback();
-                $ && $.hideIndicator && $.hideIndicator();
             }
         });
     };
@@ -280,7 +285,7 @@ window.utility = (function (utility) {
 
     // 显示 messageTip
     utility.showMessageTip = function(self, callback) {
-        if (!!!self.itemInfo) {
+        if (!!!self.selectItem) {
             self.$Message.error({
                 "content": { "CN": "请选择一条数据", "EN": "Please select a data", "TW": "請選擇一條數據" }[self.language],
                 "top": 200,
