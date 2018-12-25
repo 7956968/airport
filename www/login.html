@@ -51,13 +51,9 @@
 
 <body class="loginPage">
     <div id="js-vue" class="login">
-        <div class="header">
-            <img :src="'/airport/www/img/'+{'CN':'logo_zh_CN','EN':'logo_EN','TW':'logo_zh_TW'}[language]+'.png'" />
-        </div>
         <div class="wrap">
-            <div class="bgInfo">
-                <div class="mainBg"></div>
-                <div class="subBg"></div>
+            <div class="header">
+                <img :src="'/airport/www/img/'+{'CN':'logo_zh_CN','EN':'logo_EN','TW':'logo_zh_TW'}[language]+'.png'" />
             </div>
             <div class="inputInfo">
                 <template>
@@ -65,7 +61,8 @@
                         <i-input prefix="ios-contact" v-model="loginInfo.userCode" size="large" :placeholder="{'CN':'用户名','EN':'userName','TW':'用戶名'}[language]" />
                     </label>
                     <label>
-                        <i-input prefix="md-unlock" v-model="loginInfo.userPwd" size="large" type="password" :placeholder="{'CN':'密码','EN':'password','TW':'密碼'}[language]" />
+                        <i-input prefix="md-unlock" v-model="loginInfo.userPwd" size="large" type="password"
+                            :placeholder="{'CN':'密码','EN':'password','TW':'密碼'}[language]" />
                     </label>
                     <label>
                         <i-select v-model="language" size="large">

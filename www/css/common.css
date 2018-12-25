@@ -10,16 +10,16 @@
   height: 3px;
   background-color: #F5F5F5;
 }
-/*定义滚动条轨道 内阴影+圆角*/
+/*定义滚动条轨道 内阴影+圆角*/ 
 ::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 6px rgba(208, 219, 245, 0.3);
   border-radius: 10px;
-  background-color: #F5F5F5; 
+  background-color: #F5F5F5;
 }
 /*定义滑块 内阴影+圆角*/
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 6px rgba(208, 219, 245, 0.3);
   background-color: #555;
 }
 html {
@@ -43,118 +43,73 @@ table {
 .request {
   color: red;
 }
-.loginPage .login .header {
-  padding-top: 60px;
-  padding-left: 70px;
+.loginPage .login {
+  position: absolute;
+  z-index: 0;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: url(../img/login.jpg) no-repeat left center;
+  background-size: 100%;
 }
 .loginPage .login .wrap {
-  position: relative;
+  position: absolute;
   z-index: 0;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: url(../img/bg.png) no-repeat left center;
+  background-size: 100%;
 }
-.loginPage .login .wrap .bgInfo {
-  position: relative;
-  z-index: 10;
-  height: 524px;
-  background: url(../img/bg_02.jpg) no-repeat left center;
-  background-size: cover;
+.loginPage .login .header {
+  text-align: center;
+  padding-top: 10%;
 }
-.loginPage .login .wrap .inputInfo {
+.loginPage .login .inputInfo {
   position: absolute;
   z-index: 10000000;
-  background-color: rgba(255, 255, 255, 0.4);
-  width: 400px;
-  padding: 20px;
+  top: 30%;
+  width: 450px;
+  left: 50%;
+  margin-left: -225px;
+  padding: 30px 50px;
   border-radius: 5px;
+  border: 1px solid rgba(185, 185, 185, 0.5);
+  background-color: rgba(255, 255, 255, 0.7);
 }
-.loginPage .login .wrap .inputInfo label {
+.loginPage .login .inputInfo label {
   display: block;
   padding: 10px 0;
 }
-.loginPage .login .wrap .inputInfo label.ivu-checkbox-wrapper {
+.loginPage .login .inputInfo label.ivu-checkbox-wrapper {
   padding-top: 0;
 }
-.loginPage .login .wrap .inputInfo label .ivu-input-prefix {
+.loginPage .login .inputInfo label .ivu-input-prefix {
   width: 40px;
 }
-.loginPage .login .wrap .inputInfo label .ivu-input-with-prefix {
+.loginPage .login .inputInfo label .ivu-input-with-prefix {
   padding-left: 40px;
 }
-.loginPage .login .wrap .inputInfo label .ivu-input-prefix i {
+.loginPage .login .inputInfo label .ivu-input-prefix i {
   font-size: 28px;
 }
-.loginPage .login .wrap .inputInfo label select {
+.loginPage .login .inputInfo label select {
   display: block;
   width: 100%;
   height: 36px;
 }
-.loginPage .login .wrap .inputInfo label .ivu-poptip {
+.loginPage .login .inputInfo label .ivu-poptip {
   display: block;
   width: 100%;
 }
-.loginPage .login .wrap .inputInfo label .ivu-poptip .ivu-poptip-rel {
+.loginPage .login .inputInfo label .ivu-poptip .ivu-poptip-rel {
   display: block;
-}
-@media (max-width: 1366px) {
-  .login .header {
-    padding-left: 0;
-    text-align: center;
-  }
-  .login .wrap .bgInfo {
-    width: 100%;
-  }
-  .login .wrap .inputInfo {
-    left: 50%;
-    top: 150px;
-    margin-left: -200px;
-  }
-}
-@media (min-width: 1367px) {
-  .loginPage .login .wrap .bgInfo {
-    width: 1024px;
-  }
-  .loginPage .login .wrap .inputInfo {
-    left: 1024px;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: auto;
-    padding: 100px 30px 0 30px;
-    margin-left: 0;
-    border-radius: 0;
-    background-color: #182646;
-  }
-  .loginPage .login .wrap .inputInfo .ivu-checkbox-wrapper {
-    color: #fff;
-  }
-  .loginPage .ivu-message-notice {
-    text-align: right;
-  }
-  .loginPage .ivu-message-notice .ivu-message-notice-content {
-    right: 110px;
-  }
-}
-@media (min-width: 1600px) {
-  .loginPage .login .header {
-    padding-top: 30px;
-  }
-  .loginPage .login .wrap .bgInfo {
-    width: 100%;
-    height: 850px;
-  }
-  .loginPage .login .wrap .inputInfo {
-    left: 80%;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: auto;
-    padding: 250px 30px 0 30px;
-    margin-left: 0;
-    border-radius: 0;
-    background-color: rgba(62, 84, 130, 0.5);
-  }
-  .loginPage .login .wrap .inputInfo .ivu-checkbox-wrapper {
-    color: #fff;
-  }
 }
 .graphPage .welcomPage {
   position: absolute;
@@ -224,9 +179,12 @@ table {
 .index .header .navWrap ul li {
   position: relative;
   z-index: 0;
-  height: 50px;
-  line-height: 50px;
+  height: 48px;
+  line-height: 48px;
   color: #dedede;
+  border: 1px solid #182646;
+  border-left: none;
+  border-right: none;
   padding: 0 0 0 5px;
   font-size: 13px;
   cursor: pointer;
@@ -254,7 +212,7 @@ table {
   display: none;
   position: absolute;
   z-index: 1000000;
-  top: 0;
+  top: -1px;
   left: 100%;
   width: 130%;
   color: #333;
@@ -263,8 +221,8 @@ table {
   background-color: rgba(208, 219, 245, 0.3);
 }
 .index .header .navWrap ul li .subNav p {
-  height: 50px;
-  line-height: 50px;
+  height: 47px;
+  line-height: 47px;
   padding: 0 0 0 10px;
   margin: 0;
 }
@@ -279,6 +237,11 @@ table {
   background-color: rgba(208, 219, 245, 0.8);
 }
 .index .header .navWrap ul li:hover {
+  height: 49px;
+  line-height: 49px;
+  border: 1px solid rgba(208, 219, 245, 0.7);
+  border-left: none;
+  border-right: none;
   background-color: rgba(208, 219, 245, 0.3);
 }
 .index .header .navWrap ul li:hover .navIcon .arrow i {
@@ -489,6 +452,22 @@ table {
 .treeModel .ivu-modal-body .memberWrap .memberList .memberItem .info p {
   font-size: 12px;
 }
+.tableWrap {
+  padding-left: 2px;
+  padding-right: 1px;
+}
+.tableWrap .ivu-table-wrapper {
+  border: none;
+}
+.tableWrap .ivu-table {
+  border: none;
+}
+.tableWrap .ivu-table::before {
+  background-color: rgba(214, 212, 212, 0.5);
+}
+.tableWrap .ivu-table:after {
+  display: none;
+}
 .tableWrap .ivu-table th {
   background-color: rgba(24, 38, 70, 0.6);
   color: white;
@@ -536,6 +515,9 @@ table {
 }
 .modifiedWrap .top .actionWrap {
   top: 0;
+}
+.modifiedWrap .top table td {
+  padding: 0 5px;
 }
 .pageWrap {
   padding: 5px;
@@ -601,6 +583,9 @@ table {
 .mapContainer .mapWrap .ol-full-screen {
   top: auto;
   bottom: 30px;
+}
+.mapContainer .mapWrap .ol-zoom {
+  top: 2.5rem;
 }
 .mapContainer .mapWrap.cursorMouse {
   cursor: url("/airport/assets/img/camera.png");
@@ -683,6 +668,9 @@ table {
 }
 .mapModal .tableWrap {
   padding: 5px 10px 10px 10px;
+}
+.mapModal .tableWrap .ivu-table-wrapper {
+  border: none;
 }
 .mapModal .tableWrap .ivu-table {
   background-color: transparent;

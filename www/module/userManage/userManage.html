@@ -107,7 +107,7 @@
 
         <!-- 新增、修改 -->
         <template>
-            <Modal v-model="isShowModal" :styles="{top: '30px'}" width="45" :title="modalTitle" :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
+            <Modal v-model="isShowModal" :styles="{top: '60px'}" width="45" :title="modalTitle" :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
                 :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" :loading="isModalLoading" @on-ok="uploadDataToServer">
                 <div class="modifiedWrap">
                     <table>
@@ -121,7 +121,6 @@
                                     <i-input v-model="itemInfo.userCode"/>
                                 </td>
                                 <td class="label">
-                                    <span class="request">＊</span>
                                     <span v-text="{'CN':'密码','EN':'Password','TW':'密碼'}[language]"></span>
                                 </td>
                                 <td>
@@ -130,7 +129,6 @@
                             </tr>
                             <tr>
                                 <td class="label">
-                                    <span class="request">＊</span>
                                     <span v-text="{'CN':'帐号状态','EN':'Email','TW':'帳號狀態'}[language]"></span>
                                 </td>
                                 <td>
@@ -141,7 +139,6 @@
                                     </template>
                                 </td>
                                 <td class="label">
-                                    <span class="request">＊</span>
                                     <span v-text="{'CN':'工号','EN':'Work No.','TW':'工號'}[language]"></span>
                                 </td>
                                 <td>
@@ -158,7 +155,6 @@
                                     <i-input v-model="itemInfo.userName" />
                                 </td>
                                 <td class="label">
-                                    <span class="request">＊</span>
                                     <span v-text="{'CN':'性別','EN':'Superior','TW':'性別'}[language]"></span>
                                 </td>
                                 <td>

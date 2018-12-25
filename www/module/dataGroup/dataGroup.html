@@ -110,7 +110,7 @@
         <!-- 新增或编辑 -->
         <template>
             <Modal v-model="isShowModal" 
-                :styles="{top: '30px'}" 
+                :styles="{top: '60px'}" 
                 width="25" 
                 :title="modalTitle" 
                 :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
@@ -186,7 +186,7 @@
         <!-- 组成员 -->
         <template>
             <Modal v-model="isShowMember" 
-                :styles="{top: '30px'}" width="60" 
+                :styles="{top: '60px'}" width="60" 
                 :title="{'CN':'组成员','EN':'Role Members','TW':'组成員'}[language]"
                 :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
                 :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]"
@@ -196,24 +196,7 @@
                 <div class="modifiedWrap">
                     <div class="top">
                         <Row type="flex" justify="start" gutter="10">
-                            <i-col span="14">
-                                <div class="searchWrap">
-                                    <table style="width: 80%;">
-                                        <tbody>
-                                            <tr>
-                                                <td style="width: 90px;" v-text="{'CN':'选择组类型','EN':'Choose GroupType','TW':'選擇組類型'}[language]"></td>
-                                                <td>
-                                                    <template>
-                                                        <i-select v-model="groupTypeId" @on-change="groupTypeChange" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
-                                                            <i-option v-for="item in groupTypeList" :value="item.type">{{item.name}}</i-option>
-                                                        </i-select>
-                                                    </template>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </i-col>
+                            <i-col span="14"></i-col>
                             <i-col span="10">
                                 <div class="actionWrap">
                                     <template>
@@ -242,11 +225,11 @@
             </Modal>
         </template>
 
-        <!-- 类型列表 -->
+        <!-- 不同组成员列表 -->
         <template>
             <Modal v-model="isShowGroupTypeList" 
-                :styles="{top: '30px'}" 
-                width="50"
+                :styles="{top: '80px'}" 
+                width="58"
                 :title="{'CN':'数据权限组授权','EN':'Data Permission Group Authorization','TW':'數據權限組授權'}[language]" 
                 :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
                 :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
@@ -271,7 +254,7 @@
         <!-- 数据权限 -->
         <template>
             <Modal v-model="isPermissions" 
-                :styles="{top: '30px'}" width="60" 
+                :styles="{top: '60px'}" width="60" 
                 :title="{'CN':'数据权限','EN':'Role Functions','TW':'數據權限'}[language]"
                 :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
                 :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
@@ -281,35 +264,12 @@
                 <div class="modifiedWrap">
                     <div class="top">
                         <Row type="flex" justify="start" gutter="10">
-                            <i-col span="12">
-                                <div class="searchWrap">
-                                    <table style="width: 80%;">
-                                        <tbody>
-                                            <tr>
-                                                <td style="width: 90px;" v-text="{'CN':'选择组类型','EN':'Choose GroupType','TW':'選擇組類型'}[language]"></td>
-                                                <td>
-                                                    <template>
-                                                        <i-select @on-change="permissionsChange" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
-                                                            <i-option value="931">按防区分组</i-option>
-                                                            <i-option value="932">按车辆分组</i-option>
-                                                            <i-option value="933">按摄像头分组</i-option>
-                                                            <i-option value="934">按单个防区</i-option>
-                                                            <i-option value="935">按单个车辆</i-option>
-                                                            <i-option value="936">按单个摄像头</i-option>
-                                                        </i-select>
-                                                    </template>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </i-col>
+                            <i-col span="12"></i-col>
                             <i-col span="12">
                                 <div class="actionWrap">
                                     <template>
                                         <i-buttonGroup>
-                                            <i-button @click="showPermissionsList" size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'新增权限','EN':'Add','TW':'新增權限'}[language]}}</i-button>
-                                            <!-- <i-button @click="editPermissions" size="small" type="warning" icon="ios-paper-outline">{{{'CN':'编辑权限','EN':'Edit','TW':'編輯權限'}[language]}}</i-button> -->
+                                            <i-button @click="showFunctionsLayer" size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'新增权限','EN':'Add','TW':'新增權限'}[language]}}</i-button>
                                             <i-button @click="deletePermissions" size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除权限','EN':'Delete','TW':'刪除權限'}[language]}}</i-button>
                                         </i-buttonGroup>
                                     </template>
@@ -320,12 +280,38 @@
                     <div class="tableWrap">
                         <template>
                             <i-table height="400" :loading="isTableLoading" highlight-row :columns="permissionsColumnsList" :data="permissionsTableRowList" stripe="true"
-                                size="small" @on-current-change="setPermissionsItem"></i-table>
+                                size="small" @on-selection-change="selectPermissionChange"></i-table>
                         </template>
                     </div>
                     <template>
                         <div class="pageWrap">
-                            <Page :total="100" @on-change="permissionsPageSizeChange" @on-page-size-change="permissionsPageRowChange" :page-size="20" show-sizer show-total />
+                            <Page :total="permissionsPageInfo.count" @on-change="permissionsPageSizeChange" @on-page-size-change="permissionsPageRowChange" :page-size="20" show-sizer show-total />
+                        </div>
+                    </template>
+                </div>
+            </Modal>
+        </template>
+
+        <!-- 所有功能列表 -->
+        <template>
+            <Modal v-model="isFunctionList" 
+                :styles="{top: '80px'}" 
+                width="58"
+                :title="{'CN':'用户列表','EN':'User List','TW':'用戶列表'}[language]" 
+                :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
+                :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
+                :loading="isModalLoading" 
+                class-name="hasActionList"
+                @on-ok="uploadPermissionsDataToServer">
+                <div class="modifiedWrap">
+                    <div class="tableWrap">
+                        <template>
+                            <i-table height="300" @on-selection-change="selectFunctionsChange" :loading="isTableLoading" highlight-row :columns="functionsColumnsList" :data="functionsTableRowList" stripe="true" size="small"></i-table>
+                        </template>
+                    </div>
+                    <template>
+                        <div class="pageWrap">
+                            <Page :total="functionsPageInfo.count" @on-change="functionsPageSizeChange" @on-page-size-change="functionsPageRowChange" :page-size="20" show-sizer show-total />
                         </div>
                     </template>
                 </div>

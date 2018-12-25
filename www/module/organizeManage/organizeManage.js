@@ -227,7 +227,7 @@
             "validateInput": function() {
                 var self = this;
 
-                // 
+                // 先判断公司名称
             },
             // 提交信息到服務器
             "uploadDataToServer": function () {

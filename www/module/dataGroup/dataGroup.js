@@ -13,6 +13,7 @@
             "isShowMember": false,
             "isShowGroupTypeList": false,
             "isPermissions": false,
+            "isFunctionList": false,
             "tableHeight": (function () {
                 var containerHeight = $(".tableContainer").height();
                 return containerHeight - 100;
@@ -106,7 +107,11 @@
                                 },
                                 "on": {
                                     "click": function () {
+                                        pageVue.permissionsPageInfo.groupId = pageVue.groupList[params.index]["id"];
+                                        pageVue.permissionsPageInfo.companyId = pageVue.groupList[params.index]["companyId"];
+                                        pageVue.groupTypeId = pageVue.groupList[params.index]["groupTypeId"];
                                         pageVue.isPermissions = true;
+                                        pageVue.getPermissionsDataList(true);
                                     }
                                 }
                             }, { "CN": "数据权限", "EN": "Data Permissions", "TW": "數據權限" }[language["language"]]),
@@ -118,7 +123,6 @@
             "tableRowList": [],
             "groupList": [],
             "companyList": [],
-            "memberIndex": 0,
             "groupMemberList": [],
             "groupMemberItem": {
                 "id": "",
@@ -126,8 +130,8 @@
                 "objectId": "",
                 "companyId": "",
                 "objectName": "",
-                "createUserName": "",
-                "modifyUserName": "",
+                "createUserId": userInfo["id"], // 创建用户ID，新增时必传
+                "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传
             },
             "groupMemberPageInfo": {
                 "count": 0,
@@ -254,7 +258,6 @@
                 }
             ],
             "userTableRowList": [],
-
 
             // 防区
             "areaList": [],
@@ -425,63 +428,38 @@
             ],
 
             // 数据权限
-            "permissionsId": "931",
-            "permissionsIndex": 0,
-            "permissionsItem": null,
-            "permissionInterface": {
-                // 防区
-                "931": {
-                    "service": CONFIG.SERVICE.areaService,
-                    "action": CONFIG.ACTION.getSecureAreaList,
-                    "columnsList": "areaColumnsList",
-                    "tableRowList": "areaTableRowList"
-                },
-                // 车辆
-                "932": {
-                    "service": CONFIG.SERVICE.vehicleService,
-                    "action": CONFIG.ACTION.getVehicleList,
-                    "columnsList": "vehicleColumnsList",
-                    "tableRowList": "vehicleTableRowList"
-                },
-                // 摄像机
-                "933": {
-                    "service": CONFIG.SERVICE.deviceService,
-                    "action": CONFIG.ACTION.getCameraList,
-                    "columnsList": "cameraColumnsList",
-                    "tableRowList": "cameraTableRowList"
-                },
-                // 单个防区
-                "934": {
-                    "service": CONFIG.SERVICE.areaService,
-                    "action": CONFIG.ACTION.getSecureAreaList,
-                    "columnsList": "areaColumnsList",
-                    "tableRowList": "areaTableRowList"
-                },
-                // 单个车辆
-                "935": {
-                    "service": CONFIG.SERVICE.vehicleService,
-                    "action": CONFIG.ACTION.getVehicleList,
-                    "columnsList": "vehicleColumnsList",
-                    "tableRowList": "vehicleTableRowList"
-                },
-                // 单个摄像机
-                "936": {
-                    "service": CONFIG.SERVICE.deviceService,
-                    "action": CONFIG.ACTION.getCameraList,
-                    "columnsList": "cameraColumnsList",
-                    "tableRowList": "cameraTableRowList"
-                }
+            "permissionsItem": {
+                "id": "",
+                "groupId": "",
+                "groupName": "",
+                "companyId": "",
+                "companyName": "",
+                "resId": "",
+                "resName": "",
+                "resTypeId": "",
+                "resTypeName": "",
+                "createUserName": "",
+                "modifyUserName": "", // 修改用户ID，修改时必传
             },
+            "selectPermission": [],
+            "permissionList": [],
             "permissionsPageInfo": {
                 "count": 0,
                 "pageNum": 1,
                 "pageSize": 20,
+                "groupId": "",
+                "companyId": "",
             },
             "permissionsColumnsList": [
                 {
                     "type": "selection",
                     "width": 60,
                     "align": "center"
+                },
+                {
+                    "title": { "CN": "ID", "EN": "ID", "TW": "ID" }[language["language"]],
+                    "width": 60,
+                    "key": "id"
                 },
                 {
                     "title": { "CN": "组名称", "EN": "Group Name", "TW": "組名稱" }[language["language"]],
@@ -496,39 +474,45 @@
                     "key": "resName"
                 }
             ],
-            "permissionsTableRowList": [
-                {
-                    "groupName": "组名称",
-                    "companyName": "公司名",
-                    "resName": "业务对象"
-                },
-                {
-                    "groupName": "组名称",
-                    "companyName": "公司名",
-                    "resName": "业务对象"
-                },
-                {
-                    "groupName": "组名称",
-                    "companyName": "公司名",
-                    "resName": "业务对象"
-                },
-                {
-                    "groupName": "组名称",
-                    "companyName": "公司名",
-                    "resName": "业务对象"
-                },
-                {
-                    "groupName": "组名称",
-                    "companyName": "公司名",
-                    "resName": "业务对象"
-                },
-                {
-                    "groupName": "组名称",
-                    "companyName": "公司名",
-                    "resName": "业务对象"
-                }
-            ]
+            "permissionsTableRowList": [],
 
+            "functionsPageInfo": {
+                "count": 0,
+                "pageNum": 1,
+                "pageSize": 20,
+            },
+            "functionList": [],
+            "selectFunction": [],
+            "permissionFunctionTypeLis": bizParam["permissionFunctionType"],
+            "functionsColumnsList": [
+                {
+                    "type": "selection",
+                    "width": 60,
+                    "align": "center"
+                },
+                {
+                    "title": { "CN": "ID", "EN": "ID", "TW": "ID" }[language["language"]],
+                    "width": 60,
+                    "key": "id"
+                },
+                {
+                    "title": { "CN": "功能层级", "EN": "Functions Name", "TW": "功能層級" }[language["language"]],
+                    "key": "functionLevel"
+                },
+                {
+                    "title": { "CN": "功能类型", "EN": "Functions Type", "TW": "功能類型" }[language["language"]],
+                    "key": "functionType"
+                },
+                {
+                    "title": { "CN": "功能名称", "EN": "Functions Name", "TW": "功能名稱" }[language["language"]],
+                    "key": "functionName"
+                },
+                {
+                    "title": { "CN": "是否可用", "EN": "isValid", "TW": "是否可用" }[language["language"]],
+                    "key": "isValid"
+                }
+            ],
+            "functionsTableRowList": [],
         },
         "methods": {
             // 刷新
@@ -608,7 +592,7 @@
                     self.selectItem = item;
                 }
             },
-            
+
             // 提交信息到服務器
             "uploadDataToServer": function () {
                 var self = this;
@@ -754,14 +738,6 @@
                     }
                 });
             },
-            // 当选择的行发生变化时 
-            "setGroupMembeItem": function (item, index) {
-                var self = this;
-                if (!!item) {
-                    self.memberIndex = index;
-                    self.groupMemberItem = item;
-                }
-            },
             // 删除组成员
             "deleteGroupMember": function () {
                 var self = this;
@@ -799,11 +775,11 @@
                 });
             },
             // 当选择的成员改变时
-            "selectMemberChange": function(selection) {
+            "selectMemberChange": function (selection) {
                 var self = this;
                 var ids = [];
 
-                for(var i = 0, len = selection.length; i < len; i++) {
+                for (var i = 0, len = selection.length; i < len; i++) {
                     ids.push(selection[i]["id"]);
                 }
 
@@ -841,25 +817,15 @@
                     self.getGroupMemberList(false);
                 }, 200);
             },
-            
-            // 显示不同分组成员列表
-            "showPermissionsList": function () {
-                var self = this;
-                self.groupTypeColumsList = self[self.permissionInterface[self.permissionsId]["columnsList"]];
-                self.groupTypeDataList = self[self.permissionInterface[self.permissionsId]["tableRowList"]];
-                self.isShowGroupTypeList = true;
-            },
-
             // 当分组类型改变时
             "groupTypeChange": function (value) {
                 var self = this;
                 self.groupTypeId = value;
 
-                setTimeout(function() {
+                setTimeout(function () {
                     self.showGroupTypeList(false);
                 }, 500);
             },
-
             // 格式化组类型数据
             "formatGroupTypeData": function () {
                 var self = this;
@@ -934,19 +900,19 @@
                     self.isShowGroupTypeList = bool;
                 });
             },
-            "selectTypeMemberChange": function(selection) {
+            "selectTypeMemberChange": function (selection) {
                 var self = this;
                 var ids = [];
 
-                for(var i = 0, len = selection.length; i < len; i++) {
+                for (var i = 0, len = selection.length; i < len; i++) {
                     ids.push(selection[i]["id"]);
                 }
 
                 self.selectTypeMember = ids;
             },
-            
+
             // 新增组成员
-            "addGroupTypeMember": function() {
+            "addGroupTypeMember": function () {
                 var self = this;
                 if (self.selectTypeMember.length == 0) {
                     self.$Message.error({
@@ -981,7 +947,7 @@
                     }
                 });
             },
-    
+
             // 获取用户组可访问的业务数据对象列表接口
             "getUserGroupDataResList": function () {
                 var self = this;
@@ -1005,23 +971,23 @@
                     }
                 });
             },
+
             // 当选择的行发生变化时 
-            "setPermissionsItem": function (item, index) {
+            "selectPermissionChange": function (selection) {
                 var self = this;
-                if (!!item) {
-                    self.permissionsIndex = index;
-                    self.permissionsItem = item;
+                var ids = [];
+
+                for (var i = 0, len = selection.length; i < len; i++) {
+                    ids.push(selection[i]["id"]);
                 }
-            },
-            // 删除数据权限
-            "deletePermissions": function () {
-                var self = this;
+
+                self.selectPermission = ids;
             },
             "permissionsPageSizeChange": function (value) {
                 var self = this;
                 self.permissionsPageInfo.pageNum = parseInt(value, 10) - 1;
                 setTimeout(function () {
-                    self.getGroupMemberList(false);
+                    self.getPermissionsDataList(false);
                 }, 200);
             },
             // 切换每页条数时的回调
@@ -1030,13 +996,199 @@
                 console.log(value);
                 self.permissionsPageInfo.pageSize = parseInt(value, 10);
                 setTimeout(function () {
-                    self.getGroupMemberList(false);
+                    self.getPermissionsDataList(false);
                 }, 200);
             },
-            // 当分组类型改变时
-            "permissionsChange": function (value) {
+            // 格式化用户可访问用户列表
+            "formatPermission": function () {
                 var self = this;
-                self.permissionsId = value;
+
+                for (var i = 0, len = self.permissionList.length; i < len; i++) {
+                    self.permissionsTableRowList.push({
+                        "id": decodeURI(self.permissionList[i]["id"]), //"组名称",
+                        "groupName": decodeURI(self.permissionList[i]["groupName"]), //"组名称",
+                        "companyName": decodeURI(self.permissionList[i]["companyName"]), //"公司名",
+                        "resName": decodeURI(self.permissionList[i]["resName"]), //"业务对象",
+                    });
+                }
+            },
+            // 获取角色可用功能列表数据接口
+            "getPermissionsDataList": function (bool) {
+                var self = this;
+                if (bool == true) {
+                    self.permissionsTableRowList = [];
+                    self.permissionsPageInfo.pageNum = 0;
+                }
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.groupService + "?action=" + CONFIG.ACTION.getUserGroupDataResList,
+                    actionUrl: CONFIG.SERVICE.groupService,
+                    dataObj: self.permissionsPageInfo,
+                    beforeSendCallback: function () {
+                        self.isTableLoading = true;
+                    },
+                    completeCallback: function () {
+                        self.isTableLoading = false;
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            self.permissionList = data.data;
+                            self.permissionsPageInfo.count = data.count;
+
+                            self.formatPermission();
+
+                        } else {
+                            self.$Message.error(data.message);
+                        }
+                    }
+                });
+            },
+            // 删除数据权限
+            "deletePermissions": function () {
+                var self = this;
+                if (self.selectPermission.length == 0) {
+                    self.$Message.error({
+                        "content": { "CN": "请选择一条数据", "EN": "Please select a data", "TW": "請選擇一條數據" }[self.language],
+                        "top": 200,
+                        "duration": 3
+                    });
+                    return;
+                }
+                self.isModalLoading = true;
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.groupService + "?action=" + CONFIG.ACTION.delUserGroupDataResList,
+                    actionUrl: CONFIG.SERVICE.groupService,
+                    dataObj: {
+                        resIds: self.selectPermission.join(","), // 成员id
+                        modifyUserId: userInfo["id"], // 修改用户的id
+                    },
+                    beforeSendCallback: function () {
+                        self.isTableLoading = true;
+                    },
+                    completeCallback: function () {
+                        self.isTableLoading = false;
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            if (data.code == 200) {
+                                self.getGroupMemberList(true);
+                            } else {
+                                self.$Message.error(data.message);
+                            }
+                        }
+                    }
+                });
+            },
+            // 提交功能信息到服務器
+            "uploadPermissionsDataToServer": function () {
+                var self = this;
+                var self = this;
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.groupService + "?action=" + CONFIG.ACTION.saveUserGroupDataRes,
+                    actionUrl: CONFIG.SERVICE.groupService,
+                    dataObj: {
+                        "groupId": self.permissionsPageInfo.groupId, // 所属用户组 id
+                        "resIds": self.selectFunction.join(","), // 功能id
+                        "createUserId": userInfo["id"], // 创建用户ID，新增时必传
+                        "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传
+                    },
+                    completeCallback: function () {
+                        self.isModalLoading = false;
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            self.getPermissionsDataList(true);
+                            self.isFunctionList = false;
+                        } else {
+                            self.$Message.error(data.message);
+                        }
+                    }
+                });
+            },
+
+            // 显示功能层
+            "showFunctionsLayer": function () {
+                var self = this;
+                self.isFunctionList = true;
+                self.getFunctionsDataList(true);
+            },
+            // 当选择的行发生变化时 
+            "selectFunctionsChange": function (selection) {
+                var self = this;
+                var ids = [];
+
+                for (var i = 0, len = selection.length; i < len; i++) {
+                    ids.push(selection[i]["id"]);
+                }
+
+                self.selectFunction = ids;
+            },
+            // 格式化系统操作权限功能
+            "formatFunctions": function () {
+                var self = this;
+                for (var i = 0, len = self.functionList.length; i < len; i++) {
+                    self.functionsTableRowList.push({
+                        "id": self.functionList[i]["id"], //"角色名称",
+                        "functionLevel": self.functionList[i]["functionLevel"], //"权限所处层级",
+                        "functionType": (function () {
+                            var type = "";
+                            for (var f = 0, flen = self.permissionFunctionTypeLis.length; f < flen; f++) {
+                                if (self.permissionFunctionTypeLis[f]["type"] == self.functionList[f]["functionType"]) {
+                                    type = self.permissionFunctionTypeLis[f]["name"];
+                                    break;
+                                }
+                            }
+                            return type;
+                        }()), // self.permissionFunctionTypeLis[self.functionList[i]["functionType"]], //"功能类型",
+                        "functionName": decodeURI(self.functionList[i]["functionName"]), //"功能名称",
+                        "functionCode": decodeURI(self.functionList[i]["functionCode"]), //"功能权限项描述",
+                        "isValid": { "1": { 'CN': '是', 'EN': 'Yes', 'TW': '是' }[self.language], "0": { 'CN': '否', 'EN': 'No', 'TW': '否' }[self.language] }[self.functionList[i]["isValid"] + ""], //"是否有效"
+                    });
+                }
+            },
+            // 获取系统操作权限功能项目列表接口
+            "getFunctionsDataList": function (bool) {
+                var self = this;
+                if (bool == true) {
+                    self.functionsTableRowList = [];
+                    self.functionsPageInfo.pageNum = 0;
+                }
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.permissionService + "?action=" + CONFIG.ACTION.getFunctionList,
+                    actionUrl: CONFIG.SERVICE.permissionService,
+                    dataObj: self.functionsPageInfo,
+                    beforeSendCallback: function () {
+                        self.isTableLoading = true;
+                    },
+                    completeCallback: function () {
+                        self.isTableLoading = false;
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            self.functionList = data.data;
+                            self.functionsPageInfo.count = data.count;
+                            self.formatFunctions();
+                        } else {
+                            self.$Message.error(data.message);
+                        }
+                    }
+                });
+            },
+            // 页数改变时的回调
+            "functionsPageSizeChange": function (value) {
+                var self = this;
+                self.functionsPageInfo.pageNum = parseInt(value, 10) - 1;
+                setTimeout(function () {
+                    self.getFunctionsDataList(false);
+                }, 200);
+            },
+            // 切换每页条数时的回调
+            "functionsPageRowChange": function (value) {
+                var self = this;
+                console.log(value);
+                self.functionsPageInfo.pageSize = parseInt(value, 10);
+                setTimeout(function () {
+                    self.getFunctionsDataList(false);
+                }, 200);
             },
         },
         "created": function () {

@@ -60,6 +60,7 @@ var CONFIG = (function (CONFIG) {
         "saveGroupMember": "saveGroupMember", // 新增业务对象组成员接口
         "saveUserGroupDataRes": "saveUserGroupDataRes", // 新增、修改用户组的数据访问权限接口
         "getUserGroupDataResList": "getUserGroupDataResList", // 获取用户组可访问的业务数据对象列表接口
+        "delUserGroupDataResList": "delUserGroupDataResList", // 删除业务组可访问的业务对象接口
         "getGroupMemberList": "getGroupMemberList", // 获取业务对象分组成员列表接口
         "delGroupMember": "delGroupMember", // 删除业务对象组成员接口
 
