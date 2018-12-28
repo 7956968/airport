@@ -58,9 +58,6 @@ var CONFIG = (function (CONFIG) {
         "getGroupList": "getGroupList", // 获取业务分组列表接口
         "delGroup": "delGroup", // 删除业务对象组接口
         "saveGroupMember": "saveGroupMember", // 新增业务对象组成员接口
-        "saveUserGroupDataRes": "saveUserGroupDataRes", // 新增、修改用户组的数据访问权限接口
-        "getUserGroupDataResList": "getUserGroupDataResList", // 获取用户组可访问的业务数据对象列表接口
-        "delUserGroupDataResList": "delUserGroupDataResList", // 删除业务组可访问的业务对象接口
         "getGroupMemberList": "getGroupMemberList", // 获取业务对象分组成员列表接口
         "delGroupMember": "delGroupMember", // 删除业务对象组成员接口
 
@@ -76,16 +73,19 @@ var CONFIG = (function (CONFIG) {
         "saveRoleUser": "saveRoleUser", // 新增角色下属用户接口
         "getRoleUserList": "getRoleUserList", // 获取角色下属用户列表数据接口
         "delRoleUser": "delRoleUser", // 删除系统角色可用功能接口
+        "saveUserGroupDataRes": "saveUserGroupDataRes", // 新增、修改用户组的数据访问权限接口
+        "getUserGroupDataResList": "getUserGroupDataResList", // 获取用户组可访问的业务数据对象列表接口
+        "delUserGroupDataResList": "delUserGroupDataResList", // 删除业务组可访问的业务对象接口
 
         // vehicleService：车辆服务
         "saveVehicle": "saveVehicle", // 删除系统角色可用功能接口
         "getVehicleList": "getVehicleList", // 获取车辆列表数据接口
         "delVehicle": "delVehicle", // 删除车辆接口
+
+        // deviceService：设备服务
         "saveDevice": "saveDevice", // 新增修改定位终端接口
         "getDeviceList": "getDeviceList", // 获取定位设备列表数据接口
         "delDevice": "delDevice", // 删除设备接口
-
-        // deviceService：设备服务
         "saveCamera": "saveCamera", // 新增修改摄像机信息接口
         "getCameraList": "getCameraList", // 获取摄像头列表数据接口
         "delCamera": "delCamera", // 删除摄像头接口

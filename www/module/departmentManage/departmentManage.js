@@ -53,6 +53,10 @@
                     "align": "center"
                 },
                 {
+                    "title": { "CN": "公司名称", "EN": "Company name", "TW": "公司名稱" }[language["language"]],
+                    "key": "companyName"
+                },
+                {
                     "title": { "CN": "部门名称", "EN": "Department Name", "TW": "部門名稱" }[language["language"]],
                     "key": "deptName"
                 },
@@ -254,6 +258,7 @@
 
                 for (var i = 0, len = self.departmentList.length; i < len; i++) {
                     self.tableRowList.push({
+                        "companyName": decodeURI(self.departmentList[i]["companyName"]), //"部门名称",
                         "deptName": decodeURI(self.departmentList[i]["deptName"]), //"部门名称",
                         "deptCode": self.departmentList[i]["deptCode"], //"部门编号",
                         "deptShortName": decodeURI(self.departmentList[i]["deptShortName"]), //"部门简称",

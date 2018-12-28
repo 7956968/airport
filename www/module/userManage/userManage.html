@@ -59,11 +59,15 @@
                                 <tr>
                                     <td>
                                         <template>
-                                            <i-input v-model="pageInfo.roleName" :placeholder="{'CN':'请输入查询关键字','EN':'Please Input Query Key','TW':'請輸入查詢關鍵字'}[language]" style="width: 300px">
-                                                <i-select slot="prepend" :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:80px;">
-                                                    <i-option v-text="{'CN':'账户','EN':'Account','TW':'帳戶'}[language]"></i-option>
-                                                </i-select>
-                                            </i-input>
+                                            {{{'CN':'归属公司','EN':'Ownership Company','TW':'歸屬公司'}[language]}}:
+                                            <i-select v-model="pageInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:150px;">
+                                                <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
+                                                <i-option v-for="item in companyList" :value="item.id">{{item.companyName}}</i-option>
+                                            </i-select>
+                                        </template>
+                                        <template>
+                                            &nbsp;&nbsp;{{{'CN':'用户名称','EN':'User Name','TW':'用戶名稱'}[language]}}:
+                                            <i-input v-model="pageInfo.userName" :placeholder="{'CN':'请输入查询关键字','EN':'Please Input Query Key','TW':'請輸入查詢關鍵字'}[language]" style="width: 200px"></i-input>
                                         </template>
                                     </td>
                                     <td>

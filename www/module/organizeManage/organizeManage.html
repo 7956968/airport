@@ -59,11 +59,8 @@
                                 <tr>
                                     <td>
                                         <template>
-                                            <i-input v-model="pageInfo.companyName" :placeholder="{'CN':'请输入查询关键字','EN':'Please Input Query Key','TW':'請輸入查詢關鍵字'}[language]" style="width: 300px">
-                                                <i-select slot="prepend" :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:80px;">
-                                                    <i-option v-text="{'CN':'公司名称','EN':'Company Name','TW':'公司名稱'}[language]"></i-option>
-                                                </i-select>
-                                            </i-input>
+                                            {{{'CN':'公司名称','EN':'Company Name','TW':'公司名稱'}[language]}}:
+                                            <i-input v-model="pageInfo.companyName" :placeholder="{'CN':'请输入查询关键字','EN':'Please Input Query Key','TW':'請輸入查詢關鍵字'}[language]" style="width: 300px"></i-input>
                                         </template>
                                     </td>
                                     <td>

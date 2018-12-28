@@ -262,7 +262,7 @@
                     }
                 });
             },
-            // 获取机构信息
+            // 获取部门信息
             "getDepartmentList": function (bool) {
                 var self = this;
                 utility.interactWithServer({

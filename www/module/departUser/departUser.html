@@ -59,13 +59,19 @@
                                 <tr>
                                     <td>
                                         <template>
-                                            <i-input v-model="pageInfo.deptName" :placeholder="{'CN':'请输入查询关键字','EN':'Please Input Query Key','TW':'請輸入查詢關鍵字'}[language]"
-                                                style="width: 300px">
-                                                <i-select slot="prepend" :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"
-                                                    style="width:80px;">
-                                                    <i-option v-text="{'CN':'部门名称','EN':'Company Name','TW':'部門名稱'}[language]"></i-option>
-                                                </i-select>
-                                            </i-input>
+                                            {{{'CN':'部门','EN':'Superior Department','TW':'部門'}[language]}}:
+                                            <i-select v-model="pageInfo.deptId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:150px;">
+                                                <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
+                                                <i-option v-for="item in departmentList" :value="item.id">{{item.deptName}}</i-option>
+                                            </i-select>
+                                        </template>
+                                        <template>
+                                            &nbsp;&nbsp;{{{'CN':'用户名称','EN':'User Name','TW':'用戶名稱'}[language]}}:
+                                            <i-input v-model="pageInfo.userName" :placeholder="{'CN':'请输入查询关键字','EN':'Please Input Query Key','TW':'請輸入查詢關鍵字'}[language]" style="width: 150px"></i-input>
+                                        </template>
+                                        <template>
+                                            &nbsp;&nbsp;{{{'CN':'职位名称','EN':'Job title','TW':'職位名稱'}[language]}}:
+                                            <i-input v-model="pageInfo.posiName" :placeholder="{'CN':'请输入查询关键字','EN':'Please Input Query Key','TW':'請輸入查詢關鍵字'}[language]" style="width: 150px"></i-input>
                                         </template>
                                     </td>
                                     <td>

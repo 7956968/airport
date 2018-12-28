@@ -119,13 +119,17 @@
                                 <span><Icon type="ios-car" /></span>
                                 <span v-text="{'CN':'车辆管理','EN':'VehicleManage','TW':'車輛管理'}[language]"></span>
                             </p>
+                            <p @click="setTabItem('/airport/www/module/vehicleMaintenance/vehicleMaintenance.html', 'VehicleMaintenance', $event)" id="nav_VehicleMaintenance">
+                                <span><Icon type="ios-umbrella" /></span>
+                                <span v-text="{'CN':'车辆保养信息','EN':'Vehicle Maintenance','TW':'車輛保養信息'}[language]"></span>
+                            </p>
                             <p @click="setTabItem('/airport/www/module/terminalManage/terminalManage.html', 'TerminalManage', $event)" id="nav_TerminalManage">
                                 <span><Icon type="ios-bus-outline" /></span>
                                 <span v-text="{'CN':'车载终端管理','EN':'TerminalManage ','TW':'車載終端管理'}[language]"></span>
                             </p>
-                            <p @click="setTabItem('/airport/www/module/vehicleMaintenance/vehicleMaintenance.html', 'VehicleMaintenance', $event)" id="nav_VehicleMaintenance">
-                                <span><Icon type="ios-umbrella" /></span>
-                                <span v-text="{'CN':'车辆保养信息','EN':'Vehicle Maintenance','TW':'車輛保養信息'}[language]"></span>
+                            <p @click="setTabItem('/airport/www/module/sectorsManage/sectorsManage.html', 'SectorsManage', $event)" id="nav_SectorsManage">
+                                <span><Icon type="ios-qr-scanner" /></span>
+                                <span v-text="{'CN':'防区管理','EN':'Sectors Manage','TW':'防區管理'}[language]"></span>
                             </p>
                             <p @click="setTabItem('/airport/www/module/videoCamera/videoCamera.html', 'VideoCamera', $event)" id="nav_VideoCamera">
                                 <span><Icon type="ios-videocam" /></span>
@@ -153,10 +157,6 @@
                             <span class="arrow"><Icon type="md-arrow-dropright" /></span>
                         </div>
                         <div class="subNav">
-                            <p @click="setTabItem('/airport/www/module/sectorsManage/sectorsManage.html', 'SectorsManage', $event)" id="nav_SectorsManage">
-                                <span><Icon type="ios-qr-scanner" /></span>
-                                <span v-text="{'CN':'防区管理','EN':'Sectors Manage','TW':'防區管理'}[language]"></span>
-                            </p>
                             <p @click="setTabItem('/airport/www/module/driverInfor/driverInfor.html', 'DriverInfor', $event)" id="nav_DriverInfor">
                                 <span><Icon type="ios-chatbubbles-outline" /></span>
                                 <span v-text="{'CN':'驾驶员信息','EN':'Driver Infor','TW':'駕駛員信息'}[language]"></span>

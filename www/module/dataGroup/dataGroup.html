@@ -52,18 +52,29 @@
     <div id="js-vue" class="tableContainer">
         <div class="top">
             <Row type="flex" justify="start" gutter="10">
-                <i-col span="12">
+                <i-col span="18">
                     <div class="searchWrap">
                         <table>
                             <tbody>
                                 <tr>
                                     <td>
                                         <template>
-                                            <i-input v-model="pageInfo.groupName" :placeholder="{'CN':'请输入查询关键字','EN':'Please Input Query Key','TW':'請輸入查詢關鍵字'}[language]" style="width: 300px">
-                                                <i-select slot="prepend" :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:80px;">
-                                                    <i-option v-text="{'CN':'组名称','EN':'Group Name','TW':'組名稱'}[language]"></i-option>
-                                                </i-select>
-                                            </i-input>
+                                            {{{'CN':'归属公司','EN':'Ownership Company','TW':'歸屬公司'}[language]}}:
+                                            <i-select v-model="pageInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:150px;">
+                                                <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
+                                                <i-option v-for="item in companyList" :value="item.id">{{item.companyName}}</i-option>
+                                            </i-select>
+                                        </template>
+                                        <template>
+                                            &nbsp;&nbsp;{{{'CN':'分组类型','EN':'Group Type','TW':'分組類型'}[language]}}:
+                                            <i-select v-model="pageInfo.groupTypeId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:150px;">
+                                                <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
+                                                <i-option v-for="item in groupTypeList" :value="item.type">{{item.name}}</i-option>
+                                            </i-select>
+                                        </template>
+                                        <template>
+                                            &nbsp;&nbsp;{{{'CN':'组名称','EN':'Group Name','TW':'組名稱'}[language]}}:
+                                            <i-input v-model="pageInfo.groupName" :placeholder="{'CN':'请输入查询关键字','EN':'Please Input Query Key','TW':'請輸入查詢關鍵字'}[language]" style="width: 120px"></i-input>
                                         </template>
                                     </td>
                                     <td>
@@ -77,7 +88,7 @@
                         </table>
                     </div>
                 </i-col>
-                <i-col span="12">
+                <i-col span="6">
                     <div class="actionWrap">
                         <template>
                             <i-buttonGroup>
@@ -85,8 +96,6 @@
                                 <i-button @click="addItem" size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
                                 <i-button @click="editItem" size="small" type="warning" icon="ios-paper-outline">{{{'CN':'编辑','EN':'Edit','TW':'編輯'}[language]}}</i-button>
                                 <i-button @click="delItem" size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button>
-                                <!-- <i-button @click="selectMembers" size="small" type="info" icon="ios-people-outline">{{{'CN':'组成员','EN':'Group Members','TW':'組成員'}[language]}}</i-button> -->
-                                <!-- <i-button @click="selectAuthor" size="small" type="success" icon="ios-people-outline">{{{'CN':'组授权','EN':'Group Auth','TW':'組授權'}[language]}}</i-button> -->
                             </i-buttonGroup>
                         </template>
                     </div>

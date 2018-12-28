@@ -64,7 +64,7 @@
         <!-- 搜索 -->
         <div class="searchWrap">
             <template>
-                <i-input size="large" search enter-button :placeholder="{'CN':'搜索车名或编码','EN':'Search Vehicle Name Or Code','TW':'搜索車名或編碼'}[language]" />
+                <i-input @on-search="refresh" size="large" search enter-button :placeholder="{'CN':'搜索车名或编码','EN':'Search Vehicle Name Or Code','TW':'搜索車名或編碼'}[language]" />
             </template>
         </div>
 
@@ -122,7 +122,7 @@
         <template>
             <Modal v-model="modal.isVehicle" 
                 :styles="{top: '130px', left: '50px', position: 'absolute'}" 
-                width="30"
+                width="35"
                 footer-hide="true"
                 :mask="false"
                 class-name="mapModal">
@@ -135,17 +135,17 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <span class="label" v-text="{'CN':'车牌号','EN':'License Plate','TW':'車牌號'}[language]"></span>
+                                    <span class="label" v-text="{'CN':'车辆编码','EN':'Vehicle Coding','TW':'車輛編號'}[language]"></span>
                                 </td>
                                 <td>
                                     <template>
-                                        <i-input :placeholder="{'CN':'请输入车牌号','EN':'License Plate','TW':'請輸入車牌號'}[language]" style="width: 100%"></i-input>
+                                        <i-input :placeholder="{'CN':'请输入车辆编码','EN':'Vehicle Coding','TW':'請輸入車輛編號'}[language]" style="width: 100%"></i-input>
                                     </template>
                                 </td>
                                 <td>
                                     <template>
                                         <div class="btnList">
-                                            <i-button size="small" type="primary" icon="ios-search-outline">{{{'CN':'查询','EN':'Search','TW':'查詢'}[language]}}</i-button>
+                                            <i-button @click="getVehicleList(true)" size="small" type="primary" icon="ios-search-outline">{{{'CN':'查询','EN':'Search','TW':'查詢'}[language]}}</i-button>
                                             <i-button size="small" type="info" icon="ios-open-outline">{{{'CN':'导出','EN':'Export','TW':'導出'}[language]}}</i-button>
                                         </div>
                                     </template>
@@ -163,7 +163,7 @@
             
                     <div class="pageWrap">
                         <template>
-                            <Page :total="100" show-total />
+                            <Page :total="vehiclePageInfo.count" @on-change="vehiclePageSizeChange" :page-size="20" show-sizer show-total/>
                         </template>
                     </div>
                 </div>
@@ -251,7 +251,7 @@
         <template>
             <Modal v-model="modal.isDefense" 
                 :styles="{top: '130px', left: '50px', position: 'absolute'}" 
-                width="30"
+                width="35"
                 footer-hide="true"
                 :mask="false"
                 class-name="mapModal">
@@ -264,14 +264,13 @@
                         <tbody>
                             <tr>
                                 <td style="width: 60px;">
-                                    <span class="label" v-text="{'CN':'选择图层','EN':'select layer','TW':'車輛'}[language]"></span>
+                                    <span class="label" v-text="{'CN':'防区状态','EN':'select layer','TW':'防區狀態'}[language]"></span>
                                 </td>
                                 <td style="width: 61%;">
                                     <template>
-                                        <i-select disabled clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100%;">
-                                            <i-option v-text="{'CN':'牵引车','EN':'Tractor','TW':'牽引車'}[language]"></i-option>
-                                            <i-option v-text="{'CN':'拖挂车','EN':'Trailer','TW':'拖掛車'}[language]"></i-option>
-                                            <i-option v-text="{'CN':'三面车','EN':'Three Side Car','TW':'三面車'}[language]"></i-option>
+                                        <i-select @on-change="getDefensAreaList(true)" v-model="defensPageInfo.secureStatus" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
+                                            <i-option v-for="item in secureAreaStatusList" :value="item.type">{{item.name}}</i-option>
                                         </i-select>
                                     </template>
                                 </td>
@@ -291,25 +290,26 @@
                         </tbody>
                     </table>
                 </div>
-                <p class="tip" v-text="{'CN':'注:表格仅显示当前视域内数据','EN':'Notes:The table shows only the data in the current view.','TW':'注:表格僅顯示當前視域內數據'}[language]"></p>
+                <!-- <p class="tip" v-text="{'CN':'注:表格仅显示当前视域内数据','EN':'Notes:The table shows only the data in the current view.','TW':'注:表格僅顯示當前視域內數據'}[language]"></p> -->
                 <div class="modifiedWrap">
                     <div class="tableWrap">
                         <template>
-                            <i-table height="400" @on-row-click="selectDefensArea($event)" highlight-row :columns="defensColumns" :data="defensDatas" stripe="true" size="small"></i-table>
+                            <i-table height="400" @on-row-click="setDefensRowData" highlight-row :columns="defensColumns" :data="defensDatas" stripe="true" size="small"></i-table>
                         </template>
                     </div>
             
                     <div class="pageWrap">
                         <template>
-                            <Page :total="100" show-total />
+                            <Page :total="defensPageInfo.count" @on-change="defensPageSizeChange" :page-size="20" show-sizer show-total/>
                         </template>
                     </div>
                 </div>
             </Modal>
             <Modal v-model="isAddDefensDetailInfo" 
                 id="addDefensArea" 
-                width="20" 
+                width="25" 
                 :mask="false"
+                :styles="{top: '130px',left: '200px',}" 
                 class-name="mapModal detailInfoModal">
                 <div slot="header" class="modalTitle">
                     <span class="label" v-text="{'CN':'防区详细信息','EN':'Defense Area Detail Infomation','TW':'防區詳細信息'}[language]"></span>
@@ -335,32 +335,74 @@
                     <table>
                         <tbody>
                             <tr>
-                                <td style="width: 60px;">
-                                    <span class="label" v-text="{'CN':'名称','EN':'Name','TW':'名稱'}[language]"></span>
-                                </td>
-                                <td>
-                                    <i-input v-model="defensAreaDetailInfo.name" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <span class="label" v-text="{'CN':'限速','EN':'Speed limit','TW':'限速'}[language]"></span>
-                                </td>
-                                <td>
-                                    <i-input v-model="defensAreaDetailInfo.speed" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <span class="label" v-text="{'CN':'布防','EN':'protection','TW':'布防'}[language]"></span>
+                                <td style="width: 100px;">
+                                    <span class="request">＊</span>
+                                    <span class="label" v-text="{'CN':'公司','EN':'Head','TW':'公司'}[language]"></span>
                                 </td>
                                 <td>
                                     <template>
-                                        <radio-group v-model="defensAreaDetailInfo.protection">
-                                            <Radio :label="{'CN':'布防','EN':'protection','TW':'布防'}[language]"></Radio>
-                                            <Radio :label="{'CN':'撤防','EN':'Withdrawing','TW':'撤防'}[language]"></Radio>
-                                        </radio-group>
+                                        <i-select v-model="defensAreaDetailInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <i-option value="">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
+                                            <i-option v-for="item in companyList" :value="item.id">{{item.companyName}}</i-option>
+                                        </i-select>
                                     </template>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="request">＊</span>
+                                    <span class="label" v-text="{'CN':'名称','EN':'Name','TW':'名稱'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input v-model="defensAreaDetailInfo.areaName" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="request">＊</span>
+                                    <span class="label" v-text="{'CN':'编码','EN':'Code','TW':'編碼'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input v-model="defensAreaDetailInfo.areaCode" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="request">＊</span>
+                                    <span class="label" v-text="{'CN':'限速(m/s)','EN':'Speed Limit(m/s)','TW':'限速(m/s)'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input v-model="defensAreaDetailInfo.speedLimit" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="request">＊</span>
+                                    <span class="label" v-text="{'CN':'停留时长(s)','EN':'Stay(s)','TW':'停留時長(s)'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input v-model="defensAreaDetailInfo.staySecond" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="request">＊</span>
+                                    <span class="label" v-text="{'CN':'防区状态','EN':'select layer','TW':'防區狀態'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <i-select v-model="defensAreaDetailInfo.secureStatus" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <i-option v-for="item in secureAreaStatusList" :value="item.type">{{item.name}}</i-option>
+                                        </i-select>
+                                    </template>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="label" v-text="{'CN':'备注','EN':'Remark','TW':'備註'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input v-model="defensAreaDetailInfo.remark" />
                                 </td>
                             </tr>
                         </tbody>
@@ -654,7 +696,7 @@
         <template>
             <Modal v-model="modal.isSearch" 
                 :styles="{top: '130px', left: '50px', position: 'absolute'}" 
-                width="30"
+                width="35"
                 footer-hide="true"
                 :mask="false"
                 class-name="mapModal">
@@ -753,9 +795,11 @@
     <script src="/airport/assets/js/vue.min.js"></script>
     <script src="/airport/assets/vender/iView/iview.min.js"></script>
     <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
+    <script src="/airport/assets/js/md5.min.js"></script>
+    <script src="/airport/assets/js/config.min.js"></script>
     <script src="/airport/assets/vender/openLayer/ol.min.js"></script>
     <script src="/airport/assets/js/utility.min.js"></script>
-    <script src="/airport/www/module/maps/maps.min.js?v=958584"></script>
+    <script src="/airport/www/module/maps/maps.js?v=958584"></script>
 </body>
 
 </html>

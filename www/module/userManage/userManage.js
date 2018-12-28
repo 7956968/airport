@@ -52,6 +52,10 @@
                     "align": "center"
                 },
                 {
+                    "title": { "CN": "所属公司", "EN": "Company", "TW": "所屬公司" }[language["language"]],
+                    "key": "company"
+                },
+                {
                     "title": { "CN": "账号", "EN": "Account", "TW": "帳號" }[language["language"]],
                     "key": "userCode"
                 },
@@ -70,10 +74,6 @@
                 {
                     "title": { "CN": "固话", "EN": "Fixed Telephone", "TW": "固話" }[language["language"]],
                     "key": "telephone"
-                },
-                {
-                    "title": { "CN": "所属公司", "EN": "Company", "TW": "所屬公司" }[language["language"]],
-                    "key": "company"
                 },
                 {
                     "title": { "CN": "员工工号", "EN": "Staff Number", "TW": "員工工號" }[language["language"]],

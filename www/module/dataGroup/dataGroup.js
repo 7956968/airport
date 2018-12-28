@@ -1020,8 +1020,8 @@
                     self.permissionsPageInfo.pageNum = 0;
                 }
                 utility.interactWithServer({
-                    url: CONFIG.HOST + CONFIG.SERVICE.groupService + "?action=" + CONFIG.ACTION.getUserGroupDataResList,
-                    actionUrl: CONFIG.SERVICE.groupService,
+                    url: CONFIG.HOST + CONFIG.SERVICE.permissionService + "?action=" + CONFIG.ACTION.getUserGroupDataResList,
+                    actionUrl: CONFIG.SERVICE.permissionService,
                     dataObj: self.permissionsPageInfo,
                     beforeSendCallback: function () {
                         self.isTableLoading = true;
@@ -1055,8 +1055,8 @@
                 }
                 self.isModalLoading = true;
                 utility.interactWithServer({
-                    url: CONFIG.HOST + CONFIG.SERVICE.groupService + "?action=" + CONFIG.ACTION.delUserGroupDataResList,
-                    actionUrl: CONFIG.SERVICE.groupService,
+                    url: CONFIG.HOST + CONFIG.SERVICE.permissionService + "?action=" + CONFIG.ACTION.delUserGroupDataResList,
+                    actionUrl: CONFIG.SERVICE.permissionService,
                     dataObj: {
                         resIds: self.selectPermission.join(","), // 成员id
                         modifyUserId: userInfo["id"], // 修改用户的id
@@ -1070,7 +1070,7 @@
                     successCallback: function (data) {
                         if (data.code == 200) {
                             if (data.code == 200) {
-                                self.getGroupMemberList(true);
+                                self.getPermissionsDataList(true);
                             } else {
                                 self.$Message.error(data.message);
                             }
@@ -1081,10 +1081,9 @@
             // 提交功能信息到服務器
             "uploadPermissionsDataToServer": function () {
                 var self = this;
-                var self = this;
                 utility.interactWithServer({
-                    url: CONFIG.HOST + CONFIG.SERVICE.groupService + "?action=" + CONFIG.ACTION.saveUserGroupDataRes,
-                    actionUrl: CONFIG.SERVICE.groupService,
+                    url: CONFIG.HOST + CONFIG.SERVICE.permissionService + "?action=" + CONFIG.ACTION.saveUserGroupDataRes,
+                    actionUrl: CONFIG.SERVICE.permissionService,
                     dataObj: {
                         "groupId": self.permissionsPageInfo.groupId, // 所属用户组 id
                         "resIds": self.selectFunction.join(","), // 功能id

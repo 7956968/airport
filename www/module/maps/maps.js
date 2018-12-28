@@ -1,12 +1,14 @@
 (function () {
     var language = utility.getLocalStorage("language");
     var userInfo = utility.getLocalStorage("userInfo");
+    var bizParam = utility.getLocalStorage("bizParam");
     var pageVue = new Vue({
         "el": "#js-vue",
         "data": {
             "deleteLoading": false,
             "addLoading": false,
             "language": !!language ? language["language"] : "CN",
+            "companyList": [],
 
             //#region 地图
             "mapContainer": {
@@ -87,6 +89,19 @@
             //#endregion
 
             //#region 车辆管理
+            "vehiclePageInfo": {
+                "count": 0,
+                "pageSize": 15,
+                "pageNum": 0,
+                "deptId": "", // 部门ID
+                "id": "", // 车辆ID
+                "vehicleName": "", // 车辆名称
+                "vehicleCode": "", // 车辆编码
+                "gpsDeviceCode": "",
+            },
+            "vehicleItem": null,
+            "vehicleList": [],
+            "terminalStatusList": bizParam["terminalStatus"],
             "vehicleColumns": [
                 {
                     "title": { "CN": "编号", "EN": "Number", "TW": "編號" }[language["language"]],
@@ -101,33 +116,7 @@
                     "key": "state"
                 }
             ],
-            "vehicleDatas": [
-                {
-                    "number": "编号",
-                    "plate": "车牌",
-                    "state": "状态",
-                },
-                {
-                    "number": "编号",
-                    "plate": "车牌",
-                    "state": "状态",
-                },
-                {
-                    "number": "编号",
-                    "plate": "车牌",
-                    "state": "状态",
-                },
-                {
-                    "number": "编号",
-                    "plate": "车牌",
-                    "state": "状态",
-                },
-                {
-                    "number": "编号",
-                    "plate": "车牌",
-                    "state": "状态",
-                }
-            ],
+            "vehicleDatas": [],
             //#endregion
 
             //#region 历史轨迹
@@ -139,22 +128,44 @@
             "isAddDefensAction": false,
             "isAddDefensDetailInfo": false,
             "isDrawDefening": false,
-            "isDeleteDefens": false, 
+            "isDeleteDefens": false,
+            "secureAreaStatusList": bizParam["secureAreaStatus"],
             "defensAreaDetailInfo": {
-                "featureId": null,
-                "coordinate": null,
-                "name": "",
-                "protection": "",
-                "speed": ""
+                "id": "",
+                "featureId": "",
+                "opType": 1, // 操作状态：1:新增防区 2:修改防区基本信息 3:修改防区地理坐标信息 4:修改防区状态
+                "companyId": "",
+                "deptId": "", // 部门ID，可选
+                "areaName": "", // 防区名称
+                "areaCode": "", // 防区编码
+                "secureStatus": "", // 防区状态：701：草稿 702：布防 703：撤防 704：无效
+                "areaRangeStr": "", // 防区位置坐标的字符串，格式为122.13337670595,37.543569056875;122.12651025087,37.473874537832,
+                "speedLimit": "", // 行驶速度限制上限（米/秒）
+                "staySecond": "", // 最大允许停留时长(单位秒)
+                "remark": "", // 备注
+                "createUserId": userInfo["id"], // 创建用户ID，新增时必传
+                "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传
             },
             "defensColumns": [
                 {
                     "title": { "CN": "名称", "EN": "Name", "TW": "名稱" }[language["language"]],
-                    "key": "name"
+                    "key": "areaName"
                 },
                 {
-                    "title": { "CN": "布防", "EN": "protection", "TW": "布防" }[language["language"]],
-                    "key": "protection"
+                    "title": { "CN": "编码", "EN": "Code", "TW": "編碼" }[language["language"]],
+                    "key": "areaCode"
+                },
+                {
+                    "title": { "CN": "状态", "EN": "Status", "TW": "狀態" }[language["language"]],
+                    "key": "secureStatus"
+                },
+                {
+                    "title": { "CN": "速度上限", "EN": "Speed Limit", "TW": "速度上限" }[language["language"]],
+                    "key": "speedLimit"
+                },
+                {
+                    "title": { "CN": "停留时长", "EN": "Length Of Stay", "TW": "停留時長" }[language["language"]],
+                    "key": "staySecond"
                 },
                 {
                     "title": { "CN": "操作", "EN": "Operation", "TW": "操作" }[language["language"]],
@@ -166,6 +177,11 @@
                                 "props": {
                                     "type": "error",
                                     "size": "small"
+                                },
+                                "on": {
+                                    "click": function () {
+                                        pageVue.selectDefensArea(params);
+                                    }
                                 }
                             }, { "CN": "删除", "EN": "Delete", "TW": "删除" }[language["language"]])
                         ]);
@@ -173,6 +189,16 @@
                 }
             ],
             "defensDatas": [],
+            "defensList": [],
+            "defensPageInfo": {
+                "id": "",
+                "count": 0,
+                "pageNum": 0,
+                "pageSize": 15,
+                "areaName": "",
+                "companyId": "",
+                "secureStatus": "",
+            },
             //#endregion
 
             //#region 摄像机
@@ -393,6 +419,10 @@
         //#endregion
 
         "methods": {
+            // 刷新
+            "refresh": function () {
+                window.location.href = window.location.href;
+            },
             //#region 基础方法
             // 初始化地图功能
             "init": function () {
@@ -598,6 +628,36 @@
             },
 
             //#region 防区
+            // 创建防区要素
+            "createDefensFeature": function (areaRangeStr, id) {
+                var self = this;
+                var defensFeature = null;
+                var currentFeature = self.mapContainer.sourceInfo.defens.getFeatureById(id);
+                var coordinate = (function () {
+                    var coorArr = areaRangeStr.replace(/\(/g, "[").replace(/\)/g, "]");
+                    return [JSON.parse(coorArr)];
+                }());
+
+                if (!!currentFeature) {
+                    self.mapContainer.sourceInfo.defens.removeFeature(currentFeature);
+                }
+
+                defensFeature = new ol.Feature({
+                    "geometry": new ol.geom.Polygon(coordinate),
+                    "name": "defens"
+                });
+                defensFeature.setId(id);
+                self.mapContainer.sourceInfo.defens.addFeature(defensFeature);
+
+                self.showDefensPopLayer(id, coordinate);
+            },
+            "setDefensRowData": function (item, index) {
+                var self = this;
+                self.defensAreaDetailInfo = self.defensList[index];
+                self.defensAreaDetailInfo.remark = decodeURI(self.defensList[index]["remark"]);
+                self.defensAreaDetailInfo.opType = 2;
+                self.createDefensFeature(self.defensList[index]["areaRange"]["value"], self.defensList[index]["id"]);
+            },
             // 创建交互矢量控件
             "createDefensInteraction": function () {
                 var self = this;
@@ -642,6 +702,31 @@
                     currentFeature.setId(featureId);
                     currentFeature.set("name", "defens");
 
+                    // 初始化输入信息
+                    self.defensAreaDetailInfo = {
+                        "id": "",
+                        "featureId": featureId,
+                        "opType": 1, // 操作状态：1:新增防区 2:修改防区基本信息 3:修改防区地理坐标信息 4:修改防区状态
+                        "companyId": "",
+                        "deptId": "", // 部门ID，可选
+                        "areaName": "", // 防区名称
+                        "areaCode": "", // 防区编码
+                        "secureStatus": "", // 防区状态：701：草稿 702：布防 703：撤防 704：无效
+                        "areaRangeStr": (function () {
+                            var coordArr = [];
+                            var coordList = coordinate[0];
+
+                            for (var i = 0, len = coordList.length; i < len; i++) {
+                                coordArr.push(coordList[i].join(","));
+                            }
+                            return coordArr.join(";");
+                        }()), // 防区位置坐标的字符串，格式为122.13337670595,37.543569056875;122.12651025087,37.473874537832,
+                        "speedLimit": "", // 行驶速度限制上限（米/秒）
+                        "staySecond": "", // 最大允许停留时长(单位秒)
+                        "remark": "", // 备注
+                        "createUserId": userInfo["id"], // 创建用户ID，新增时必传
+                        "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传
+                    };
                     // 设置当前绘制防区详细信息
                     self.showDefensPopLayer(featureId, coordinate);
 
@@ -649,18 +734,70 @@
                     self.deleteDefensAction();
                 }, this);
             },
-            // 选择一个防区
-            "selectDefensArea": function (event) {
+            // 格式化防区
+            "formatDefensData": function () {
                 var self = this;
-                var coordinate = null;
+                for (var i = 0, len = self.defensList.length; i < len; i++) {
+                    self.defensDatas.push({
+                        "areaName": decodeURI(self.defensList[i]["areaName"]),
+                        "areaCode": decodeURI(self.defensList[i]["areaCode"]),
+                        "secureStatus": (function () {
+                            var status = "";
+                            for (var d = 0, dlen = self.secureAreaStatusList.length; d < dlen; d++) {
+                                if (self.secureAreaStatusList[d]["type"] == self.defensList[i]["secureStatus"]) {
+                                    status = self.secureAreaStatusList[d]["name"];
+                                    break;
+                                }
+                            }
+                            return status;
+                        }()),
+                        "speedLimit": self.defensList[i]["speedLimit"],
+                        "staySecond": self.defensList[i]["staySecond"],
+                    });
+                }
+            },
+            // 获取防区列表
+            "getDefensAreaList": function (bool) {
+                var self = this;
+                // 如果是查询，则重新从第一页开始
+                if (bool == true) {
+                    self.defensDatas = [];
+                    self.defensList = [];
+                    self.defensPageInfo.pageNum = 0;
+                }
+                setTimeout(function () {
+                    utility.interactWithServer({
+                        url: CONFIG.HOST + CONFIG.SERVICE.areaService + "?action=" + CONFIG.ACTION.getSecureAreaList,
+                        actionUrl: CONFIG.SERVICE.areaService,
+                        dataObj: self.defensPageInfo,
+                        successCallback: function (data) {
+                            if (data.code == 200) {
+                                self.defensList = data.data;
+                                self.defensPageInfo.count = data.count;
+                                self.formatDefensData();
+                            }
+                        }
+                    });
+                }, 500);
+            },
+            // 页数改变的时候
+            "defensPageSizeChange": function () {
+                var self = this;
+                self.defensPageInfo.pageNum = parseInt(value, 10) - 1;
+                setTimeout(function () {
+                    self.getDefensAreaList(false);
+                }, 200);
+            },
+            // 选择一个防区
+            "selectDefensArea": function (params) {
+                var self = this;
 
                 if (self.isDeleteDefens == false) {
-                    coordinate = event.coordinate;
-                    self.defensAreaDetailInfo = event;
+                    self.defensAreaDetailInfo = self.defensList[params.index];
                     self.isAddDefensDetailInfo = false;
                     setTimeout(function () {
                         self.isAddDefensDetailInfo = true;
-                        self.mapContainer.overlayInfo.defens.setPosition(coordinate);
+                        self.mapContainer.overlayInfo.defens.setPosition([[[113.80963683128357, 22.631996870040894], [113.8097870349884, 22.62787699699402], [113.80701899528503, 22.6288640499115], [113.80738377571106, 22.63058066368103], [113.8082206249237, 22.631481885910034], [113.80963683128357, 22.631996870040894]]]);
                         self.autoFocus();
                     }, 200);
                 }
@@ -668,24 +805,14 @@
             // 显示防区弹出层
             "showDefensPopLayer": function (featureId, coordinate) {
                 var self = this;
+                for (var d = 0, dlen = self.defensList.length; d < dlen; d++) {
+                    if (featureId == self.defensList[d]["id"]) {
+                        self.defensAreaDetailInfo = self.defensList[d];
+                        break;
+                    }
+                }
                 // 添加pop层
                 self.isAddDefensDetailInfo = false;
-                self.defensAreaDetailInfo = (function () {
-                    var detailInfo = {
-                        "featureId": featureId,
-                        "coordinate": coordinate,
-                        "name": "",
-                        "protection": "",
-                        "speed": ""
-                    };
-                    for (var i = 0, len = self.defensDatas.length; i < len; i++) {
-                        if (self.defensDatas[i]["featureId"] == featureId) {
-                            detailInfo = self.defensDatas[i];
-                            break;
-                        }
-                    }
-                    return detailInfo;
-                })();
                 setTimeout(function () {
                     self.isAddDefensDetailInfo = true;
                     self.mapContainer.overlayInfo.defens.setPosition(coordinate);
@@ -715,41 +842,82 @@
             "deleteDefensArea": function () {
                 var self = this;
                 var selectFeature = null;
-                var featureId = self.defensAreaDetailInfo.featureId;
+                var featureId = self.defensAreaDetailInfo.id || self.defensAreaDetailInfo.featureId;
 
-                self.defensAreaDetailInfo = {
-                    "featureId": null,
-                    "coordinate": null,
-                    "name": "",
-                    "protection": "",
-                    "speed": ""
-                };
                 self.isAddDefensDetailInfo = false;
                 selectFeature = self.mapContainer.sourceInfo.defens.getFeatureById(featureId);
                 self.mapContainer.sourceInfo.defens.removeFeature(selectFeature);
 
-                // 删除表格行
-                for (var i = 0, len = self.defensDatas.length; i < len; i++) {
-                    if (self.defensDatas[i]["featureId"] == featureId) {
-                        self.defensDatas.splice(i, 1);
-                        break;
-                    }
+                if (!!self.defensAreaDetailInfo.id) {
+                    utility.interactWithServer({
+                        url: CONFIG.HOST + CONFIG.SERVICE.areaService + "?action=" + CONFIG.ACTION.delSecureArea,
+                        actionUrl: CONFIG.SERVICE.areaService,
+                        dataObj: {
+                            "ids": self.defensAreaDetailInfo.id,
+                            "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传
+                        },
+                        successCallback: function (data) {
+                            if (data.code == 200) {
+                                self.getDefensAreaList(true);
+                                setTimeout(function () {
+                                    self.deleteLoading = false;
+                                    self.isDeleteDefens = false;
+                                    self.defensAreaDetailInfo = {
+                                        "id": "",
+                                        "opType": 1, // 操作状态：1:新增防区 2:修改防区基本信息 3:修改防区地理坐标信息 4:修改防区状态
+                                        "companyId": "",
+                                        "deptId": "", // 部门ID，可选
+                                        "areaName": "", // 防区名称
+                                        "areaCode": "", // 防区编码
+                                        "secureStatus": "", // 防区状态：701：草稿 702：布防 703：撤防 704：无效
+                                        "areaRangeStr": "", // 防区位置坐标的字符串，格式为122.13337670595,37.543569056875;122.12651025087,37.473874537832,
+                                        "speedLimit": "", // 行驶速度限制上限（米/秒）
+                                        "staySecond": "", // 最大允许停留时长(单位秒)
+                                        "remark": "", // 备注
+                                        "createUserId": userInfo["id"], // 创建用户ID，新增时必传
+                                        "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传
+                                    };
+                                }, 500);
+                            } else {
+                                self.$Message.error(data.message);
+                            }
+                        }
+                    });
                 }
-                setTimeout(function () {
-                    self.deleteLoading = false;
-                    self.isDeleteDefens = false;
-                }, 500);
             },
             // 把把防区信息提交到服务器
             "uploadDefensAreaDetailInfoToServer": function () {
                 var self = this;
-
-                self.defensDatas.push(self.defensAreaDetailInfo);
-                setTimeout(function () {
-                    self.isAddDefensDetailInfo = false;
-                    self.addLoading = false;
-                }, 500);
-
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.areaService + "?action=" + CONFIG.ACTION.saveSecureArea,
+                    actionUrl: CONFIG.SERVICE.areaService,
+                    dataObj: {
+                        "id": self.defensAreaDetailInfo.id,
+                        "opType": self.defensAreaDetailInfo.opType, // 操作状态：1:新增防区 2:修改防区基本信息 3:修改防区地理坐标信息 4:修改防区状态
+                        "companyId": self.defensAreaDetailInfo.companyId,
+                        "deptId": self.defensAreaDetailInfo.deptId, // 部门ID，可选
+                        "areaName": encodeURI(self.defensAreaDetailInfo.areaName), // 防区名称
+                        "areaCode": encodeURI(self.defensAreaDetailInfo.areaCode), // 防区编码
+                        "secureStatus": self.defensAreaDetailInfo.secureStatus, // 防区状态：701：草稿 702：布防 703：撤防 704：无效
+                        "areaRangeStr": self.defensAreaDetailInfo.areaRangeStr, // 防区位置坐标的字符串，格式为122.13337670595,37.543569056875;122.12651025087,37.473874537832,
+                        "speedLimit": self.defensAreaDetailInfo.speedLimit, // 行驶速度限制上限（米/秒）
+                        "staySecond": self.defensAreaDetailInfo.staySecond, // 最大允许停留时长(单位秒)
+                        "remark": encodeURI(self.defensAreaDetailInfo.remark), // 备注
+                        "createUserId": self.defensAreaDetailInfo.createUserId, // 创建用户ID，新增时必传
+                        "modifyUserId": self.defensAreaDetailInfo.modifyUserId, // 修改用户ID，修改时必传
+                    }, // self.defensAreaDetailInfo,
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            self.getDefensAreaList(true);
+                            setTimeout(function () {
+                                self.isAddDefensDetailInfo = false;
+                                self.addLoading = false;
+                            }, 500);
+                        } else {
+                            self.$Message.error(data.message);
+                        }
+                    }
+                });
             },
             //#endregion
 
@@ -883,11 +1051,66 @@
             // 显示 Modal
             "showModal": function (type) {
                 var self = this;
-                self.modal[type] = !self.modal[type];
+                for (var key in self.modal) {
+                    self.modal[key] = false;
+                }
+                self.modal[type] = true;
             },
 
+            //#region 车辆管理
+            // 格式化车辆信息
+            "formatVehicle": function () {
+                var self = this;
+                for (var i = 0, len = self.vehicleList.length; i < len; i++) {
+                    self.vehicleDatas({
+                        "number": self.vehicleList[i]["vehicleCode"], //"编号",
+                        "vehicleName": self.vehicleList[i]["vehicleName"], //"车牌",
+                        "state": (function () {
+                            var state = ""; // terminalStatusList
+                            for (var s = 0, slen = self.terminalStatusList.length; s < slen; s++) {
+                                if (self.terminalStatusList[s]["type"] == self.vehicleList[i]["vehicleStatus"]) {
+                                    state = self.terminalStatusList[s]["name"];
+                                    break;
+                                }
+                            }
+                            return state;
+                        }()), //"状态",
+                    });
+                }
+            },
+            // 获取车辆信息
+            "getVehicleList": function (bool) {
+                var self = this;
+                // 如果是查询，则重新从第一页开始
+                if (bool == true) {
+                    self.vehicleDatas = [];
+                    self.vehiclePageInfo.pageNum = 0;
+                }
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getVehicleList,
+                    actionUrl: CONFIG.SERVICE.vehicleService,
+                    dataObj: self.vehiclePageInfo,
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            self.vehicleList = data.data;
+                            self.vehiclePageInfo.count = data.count;
+                            self.formatVehicle();
+                        }
+                    }
+                });
+            },
+            // 当页数改变后
+            "vehiclePageSizeChange": function () {
+                var self = this;
+                self.vehiclePageInfo.pageNum = parseInt(value, 10) - 1;
+                setTimeout(function () {
+                    self.getVehicleList(false);
+                }, 200);
+            },
+            //#endregion
+
             //#region GPS 定位
-            "createdGPS": function() {
+            "createdGPS": function () {
                 var self = this;
                 self.mapContainer.geolocationInfo.GPS = new ol.Geolocation({
                     "projection": self.mapContainer.viewInfo.view.getProjection(),
@@ -904,13 +1127,13 @@
                 self.createdPositionFeature();
                 self.createdAccuracyFreature();
 
-                self.mapContainer.geolocationInfo.GPS.on("error", function(error) {
+                self.mapContainer.geolocationInfo.GPS.on("error", function (error) {
                     console.log(error.message);
                 });
 
             },
             // 创建矢量点
-            "createdPositionFeature": function() {
+            "createdPositionFeature": function () {
                 var self = this;
                 var positionFeature = new ol.Feature();
                 positionFeature.setStyle(new ol.style.Style({
@@ -927,21 +1150,39 @@
                 }));
                 self.mapContainer.sourceInfo.GPS.addFeature(positionFeature);
 
-                self.mapContainer.geolocationInfo.GPS.on("change:position", function() {
+                self.mapContainer.geolocationInfo.GPS.on("change:position", function () {
                     var coordinates = self.mapContainer.geolocationInfo.GPS.getPosition();
-                    positionFeature.setGeometry(coordinates ? new ol.geom.Point(coordinates): null);
+                    positionFeature.setGeometry(coordinates ? new ol.geom.Point(coordinates) : null);
                 });
             },
             // 创建矢量圆
-            "createdAccuracyFreature": function() {
+            "createdAccuracyFreature": function () {
                 var self = this;
                 var accuracyFeature = new ol.Feature();
                 self.mapContainer.sourceInfo.GPS.addFeature(accuracyFeature);
-                self.mapContainer.geolocationInfo.GPS.on("change:accuracyGeometry", function() {
+                self.mapContainer.geolocationInfo.GPS.on("change:accuracyGeometry", function () {
                     accuracyFeature.setGeometry(self.mapContainer.geolocationInfo.GPS.getAccuracyGeometry());
                 });
-            }
+            },
             //#endregion
+
+            // 获取公司列表
+            "getCompanyList": function () {
+                var self = this;
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.companyService + "?action=" + CONFIG.ACTION.getCompanyList,
+                    actionUrl: CONFIG.SERVICE.companyService,
+                    dataObj: {
+                        id: 0,
+                        pageSize: 10000,
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            self.companyList = data.data;
+                        }
+                    }
+                });
+            },
         },
         "created": function () {
             var self = this;
@@ -952,6 +1193,15 @@
             // 初始化地图数据
             setTimeout(function () {
                 self.init();
+
+                // 获取车辆信息
+                self.getVehicleList(true);
+
+                // 获取防区
+                self.getDefensAreaList(true);
+
+                // 获取公司
+                self.getCompanyList();
 
                 self.mapContainer.map.on("click", function (event) {
                     var coordinate = event.coordinate;
