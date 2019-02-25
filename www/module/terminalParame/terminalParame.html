@@ -50,78 +50,176 @@
 
 <body class="innerPage">
     <div id="js-vue" class="tableContainer">
-        <div class="top">
-            <Row type="flex" justify="start" gutter="0">
-                <i-col span="20">
-                    <div class="searchWrap">
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <template>
-                                            <i-input :placeholder="{'CN':'请输入查询关键字','EN':'Please Input Query Key','TW':'請輸入查詢關鍵字'}[language]" style="width: 300px">
-                                                <i-select slot="prepend" :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:80px;">
-                                                    <i-option v-text="{'CN':'终端编号','EN':'Terminal Number','TW':'終端編號'}[language]"></i-option>
-                                                </i-select>
-                                            </i-input>
-                                        </template>
-                                    </td>
-                                    <td>
-                                        <template>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{{'CN':'工作状态','EN':'Working Condition','TW':'工作狀態'}[language]}}：
-                                            <i-select clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:200px;">
-                                                <i-option v-text="{'CN':'正在静止','EN':'Being Still At Rest','TW':'正在靜止'}[language]"></i-option>
-                                                <i-option v-text="{'CN':'活动','EN':'Activity','TW':'活動'}[language]"></i-option>
-                                                <i-option v-text="{'CN':'开始进入休眠','EN':'Go To Sleep','TW':'開始進入休眠'}[language]"></i-option>
-                                                <i-option v-text="{'CN':'运动传感器故障','EN':'Motion Sensor Fault','TW':'運動傳感器故障'}[language]"></i-option>
-                                                <i-option v-text="{'CN':'侧翻','EN':'Rollover','TW':'側翻'}[language]"></i-option>
-                                                <i-option v-text="{'CN':'离线','EN':'Off-line','TW':'離綫'}[language]"></i-option>
-                                                <i-option v-text="{'CN':'GPS未定位','EN':'GPS Unlocated','TW':'GPS未定位'}[language]"></i-option>
-                                                <i-option v-text="{'CN':'电压采集失败','EN':'Voltage Acquisition Failure','TW':'電壓採集失敗'}[language]"></i-option>
-                                            </i-select>
-                                        </template>
-                                        <template>
-                                            <i-button size="small" type="primary" icon="ios-search-outline">{{{'CN':'查询','EN':'Search','TW':'查詢'}[language]}}</i-button>
-                                        </template>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+
+        <template>
+            <Row type="flex" justify="start">
+                <i-col span="4" class-name="menuWrap">
+                    <template>
+                        <i-menu theme="light" active-name="1" mode="vertical" width="auto" @on-select="getLogByCode">
+                            <menu-item name="1">
+                                <span class="icon"><Icon type="ios-key" /></span>
+                                <span class="label">修改密码</span>
+                            </menu-item>
+                            <menu-item name="2">
+                                <span class="icon"><Icon type="md-person" /></span>
+                                <span class="label">修改信息</span>
+                            </menu-item>
+                        </i-menu>
+                    </template>
                 </i-col>
-                <i-col span="4">
-                    <div class="actionWrap">
-                        <template>
-                            <i-buttonGroup>
-                                <i-button @click="refresh" size="small" icon="ios-refresh">{{{'CN':'刷新','EN':'Refresh','TW':'刷新'}[language]}}</i-button>
-                                <i-button size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button>
-                            </i-buttonGroup>
+                <i-col span="20" class-name="logWrap">
+                    <div :style="{height: (tableHeight+100)+'px'}">
+                        <template v-if="type==1">
+                            <div class="modifiedWrap modifyPassPop" style="padding-top: 50px;">
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td class="label" style="width: 80px;">
+                                                <span class="request">＊</span>
+                                                <span v-text="{'CN':'旧密码：','EN':'Old Password：','TW':'舊密碼：'}[language]"></span>
+                                            </td>
+                                            <td>
+                                                <i-input v-model="oldPass" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">
+                                                <span class="request">＊</span>
+                                                <span v-text="{'CN':'新密码：','EN':'New Password：','TW':'新密碼：'}[language]"></span>
+                                            </td>
+                                            <td>
+                                                <i-input v-model="newPass" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label"></td>
+                                            <td>
+                                                <i-button @click="modifyPassAction" :loading="loading" type="primary" long>保存修改</i-button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </template>
+
+                        <template v-if="type==2">
+                            <div class="modifiedWrap modifyPassPop">
+                                <table>
+                                    <tbody>
+                                        <!-- <tr>
+                                            <td class="label" style="width: 120px;">
+                                                <span class="request">＊</span>
+                                                <span>账号：</span>
+                                            </td>
+                                            <td>
+                                                <i-input disabled="true" v-model="userInfo.userCode" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">
+                                                <span class="request">＊</span>
+                                                <span>姓名：</span>
+                                            </td>
+                                            <td>
+                                                <i-input disabled="true" v-model="userInfo.userName" />
+                                            </td>
+                                        </tr> -->
+                                        <tr>
+                                            <td class="label">
+                                                <span>工号：</span>
+                                            </td>
+                                            <td>
+                                                <i-input v-model="userInfo.userSeq" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">
+                                                <span>性别：</span>
+                                            </td>
+                                            <td>
+                                                <template>
+                                                    <i-select v-model="userInfo.sex" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                                        <i-option v-for="item in sexTypeList" :value="item.type">{{item.name}}</i-option>
+                                                    </i-select>
+                                                </template>
+                                            </td>
+                                        </tr>
+                                        <!-- <tr>
+                                            <td class="label">
+                                                <span class="request">＊</span>
+                                                <span>公司</span>
+                                            </td>
+                                            <td>
+                                                <template>
+                                                    <i-select disabled="true" v-model="userInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                                        <i-option v-for="item in companyList" :value="item.id">{{item.companyName}}</i-option>
+                                                    </i-select>
+                                                </template>
+                                            </td>
+                                        </tr> -->
+                                        <tr>
+                                            <td class="label">
+                                                <span>身份证号：</span>
+                                            </td>
+                                            <td>
+                                                <i-input v-model="userInfo.idNo" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">
+                                                <span>手机号：</span>
+                                            </td>
+                                            <td>
+                                                <i-input v-model="userInfo.mobile" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">
+                                                <span>生日：</span>
+                                            </td>
+                                            <td>
+                                                <date-picker v-model="userInfo.birthday" format="yyyy-MM-dd" type="date" :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"></date-picker>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">
+                                                <span>邮箱：</span>
+                                            </td>
+                                            <td>
+                                                <i-input v-model="userInfo.email" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">
+                                                <span>家庭地址：</span>
+                                            </td>
+                                            <td>
+                                                <i-input v-model="userInfo.address" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label"></td>
+                                            <td>
+                                                <i-button @click="modifyUserInfoAction" :loading="loading" type="primary" long>保存修改</i-button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </template>
                     </div>
                 </i-col>
             </Row>
-        </div>
-
-        <div class="tableWrap">
-            <template>
-                <i-table :height="tableHeight" :loading="isTableLoading" highlight-row :columns="columnsList" :data="dataList" stripe="true"
-                    size="small" @on-current-change="setCurrentRowData($event)"></i-table>
-            </template>
-        </div>
-
-        <div class="pageWrap">
-            <template>
-                <Page :total="100" show-sizer show-total show-elevator />
-            </template>
-        </div>
+        </template>
 
     </div>
     <script src="/airport/assets/js/vue.min.js"></script>
     <script src="/airport/assets/vender/iView/iview.min.js"></script>
     <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
+    <script src="/airport/assets/js/md5.min.js"></script>
     <script src="/airport/assets/js/config.min.js"></script>
     <script src="/airport/assets/js/utility.min.js"></script>
-    <script src="/airport/www/module/terminalParame/terminalParame.min.js?v=093939"></script>
+    <script src="/airport/www/module/terminalParame/terminalParame.min.js?v=09efefe3939"></script>
 </body>
 
 </html>

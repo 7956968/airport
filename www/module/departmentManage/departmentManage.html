@@ -86,9 +86,9 @@
                         <template>
                             <i-buttonGroup>
                                 <i-button @click="refresh" size="small" icon="ios-refresh">{{{'CN':'刷新','EN':'Refresh','TW':'刷新'}[language]}}</i-button>
-                                <i-button @click="addItem" size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
-                                <i-button @click="editItem" size="small" type="warning" icon="ios-paper-outline">{{{'CN':'编辑','EN':'Edit','TW':'編輯'}[language]}}</i-button>
-                                <i-button @click="delItem" size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button>
+                                <i-button @click="addItem" size="small" type="success" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
+                                <!-- <i-button @click="editItem" size="small" type="warning" icon="ios-paper-outline">{{{'CN':'编辑','EN':'Edit','TW':'編輯'}[language]}}</i-button>
+                                <i-button @click="delItem" size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button> -->
                             </i-buttonGroup>
                         </template>
                     </div>
@@ -122,7 +122,7 @@
                                 </td>
                                 <td>
                                     <template>
-                                        <i-select v-model="itemInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                        <i-select @on-change="getSuperiorDepartmentList" v-model="itemInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
                                             <i-option v-for="item in companyList" :value="item.id">{{item.companyName}}</i-option>
                                         </i-select>
                                     </template>
@@ -132,9 +132,7 @@
                                 </td>
                                 <td>
                                     <template>
-                                        <i-select v-model="itemInfo.paraDeptId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
-                                            <i-option v-for="item in departmentList" :value="item.id">{{item.deptName}}</i-option>
-                                        </i-select>
+                                        <Cascader :data="superiorDepartmentList" v-model="itemInfo.paraDeptId" trigger="hover" change-on-select></Cascader>
                                     </template>
                                 </td>
                             </tr>
@@ -204,7 +202,7 @@
                                     <span v-text="{'CN':'备注','EN':'Remarks','TW':'備註'}[language]"></span>
                                 </td>
                                 <td colspan="3">
-                                    <i-input v-model="itemInfo.deptRemark" type="textarea" :rows="4" />
+                                    <i-input v-model="itemInfo.deptRemark" type="textarea" :row="5" />
                                 </td>
                             </tr>
                         </tbody>
@@ -212,14 +210,70 @@
                 </div>
             </Modal>
         </template>
+
+        <template>
+            <Modal v-model="isShowDetail" :styles="{top: '60px'}" width="25" title="查看详情">
+                <div class="modifiedWrap">
+                    <table>
+                        <tbody>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'公司名称：','EN':'Company Name：','TW':'公司名稱：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.companyName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"> <span class="detailLabel" v-text="{'CN':'上级部门：','EN':'Superior Department：','TW':'上级部門：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.paraDeptName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span class="detailLabel" v-text="{'CN':'部门名称：','EN':'Department Name：','TW':'部門名稱：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.deptName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span class="detailLabel" v-text="{'CN':'负责人：','EN':'Head：','TW':'負責人：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.leaderUserName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span class="detailLabel" v-text="{'CN':'部门编号：','EN':'Department Number：','TW':'部門編號：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.orderNum"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span class="detailLabel" v-text="{'CN':'部门简称：','EN':'Abbreviation：','TW':'部門簡稱：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.deptShortName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span class="detailLabel" v-text="{'CN':'部门性质：','EN':'Department Nature：','TW':'部門性質：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.deptTypeName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span class="detailLabel" v-text="{'CN':'电话：','EN':'Telphone：','TW':'電話：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.deptTel"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span class="detailLabel" v-text="{'CN':'电子邮箱：','EN':'Email：','TW':'電子郵箱：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.deptEmail"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span class="detailLabel" v-text="{'CN':'传真：','EN':'Fax：','TW':'傳真：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.deptFax"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span class="detailLabel" v-text="{'CN':'备注：','EN':'Remarks：','TW':'備註：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.deptRemark"></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </Modal>
+        </template>
+        
+        <script src="/airport/assets/js/vue.min.js"></script>
+        <script src="/airport/assets/vender/iView/iview.min.js"></script>
+        <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
+        <script src="/airport/assets/js/md5.min.js"></script>
+        <script src="/airport/assets/js/config.min.js?v=5756574646372"></script>
+        <script src="/airport/assets/js/utility.min.js?v=5756574646372"></script>
+        <script src="/airport/www/module/departmentManage/departmentManage.min.js?v=5756574646372"></script>
     </div>
-    <script src="/airport/assets/js/vue.min.js"></script>
-    <script src="/airport/assets/vender/iView/iview.min.js"></script>
-    <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
-    <script src="/airport/assets/js/md5.min.js"></script>
-    <script src="/airport/assets/js/config.min.js"></script>
-    <script src="/airport/assets/js/utility.min.js"></script>
-    <script src="/airport/www/module/departmentManage/departmentManage.min.js?v=djdjdj"></script>
 </body>
 
 </html>

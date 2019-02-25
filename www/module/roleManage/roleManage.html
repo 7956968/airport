@@ -86,9 +86,9 @@
                         <template>
                             <i-buttonGroup>
                                 <i-button @click="refresh" size="small" icon="ios-refresh">{{{'CN':'刷新','EN':'Refresh','TW':'刷新'}[language]}}</i-button>
-                                <i-button @click="addItem" size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
-                                <i-button @click="editItem" size="small" type="warning" icon="ios-paper-outline">{{{'CN':'编辑','EN':'Edit','TW':'編輯'}[language]}}</i-button>
-                                <i-button @click="delItem" size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button>
+                                <i-button @click="addItem" size="small" type="success" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
+                                <!-- <i-button @click="editItem" size="small" type="warning" icon="ios-paper-outline">{{{'CN':'编辑','EN':'Edit','TW':'編輯'}[language]}}</i-button>
+                                <i-button @click="delItem" size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button> -->
                                 <!-- <i-button @click="selectMembers" size="small" type="info" icon="ios-people-outline">{{{'CN':'角色成员','EN':'Role Members','TW':'角色成員'}[language]}}</i-button> -->
                             </i-buttonGroup>
                         </template>
@@ -212,7 +212,8 @@
                                 <div class="actionWrap">
                                     <template>
                                         <i-buttonGroup>
-                                            <i-button @click="showUserLayer" size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'新增成员','EN':'Add Members','TW':'新增成員'}[language]}}</i-button>
+                                            <i-button @click="showUserLayer('isUserListTree')" size="small" type="success" icon="ios-add-circle-outline">{{{'CN':'按部门添加','EN':'Add Members','TW':'按部門添加'}[language]}}</i-button>
+                                            <i-button @click="showUserLayer('isUserList')" size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'按用户添加','EN':'Add Members','TW':'按用戶添加'}[language]}}</i-button>
                                             <i-button @click="deleteRoleMember" size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除成员','EN':'Delete Members','TW':'刪除成員'}[language]}}</i-button>
                                         </i-buttonGroup>
                                     </template>
@@ -231,6 +232,69 @@
                             <Page :total="roleMemberPageInfo.count" @on-change="roleMemberPageSizeChange" @on-page-size-change="roleMemberPageRowChange" :page-size="20" show-sizer show-total />
                         </div>
                     </template>
+                </div>
+            </Modal>
+        </template>
+
+        <!-- 按用户选择角色成员 -->
+        <template>
+            <Modal v-model="isUserList" 
+                :styles="{top: '80px'}" 
+                width="58"
+                :title="{'CN':'用户列表','EN':'User List','TW':'用戶列表'}[language]" 
+                :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
+                :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
+                :loading="isModalLoading" 
+                class-name="hasActionList"
+                @on-ok="addRoleMember">
+                <div class="modifiedWrap">
+                    <div class="top">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td style="width: 70px;">
+                                        {{{'CN':'部门名称','EN':'Department','TW':'部門名稱'}[language]}}:
+                                    </td>
+                                    <td>
+                                        <template>
+                                            <Cascader @on-change="getUserListByDept" :data="superiorDepartmentList" v-model="userPageInfo.deptId" style="width:200px;"></Cascader>
+                                        </template>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tableWrap">
+                        <template>
+                            <i-table height="300" @on-selection-change="selectUserChange" :loading="isTableLoading" highlight-row :columns="userColumnsList" :data="userTableRowList" stripe="true" size="small"></i-table>
+                        </template>
+                    </div>
+                    <template>
+                        <div class="pageWrap">
+                            <Page :total="userPageInfo.count" @on-change="userPageSizeChange" @on-page-size-change="userPageRowChange" :page-size="20" show-sizer show-total />
+                        </div>
+                    </template>
+                </div>
+            </Modal>
+        </template>
+
+        <!-- 按部门选择角色成员 -->
+        <template>
+            <Modal v-model="isUserListTree" 
+                :styles="{top: '80px'}" 
+                width="30"
+                :title="{'CN':'部门菜单','EN':'Department Menu','TW':'部門菜單'}[language]" 
+                :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
+                :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
+                :loading="isModalLoading" 
+                class-name="hasActionList"
+                @on-ok="addRoleMember">
+                <div class="modifiedWrap">
+                    <div class="tableWrap" style="height: 300px; overflow-y: auto;">
+                        <template>
+                            <Tree :data="superiorDepartmentTree" @on-check-change="selectDepartmentTreeChange" show-checkbox></Tree>
+                        </template>
+                    </div>
                 </div>
             </Modal>
         </template>
@@ -275,66 +339,118 @@
             </Modal>
         </template>
 
-        <!-- 用户列表 -->
-        <template>
-            <Modal v-model="isUserList" 
-                :styles="{top: '80px'}" 
-                width="58"
-                :title="{'CN':'用户列表','EN':'User List','TW':'用戶列表'}[language]" 
-                :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
-                :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
-                :loading="isModalLoading" 
-                class-name="hasActionList"
-                @on-ok="addRoleMember">
-                <div class="modifiedWrap">
-                    <div class="tableWrap">
-                        <template>
-                            <i-table height="300" @on-selection-change="selectUserChange" :loading="isTableLoading" highlight-row :columns="userColumnsList" :data="userTableRowList" stripe="true" size="small"></i-table>
-                        </template>
-                    </div>
-                    <template>
-                        <div class="pageWrap">
-                            <Page :total="userPageInfo.count" @on-change="userPageSizeChange" @on-page-size-change="userPageRowChange" :page-size="20" show-sizer show-total />
-                        </div>
-                    </template>
-                </div>
-            </Modal>
-        </template>
-
         <!-- 所有功能列表 -->
         <template>
             <Modal v-model="isFunctionList" 
                 :styles="{top: '80px'}" 
-                width="58"
-                :title="{'CN':'用户列表','EN':'User List','TW':'用戶列表'}[language]" 
+                width="30"
+                :title="{'CN':'功能列表','EN':'User List','TW':'功能列表'}[language]" 
                 :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
                 :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
                 :loading="isModalLoading" 
                 class-name="hasActionList"
                 @on-ok="uploadFunctionDataToServer">
                 <div class="modifiedWrap">
+                    <div class="tableWrap" style="height: 300px; overflow-y: auto;">
+                        <template>
+                            <Tree :data="functionsTableRowList" @on-check-change="selectFunctionsChange" show-checkbox></Tree>
+                        </template>
+                    </div>
+                </div>
+            </Modal>
+        </template>
+
+        <!-- 数据组权限 -->
+        <template>
+            <Modal v-model="isShowDataGroup" 
+                :styles="{top: '60px'}" width="60" 
+                :title="{'CN':'角色数据权限','EN':'Role Members','TW':'角色數據权限'}[language]"
+                :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
+                :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
+                :loading="isModalLoading"
+                :footer-hide="true"
+                class-name="treeModel">
+                <div class="modifiedWrap">
+                    <div class="top">
+                        <Row type="flex" justify="start" gutter="10">
+                            <i-col span="14"></i-col>
+                            <i-col span="10">
+                                <div class="actionWrap">
+                                    <template>
+                                        <i-buttonGroup>
+                                            <i-button @click="showDataGroupLayer()" size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'新增数据权限','EN':'Add DataGroup','TW':'新增數據權限'}[language]}}</i-button>
+                                            <i-button @click="deleteRoleDataGroup" size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除数据权限','EN':'Delete DataGroup','TW':'刪除數據組權限'}[language]}}</i-button>
+                                        </i-buttonGroup>
+                                    </template>
+                                </div>
+                            </i-col>
+                        </Row>
+                    </div>
                     <div class="tableWrap">
                         <template>
-                            <i-table height="300" @on-selection-change="selectFunctionsChange" :loading="isTableLoading" highlight-row :columns="functionsColumnsList" :data="functionsTableRowList" stripe="true" size="small"></i-table>
+                            <i-table height="400" :loading="isTableLoading" highlight-row :columns="roleDataGroupColumsList" :data="roleDataGroupTableRowList" stripe="true"
+                                size="small" @on-selection-change="selectRoleDataGroupChange"></i-table>
                         </template>
                     </div>
                     <template>
                         <div class="pageWrap">
-                            <Page :total="functionsPageInfo.count" @on-change="functionsPageSizeChange" @on-page-size-change="functionsPageRowChange" :page-size="20" show-sizer show-total />
+                            <Page :total="roleDataGroupPageInfo.count" @on-change="roleDataGroupPageSizeChange" @on-page-size-change="roleDataGroupPageRowChange" :page-size="20" show-sizer show-total />
                         </div>
                     </template>
                 </div>
             </Modal>
         </template>
 
+        <!-- 添加数据权限组 -->
+        <template>
+            <Modal v-model="isDataGroupList" 
+                :styles="{top: '80px'}" 
+                width="58"
+                :title="{'CN':'数据权限列表','EN':'User List','TW':'數據權限列表'}[language]" 
+                :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
+                :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
+                :loading="isModalLoading" 
+                class-name="hasActionList"
+                @on-ok="addRoleDataGroup">
+                <div class="modifiedWrap">
+                    <!-- <div class="top">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td style="width: 70px;">
+                                        {{{'CN':'部门名称','EN':'Department','TW':'部門名稱'}[language]}}:
+                                    </td>
+                                    <td>
+                                        <template>
+                                            <Cascader @on-change="getUserListByDept" :data="superiorDepartmentList" v-model="userPageInfo.deptId" style="width:200px;"></Cascader>
+                                        </template>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div> -->
+                    <div class="tableWrap">
+                        <template>
+                            <i-table height="300" @on-selection-change="selectDataGroupChange" :loading="isTableLoading" highlight-row :columns="dataGroupColumnsList" :data="dataGroupTableRowList" stripe="true" size="small"></i-table>
+                        </template>
+                    </div>
+                    <template>
+                        <div class="pageWrap">
+                            <Page :total="dataGroupPageInfo.count" @on-change="dataGroupPageSizeChange" @on-page-size-change="dataGroupPageRowChange" :page-size="20" show-sizer show-total />
+                        </div>
+                    </template>
+                </div>
+            </Modal>
+        </template>
+        <script src="/airport/assets/js/vue.min.js"></script>
+        <script src="/airport/assets/vender/iView/iview.min.js"></script>
+        <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
+        <script src="/airport/assets/js/md5.min.js"></script>
+        <script src="/airport/assets/js/config.min.js?v=5756574646372"></script>
+        <script src="/airport/assets/js/utility.min.js?v=5756574646372"></script>
+        <script src="/airport/www/module/roleManage/roleManage.min.js?v=5756574646372"></script>
     </div>
-    <script src="/airport/assets/js/vue.min.js"></script>
-    <script src="/airport/assets/vender/iView/iview.min.js"></script>
-    <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
-    <script src="/airport/assets/js/md5.min.js"></script>
-    <script src="/airport/assets/js/config.min.js"></script>
-    <script src="/airport/assets/js/utility.min.js"></script>
-    <script src="/airport/www/module/roleManage/roleManage.min.js?v=383838"></script>
+    
 </body>
 
 </html>

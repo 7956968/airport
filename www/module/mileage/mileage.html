@@ -51,36 +51,76 @@
 <body class="innerPage">
     <div id="js-vue" class="tableContainer">
         <div class="top">
-            <Row type="flex" justify="start" gutter="0">
-                <i-col span="20">
+            <Row type="flex" justify="start" gutter="10">
+                <i-col span="24">
                     <div class="searchWrap">
                         <table>
                             <tbody>
                                 <tr>
                                     <td>
                                         <template>
-                                            &nbsp;&nbsp;{{{'CN':'车辆类型','EN':'Vehicle Type','TW':'車輛類型'}[language]}}
-                                            <i-select clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:120px;">
-                                                <i-option v-text="{'CN':'牵引车','EN':'Tractor','TW':'牽引車'}[language]"></i-option>
-                                                <i-option v-text="{'CN':'拖挂车','EN':'Trailer','TW':'拖掛車'}[language]"></i-option>
-                                                <i-option v-text="{'CN':'三面车','EN':'Three Side Car','TW':'三面車'}[language]"></i-option>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;{{{'CN':'公司','EN':'Type','Company':'公司'}[language]}}:
+                                            <i-select @on-change="changeToGetDetp" v-model="pageInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:120px;">
+                                                <i-option value="0" v-text="{'CN':'全部','EN':'All','TW':'全部'}[language]"></i-option>
+                                                <i-option v-for="item in companyList" :value="item.id">{{item.companyName}}</i-option>
+                                            </i-select>
+                                        </template>
+                                        <template>
+                                            &nbsp;&nbsp;&nbsp;{{{'CN':'部门','EN':'Department','TW':'部門'}[language]}}:
+                                            <i-select v-model="pageInfo.deptId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:120px;">
+                                                <i-option value="0" v-text="{'CN':'全部','EN':'All','TW':'全部'}[language]"></i-option>
+                                                <i-option v-for="item in departmentList" :value="item.id">{{item.deptName}}</i-option>
+                                            </i-select>
+                                        </template>
+                                        <template>
+                                            &nbsp;&nbsp;&nbsp;{{{'CN':'车辆编码','EN':'Vehicle Code','TW':'車輛编码'}[language]}}
+                                            <i-input v-model="pageInfo.vehicleCode" :placeholder="{'CN':'请输入','EN':'Input','TW':'請輸入'}[language]" style="width: 120px"></i-input>
+                                        </template>
+                                        <template>
+                                            &nbsp;&nbsp;&nbsp;{{{'CN':'类型','EN':'Type','TW':'類型'}[language]}}:
+                                            <i-select v-model="pageInfo.vehicleTypeId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:120px;">
+                                                <i-option value="0" v-text="{'CN':'全部','EN':'All','TW':'全部'}[language]"></i-option>
+                                                <i-option v-for="item in vehicleTypeList" :value="item.type">{{item.name}}</i-option>
+                                            </i-select>
+                                        </template>
+                                        <template>
+                                            &nbsp;&nbsp;&nbsp;{{{'CN':'颜色','EN':'Color','TW':'颜色'}[language]}}:
+                                            <i-select v-model="pageInfo.vehicleColorId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:120px;">
+                                                <i-option value="0" v-text="{'CN':'全部','EN':'All','TW':'全部'}[language]"></i-option>
+                                                <i-option v-for="item in vehicleColorList" :value="item.type">{{item.name}}</i-option>
+                                            </i-select>
+                                        </template>
+                                        <template>
+                                            &nbsp;&nbsp;&nbsp;{{{'CN':'品牌','EN':'Bland','TW':'品牌'}[language]}}:
+                                            <i-select v-model="pageInfo.vehicleBrandId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:120px;">
+                                                <i-option value="0" v-text="{'CN':'全部','EN':'All','TW':'全部'}[language]"></i-option>
+                                                <i-option v-for="item in vehicleBrandList" :value="item.type">{{item.name}}</i-option>
                                             </i-select>
                                         </template>
                                     </td>
-                                    <td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 5px;">
                                         <template>
-                                            &nbsp;&nbsp;{{{'CN':'开始时间','EN':'Start Time','TW':'開始時間'}[language]}}
-                                            <date-picker type="date" confirm  :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"></date-picker>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;{{{'CN':'时间','EN':'Time','TW':'時間'}[language]}}:
+                                            <date-picker @on-change="beginRepairTime" type="date" confirm  :placeholder="{'CN':'请选择','EN':'Choose','TW':'請選擇'}[language]" style="width:120px;"></date-picker>
+                                            -
+                                            <date-picker @on-change="endRepairTime" type="date" confirm  :placeholder="{'CN':'请选择','EN':'Choose','TW':'請選擇'}[language]" style="width:120px;"></date-picker>
                                         </template>
-                                    </td>
-                                    <td>
                                         <template>
-                                            &nbsp;&nbsp;{{{'CN':'结束时间','EN':'End Time','TW':'結束時間'}[language]}}
-                                            <date-picker type="date" confirm  :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"></date-picker>
+                                            &nbsp;{{{'CN':'里程','EN':'mileage','TW':'里程'}[language]}}:
+                                            <i-input v-model="pageInfo.beginMiles" :placeholder="{'CN':'请输入','EN':'Input','TW':'請輸入'}[language]" style="width: 80px"></i-input>
+                                            -
+                                            <i-input v-model="pageInfo.endMiles" :placeholder="{'CN':'请输入','EN':'Input','TW':'請輸入'}[language]" style="width: 80px"></i-input>
                                         </template>
 
                                         <template>
-                                            <i-button size="small" type="primary" icon="ios-search-outline">{{{'CN':'查询','EN':'Search','TW':'查詢'}[language]}}</i-button>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;<i-button @click="getmaintenanceList(true)" size="small" type="primary" icon="ios-search-outline">{{{'CN':'查询','EN':'Search','TW':'查詢'}[language]}}</i-button>
+                                        </template>
+                                        <template>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;<i-buttonGroup>
+                                                <i-button @click="refresh" size="small" icon="ios-refresh">{{{'CN':'刷新','EN':'Refresh','TW':'刷新'}[language]}}</i-button>
+                                            </i-buttonGroup>
                                         </template>
                                     </td>
                                 </tr>
@@ -88,25 +128,38 @@
                         </table>
                     </div>
                 </i-col>
-                <i-col span="4">
-                    <div class="actionWrap">
-                        <template>
-                            <i-buttonGroup>
-                                <i-button @click="refresh" size="small" icon="ios-refresh">{{{'CN':'刷新','EN':'Refresh','TW':'刷新'}[language]}}</i-button>
-                            </i-buttonGroup>
-                        </template>
-                    </div>
+            </Row>
+        </div>
+
+        <div class="echartWrap">
+            <Row>
+                <i-col span="24">
+                    <div :style="{height: (tableHeight/2-30)+'px'}" id="milleInfo"></div>
                 </i-col>
             </Row>
+        </div>
+
+        <div class="tableWrap">
+            <template>
+                <i-table :height="(tableHeight/2)" :loading="isTableLoading" highlight-row :columns="columnsList" :data="vehicleList" stripe="true" size="small"></i-table>
+            </template>
+        </div>
+
+        <div class="pageWrap">
+            <template>
+                <Page :total="pageInfo.count" @on-change="pageSizeChange" @on-page-size-change="pageRowChange" :page-size="20" show-sizer show-total />
+            </template>
         </div>
     
     </div>
     <script src="/airport/assets/js/vue.min.js"></script>
     <script src="/airport/assets/vender/iView/iview.min.js"></script>
     <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
+    <script src="/airport/assets/js/md5.min.js"></script>
     <script src="/airport/assets/js/config.min.js"></script>
     <script src="/airport/assets/js/utility.min.js"></script>
-    <script src="/airport/www/module/mileage/mileage.min.js?v=093939"></script>
+    <script src="/airport/assets/js/echarts.min.js?v=049494984"></script>
+    <script src="/airport/www/module/mileage/mileage.min.js?v=09393efefe9"></script>
 </body>
 
 </html>

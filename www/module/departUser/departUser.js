@@ -8,6 +8,7 @@
             "language": !!language ? language["language"] : "CN",
             "isTableLoading": true,
             "isShowModal": false,
+            "isShowDetail": false,
             "isModalLoading": true,
             "modalTitle": "",
             "tableHeight": (function () {
@@ -18,25 +19,18 @@
                 "id": 0,
                 "count": 0,
                 "pageNum": 1,
-                "pageSize": 15,
-                "deptName": "", // 查询关键字（部门名称）
+                "pageSize": 20,
+                "userCode": "", // 查询关键字（用户账户名）
+                "userName": "", // 查询关键字（用户姓名）
+                "posiName": "", // 查询关键字（职位名称）
                 "companyId": "", // 公司ID
-                "paraDeptId": "", // 上级部门ID
-            },
-
-            "pageInfo": {
-                "id": 0,
-                "count": 0,
-                "pageNum": 1,
-                "pageSize": 15,
-                "userCode": "", // 查询关键字（角色名称）
-                "userName": "", // 查询关键字（用户名称）
-                "companyId": "", // 公司ID
+                "deptId": [], // 部门ID
             },
             "index": 0,
             "selectItem": "",
             "itemInfo": {
-                "deptId": "", // 部门ID 
+                "deptId": "",
+                "deptIds": [], // 部门ID 
                 "userIds": [], // 用户ID，多个用户ID间以英文半角逗号分隔
                 "posiType": "", // 员工在部门的职位类型： 921=普通员工 922=副负责人 923=正负责人
                 "posiName": "", // 员工职位名称，默认为员工，可根据岗位设置设定员工的职位名称
@@ -68,13 +62,68 @@
                 {
                     "title": { "CN": "职位类型", "EN": "Job Type", "TW": "職位類型" }[language["language"]],
                     "key": "posiType"
+                },
+                {
+                    "title": { "CN": "操作", "EN": "Operation", "TW": "操作" }[language["language"]],
+                    "key": "operation",
+                    "width": 180,
+                    "render": function (h, params) {
+                        return h("div", [
+                            h("Button", {
+                                "props": {
+                                    "type": "primary",
+                                    "size": "small",
+                                },
+                                "style": {
+                                    "marginRight": '5px'
+                                },
+                                "on": {
+                                    "click": function () {
+                                        pageVue.index = params.index;
+                                        pageVue.selectItem = params.row;
+                                        pageVue.showDetail();
+                                    }
+                                }
+                            }, { "CN": "详情", "EN": "Detail", "TW": "詳情" }[language["language"]]),
+                            h("Button", {
+                                "props": {
+                                    "type": "warning",
+                                    "size": "small",
+                                },
+                                "style": {
+                                    "marginRight": '5px'
+                                },
+                                "on": {
+                                    "click": function () {
+                                        pageVue.index = params.index;
+                                        pageVue.selectItem = params.row;
+                                        pageVue.editItem();
+                                    }
+                                }
+                            }, { "CN": "编辑", "EN": "Edite", "TW": "編輯" }[language["language"]]),
+                            h("Button", {
+                                "props": {
+                                    "type": "error",
+                                    "size": "small",
+                                },
+                                "on": {
+                                    "click": function () {
+                                        pageVue.index = params.index;
+                                        pageVue.selectItem = params.row;
+                                        pageVue.delItem();
+                                    }
+                                }
+                            }, { "CN": "删除", "EN": "Delete", "TW": "刪除" }[language["language"]])
+                        ]);
+                    }
                 }
             ],
-            "tableRowList": [],
-            "departUserList": [],
-            "departmentList": [],
-            "companyList": [],
             "userList": [],
+            "companyList": [],
+            "tableRowList": [],
+            "departmentList": [],
+            "departUserList": [],
+            "superiorDepartmentList": [],
             "deptUserPositionTypeList": bizParam["departmentPositionType"]
         },
         "methods": {
@@ -96,8 +145,8 @@
                 self.isModalLoading = true;
                 self.modalTitle = { "CN": "新增", "EN": "Add", "TW": "新增" }[self.language];
                 self.itemInfo = {
-                    "deptId": "", // 部门ID 
-                    "userIds": "", // 用户ID，多个用户ID间以英文半角逗号分隔
+                    "deptIds": [], // 部门ID 
+                    "userIds": [], // 用户ID，多个用户ID间以英文半角逗号分隔
                     "posiType": "", // 员工在部门的职位类型： 921=普通员工 922=副负责人 923=正负责人
                     "posiName": "", // 员工职位名称，默认为员工，可根据岗位设置设定员工的职位名称
                     "createUserId": userInfo["id"], // 创建用户ID，新增时必传
@@ -109,34 +158,62 @@
                 var self = this;
                 utility.showMessageTip(self, function () {
                     self.itemInfo = self.departUserList[self.index];
-                    self.itemInfo.userIds = [self.itemInfo.userId];
+                    self.getUserList(function() {
+                        self.itemInfo.userIds = [self.itemInfo.userId];
+                    });
+                    self.getDepartmentList("itemInfo", function() {
+                        self.itemInfo.deptIds = [self.itemInfo.deptId];
+                    });
                     self.isShowModal = true;
                     self.modalTitle = { "CN": "修改", "EN": "Edit", "TW": "修改" }[self.language];
+                });
+            },
+            // 查看详情
+            "showDetail": function () {
+                var self = this;
+                utility.showMessageTip(self, function () {
+                    self.itemInfo = JSON.parse(JSON.stringify(self.departUserList[self.index]));
+                    self.itemInfo.posiTypeName = (function() {
+                        var name = "";
+                        for(var i = 0, len = self.deptUserPositionTypeList.length; i < len; i++) {
+                            if(self.itemInfo.posiType == self.deptUserPositionTypeList[i]["type"]) {
+                                name = self.deptUserPositionTypeList[i]["name"];
+                                break;
+                            }
+                        }
+                        return name;
+                    }());
+                    self.isShowDetail = true;
                 });
             },
             // 删除
             "delItem": function () {
                 var self = this;
-                self.itemInfo = self.departUserList[self.index];
-                // 先判断是否选择了一家公司
-                utility.showMessageTip(self, function () {
-                    utility.interactWithServer({
-                        url: CONFIG.HOST + CONFIG.SERVICE.deptUserService + "?action=" + CONFIG.ACTION.delDeptUser + "&ids=" + self.itemInfo.userId + "&modifyUserId=" + userInfo["id"],
-                        actionUrl: CONFIG.SERVICE.deptUserService,
-                        beforeSendCallback: function () {
-                            self.isTableLoading = true;
-                        },
-                        completeCallback: function () {
-                            self.isTableLoading = false;
-                        },
-                        successCallback: function (data) {
-                            if (data.code == 200) {
-                                self.getDepartUserDataList(true);
-                            } else {
-                                self.$Message.error(data.message);
-                            }
-                        }
-                    });
+                self.$Modal.confirm({
+                    "title": "确定删除？",
+                    "width": 200,
+                    "onOk": function() {
+                        self.itemInfo = self.departUserList[self.index];
+                        utility.showMessageTip(self, function () {
+                            utility.interactWithServer({
+                                url: CONFIG.HOST + CONFIG.SERVICE.deptUserService + "?action=" + CONFIG.ACTION.delDeptUser + "&ids=" + self.itemInfo.userId + "&modifyUserId=" + userInfo["id"],
+                                actionUrl: CONFIG.SERVICE.deptUserService,
+                                beforeSendCallback: function () {
+                                    self.isTableLoading = true;
+                                },
+                                completeCallback: function () {
+                                    self.isTableLoading = false;
+                                },
+                                successCallback: function (data) {
+                                    if (data.code == 200) {
+                                        self.getDepartUserDataList(true);
+                                    } else {
+                                        self.$Message.error(data.message);
+                                    }
+                                }
+                            });
+                        });
+                    }
                 });
             },
             // 当选择的行发生变化时 
@@ -157,12 +234,12 @@
                     actionUrl: CONFIG.SERVICE.deptUserService,
                     dataObj: {
                         "id": self.itemInfo.id, // ID 
-                        "deptId": self.itemInfo.deptId, // 部门ID 
-                        "userIds": self.itemInfo.userIds.join(","), // 用户ID，多个用户ID间以英文半角逗号分隔
-                        "posiType": self.itemInfo.posiType, // 员工在部门的职位类型： 921=普通员工 922=副负责人 923=正负责人
-                        "posiName": encodeURI(self.itemInfo.posiName), // 员工职位名称，默认为员工，可根据岗位设置设定员工的职位名称
                         "createUserId": userInfo["id"], // 创建用户ID，新增时必传
                         "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传
+                        "posiType": self.itemInfo.posiType, // 员工在部门的职位类型： 921=普通员工 922=副负责人 923=正负责人
+                        "userIds": self.itemInfo.userIds.join(","), // 用户ID，多个用户ID间以英文半角逗号分隔
+                        "posiName": encodeURI(self.itemInfo.posiName), // 员工职位名称，默认为员工，可根据岗位设置设定员工的职位名称
+                        "deptId": self.itemInfo.deptIds[self.itemInfo.deptIds.length-1], // 部门ID 
                     },
                     completeCallback: function () {
                         self.isModalLoading = false;
@@ -180,7 +257,7 @@
             // 页数改变时的回调
             "pageSizeChange": function (value) {
                 var self = this;
-                self.pageInfo.pageNum = parseInt(value, 10) - 1;
+                self.pageInfo.pageNum = parseInt(value, 10);
                 setTimeout(function () {
                     self.getDepartUserDataList(false);
                 }, 200);
@@ -220,14 +297,22 @@
             "getDepartUserDataList": function (bool) {
                 var self = this;
                 // 如果是查询，则重新从第一页开始
+                self.tableRowList = [];
                 if (bool == true) {
-                    self.tableRowList = [];
-                    self.pageInfo.pageNum = 0;
+                    self.pageInfo.pageNum = 1;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.deptUserService + "?action=" + CONFIG.ACTION.getDeptUserList,
                     actionUrl: CONFIG.SERVICE.deptUserService,
-                    dataObj: self.pageInfo,
+                    dataObj: {
+                        "pageNum": self.pageInfo.pageNum,
+                        "pageSize": self.pageInfo.pageSize,
+                        "userCode": self.pageInfo.userCode, // 查询关键字（用户账户名）
+                        "userName": self.pageInfo.userName, // 查询关键字（用户姓名）
+                        "posiName": self.pageInfo.posiName, // 查询关键字（职位名称）
+                        "companyId": self.pageInfo.companyId, // 公司ID
+                        "deptId": self.pageInfo.deptId[self.pageInfo.deptId.length-1], // 部门ID
+                    },
                     beforeSendCallback: function () {
                         self.isTableLoading = true;
                     },
@@ -241,6 +326,7 @@
 
                             // 格式化表格数据
                             self.formatTableList();
+                            
                         }
                     }
                 });
@@ -262,15 +348,26 @@
                     }
                 });
             },
-            // 获取部门信息
-            "getDepartmentList": function (bool) {
+            // 格式化上级部门
+            "formatSuperiorDeprt": function(list) {
                 var self = this;
+                var listInfo = JSON.stringify(list).replace(/id/g, 'value').replace(/deptName/g, 'label').replace(/subDeptList/g, 'children');
+                self.superiorDepartmentList = JSON.parse(listInfo);
+                self.departmentList = self.superiorDepartmentList;
+            },
+            // 获取部门信息
+            "getDepartmentList": function (type, callback) {
+                var self = this;
+                self.departmentList = [];
+                self.superiorDepartmentList = [];
+                self[type]["deptId"] = [];
                 utility.interactWithServer({
-                    url: CONFIG.HOST + CONFIG.SERVICE.deptService + "?action=" + CONFIG.ACTION.getDeptList,
+                    url: CONFIG.HOST + CONFIG.SERVICE.deptService + "?action=" + CONFIG.ACTION.getDeptTreeList,
                     actionUrl: CONFIG.SERVICE.deptService,
                     dataObj: {
                         id: 0,
                         pageSize: 10000,
+                        companyId: self[type]["companyId"] || 0,
                     },
                     beforeSendCallback: function () {
                         self.isTableLoading = true;
@@ -280,20 +377,24 @@
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
-                            self.departmentList = data.data;
+                            self.formatSuperiorDeprt(data.data); // 格式化机构部门数据
+
+                            !!callback && callback();
                         }
                     }
                 });
             },
             // 获取用户信息
-            "getUserList": function (bool) {
+            "getUserList": function (callback) {
                 var self = this;
+                self.userList = [];
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.userService + "?action=" + CONFIG.ACTION.getUserList,
                     actionUrl: CONFIG.SERVICE.userService,
                     dataObj: {
                         id: 0,
                         pageSize: 10000,
+                        companyId: self.itemInfo.companyId,
                     },
                     beforeSendCallback: function () {
                         self.isTableLoading = true;
@@ -304,10 +405,18 @@
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.userList = data.data;
+                            !!callback && callback();
                         }
                     }
                 });
-            }
+            },
+            // 当选择公司时，动态选择部门用户
+            "getDepartAndUser": function() {
+                var self = this;
+                self.itemInfo.userIds = [];
+                self.getUserList();
+                self.getDepartmentList("itemInfo");
+            },
         },
         "created": function () {
             var self = this;
@@ -318,8 +427,7 @@
             setTimeout(function () {
                 self.getDepartUserDataList(true);
                 self.getCompanyList();
-                self.getDepartmentList();
-                self.getUserList();
+                self.getDepartmentList("pageInfo");
             }, 500);
         }
     });

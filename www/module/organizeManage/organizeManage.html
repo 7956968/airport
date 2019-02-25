@@ -79,9 +79,9 @@
                         <template>
                             <i-buttonGroup>
                                 <i-button @click="refresh" size="small" icon="ios-refresh">{{{'CN':'刷新','EN':'Refresh','TW':'刷新'}[language]}}</i-button>
-                                <i-button @click="addItem" size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
-                                <i-button @click="editItem" size="small" type="warning" icon="ios-paper-outline">{{{'CN':'编辑','EN':'Edit','TW':'編輯'}[language]}}</i-button>
-                                <i-button @click="delItem" size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button>
+                                <i-button @click="addItem" size="small" type="success" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
+                                <!-- <i-button @click="editItem" size="small" type="warning" icon="ios-paper-outline">{{{'CN':'编辑','EN':'Edit','TW':'編輯'}[language]}}</i-button> -->
+                                <!-- <i-button @click="delItem" size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button> -->
                             </i-buttonGroup>
                         </template>
                     </div>
@@ -240,7 +240,7 @@
                                     <span v-text="{'CN':'备注','EN':'Remarks','TW':'備註'}[language]"></span>
                                 </td>
                                 <td colspan="3">
-                                    <i-input v-model="itemInfo.remark" type="textarea" :rows="4" />
+                                    <i-input v-model="itemInfo.remark" type="textarea" :row="5" type="textarea"/>
                                 </td>
                             </tr>
                         </tbody>
@@ -248,14 +248,87 @@
                 </div>
             </Modal>
         </template>
+
+
+        <template>
+            <Modal v-model="isShowDetail" :styles="{top: '60px'}" width="25" title="查看详情">
+                <div class="modifiedWrap">
+                    <table>
+                        <tbody>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'公司名称：','EN':'Company Name：','TW':'公司名稱：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.companyName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'公司性质：','EN':'Company Nature：','TW':'公司性質：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.companyTypeName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'外文名称：','EN':'Foreign Name：','TW':'外文名稱：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.companyEnName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'公司简称：','EN':'Company Abbreviation：','TW':'公司簡稱：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.companyShortName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'上级公司：','EN':'Superior Company：','TW':'上級公司：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.paraCompanyName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'成立时间：','EN':'Founding Time：','TW':'成立時間：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.openTime"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'负责人：','EN':'Head：','TW':'負責人：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.chargeManName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span class="detailLabel" v-text="{'CN':'电话：','EN':'Telphone：','TW':'電話：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.contactPhone"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span class="detailLabel" v-text="{'CN':'电子邮箱：','EN':'Email：','TW':'電子郵箱：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.contactEmail"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span class="detailLabel" v-text="{'CN':'传真：','EN':'Fax：','TW':'傳真：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.contactFax"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'邮编：','EN':'Zip Code：','TW':'郵編：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.postCode"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'公司地点：','EN':'Company Address：','TW':'公司地址：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.address"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'公司官网：','EN':'Official Website：','TW':'公司官網：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.website"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'经营范围：','EN':'Management Scope：','TW':'經營範圍：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.business"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'备注：','EN':'Remarks：','TW':'備註：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.remark"></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </Modal>
+        </template>
+        <script src="/airport/assets/js/vue.min.js"></script>
+        <script src="/airport/assets/vender/iView/iview.min.js"></script>
+        <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
+        <script src="/airport/assets/js/md5.min.js"></script>
+        <script src="/airport/assets/js/config.min.js?v=5756574646372"></script>
+        <script src="/airport/assets/js/utility.min.js?v=5756574646372"></script>
+        <script src="/airport/www/module/organizeManage/organizeManage.min.js?v=5756574646372"></script>
     </div>
-    <script src="/airport/assets/js/vue.min.js"></script>
-    <script src="/airport/assets/vender/iView/iview.min.js"></script>
-    <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
-    <script src="/airport/assets/js/md5.min.js"></script>
-    <script src="/airport/assets/js/config.min.js"></script>
-    <script src="/airport/assets/js/utility.min.js"></script>
-    <script src="/airport/www/module/organizeManage/organizeManage.min.js?v=093939"></script>
+    
 </body>
 
 </html>

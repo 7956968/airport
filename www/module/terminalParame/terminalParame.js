@@ -1,284 +1,176 @@
 (function () {
     var language = utility.getLocalStorage("language");
     var userInfo = utility.getLocalStorage("userInfo");
+    var bizParam = utility.getLocalStorage("bizParam");
     var pageVue = new Vue({
         "el": "#js-vue",
         "data": {
             "language": !!language ? language["language"] : "CN",
-            "isTableLoading": true,
             "tableHeight": (function () {
                 var containerHeight = $(".tableContainer").height();
                 return containerHeight - 100;
             }()),
-            "itemInfo": null,
-            "columnsList": [
-                {
-                    "type": "selection",
-                    "width": 60,
-                    "align": "center"
-                },
-                {
-                    "title": { "CN": "终端状态", "EN": "Terminal Number", "TW": "終端編號" }[language["language"]],
-                    "key": "number"
-                },
-                {
-                    "title": { "CN": "状态", "EN": "State", "TW": "狀態" }[language["language"]],
-                    "key": "state"
-                },
-                {
-                    "title": { "CN": "厂家名称", "EN": "Manufacturer Name", "TW": "廠家名稱" }[language["language"]],
-                    "key": "manufacturer"
-                },
-                {
-                    "title": { "CN": "上报周期", "EN": "Reporting Cycle", "TW": "上報周期" }[language["language"]],
-                    "key": "cycle"
-                },
-                {
-                    "title": { "CN": "系统版本", "EN": "System Version", "TW": "系統版本" }[language["language"]],
-                    "key": "version"
-                },
-                {
-                    "title": { "CN": "系统反馈", "EN": "System Feedback", "TW": "系統反饋" }[language["language"]],
-                    "key": "feedback"
-                }
-            ],
-            "dataList": [
-                {
-                    "id": 1,
-                    "number": "终端状态",
-                    "state": "状态",
-                    "manufacturer": "厂家名称",
-                    "cycle": "上报周期",
-                    "version": "系统版本",
-                    "feedback": "系统反馈"
-                },
-                {
-                    "id": 2,
-                    "number": "终端状态",
-                    "state": "状态",
-                    "manufacturer": "厂家名称",
-                    "state": "状态",
-                    "cycle": "上报周期",
-                    "version": "系统版本",
-                    "feedback": "系统反馈"
-                },
-                {
-                    "id": 3,
-                    "number": "终端状态",
-                    "state": "状态",
-                    "manufacturer": "厂家名称",
-                    "state": "状态",
-                    "cycle": "上报周期",
-                    "version": "系统版本",
-                    "feedback": "系统反馈"
-                },
-                {
-                    "id": 4,
-                    "number": "终端状态",
-                    "state": "状态",
-                    "manufacturer": "厂家名称",
-                    "state": "状态",
-                    "cycle": "上报周期",
-                    "version": "系统版本",
-                    "feedback": "系统反馈"
-                },
-                {
-                    "id": 5,
-                    "number": "终端状态",
-                    "state": "状态",
-                    "manufacturer": "厂家名称",
-                    "state": "状态",
-                    "cycle": "上报周期",
-                    "version": "系统版本",
-                    "feedback": "系统反馈"
-                },
-                {
-                    "id": 6,
-                    "number": "终端状态",
-                    "state": "状态",
-                    "manufacturer": "厂家名称",
-                    "state": "状态",
-                    "cycle": "上报周期",
-                    "version": "系统版本",
-                    "feedback": "系统反馈"
-                },
-                {
-                    "id": 7,
-                    "number": "终端状态",
-                    "state": "状态",
-                    "manufacturer": "厂家名称",
-                    "state": "状态",
-                    "cycle": "上报周期",
-                    "version": "系统版本",
-                    "feedback": "系统反馈"
-                },
-                {
-                    "id": 8,
-                    "number": "终端状态",
-                    "state": "状态",
-                    "manufacturer": "厂家名称",
-                    "state": "状态",
-                    "cycle": "上报周期",
-                    "version": "系统版本",
-                    "feedback": "系统反馈"
-                },
-                {
-                    "id": 9,
-                    "number": "终端状态",
-                    "state": "状态",
-                    "manufacturer": "厂家名称",
-                    "state": "状态",
-                    "cycle": "上报周期",
-                    "version": "系统版本",
-                    "feedback": "系统反馈"
-                },
-                {
-                    "id": 10,
-                    "number": "终端状态",
-                    "state": "状态",
-                    "manufacturer": "厂家名称",
-                    "state": "状态",
-                    "cycle": "上报周期",
-                    "version": "系统版本",
-                    "feedback": "系统反馈"
-                },
-                {
-                    "id": 11,
-                    "number": "终端状态",
-                    "state": "状态",
-                    "manufacturer": "厂家名称",
-                    "state": "状态",
-                    "cycle": "上报周期",
-                    "version": "系统版本",
-                    "feedback": "系统反馈"
-                },
-                {
-                    "id": 12,
-                    "number": "终端状态",
-                    "state": "状态",
-                    "manufacturer": "厂家名称",
-                    "state": "状态",
-                    "cycle": "上报周期",
-                    "version": "系统版本",
-                    "feedback": "系统反馈"
-                },
-                {
-                    "id": 13,
-                    "number": "终端状态",
-                    "state": "状态",
-                    "manufacturer": "厂家名称",
-                    "state": "状态",
-                    "cycle": "上报周期",
-                    "version": "系统版本",
-                    "feedback": "系统反馈"
-                },
-                {
-                    "id": 14,
-                    "number": "终端状态",
-                    "state": "状态",
-                    "manufacturer": "厂家名称",
-                    "state": "状态",
-                    "cycle": "上报周期",
-                    "version": "系统版本",
-                    "feedback": "系统反馈"
-                },
-                {
-                    "id": 15,
-                    "number": "终端状态",
-                    "state": "状态",
-                    "manufacturer": "厂家名称",
-                    "state": "状态",
-                    "cycle": "上报周期",
-                    "version": "系统版本",
-                    "feedback": "系统反馈"
-                },
-                {
-                    "id": 16,
-                    "number": "终端状态",
-                    "state": "状态",
-                    "manufacturer": "厂家名称",
-                    "state": "状态",
-                    "cycle": "上报周期",
-                    "version": "系统版本",
-                    "feedback": "系统反馈"
-                },
-                {
-                    "id": 17,
-                    "number": "终端状态",
-                    "state": "状态",
-                    "manufacturer": "厂家名称",
-                    "state": "状态",
-                    "cycle": "上报周期",
-                    "version": "系统版本",
-                    "feedback": "系统反馈"
-                },
-                {
-                    "id": 18,
-                    "number": "终端状态",
-                    "state": "状态",
-                    "manufacturer": "厂家名称",
-                    "state": "状态",
-                    "cycle": "上报周期",
-                    "version": "系统版本",
-                    "feedback": "系统反馈"
-                },
-                {
-                    "id": 19,
-                    "number": "终端状态",
-                    "state": "状态",
-                    "manufacturer": "厂家名称",
-                    "state": "状态",
-                    "cycle": "上报周期",
-                    "version": "系统版本",
-                    "feedback": "系统反馈"
-                },
-                {
-                    "id": 19,
-                    "number": "终端状态",
-                    "state": "状态",
-                    "manufacturer": "厂家名称",
-                    "state": "状态",
-                    "cycle": "上报周期",
-                    "version": "系统版本",
-                    "feedback": "系统反馈"
-                },
-                {
-                    "id": 20,
-                    "number": "终端状态",
-                    "state": "状态",
-                    "manufacturer": "厂家名称",
-                    "state": "状态",
-                    "cycle": "上报周期",
-                    "version": "系统版本",
-                    "feedback": "系统反馈"
-                }
-            ]
+            "loading": false,
+            "type": 1,
+            "userInfo": userInfo,
+            "oldPass": "",
+            "newPass": "",
+            "companyList": [],
+            "sexTypeList": bizParam["sexType"],
         },
         "watch": {
 
         },
         "methods": {
-            // 刷新
-            "refresh": function () {
+            "reLogin": function() {
                 var self = this;
-                window.location.href = window.location.href;
-                if (self.isTableLoading == false) {
-                    self.isTableLoading = true;
-                    setTimeout(function () {
-                        self.isTableLoading = false;
-                    }, 3000);
-                }
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.userService + "?action=" + CONFIG.ACTION.userLogin + "&userCode=" + self.userInfo.userCode + "&userPwd=" + md5(self.newPass).toUpperCase(),
+                    actionUrl: CONFIG.SERVICE.userService,
+                    beforeSendCallback: function () {
+                        self.loading = true;
+                    },
+                    completeCallback: function () {
+                        self.loading = false;
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            utility.setLocalStorage("userInfo", data.data);
+                        } else {
+                            self.$Message.error(data.message);
+                        }
+                    }
+                });
             },
-            // 当选择的行发生变化时 
-            "setCurrentRowData": function (event) {
+            // 修改密码
+            "modifyPassAction": function() {
                 var self = this;
-
-                console.log(event);
-
-                if (!!event) {
-                    self.itemInfo = event;
+                self.$Message.config({
+                    top: 150,
+                    duration: 3
+                });
+                self.loading = true;
+                if(utility.checkLen($.trim(self.oldPass), 0)) {
+                    self.$Message.error("旧密码不能为空");
+                    self.loading = false;
+                    return;
                 }
-            }
+                if(utility.checkLen($.trim(self.newPass), 0)) {
+                    self.$Message.error("新密码不能为空");
+                    self.loading = false;
+                    return;
+                }
+                if($.trim(self.oldPass)==$.trim(self.newPass)) {
+                    self.$Message.error("旧密码不能与新密码一样");
+                    self.loading = false;
+                    return;
+                }
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.userService + "?action=" + CONFIG.ACTION.changeUserPwd,
+                    actionUrl: CONFIG.SERVICE.userService,
+                    dataObj: {
+                        "oldUserPwd": md5(self.oldPass).toUpperCase(),
+                        "newUserPwd": md5(self.newPass).toUpperCase(),
+                    },
+                    completeCallback: function () {
+                        self.loading = false;
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            self.$Message.success("修改成功!");
+                            self.reLogin();
+                        } else {
+                            self.$Message.error(data.message);
+                        }
+                    }
+                });
+            },
+            // 修改用户信息
+            "modifyUserInfoAction": function() {
+                var self = this;
+                var dateInfo = utility.getDateDetailInfo(self.userInfo.birthday);
+                self.$Message.config({
+                    top: 150,
+                    duration: 3
+                });
+                self.loading = true;
+
+                // if(utility.checkLen($.trim(self.userInfo.userCode), 0)) {
+                //     self.$Message.error("用户账号不能为空");
+                //     self.loading = false;
+                //     return;
+                // }
+                // if(utility.checkLen($.trim(self.userInfo.userName), 0)) {
+                //     self.$Message.error("用户名不能为空");
+                //     self.loading = false;
+                //     return;
+                // }
+                // if(utility.checkLen($.trim(self.userInfo.userSeq), 0)) {
+                //     self.$Message.error("工号不能为空");
+                //     self.loading = false;
+                //     return;
+                // }
+                // if(utility.checkLen($.trim(self.userInfo.mobile), 0)) {
+                //     self.$Message.error("手机号不能为空");
+                //     self.loading = false;
+                //     return;
+                // }
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.userService + "?action=" + CONFIG.ACTION.saveUser,
+                    actionUrl: CONFIG.SERVICE.userService,
+                    dataObj: {
+                        "id": self.userInfo.id, // 员工ID，修改员工信息时必传
+                        "userCode": self.userInfo.userCode, // 用户帐号名
+                        "userPwd": self.userInfo.userPwd, // 用户密码. 说明： 1、	创建时不设置则默认为123456; 2、修改用户时不设置则不修改原有密码
+                        "companyId": self.userInfo.companyId, //所属公司ID，手动从公司列表选择
+                        "userSeq": self.userInfo.userSeq, // 员工工号
+                        "userName": encodeURI(self.userInfo.userName), // 员工姓名
+                        "sex": self.userInfo.sex, // 员工性别
+                        "birthday": dateInfo.year + '-' + dateInfo.month + "-" + dateInfo.date, // 员工生日
+                        "mobile": self.userInfo.mobile, // 员工手机号
+                        "telephone": self.userInfo.telephone, // 员工办公电话号
+                        "email": self.userInfo.email, // 员工邮箱
+                        "remark": encodeURI(self.userInfo.remark), // 员工备注
+                        "status": self.userInfo.status, // 员工帐号状态，默认值911表示正常： 911：正常 912：冻结 913：作废                
+                        "idNo": self.userInfo.idNo, // 身份证号
+                        "address": encodeURI(self.userInfo.address), // 员工家庭住址
+                        "createUserId": userInfo["id"], // 创建用户ID，新增时必传
+                        "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传
+                    },
+                    completeCallback: function () {
+                        self.loading = false;
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            self.$Message.success("修改成功!");
+                            utility.setLocalStorage("userInfo", self.userInfo);
+                        } else {
+                            self.$Message.error(data.message);
+                        }
+                    }
+                });
+            },
+            "getLogByCode": function(code) {
+                var self = this;
+                self.type = code;
+            },
+            // 获取公司列表
+            "getCompanyList": function () {
+                var self = this;
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.companyService + "?action=" + CONFIG.ACTION.getCompanyList,
+                    actionUrl: CONFIG.SERVICE.companyService,
+                    dataObj: {
+                        id: 0,
+                        pageSize: 10000,
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            self.companyList = data.data;
+                        }
+                    }
+                });
+            },
         },
         "created": function () {
             var self = this;
@@ -286,9 +178,11 @@
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
             utility.isLogin(false);
 
+            self.userInfo.address = decodeURI(self.userInfo.address);
+
             setTimeout(function () {
-                self.isTableLoading = false;
-            }, 2000);
+                self.getCompanyList();
+            }, 500);
         }
     });
 

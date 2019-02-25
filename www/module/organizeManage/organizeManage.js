@@ -9,6 +9,7 @@
             "language": !!language ? language["language"] : "CN",
             "isTableLoading": true,
             "isShowModal": false,
+            "isShowDetail": false,
             "isModalLoading": true,
             "modalTitle": "",
             "tableHeight": (function () {
@@ -19,7 +20,7 @@
                 "id": 0,
                 "count": 0,
                 "pageNum": 1,
-                "pageSize": 15,
+                "pageSize": 20,
                 "companyName": "", // 查询关键字（公司名称）
                 "paraCompanyId": "", // 上级公司ID
             },
@@ -84,22 +85,60 @@
                     "title": { "CN": "备注", "EN": "Remarks", "TW": "備註" }[language["language"]],
                     "key": "remark"
                 },
-                // { "key": "id" },
-                // { "key": "website" },
-                // { "key": "postCode" },
-                // { "key": "address" },
-                // { "key": "countryId" },
-                // { "key": "provinceId" },
-                // { "key": "cityId" },
-                // { "key": "districtId" },
-                // { "key": "contactFax" },
-                // { "key": "contactEmail" },
-                // { "key": "contactPhone" },
-                // { "key": "chargeManId" },
-                // { "key": "paraCompanyId" },
-                // { "key": "companyShortName" },
-                // { "key": "companyTypeId" },
-                // { "key": "createUserId" },
+                {
+                    "title": { "CN": "操作", "EN": "Operation", "TW": "操作" }[language["language"]],
+                    "key": "operation",
+                    "width": 180,
+                    "render": function (h, params) {
+                        return h("div", [
+                            h("Button", {
+                                "props": {
+                                    "type": "primary",
+                                    "size": "small",
+                                },
+                                "style": {
+                                    "marginRight": '5px'
+                                },
+                                "on": {
+                                    "click": function () {
+                                        pageVue.index = params.index;
+                                        pageVue.selectItem = params.row;
+                                        pageVue.showDetail();
+                                    }
+                                }
+                            }, { "CN": "详情", "EN": "Detail", "TW": "詳情" }[language["language"]]),
+                            h("Button", {
+                                "props": {
+                                    "type": "warning",
+                                    "size": "small",
+                                },
+                                "style": {
+                                    "marginRight": '5px'
+                                },
+                                "on": {
+                                    "click": function () {
+                                        pageVue.index = params.index;
+                                        pageVue.selectItem = params.row;
+                                        pageVue.editItem();
+                                    }
+                                }
+                            }, { "CN": "编辑", "EN": "Edite", "TW": "編輯" }[language["language"]]),
+                            h("Button", {
+                                "props": {
+                                    "type": "error",
+                                    "size": "small",
+                                },
+                                "on": {
+                                    "click": function () {
+                                        pageVue.index = params.index;
+                                        pageVue.selectItem = params.row;
+                                        pageVue.delItem();
+                                    }
+                                }
+                            }, { "CN": "删除", "EN": "Delete", "TW": "刪除" }[language["language"]])
+                        ]);
+                    }
+                }
             ],
             "tableRowList": [],
             "companyList": [],
@@ -172,31 +211,48 @@
                     self.getDistrictList(); // 重新获取区数据
                 });
             },
+            // 查看详情
+            "showDetail": function () {
+                var self = this;
+                utility.showMessageTip(self, function () {
+                    self.itemInfo = self.companyList[self.index];
+                    self.itemInfo.companyName = decodeURI(self.itemInfo.companyName);
+                    self.itemInfo.companyShortName = decodeURI(self.itemInfo.companyShortName);
+                    self.itemInfo.chargeManName = decodeURI(self.itemInfo.chargeManName);
+                    self.itemInfo.address = decodeURI(self.itemInfo.address);
+                    self.itemInfo.business = decodeURI(self.itemInfo.business);
+                    self.itemInfo.remark = decodeURI(self.itemInfo.remark);
+                    self.isShowDetail = true;
+                });
+            },
             // 删除
             "delItem": function() {
                 var self = this;
-
-                self.itemInfo = self.companyList[self.index];
-
-                // 先判断是否选择了一家公司
-                utility.showMessageTip(self, function () {
-                    utility.interactWithServer({
-                        url: CONFIG.HOST + CONFIG.SERVICE.companyService + "?action=" + CONFIG.ACTION.delCompany+"&id="+self.itemInfo.id+"&modifyUserId="+userInfo["id"],
-                        actionUrl: CONFIG.SERVICE.companyService,
-                        beforeSendCallback: function() {
-                            self.isTableLoading = true;
-                        },
-                        completeCallback: function() {
-                            self.isTableLoading = false;
-                        },
-                        successCallback: function(data) {
-                            if(data.code == 200) {
-                                self.getCompanyList(true);
-                            } else {
-                                self.$Message.error(data.message);
-                            }
-                        }
-                    });
+                self.$Modal.confirm({
+                    "title": "确定删除？",
+                    "width": 200,
+                    "onOk": function() {
+                        self.itemInfo = self.companyList[self.index];
+                        utility.showMessageTip(self, function () {
+                            utility.interactWithServer({
+                                url: CONFIG.HOST + CONFIG.SERVICE.companyService + "?action=" + CONFIG.ACTION.delCompany+"&id="+self.itemInfo.id+"&modifyUserId="+userInfo["id"],
+                                actionUrl: CONFIG.SERVICE.companyService,
+                                beforeSendCallback: function() {
+                                    self.isTableLoading = true;
+                                },
+                                completeCallback: function() {
+                                    self.isTableLoading = false;
+                                },
+                                successCallback: function(data) {
+                                    if(data.code == 200) {
+                                        self.getCompanyList(true);
+                                    } else {
+                                        self.$Message.error(data.message);
+                                    }
+                                }
+                            });
+                        });
+                    }
                 });
             },
             // 当选择的行发生变化时 
@@ -210,7 +266,7 @@
             // 页数改变时的回调
             "pageSizeChange": function(value) {
                 var self = this;
-                self.pageInfo.pageNum = parseInt(value, 10) - 1;
+                self.pageInfo.pageNum = parseInt(value, 10);
                 setTimeout(function() {
                     self.getCompanyList(false);
                 }, 200);
@@ -302,8 +358,8 @@
             "getCompanyList": function(bool) {
                 var self = this;
                 // 如果是查询，则重新从第一页开始
+                self.tableRowList = [];
                 if(bool == true) {
-                    self.tableRowList = [];
                     self.pageInfo.pageNum = 0;
                 }
                 utility.interactWithServer({

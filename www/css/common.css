@@ -14,7 +14,7 @@
 ::-webkit-scrollbar-track {
   box-shadow: inset 0 0 6px rgba(208, 219, 245, 0.3);
   border-radius: 10px;
-  background-color: #F5F5F5; 
+  background-color: #F5F5F5;
 }
 /*定义滑块 内阴影+圆角*/
 ::-webkit-scrollbar-thumb {
@@ -126,12 +126,12 @@ table {
   overflow-y: auto;
 }
 .graphPage .welcomPage .layout {
-  padding: 0 10px 10px 10px;
+  padding: 0 10px 0 10px;
 }
 .graphPage .welcomPage .layout .ivu-card {
   border-radius: 2px;
   transition: none;
-  background-color: rgba(24, 38, 70, 0.8);
+  background-color: #0f375f;
 }
 .graphPage .welcomPage .layout .ivu-card:hover {
   box-shadow: none;
@@ -151,6 +151,84 @@ table {
 }
 .graphPage .welcomPage .layout .infoList .infoItem .info {
   height: 90px;
+  text-align: center;
+  overflow: hidden;
+  cursor: pointer;
+}
+.graphPage .welcomPage .layout .infoList .infoItem .info p {
+  margin: 0;
+  padding: 0;
+}
+.graphPage .welcomPage .layout .infoList .infoItem .info .label {
+  color: #fff;
+  padding: 8px 0;
+  font-size: 13px;
+}
+.graphPage .welcomPage .layout .infoList .infoItem .info .detail {
+  position: relative;
+  z-index: 0;
+  top: -10px;
+  font-size: 42px;
+  color: #fff;
+}
+.graphPage .welcomPage .layout .infoList .infoItem .info.totalNum {
+  position: relative;
+  z-index: 0;
+}
+.graphPage .welcomPage .layout .infoList .infoItem .info.totalNum .label {
+  padding-top: 20px;
+  font-size: 24px;
+  color: #FFF;
+}
+.graphPage .welcomPage .layout .infoList .infoItem .info.totalNum .detail {
+  position: relative;
+  z-index: 0;
+  top: -20px;
+  font-size: 86px;
+  color: #FFF;
+}
+.graphPage .welcomPage .layout .infoList .infoItem .info.totalNum .totalRow {
+  position: relative;
+  z-index: 10;
+}
+.graphPage .welcomPage .layout .infoList .infoItem .info.totalNum .totalIcon {
+  position: absolute;
+  z-index: 0;
+  left: 10px;
+  top: 0;
+}
+.graphPage .welcomPage .welcomTable .ivu-table,
+.graphPage .welcomPage .welcomTable .ivu-table td,
+.graphPage .welcomPage .welcomTable .ivu-table-stripe .ivu-table-body tr.ivu-table-row-hover td,
+.graphPage .welcomPage .welcomTable .ivu-table-stripe .ivu-table-fixed-body tr.ivu-table-row-hover td,
+.graphPage .welcomPage .welcomTable .ivu-table-stripe .ivu-table-body tr:nth-child(2n) td,
+.graphPage .welcomPage .welcomTable .ivu-table-stripe .ivu-table-fixed-body tr:nth-child(2n) td,
+.graphPage .welcomPage .welcomTable .ivu-table:before,
+.graphPage .welcomPage .welcomTable .ivu-table:after,
+.graphPage .welcomPage .welcomTable .ivu-spin-fix {
+  background-color: transparent;
+  color: #fff;
+}
+.graphPage .welcomPage .welcomTable .ivu-table-stripe .ivu-table-body tr:nth-child(2n+1) td {
+  background-color: #18416B;
+}
+.graphPage .welcomPage .welcomTable .ivu-table-wrapper,
+.graphPage .welcomPage .welcomTable .ivu-table td,
+.graphPage .welcomPage .welcomTable .ivu-table th,
+.graphPage .welcomPage .welcomTable .ivu-table-wrapper > .ivu-spin-fix {
+  border: none;
+}
+.graphPage .welcomPage .welcomTable .ivu-table-fixed-body .ivu-table-row {
+  background-color: #0F375F;
+}
+.graphPage .welcomPage .welcomTable .ivu-table-fixed-body .ivu-table-cell {
+  padding-left: 10px;
+  padding-right: 5px;
+}
+.graphPage .welcomPage .copyRight {
+  text-align: center;
+  color: #fff;
+  font-size: 15px;
 }
 .index .header {
   position: fixed;
@@ -165,7 +243,7 @@ table {
 .index .header .logo {
   padding: 10px 0 20px 0;
   text-align: center;
-  background-color: #233867;
+  background-color: #0f375f;
 }
 .index .header .logo img {
   width: 58px;
@@ -182,12 +260,15 @@ table {
   height: 48px;
   line-height: 48px;
   color: #dedede;
-  border: 1px solid #182646;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
   border-left: none;
   border-right: none;
   padding: 0 0 0 5px;
   font-size: 13px;
   cursor: pointer;
+}
+.index .header .navWrap ul li:last-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 .index .header .navWrap ul li .navIcon {
   position: relative;
@@ -215,10 +296,10 @@ table {
   top: -1px;
   left: 100%;
   width: 130%;
-  color: #333;
-  border: 1px solid rgba(208, 219, 245, 0.7);
+  color: #FFF;
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-left: none;
-  background-color: rgba(208, 219, 245, 0.3);
+  background-color: #0f375f;
 }
 .index .header .navWrap ul li .subNav p {
   height: 47px;
@@ -242,7 +323,7 @@ table {
   border: 1px solid rgba(208, 219, 245, 0.7);
   border-left: none;
   border-right: none;
-  background-color: rgba(208, 219, 245, 0.3);
+  background-color: #0f375f;
 }
 .index .header .navWrap ul li:hover .navIcon .arrow i {
   transform: rotate(180deg);
@@ -279,7 +360,7 @@ table {
   left: 110px;
   right: 0;
   height: 30px;
-  background-color: rgba(208, 219, 245, 0.3);
+  background-color: rgba(15, 55, 95, 0.4);
   box-shadow: 0 1px 5px rgba(62, 84, 130, 0.2);
 }
 .index .fixedNav .fixedNavWrap {
@@ -298,28 +379,34 @@ table {
   font-size: 18px;
   margin-right: 3px;
 }
-.index .fixedNav .tabItem {
+.index .fixedNav .tabItem,
+.index .fixedNav .modifyPass {
   position: relative;
   z-index: 0;
   float: left;
   height: 30px;
   line-height: 30px;
   padding: 0 30px 0 10px;
+  color: #fff;
   cursor: pointer;
   border-left: 1px solid rgba(24, 38, 70, 0.3);
 }
-.index .fixedNav .tabItem:first-child {
+.index .fixedNav .tabItem:first-child,
+.index .fixedNav .modifyPass:first-child {
   padding: 0 10px;
   border-left: none;
 }
-.index .fixedNav .tabItem:last-child {
+.index .fixedNav .tabItem:last-child,
+.index .fixedNav .modifyPass:last-child {
   border-right: 1px solid rgba(24, 38, 70, 0.3);
 }
-.index .fixedNav .tabItem .item {
+.index .fixedNav .tabItem .item,
+.index .fixedNav .modifyPass .item {
   position: relative;
   z-index: 0;
 }
-.index .fixedNav .tabItem .close {
+.index .fixedNav .tabItem .close,
+.index .fixedNav .modifyPass .close {
   position: absolute;
   z-index: 10000;
   top: 0;
@@ -328,7 +415,8 @@ table {
   height: 30px;
   line-height: 30px;
 }
-.index .fixedNav .tabItem .close i {
+.index .fixedNav .tabItem .close i,
+.index .fixedNav .modifyPass .close i {
   display: inline-block;
   width: 15px;
   height: 15px;
@@ -341,12 +429,32 @@ table {
   color: rgba(119, 126, 142, 0.2);
   background-color: rgba(24, 38, 70, 0.1);
 }
-.index .fixedNav .tabItem.active {
+.index .fixedNav .tabItem.active,
+.index .fixedNav .modifyPass.active {
+  color: #0f375f;
   background-color: white;
 }
-.index .fixedNav .tabItem.active .close i {
+.index .fixedNav .tabItem.active .close i,
+.index .fixedNav .modifyPass.active .close i {
   color: rgba(119, 126, 142, 0.5);
   background-color: rgba(24, 38, 70, 0.3);
+}
+.index .fixedNav .tabItem.active:hover .close i,
+.index .fixedNav .modifyPass.active:hover .close i {
+  color: rgba(119, 126, 142, 0.5);
+  background-color: rgba(24, 38, 70, 0.3);
+}
+.index .fixedNav .tabItem:hover .close i,
+.index .fixedNav .modifyPass:hover .close i {
+  color: rgba(119, 126, 142, 0.5);
+  background-color: #fff;
+}
+.index .fixedNav .tabItem.modifyPassWrap,
+.index .fixedNav .modifyPass.modifyPassWrap {
+  position: absolute;
+  z-index: 1000;
+  right: 0;
+  top: 0;
 }
 .index .mainWrap {
   position: fixed;
@@ -452,6 +560,9 @@ table {
 .treeModel .ivu-modal-body .memberWrap .memberList .memberItem .info p {
   font-size: 12px;
 }
+.echartWrap {
+  border-top: 1px solid #ddd;
+}
 .tableWrap {
   padding-left: 2px;
   padding-right: 1px;
@@ -476,20 +587,38 @@ table {
 .tableWrap .ivu-table i {
   font-size: 18px;
 }
+.tableWrap .ivu-table-stripe .ivu-table-fixed-body tr.ivu-table-row-highlight:nth-child(2n) td {
+  color: #fff;
+  background-color: #2196F3;
+}
 .tableWrap .ivu-table-stripe .ivu-table-body tr.ivu-table-row-highlight:nth-child(2n) td {
-  background-color: rgba(24, 38, 70, 0.2);
+  color: #fff;
+  background-color: #2196F3;
 }
 .tableWrap tr.ivu-table-row-highlight.ivu-table-row-hover td {
-  background-color: rgba(24, 38, 70, 0.2);
+  color: #fff;
+  background-color: #2196F3;
 }
 .tableWrap .ivu-table-row-highlight td {
-  background-color: rgba(24, 38, 70, 0.2);
+  color: #fff;
+  background-color: #2196F3;
 }
 .hasActionList .ivu-modal-body {
   padding: 0;
 }
 .modifiedWrap .pageWrap {
   padding: 5px 15px;
+}
+.modifiedWrap .detailInfo {
+  line-height: 1.5;
+}
+.modifiedWrap .detailInfo span {
+  display: inline-block;
+  font-size: 13px;
+}
+.modifiedWrap .detailInfo .detailLabel {
+  width: 100px;
+  text-align: right;
 }
 .modifiedWrap table {
   width: 100%;
@@ -528,7 +657,7 @@ table {
 .pageWrap .ivu-page-item-active a {
   color: white;
 }
-.mapContainer .mapWrap {
+.mapContainer {
   position: fixed;
   z-index: 5;
   top: 0;
@@ -536,10 +665,18 @@ table {
   width: 100%;
   height: 100%;
 }
+.mapContainer .mapWrap {
+  position: fixed;
+  z-index: 5; 
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
 .mapContainer .mapWrap .mousePosition {
   position: absolute;
-  bottom: 7px;
-  left: 150px;
+  bottom: 8px;
+  left: 130px;
   z-index: 200000;
   padding: 3px 8px;
   background-color: rgba(0, 60, 136, 0.3);
@@ -561,11 +698,11 @@ table {
 .mapContainer .mapWrap .overViewMap {
   bottom: auto;
   left: auto;
-  right: 100px;
-  bottom: 10px;
+  right: 10px;
+  bottom: 5px;
 }
 .mapContainer .mapWrap .overViewMap:not(.ol-collapsed) {
-  border: 1px solid black;
+  border: 4px solid rgba(0, 0, 0, 0.2);
 }
 .mapContainer .mapWrap .overViewMap:not(.ol-collapsed) button {
   bottom: auto;
@@ -580,6 +717,9 @@ table {
 .mapContainer .mapWrap .overViewMap .ol-overviewmap-box {
   border: 2px solid red;
 }
+.mapContainer .mapWrap .overViewMap.ol-collapsed .ol-overviewmap-map {
+  display: none;
+}
 .mapContainer .mapWrap .ol-full-screen {
   top: auto;
   bottom: 30px;
@@ -590,12 +730,22 @@ table {
 .mapContainer .mapWrap.cursorMouse {
   cursor: url("/airport/assets/img/camera.png");
 }
+.mapContainer .mapWrap .ol-zoomslider {
+  top: 90px;
+}
 .mapContainer .searchWrap {
   position: absolute;
   z-index: 100000000000;
   top: 50px;
   left: 50px;
-  width: 20%;
+  width: 40%;
+}
+.mapContainer .searchWrap .ivu-btn {
+  position: relative;
+  z-index: 10;
+  top: 3px;
+  padding: 5px;
+  font-size: 13px;
 }
 .mapContainer .searchWrap .ivu-input-group .ivu-input {
   left: 0;
@@ -605,7 +755,7 @@ table {
   position: absolute;
   z-index: 100000000;
   top: 50px;
-  right: -2px;
+  right: 0;
 }
 .mapContainer .menuWrap ul {
   height: 40px;
@@ -617,10 +767,87 @@ table {
   overflow: hidden;
 }
 .mapContainer .menuWrap ul.ivu-menu-light {
+  padding-right: 10px;
   background-color: rgba(255, 255, 255, 0.8);
+}
+.mapContainer .menuWrap ul .ivu-menu-item {
+  padding: 0 5px;
 }
 .mapContainer .menuWrap i {
   font-size: 24px;
+}
+.mapContainer .ol-popup {
+  display: none;
+  position: absolute;
+  z-index: 0;
+  background-color: white;
+  -webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #cccccc;
+  bottom: 12px;
+  left: -50px;
+  min-width: 230px;
+}
+.mapContainer .ol-popup.ol-vehicle {
+  bottom: 50px;
+  min-width: 250px;
+}
+.mapContainer .ol-popup.ol-vehicle .trajectoryAction {
+  padding: 5px 0;
+}
+.mapContainer .ol-popup:after,
+.mapContainer .ol-popup:before {
+  top: 100%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+}
+.mapContainer .ol-popup:after {
+  border-top-color: white;
+  border-width: 10px;
+  left: 48px;
+  margin-left: -10px;
+}
+.mapContainer .ol-popup:before {
+  border-top-color: #cccccc;
+  border-width: 11px;
+  left: 48px;
+  margin-left: -11px;
+}
+.mapContainer .ol-popup .ol-popup-closer {
+  text-decoration: none;
+  position: absolute;
+  top: 2px;
+  right: 8px;
+}
+.mapContainer .ol-popup .ol-popup-closer:after {
+  content: "X";
+  cursor: pointer;
+}
+.mapContainer .moveVehicle,
+.mapContainer .searchVehicle {
+  position: absolute;
+  display: none;
+  z-index: 0;
+  width: 40px;
+  height: 60px;
+  bottom: -8px;
+  left: -10px;
+  background-size: 100%;
+}
+.mapContainer .searchVehicle {
+  display: block;
+  z-index: 100000;
+  width: 144px;
+  height: 120px;
+  bottom: 120px;
+  left: -300px;
+  opacity: 0;
 }
 .mapModal .ivu-modal-body {
   padding: 0;
@@ -645,6 +872,12 @@ table {
   z-index: 0;
   top: 3px;
   font-size: 16px;
+}
+.mapModal .modalTitle .areaTip {
+  color: #fff;
+  font-size: 12px;
+  background-color: #607D8B;
+  padding: 3px;
 }
 .mapModal .mapSearch {
   padding: 10px 10px 5px 10px;
@@ -710,5 +943,14 @@ table {
   width: 100%;
 }
 .mapModal.detailInfoModal .ivu-poptip .ivu-poptip-rel {
+  width: 100%;
+}
+.modifyPassPop {
+  width: 50%;
+  background: #fff;
+  padding: 20px 10px;
+  border-radius: 15px;
+}
+.modifyPassPop table {
   width: 100%;
 }

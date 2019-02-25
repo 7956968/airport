@@ -53,7 +53,7 @@
         <div class="top">
             <Row type="flex" justify="start" gutter="0">
                 <i-col span="22">
-                    <div class="searchWrap">
+                    <!-- <div class="searchWrap">
                         <table>
                             <tbody>
                                 <tr>
@@ -71,7 +71,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
+                    </div> -->
                 </i-col>
                 <i-col span="2">
                     <div class="actionWrap">
@@ -87,24 +87,24 @@
 
         <div class="tableWrap">
             <template>
-                <i-table :height="tableHeight" :loading="isTableLoading" highlight-row :columns="columnsList" :data="dataList" stripe="true"
-                    size="small" @on-current-change="setCurrentRowData($event)"></i-table>
+                <i-table :height="tableHeight" :loading="isTableLoading" highlight-row :columns="msgColumList" :data="msgTableList" stripe="true" size="small"></i-table>
             </template>
         </div>
 
         <div class="pageWrap">
             <template>
-                <Page :total="100" show-sizer show-total show-elevator />
+                <Page :total="pageInfo.count" @on-change="pageSizeChange" @on-page-size-change="pageRowChange" :page-size="20" show-sizer show-total />
             </template>
         </div>
 
+        <script src="/airport/assets/js/vue.min.js"></script>
+        <script src="/airport/assets/vender/iView/iview.min.js"></script>
+        <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
+        <script src="/airport/assets/js/md5.min.js"></script>
+        <script src="/airport/assets/js/config.min.js?v=5756574646372"></script>
+        <script src="/airport/assets/js/utility.min.js?v=5756574646372"></script>
+        <script src="/airport/www/module/messageList/messageList.min.js?v=5756574646372"></script>
     </div>
-    <script src="/airport/assets/js/vue.min.js"></script>
-    <script src="/airport/assets/vender/iView/iview.min.js"></script>
-    <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
-    <script src="/airport/assets/js/config.min.js"></script>
-    <script src="/airport/assets/js/utility.min.js"></script>
-    <script src="/airport/www/module/messageList/messageList.min.js?v=093939"></script>
 </body>
 
 </html>

@@ -1,19 +1,61 @@
 (function () {
     var language = utility.getLocalStorage("language");
     var userInfo = utility.getLocalStorage("userInfo");
+    var bizParam = utility.getLocalStorage("bizParam");
+    var userFuncList = utility.getLocalStorage("userFuncList");
     var pageVue = new Vue({
         "el": "#js-vue",
         "data": {
             "language": !!language ? language["language"] : "CN",
             "isTableLoading": true,
             "isShowModal": false,
+            "isShowDetail": false,
             "isModalLoading": true,
             "modalTitle": "",
+            "cameraFunc": (function(){
+                var func = JSON.stringify(userFuncList["menu_map"]);
+                // 如果是管理防区
+                if(func.indexOf("device_manage_camera")!=-1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }()),
             "tableHeight": (function () {
                 var containerHeight = $(".tableContainer").height();
                 return containerHeight - 100;
             }()),
-            "itemInfo": null,
+            "monitorStatusList": bizParam["monitorStatusId"], // 监控状态
+            "index": 0,
+            "selectItem": null,
+            "pageInfo": {
+                "count": 0,
+                "pageNum": 0,
+                "pageSize": 20,
+                "companyId": "",
+                "cameraName": "",
+                "cameraCode": "",
+                "monitorStatus": ""
+            },
+            "itemInfo": {
+                "id": "", // 摄像机ID
+                "companyId": "", // 所属公司ID 
+                "companyName": "", // 公司名称
+                "deptId": "", // 部门ID，可选
+                "deptName": "", // 部门名称
+                "cameraName": "", // 摄像机名称
+                "cameraCode": "", // 摄像机编码
+                "cameraDesc": "", // 摄像机描述
+                "cameraPositionStr": "", // 位置坐标
+                "radius": "", // 摄像头监控半径（单位米）
+                "angle": "", // 视野角度
+                "monitorStatus": "", // 摄像头监控状态：
+                "remark": "", // 备注
+                "rtspLiveUrl": "", // Rtsp直播地址
+                "rtspHisUrl": "", // Rtsp录播地址
+                "createUserId": userInfo["id"], // 创建用户ID，新增时必传
+                "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传
+            },
             "columnsList": [
                 {
                     "type": "index",
@@ -21,24 +63,28 @@
                     "align": "center"
                 },
                 {
-                    "title": { "CN": "ID", "EN": "ID", "TW": "ID" }[language["language"]],
-                    "key": "number"
+                    "title": { "CN": "公司", "EN": "Company", "TW": "公司" }[language["language"]],
+                    "key": "companyName"
                 },
                 {
                     "title": { "CN": "名称", "EN": "Name", "TW": "名稱" }[language["language"]],
-                    "key": "name"
+                    "key": "cameraName"
+                },
+                {
+                    "title": { "CN": "名称", "EN": "Name", "TW": "名稱" }[language["language"]],
+                    "key": "cameraCode"
                 },
                 {
                     "title": { "CN": "描述", "EN": "Describe", "TW": "描述" }[language["language"]],
-                    "key": "describe"
+                    "key": "cameraDesc"
                 },
                 {
-                    "title": { "CN": "trsp地址", "EN": "rtsp Address", "TW": "rtsp地址" }[language["language"]],
-                    "key": "trsp"
+                    "title": { "CN": "Rtsp直播地址", "EN": "Live URL", "TW": "Rtsp直播地址" }[language["language"]],
+                    "key": "rtspLiveUrl"
                 },
                 {
-                    "title": { "CN": "方向", "EN": "Direction", "TW": "方向" }[language["language"]],
-                    "key": "direction"
+                    "title": { "CN": "Rtsp录播地址", "EN": "Delayed URL", "TW": "Rtsp錄播地址" }[language["language"]],
+                    "key": "rtspHisUrl"
                 },
                 {
                     "title": { "CN": "半径", "EN": "Radius", "TW": "半徑" }[language["language"]],
@@ -46,275 +92,80 @@
                 },
                 {
                     "title": { "CN": "视野角度", "EN": "Angle Of View", "TW": "視野角度" }[language["language"]],
-                    "key": "view"
+                    "key": "angle"
                 },
                 {
-                    "title": { "CN": "创建用户", "EN": "Founder", "TW": "創建用戶etyn" }[language["language"]],
-                    "key": "founder"
+                    "title": { "CN": "状态", "EN": "State", "TW": "狀態" }[language["language"]],
+                    "key": "monitorStatus"
                 },
                 {
-                    "title": { "CN": "创建时间", "EN": "Creation Time", "TW": "創建時間" }[language["language"]],
-                    "key": "time"
+                    "title": { "CN": "操作", "EN": "Operation", "TW": "操作" }[language["language"]],
+                    "key": "operation",
+                    "width": 180,
+                    "render": function (h, params) {
+                        var func = JSON.stringify(userFuncList["menu_map"]);
+                        var label = "";
+                        var deleteAction = null;
+                        // 如果是管理防区
+                        if(func.indexOf("device_manage_camera")!=-1) {
+                            label = { "CN": "编辑", "EN": "Edite", "TW": "編輯" }[language["language"]];
+                            deleteAction = h("Button", {
+                                "props": {
+                                    "type": "error",
+                                    "size": "small",
+                                },
+                                "on": {
+                                    "click": function () {
+                                        pageVue.index = params.index;
+                                        pageVue.selectItem = params.row;
+                                        pageVue.delItem();
+                                    }
+                                }
+                            }, { "CN": "删除", "EN": "Delete", "TW": "刪除" }[language["language"]])
+                        } else {
+                            label = { "CN": "查看", "EN": "View", "TW": "查看" }[language["language"]]
+                        }
+                        return h("div", [
+                            h("Button", {
+                                "props": {
+                                    "type": "primary",
+                                    "size": "small",
+                                },
+                                "style": {
+                                    "marginRight": '5px'
+                                },
+                                "on": {
+                                    "click": function () {
+                                        pageVue.index = params.index;
+                                        pageVue.selectItem = params.row;
+                                        pageVue.showDetail();
+                                    }
+                                }
+                            }, { "CN": "详情", "EN": "Detail", "TW": "詳情" }[language["language"]]),
+                            h("Button", {
+                                "props": {
+                                    "type": "warning",
+                                    "size": "small",
+                                },
+                                "style": {
+                                    "marginRight": '5px'
+                                },
+                                "on": {
+                                    "click": function () {
+                                        pageVue.index = params.index;
+                                        pageVue.selectItem = params.row;
+                                        pageVue.editItem();
+                                    }
+                                }
+                            }, label),
+                            deleteAction
+                        ]);
+                    }
                 }
             ],
-            "dataList": [
-                {
-                    "id": 1,
-                    "number": "ID",
-                    "name": "名称",
-                    "describe": "描述",
-                    "trsp": "trsp地址",
-                    "direction": "方向",
-                    "radius": "半径",
-                    "view": "视野角度",
-                    "founder": "创建用户",
-                    "time": "创建时间"
-                },
-                {
-                    "id": 2,
-                    "number": "ID",
-                    "name": "名称",
-                    "describe": "描述",
-                    "trsp": "trsp地址",
-                    "direction": "方向",
-                    "radius": "半径",
-                    "view": "视野角度",
-                    "founder": "创建用户",
-                    "time": "创建时间"
-                },
-                {
-                    "id": 3,
-                    "number": "ID",
-                    "name": "名称",
-                    "describe": "描述",
-                    "trsp": "trsp地址",
-                    "direction": "方向",
-                    "radius": "半径",
-                    "view": "视野角度",
-                    "founder": "创建用户",
-                    "time": "创建时间"
-                },
-                {
-                    "id": 4,
-                    "number": "ID",
-                    "name": "名称",
-                    "describe": "描述",
-                    "trsp": "trsp地址",
-                    "direction": "方向",
-                    "radius": "半径",
-                    "view": "视野角度",
-                    "founder": "创建用户",
-                    "time": "创建时间"
-                },
-                {
-                    "id": 5,
-                    "number": "ID",
-                    "name": "名称",
-                    "describe": "描述",
-                    "trsp": "trsp地址",
-                    "direction": "方向",
-                    "radius": "半径",
-                    "view": "视野角度",
-                    "founder": "创建用户",
-                    "time": "创建时间"
-                },
-                {
-                    "id": 6,
-                    "number": "ID",
-                    "name": "名称",
-                    "describe": "描述",
-                    "trsp": "trsp地址",
-                    "direction": "方向",
-                    "radius": "半径",
-                    "view": "视野角度",
-                    "founder": "创建用户",
-                    "time": "创建时间"
-
-                },
-                {
-                    "id": 7,
-                    "number": "ID",
-                    "name": "名称",
-                    "describe": "描述",
-                    "trsp": "trsp地址",
-                    "direction": "方向",
-                    "radius": "半径",
-                    "view": "视野角度",
-                    "founder": "创建用户",
-                    "time": "创建时间"
-                },
-                {
-                    "id": 8,
-                    "number": "ID",
-                    "name": "名称",
-                    "describe": "描述",
-                    "trsp": "trsp地址",
-                    "direction": "方向",
-                    "radius": "半径",
-                    "view": "视野角度",
-                    "founder": "创建用户",
-                    "time": "创建时间"
-                },
-                {
-                    "id": 9,
-                    "number": "ID",
-                    "name": "名称",
-                    "describe": "描述",
-                    "trsp": "trsp地址",
-                    "direction": "方向",
-                    "radius": "半径",
-                    "view": "视野角度",
-                    "founder": "创建用户",
-                    "time": "创建时间"
-                },
-                {
-                    "id": 10,
-                    "number": "ID",
-                    "name": "名称",
-                    "describe": "描述",
-                    "trsp": "trsp地址",
-                    "direction": "方向",
-                    "radius": "半径",
-                    "view": "视野角度",
-                    "founder": "创建用户",
-                    "time": "创建时间"
-                },
-                {
-                    "id": 11,
-                    "number": "ID",
-                    "name": "名称",
-                    "describe": "描述",
-                    "trsp": "trsp地址",
-                    "direction": "方向",
-                    "radius": "半径",
-                    "view": "视野角度",
-                    "founder": "创建用户",
-                    "time": "创建时间"
-                },
-                {
-                    "id": 12,
-                    "number": "ID",
-                    "name": "名称",
-                    "describe": "描述",
-                    "trsp": "trsp地址",
-                    "direction": "方向",
-                    "radius": "半径",
-                    "view": "视野角度",
-                    "founder": "创建用户",
-                    "time": "创建时间"
-                },
-                {
-                    "id": 13,
-                    "number": "ID",
-                    "name": "名称",
-                    "describe": "描述",
-                    "trsp": "trsp地址",
-                    "direction": "方向",
-                    "radius": "半径",
-                    "view": "视野角度",
-                    "founder": "创建用户",
-                    "time": "创建时间"
-                },
-                {
-                    "id": 14,
-                    "number": "ID",
-                    "name": "名称",
-                    "describe": "描述",
-                    "trsp": "trsp地址",
-                    "direction": "方向",
-                    "radius": "半径",
-                    "view": "视野角度",
-                    "founder": "创建用户",
-                    "time": "创建时间"
-                },
-                {
-                    "id": 15,
-                    "number": "ID",
-                    "name": "名称",
-                    "describe": "描述",
-                    "trsp": "trsp地址",
-                    "direction": "方向",
-                    "radius": "半径",
-                    "view": "视野角度",
-                    "founder": "创建用户",
-                    "time": "创建时间"
-                },
-                {
-                    "id": 16,
-                    "number": "ID",
-                    "name": "名称",
-                    "describe": "描述",
-                    "trsp": "trsp地址",
-                    "direction": "方向",
-                    "radius": "半径",
-                    "view": "视野角度",
-                    "founder": "创建用户",
-                    "time": "创建时间"
-                },
-                {
-                    "id": 17,
-                    "number": "ID",
-                    "name": "名称",
-                    "describe": "描述",
-                    "trsp": "trsp地址",
-                    "direction": "方向",
-                    "radius": "半径",
-                    "view": "视野角度",
-                    "founder": "创建用户",
-                    "time": "创建时间"
-                },
-                {
-                    "id": 18,
-                    "number": "ID",
-                    "name": "名称",
-                    "describe": "描述",
-                    "trsp": "trsp地址",
-                    "direction": "方向",
-                    "radius": "半径",
-                    "view": "视野角度",
-                    "founder": "创建用户",
-                    "time": "创建时间"
-                },
-                {
-                    "id": 19,
-                    "number": "ID",
-                    "name": "名称",
-                    "describe": "描述",
-                    "trsp": "trsp地址",
-                    "direction": "方向",
-                    "radius": "半径",
-                    "view": "视野角度",
-                    "founder": "创建用户",
-                    "time": "创建时间"
-                },
-                {
-                    "id": 19,
-                    "number": "ID",
-                    "name": "名称",
-                    "describe": "描述",
-                    "trsp": "trsp地址",
-                    "direction": "方向",
-                    "radius": "半径",
-                    "view": "视野角度",
-                    "founder": "创建用户",
-                    "time": "创建时间"
-                },
-                {
-                    "id": 20,
-                    "number": "ID",
-                    "name": "名称",
-                    "describe": "描述",
-                    "trsp": "trsp地址",
-                    "direction": "方向",
-                    "radius": "半径",
-                    "view": "视野角度",
-                    "founder": "创建用户",
-                    "time": "创建时间"
-                }
-            ]
-        },
-        "watch": {
-
+            "dataList": [],
+            "cameraList": [],
+            "companyList": []
         },
         "methods": {
             // 刷新
@@ -329,36 +180,221 @@
                 }
             },
             //新增
-            "add": function () {
+            "addItem": function () {
                 var self = this;
                 self.isShowModal = true;
                 self.isModalLoading = true;
                 self.modalTitle = { "CN": "新增", "EN": "Add", "TW": "新增" }[self.language];
+                self.itemInfo = {
+                    "id": "", // 车辆ID
+                    "companyId": "", // 所属公司ID
+                    "companyName": "", // 公司名称
+                    "providerId": "", // 供应商ID
+                    "deviceCode": "", // 定位终端设备编号
+                    "remark": "", // 车辆备注
+                    "dataPeriod": "", // 数据上报周期(单位秒)
+                    "versionName": "", // 系统软件版本名
+                    "versionNum": "", // 系统软件版本号，如100
+                    "deviceStatus": "", // 定位设备运行状态
+                    "deptId": "", // 部门名称
+                    "deptName": "", // 部门名称
+                    "speed": "", // 当前速度（米/秒）
+                    "power": "", // 终端电量（百分比）
+                    "lastPosition": "", // 当前经纬度坐标
+                    "lastDataTime": "", // 数据最后上报时间
+                };
             },
-            //编辑
-            "edit": function () {
+            // 修改
+            "editItem": function () {
                 var self = this;
                 utility.showMessageTip(self, function () {
+                    self.itemInfo = JSON.parse(JSON.stringify(self.cameraList[self.index]));
+                    self.itemInfo.remark = decodeURI(self.cameraList[self.index]["remark"]);
+                    self.itemInfo.cameraName = decodeURI(self.cameraList[self.index]["cameraName"]);
+                    self.itemInfo.cameraCode = decodeURI(self.cameraList[self.index]["cameraCode"]);
+                    self.itemInfo.cameraDesc = decodeURI(self.cameraList[self.index]["cameraDesc"]);
                     self.isShowModal = true;
                     self.modalTitle = { "CN": "修改", "EN": "Edit", "TW": "修改" }[self.language];
                 });
             },
-            // 当选择的行发生变化时 
-            "setCurrentRowData": function (event) {
+            // 查看详情
+            "showDetail": function () {
                 var self = this;
-
-                console.log(event);
-
-                if (!!event) {
-                    self.itemInfo = event;
-                }
+                utility.showMessageTip(self, function () {
+                    self.itemInfo = JSON.parse(JSON.stringify(self.cameraList[self.index]));
+                    self.itemInfo.remark = decodeURI(self.cameraList[self.index]["remark"]);
+                    self.itemInfo.cameraName = decodeURI(self.cameraList[self.index]["cameraName"]);
+                    self.itemInfo.cameraCode = decodeURI(self.cameraList[self.index]["cameraCode"]);
+                    self.itemInfo.cameraDesc = decodeURI(self.cameraList[self.index]["cameraDesc"]);
+                    self.isShowDetail = true;
+                });
+            },
+            // 删除
+            "delItem": function () {
+                var self = this;
+                self.$Modal.confirm({
+                    "title": "确定删除？",
+                    "width": 200,
+                    "onOk": function() {
+                        self.itemInfo = self.cameraList[self.index];
+                        utility.showMessageTip(self, function () {
+                            utility.interactWithServer({
+                                url: CONFIG.HOST + CONFIG.SERVICE.deviceService + "?action=" + CONFIG.ACTION.delCamera + "&ids=" + self.itemInfo.id + "&modifyUserId=" + userInfo["id"],
+                                actionUrl: CONFIG.SERVICE.deviceService,
+                                beforeSendCallback: function () {
+                                    self.isTableLoading = true;
+                                },
+                                completeCallback: function () {
+                                    self.isTableLoading = false;
+                                },
+                                successCallback: function (data) {
+                                    if (data.code == 200) {
+                                        self.getCameraList(true);
+                                    } else {
+                                        self.$Message.error(data.message);
+                                    }
+                                }
+                            });
+                        });
+                    }
+                });
+            },
+            // 页数改变时的回调
+            "pageSizeChange": function (value) {
+                var self = this;
+                self.pageInfo.pageNum = parseInt(value, 10);
+                setTimeout(function () {
+                    self.getCameraList(false);
+                }, 200);
+            },
+            // 切换每页条数时的回调
+            "pageRowChange": function (value) {
+                var self = this;
+                self.pageInfo.pageSize = parseInt(value, 10);
+                setTimeout(function () {
+                    self.getCameraList(false);
+                }, 200);
+            },
+            // 当选择的行发生变化时 
+            "setCurrentRowData": function (item, index) {
+                var self = this;
+                self.index = index;
+                self.selectItem = item;
             },
             // 提交信息到服務器
             "uploadDataToServer": function () {
                 var self = this;
-                setTimeout(function () {
-                    self.isModalLoading = false;
-                }, 2000);
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.deviceService + "?action=" + CONFIG.ACTION.saveCamera,
+                    actionUrl: CONFIG.SERVICE.deviceService,
+                    dataObj: {
+                        "id": self.itemInfo["id"], // 摄像机ID
+                        "companyId": self.itemInfo["companyId"], // 所属公司ID 
+                        "companyName": encodeURI(self.itemInfo["companyName"]), // 公司名称
+                        "deptId": self.itemInfo["deptId"], // 部门ID，可选
+                        "deptName": encodeURI(self.itemInfo["deptName"]), // 部门名称
+                        "cameraName": encodeURI(self.itemInfo["cameraName"]), // 摄像机名称
+                        "cameraCode": encodeURI(self.itemInfo["cameraCode"]), // 摄像机编码
+                        "cameraDesc": encodeURI(self.itemInfo["cameraDesc"]), // 摄像机描述
+                        "radius": self.itemInfo["radius"], // 摄像头监控半径（单位米）
+                        "angle": self.itemInfo["angle"], // 视野角度
+                        "monitorStatus": self.itemInfo["monitorStatus"], // 摄像头监控状态：
+                        "remark": encodeURI(self.itemInfo["remark"]), // 备注
+                        "rtspLiveUrl": self.itemInfo["rtspLiveUrl"], // Rtsp直播地址
+                        "rtspHisUrl": self.itemInfo["rtspHisUrl"], // Rtsp录播地址
+                        "createUserId": userInfo["id"], // 创建用户ID，新增时必传
+                        "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传  
+                    },
+                    completeCallback: function () {
+                        self.isModalLoading = false;
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            self.getCameraList(true);
+                            self.isShowModal = false;
+                        } else {
+                            self.$Message.error(data.message);
+                        }
+                    }
+                });
+            },
+            // 格式化摄像机列表数据
+            "formatCameraData": function () {
+                var self = this;
+                for (var i = 0, len = self.cameraList.length; i < len; i++) {
+                    self.dataList.push({
+                        "id": self.cameraList[i]["id"], // 摄像机ID
+                        "companyId": self.cameraList[i]["companyId"], // 所属公司ID 
+                        "companyName": decodeURI(self.cameraList[i]["companyName"]), // 公司名称
+                        "deptId": self.cameraList[i]["deptId"], // 部门ID，可选
+                        "deptName": decodeURI(self.cameraList[i]["deptName"]), // 部门名称
+                        "cameraName": decodeURI(self.cameraList[i]["cameraName"]), // 摄像机名称
+                        "cameraCode": decodeURI(self.cameraList[i]["cameraCode"]), // 摄像机编码
+                        "cameraDesc": decodeURI(self.cameraList[i]["cameraDesc"]), // 摄像机描述
+                        "radius": self.cameraList[i]["radius"], // 摄像头监控半径（单位米）
+                        "angle": self.cameraList[i]["angle"], // 视野角度
+                        "monitorStatus": self.cameraList[i]["monitorStatusName"], // 摄像头监控状态：
+                        "remark": decodeURI(self.cameraList[i]["remark"]), // 备注
+                        "rtspLiveUrl": self.cameraList[i]["rtspLiveUrl"], // Rtsp直播地址
+                        "rtspHisUrl": self.cameraList[i]["rtspHisUrl"], // Rtsp录播地址
+                    });
+                }
+            },
+            // 获取摄像机列表数据
+            "getCameraList": function (bool) {
+                var self = this;
+                // 如果是查询，则重新从第一页开始
+                self.dataList = [];
+                if (bool == true) {
+                    self.pageInfo.pageNum = 0;
+                }
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.deviceService + "?action=" + CONFIG.ACTION.getCameraList,
+                    actionUrl: CONFIG.SERVICE.deviceService,
+                    dataObj: self.pageInfo,
+                    beforeSendCallback: function () {
+                        self.isTableLoading = true;
+                    },
+                    completeCallback: function () {
+                        self.isTableLoading = false;
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            self.cameraList = data.data;
+                            self.pageInfo.count = data.count;
+                            self.formatCameraData();
+                        }
+                    }
+                });
+            },
+            // 获取公司列表
+            "getCompanyList": function () {
+                var self = this;
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.companyService + "?action=" + CONFIG.ACTION.getCompanyList,
+                    actionUrl: CONFIG.SERVICE.companyService,
+                    dataObj: {
+                        id: 0,
+                        pageSize: 10000,
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            self.companyList = data.data;
+                        }
+                    }
+                });
+            },
+            // 跳转到地图页面
+            "toMapPage": function() {
+                var self = this;
+                utility.setSessionStorage("fromInfo", {
+                    type: "isCamera",
+                    vehicleStatus: ""
+                });
+                setTimeout(function() {
+                    $(window.parent.document).find("#nav_Maps").bind("click");
+                    $(window.parent.document).find("#nav_Maps").trigger("click");
+                }, 200);
             }
         },
         "created": function () {
@@ -368,8 +404,9 @@
             utility.isLogin(false);
 
             setTimeout(function () {
-                self.isTableLoading = false;
-            }, 2000);
+                self.getCameraList(true);
+                self.getCompanyList();
+            }, 500);
         }
     });
 

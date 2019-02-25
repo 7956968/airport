@@ -18,14 +18,14 @@
                     "value": "CN",
                     "label": "中文",
                 },
-                {
-                    "value": "EN",
-                    "label": "English",
-                },
-                {
-                    "value": "TW",
-                    "label": "繁體",
-                }
+                // {
+                //     "value": "EN",
+                //     "label": "English",
+                // },
+                // {
+                //     "value": "TW",
+                //     "label": "繁體",
+                // }
             ],
             "title": { "CN": "民贵无动力设备管理系统", 'EN': "Mingui Non-Powered Euipment Management System", 'TW': "民貴無動力管理系統" }
         },
@@ -65,6 +65,43 @@
                 return true;
             },
 
+            // 重新格式化功能菜单
+            "formatFunMenu": function(data) {
+                var self = this;
+                var funcInfo = {
+                    "menu_map": [],
+                    "menu_org": [],
+                    "menu_device": [],
+                    "menu_report": [],
+                    "menu_system": []
+                };
+                var funcList = data["userFuncList"];
+                for(var i = 0, len = funcList.length; i < len; i++) {
+                    if(funcList[i]["functionCode"].indexOf("map_")!=-1 || 
+                        funcList[i]["functionCode"] == 'device_manage_vehicle' || 
+                        funcList[i]["functionCode"] == 'device_view_secure_area' || 
+                        funcList[i]["functionCode"] == 'device_manage_secure_area' || 
+                        funcList[i]["functionCode"] == 'device_manage_camera' || 
+                        funcList[i]["functionCode"] == 'device_view_camera'
+                    ) {
+                        funcInfo["menu_map"].push(funcList[i]);
+                    }
+                    if(funcList[i]["functionCode"].indexOf("org_manage_")!=-1) {
+                        funcInfo["menu_org"].push(funcList[i]);
+                    }
+                    if(funcList[i]["functionCode"].indexOf("device_manage_")!=-1) {
+                        funcInfo["menu_device"].push(funcList[i]);
+                    }
+                    if(funcList[i]["functionCode"].indexOf("report_")!=-1) {
+                        funcInfo["menu_report"].push(funcList[i]);
+                    }
+                    if(funcList[i]["functionCode"].indexOf("system_")!=-1) {
+                        funcInfo["menu_system"].push(funcList[i]);
+                    }
+                }
+                utility.setLocalStorage("userFuncList", funcInfo);
+            },
+
             // 执行登录
             "loginAction": function () {
                 var self = this;
@@ -88,6 +125,8 @@
                             if (data.code == 200) {
                                 utility.setLocalStorage("userInfo", data.data);
                                 utility.setLocalStorage("language", { "language": self.language });
+                                self.formatFunMenu(data.data);
+
                                 setTimeout(function () {
                                     window.location.href = "/airport/www/module/index/index.html";
                                 }, 500);
@@ -134,6 +173,13 @@
             // 获取省份数据
             self.getProvinceList();
 
+            document.onkeydown = function(e) {
+                var e = e || event;
+                var keyCode = e.keyCode || e.while || e.charCode;
+                if(keyCode == 13) {
+                    self.loginAction();
+                }
+            }
         }
     });
 

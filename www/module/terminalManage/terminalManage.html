@@ -59,13 +59,13 @@
                                 <tr>
                                     <td>
                                         <template>
-                                            {{{'CN':'终端编号','EN':'Terminal Number','TW':'終端編號'}[language]}}:
-                                            <i-input v-model="pageInfo.deviceCode" :placeholder="{'CN':'请输入查询关键字','EN':'Please Input Query Key','TW':'請輸入查詢關鍵字'}[language]" style="width: 150px"></i-input>
+                                            {{{'CN':'终端编号','EN':'Number','TW':'終端編號'}[language]}}:
+                                            <i-input v-model="pageInfo.deviceCode" :placeholder="{'CN':'请输入','EN':'Please Input Query Key','TW':'請輸入'}[language]" style="width: 100px"></i-input>
                                         </template>
                                     </td>
                                     <td>
                                         <template>
-                                            &nbsp;&nbsp;{{{'CN':'归属公司','EN':'Ownership Company','TW':'歸屬公司'}[language]}}:
+                                            &nbsp;&nbsp;{{{'CN':'公司','EN':'Company','TW':'公司'}[language]}}:
                                             <i-select v-model="pageInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100px;">
                                                 <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
                                                 <i-option v-for="item in companyList" :value="item.id">{{item.companyName}}</i-option>
@@ -80,9 +80,17 @@
                                         </template>
                                         <template>
                                             &nbsp;&nbsp;{{{'CN':'运行状态','EN':'Working Condition','TW':'運行狀態'}[language]}}:
-                                            <i-select v-model="pageInfo.vehicleStatus" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100px;">
+                                            <i-select v-model="pageInfo.deviceStatus" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100px;">
                                                 <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
-                                                <i-option v-for="item in vehicleStatuList" :value="item.type">{{item.name}}</i-option>
+                                                <i-option v-for="item in terminalStatusList" :value="item.type">{{item.name}}</i-option>
+                                            </i-select>
+                                        </template>
+                                        <template>
+                                            &nbsp;&nbsp;{{{'CN':'绑定到车辆','EN':'Binding To Vehicles','TW':'綁定到車輛'}[language]}}:
+                                            <i-select v-model="pageInfo.bindFlag" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100px;">
+                                                <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
+                                                <i-option value="1">{{{'CN':'已被绑定','EN':'Bound','TW':'已被綁定'}[language]}}</i-option>
+                                                <i-option value="2">{{{'CN':'未绑定','EN':'Unbound','TW':'未綁定'}[language]}}</i-option>
                                             </i-select>
                                         </template>
                                         <template>
@@ -99,9 +107,9 @@
                         <template>
                             <i-buttonGroup>
                                 <i-button @click="refresh" size="small" icon="ios-refresh">{{{'CN':'刷新','EN':'Refresh','TW':'刷新'}[language]}}</i-button>
-                                <i-button @click="addItem" size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
-                                <i-button @click="editItem" size="small" type="warning" icon="ios-paper-outline">{{{'CN':'编辑','EN':'Edit','TW':'編輯'}[language]}}</i-button>
-                                <i-button @click="delItem" size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button>
+                                <i-button @click="addItem" size="small" type="success" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
+                                <!-- <i-button @click="editItem" size="small" type="warning" icon="ios-paper-outline">{{{'CN':'编辑','EN':'Edit','TW':'編輯'}[language]}}</i-button>
+                                <i-button @click="delItem" size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button> -->
                             </i-buttonGroup>
                         </template>
                     </div>
@@ -123,13 +131,13 @@
         </div>
 
         <template>
-            <Modal v-model="isShowModal" :styles="{top: '60px'}" width="45" :title="modalTitle" :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
+            <Modal v-model="isShowModal" :styles="{top: '60px'}" width="30" :title="modalTitle" :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
                 :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" :loading="isModalLoading" @on-ok="uploadDataToServer">
                 <div class="modifiedWrap">
                     <table>
                         <tbody>
                             <tr>
-                                <td class="label">
+                                <td class="label" style="width: 70px;">
                                     <span class="request">＊</span>
                                     <span v-text="{'CN':'公司','EN':'Head','TW':'公司'}[language]"></span>
                                 </td>
@@ -140,13 +148,29 @@
                                         </i-select>
                                     </template>
                                 </td>
-                                <td class="label" style="width: 70px;">
-                                    <span v-text="{'CN':'部门','EN':'Superior Department','TW':'部門'}[language]"></span>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <span class="request">＊</span>
+                                    <span v-text="{'CN':'供应商','EN':'Supplier','TW':'供應商'}[language]"></span>
                                 </td>
                                 <td>
                                     <template>
-                                        <i-select v-model="itemInfo.deptId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
-                                            <i-option v-for="item in departmentList" :value="item.id">{{item.deptName}}</i-option>
+                                        <i-select v-model="itemInfo.providerId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <i-option v-for="item in deviceProviderList" :value="item.type">{{item.name}}</i-option>
+                                        </i-select>
+                                    </template>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <span class="request">＊</span>
+                                    <span v-text="{'CN':'运行状态','EN':'Working Condition','TW':'運行狀態'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <i-select v-model="itemInfo.deviceStatus" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <i-option v-for="item in terminalStatusList" :value="item.type">{{item.name}}</i-option>
                                         </i-select>
                                     </template>
                                 </td>
@@ -159,33 +183,6 @@
                                 <td>
                                     <i-input v-model="itemInfo.deviceCode"/>
                                 </td>
-
-                                <td class="label">
-                                    <span class="request">＊</span>
-                                    <span v-text="{'CN':'供应商','EN':'Supplier','TW':'供應商'}[language]"></span>
-                                </td>
-                                <td>
-                                    <template>
-                                        <i-select v-model="itemInfo.providerId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
-                                            <i-option v-for="item in deviceProviderList" :value="item.type">{{item.name}}</i-option>
-                                        </i-select>
-                                    </template>
-                                </td>
-                                
-                            </tr>
-                            <tr>
-                                <td class="label">
-                                    <span v-text="{'CN':'系统版本名','EN':'System Version','TW':'系統版本'}[language]"></span>
-                                </td>
-                                <td>
-                                    <i-input v-model="itemInfo.versionName"/>
-                                </td>
-                                <td class="label">
-                                    <span v-text="{'CN':'系统版本号','EN':'System Version No.','TW':'系統版本號'}[language]"></span>
-                                </td>
-                                <td>
-                                    <i-input v-model="itemInfo.versionNum"/>
-                                </td>
                             </tr>
                             <tr>
                                 <td class="label">
@@ -196,20 +193,77 @@
                                     <i-input v-model="itemInfo.dataPeriod"/>
                                 </td>
                             </tr>
+                            <tr>
+                                <td class="label">
+                                    <span v-text="{'CN':'系统版本名','EN':'System Version','TW':'系統版本'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input v-model="itemInfo.versionName"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <span v-text="{'CN':'系统版本号','EN':'System Version No.','TW':'系統版本號'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input v-model="itemInfo.versionNum"/>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </Modal>
         </template>
 
+
+        <template>
+            <Modal v-model="isShowDetail" :styles="{top: '60px'}" width="25" title="查看详情">
+                <div class="modifiedWrap">
+                    <table>
+                        <tbody>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'公司名称：','EN':'Company Name：','TW':'公司名稱：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.companyName"></span></td>
+                            </tr>
+                            
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'供应商：','EN':'Supplier：','TW':'供應商：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.providerId"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'运行状态：','EN':'Working Condition：','TW':'運行狀態：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.deviceStatus"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'终端编号：','EN':'Terminal No.：','TW':'終端編號：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.deviceCode"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'上报周期：','EN':'Reporting Cycle：','TW':'上報周期：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.dataPeriod"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'系统版本名：','EN':'System Version：','TW':'系統版本：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.versionName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'系统版本号：','EN':'System Version No.：','TW':'系統版本號：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.versionNum"></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </Modal>
+        </template>
+
+        <script src="/airport/assets/js/vue.min.js"></script>
+        <script src="/airport/assets/vender/iView/iview.min.js"></script>
+        <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
+        <script src="/airport/assets/js/md5.min.js"></script>
+        <script src="/airport/assets/js/config.min.js?v=5756574646372"></script>
+        <script src="/airport/assets/js/utility.min.js?v=5756574646372"></script>
+        <script src="/airport/www/module/terminalManage/terminalManage.min.js?v=5756574646372"></script>
     </div>
-    <script src="/airport/assets/js/vue.min.js"></script>
-    <script src="/airport/assets/vender/iView/iview.min.js"></script>
-    <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
-    <script src="/airport/assets/js/md5.min.js"></script>
-    <script src="/airport/assets/js/config.min.js"></script>
-    <script src="/airport/assets/js/utility.min.js"></script>
-    <script src="/airport/www/module/terminalManage/terminalManage.min.js?v=093939"></script>
 </body>
 
 </html>

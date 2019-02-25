@@ -93,9 +93,9 @@
                         <template>
                             <i-buttonGroup>
                                 <i-button @click="refresh" size="small" icon="ios-refresh">{{{'CN':'刷新','EN':'Refresh','TW':'刷新'}[language]}}</i-button>
-                                <i-button @click="addItem" size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
-                                <i-button @click="editItem" size="small" type="warning" icon="ios-paper-outline">{{{'CN':'编辑','EN':'Edit','TW':'編輯'}[language]}}</i-button>
-                                <i-button @click="delItem" size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button>
+                                <i-button @click="addItem" size="small" type="success" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
+                                <!-- <i-button @click="editItem" size="small" type="warning" icon="ios-paper-outline">{{{'CN':'编辑','EN':'Edit','TW':'編輯'}[language]}}</i-button>
+                                <i-button @click="delItem" size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button> -->
                             </i-buttonGroup>
                         </template>
                     </div>
@@ -205,7 +205,14 @@
                 <div class="modifiedWrap">
                     <div class="top">
                         <Row type="flex" justify="start" gutter="10">
-                            <i-col span="14"></i-col>
+                            <i-col span="14">
+                                <!-- <template>
+                                    &nbsp;&nbsp;{{{'CN':'新增成员组类型','EN':'Group Type','TW':'新增成員組類型'}[language]}}:
+                                    <i-select v-model="groupTypeId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:250px;">
+                                        <i-option v-for="item in groupTypeList" :value="item.type">{{item.name}}</i-option>
+                                    </i-select>
+                                </template> -->
+                            </i-col>
                             <i-col span="10">
                                 <div class="actionWrap">
                                     <template>
@@ -239,7 +246,7 @@
             <Modal v-model="isShowGroupTypeList" 
                 :styles="{top: '80px'}" 
                 width="58"
-                :title="{'CN':'数据权限组授权','EN':'Data Permission Group Authorization','TW':'數據權限組授權'}[language]" 
+                :title="{'CN':'组成员','EN':'Group Members','TW':'組成員'}[language]" 
                 :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
                 :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
                 :loading="isModalLoading" 
@@ -248,12 +255,12 @@
                 <div class="modifiedWrap">
                     <div class="tableWrap">
                         <template v-if="groupTypeDataList.length>0">
-                            <i-table height="300" @on-selection-change="selectTypeMemberChange" :loading="isTableLoading" highlight-row :columns="groupTypeColumsList" :data="groupTypeDataList" stripe="true" size="small"></i-table>
+                            <i-table :height="300" @on-selection-change="selectTypeMemberChange" :loading="isTableLoading" highlight-row :columns="groupTypeColumsList" :data="groupTypeDataList" stripe="true" size="small"></i-table>
                         </template>
                     </div>
                     <template>
                         <div class="pageWrap">
-                            <Page :total="groupTypePageInfo.count" show-sizer show-total />
+                            <Page :total="groupTypePageInfo.count" @on-change="groupTypePageRowChange" :page-size="groupTypePageInfo.pageSize" @on-page-size-change="groupTypePageSizeChange" show-sizer show-total />
                         </div>
                     </template>
                 </div>
@@ -264,7 +271,7 @@
         <template>
             <Modal v-model="isPermissions" 
                 :styles="{top: '60px'}" width="60" 
-                :title="{'CN':'数据权限','EN':'Role Functions','TW':'數據權限'}[language]"
+                :title="{'CN':'数据权限组授权','EN':'Data Permission Group Authorization','TW':'數據權限組授權'}[language]" 
                 :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
                 :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
                 :loading="isModalLoading"
@@ -273,7 +280,15 @@
                 <div class="modifiedWrap">
                     <div class="top">
                         <Row type="flex" justify="start" gutter="10">
-                            <i-col span="12"></i-col>
+                            <i-col span="12">
+                                <template>
+                                    &nbsp;&nbsp;{{{'CN':'分组类型','EN':'Group Type','TW':'分組類型'}[language]}}:
+                                    <i-select v-model="groupTypeId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:250px;">
+                                        <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
+                                        <i-option v-for="item in groupTypeList" :value="item.type">{{item.name}}</i-option>
+                                    </i-select>
+                                </template>
+                            </i-col>
                             <i-col span="12">
                                 <div class="actionWrap">
                                     <template>
@@ -306,7 +321,7 @@
             <Modal v-model="isFunctionList" 
                 :styles="{top: '80px'}" 
                 width="58"
-                :title="{'CN':'用户列表','EN':'User List','TW':'用戶列表'}[language]" 
+                :title="{'CN':'功能列表','EN':'User List','TW':'功能列表'}[language]" 
                 :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
                 :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
                 :loading="isModalLoading" 
@@ -326,14 +341,14 @@
                 </div>
             </Modal>
         </template>
+        <script src="/airport/assets/js/vue.min.js"></script>
+        <script src="/airport/assets/vender/iView/iview.min.js"></script>
+        <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
+        <script src="/airport/assets/js/md5.min.js"></script>
+        <script src="/airport/assets/js/config.min.js?v=5756574646372"></script>
+        <script src="/airport/assets/js/utility.min.js?v=5756574646372"></script>
+        <script src="/airport/www/module/dataGroup/dataGroup.min.js?v=5756574646372"></script>
     </div>
-    <script src="/airport/assets/js/vue.min.js"></script>
-    <script src="/airport/assets/vender/iView/iview.min.js"></script>
-    <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
-    <script src="/airport/assets/js/md5.min.js"></script>
-    <script src="/airport/assets/js/config.min.js"></script>
-    <script src="/airport/assets/js/utility.min.js"></script>
-    <script src="/airport/www/module/dataGroup/dataGroup.min.js?v=9494848"></script>
 </body>
 
 </html>

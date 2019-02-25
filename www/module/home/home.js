@@ -11,11 +11,11 @@
         },
         "methods": {
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
-            "isLogin": function() {
+            "isLogin": function () {
                 var self = this;
-                
+
                 // 判断是否有用户信息
-                if(!userInfo) {
+                if (!userInfo) {
                     alert("请先登录！");
                     window.parent.window.location.href = "/airport/www/login.html";
                 }

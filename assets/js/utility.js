@@ -217,7 +217,7 @@ window.utility = (function (utility) {
                 version: 100, // 默认100
                 timestamp: timestamp,
                 languageVer: languageVer, // cn：中文简体 en：英语 hk：中文繁体
-                appType: options.appType || "WWW", // 请求来源类型：1:H5 2:WWW 3:android app 4: ios app
+                appType: options.appType || 2, // 请求来源类型：1:H5 2:WWW 3:android app 4: ios app
                 actionUrl: options.actionUrl || "", // 使用接口URL(注意：不包含http://ip:port的服务器域名/IP+端口这部分)
                 userId: !!userInfo ? userInfo["id"] : "",
                 userToken: !!userInfo ? userInfo["userToken"] : "", // 登陆后会有，如无则为空字符串
@@ -230,6 +230,15 @@ window.utility = (function (utility) {
                 options.completeCallback && options.completeCallback(XMLHttpRequest, textStatus);
             },
             success: function (data) {
+                var isParent = window.parent;
+                if(data.code=="9003") {
+                    alert("请先登录！");
+                    if(!!isParent) {
+                        window.parent.window.location.href = "/airport/www/login.html";
+                    } else  {
+                        window.location.href = "/airport/www/login.html";
+                    }
+                }
                 options.successCallback && options.successCallback(data);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -275,6 +284,8 @@ window.utility = (function (utility) {
         // 判断是否有用户信息
         if(!userInfo) {
             alert("请先登录！");
+            utility.setLocalStorage("userInfo", null);
+            utility.setLocalStorage("userFuncList", null);
             if(isParent == true) {
                 window.location.href = "/airport/www/login.html";
             } else if(isParent == false) {
@@ -286,14 +297,16 @@ window.utility = (function (utility) {
     // 显示 messageTip
     utility.showMessageTip = function(self, callback) {
         if (!!!self.selectItem) {
+            self.$Message.config({
+                top: 180,
+                duration: 3
+            });
             self.$Message.error({
-                "content": { "CN": "请选择一条数据", "EN": "Please select a data", "TW": "請選擇一條數據" }[self.language],
-                "top": 200,
-                "duration": 3
+                "content": { "CN": "请选择一条数据", "EN": "Please select a Data", "TW": "請選擇一條數據" }[self.language]
             });
             return;
         }
-        self.isModalLoading = true;
+        self.isModalLoading = true; 
         !!callback && callback();
     };
 

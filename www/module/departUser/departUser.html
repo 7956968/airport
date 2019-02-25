@@ -52,26 +52,36 @@
     <div id="js-vue" class="tableContainer">
         <div class="top">
             <Row type="flex" justify="start" gutter="10">
-                <i-col span="18" class-name="">
+                <i-col span="18">
                     <div class="searchWrap">
                         <table>
                             <tbody>
                                 <tr>
                                     <td>
                                         <template>
-                                            {{{'CN':'部门','EN':'Superior Department','TW':'部門'}[language]}}:
-                                            <i-select v-model="pageInfo.deptId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:150px;">
+                                            {{{'CN':'归属公司','EN':'Ownership Company','TW':'歸屬公司'}[language]}}:
+                                            <i-select @on-change="getDepartmentList('pageInfo')" v-model="pageInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:150px;">
                                                 <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
-                                                <i-option v-for="item in departmentList" :value="item.id">{{item.deptName}}</i-option>
+                                                <i-option v-for="item in companyList" :value="item.id">{{item.companyName}}</i-option>
                                             </i-select>
                                         </template>
+                                    </td>
+                                    <td>
+                                        <template>&nbsp;&nbsp;{{{'CN':'部门','EN':'Superior Department','TW':'部門'}[language]}}:</template>
+                                    </td>
+                                    <td>
+                                        <template>
+                                            <Cascader :data="departmentList" v-model="pageInfo.deptId" trigger="hover" change-on-select style="width:180px;"></Cascader>
+                                        </template>
+                                    </td>
+                                    <td>
                                         <template>
                                             &nbsp;&nbsp;{{{'CN':'用户名称','EN':'User Name','TW':'用戶名稱'}[language]}}:
-                                            <i-input v-model="pageInfo.userName" :placeholder="{'CN':'请输入查询关键字','EN':'Please Input Query Key','TW':'請輸入查詢關鍵字'}[language]" style="width: 150px"></i-input>
+                                            <i-input v-model="pageInfo.userName" :placeholder="{'CN':'请输入查询关键字','EN':'Please Input Query Key','TW':'請輸入查詢關鍵字'}[language]" style="width: 120px"></i-input>
                                         </template>
                                         <template>
                                             &nbsp;&nbsp;{{{'CN':'职位名称','EN':'Job title','TW':'職位名稱'}[language]}}:
-                                            <i-input v-model="pageInfo.posiName" :placeholder="{'CN':'请输入查询关键字','EN':'Please Input Query Key','TW':'請輸入查詢關鍵字'}[language]" style="width: 150px"></i-input>
+                                            <i-input v-model="pageInfo.posiName" :placeholder="{'CN':'请输入查询关键字','EN':'Please Input Query Key','TW':'請輸入查詢關鍵字'}[language]" style="width: 120px"></i-input>
                                         </template>
                                     </td>
                                     <td>
@@ -85,14 +95,14 @@
                         </table>
                     </div>
                 </i-col>
-                <i-col span="6" class-name="">
+                <i-col span="6">
                     <div class="actionWrap">
                         <template>
                             <i-buttonGroup>
                                 <i-button @click="refresh" size="small" icon="ios-refresh">{{{'CN':'刷新','EN':'Refresh','TW':'刷新'}[language]}}</i-button>
-                                <i-button @click="addItem" size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
-                                <i-button @click="editItem" size="small" type="warning" icon="ios-paper-outline">{{{'CN':'编辑','EN':'Edit','TW':'編輯'}[language]}}</i-button>
-                                <i-button @click="delItem" size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button>
+                                <i-button @click="addItem" size="small" type="success" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
+                                <!-- <i-button @click="editItem" size="small" type="warning" icon="ios-paper-outline">{{{'CN':'编辑','EN':'Edit','TW':'編輯'}[language]}}</i-button>
+                                <i-button @click="delItem" size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button> -->
                             </i-buttonGroup>
                         </template>
                     </div>
@@ -121,15 +131,26 @@
                     <table>
                         <tbody>
                             <tr>
+                                <td class="label">
+                                    <span class="request">＊</span>
+                                    <span v-text="{'CN':'公司名称','EN':'Company Name','TW':'公司名稱'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <i-select @on-change="getDepartAndUser" v-model="itemInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <i-option v-for="item in companyList" :value="item.id">{{item.companyName}}</i-option>
+                                        </i-select>
+                                    </template>
+                                </td>
+                            </tr>
+                            <tr>
                                 <td class="label" style="width: 70px;">
                                     <span class="request">＊</span>
                                     <span v-text="{'CN':'部门','EN':'Superior Department','TW':'部門'}[language]"></span>
                                 </td>
                                 <td>
                                     <template>
-                                        <i-select v-model="itemInfo.deptId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
-                                            <i-option v-for="item in departmentList" :value="item.id">{{item.deptName}}</i-option>
-                                        </i-select>
+                                        <Cascader :data="superiorDepartmentList" v-model="itemInfo.deptIds" trigger="hover" change-on-select></Cascader>
                                     </template>
                                 </td>
                             </tr>
@@ -172,14 +193,48 @@
                 </div>
             </Modal>
         </template>
+
+        <template>
+            <Modal v-model="isShowDetail" :styles="{top: '60px'}" width="25" title="查看详情">
+                <div class="modifiedWrap">
+                    <table>
+                        <tbody>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'公司名称：','EN':'Company Name：','TW':'公司名稱：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.companyName"></span></td>
+                            </tr>
+                            
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span class="detailLabel" v-text="{'CN':'部门名称：','EN':'Department Name：','TW':'部門名稱：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.deptName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'职位类型','EN':'Job Type','TW':'職位類型'}[language]"></span></td>
+                                <td><span v-text="itemInfo.posiTypeName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'职位名称','EN':'Job Title','TW':'職位名稱'}[language]"></span></td>
+                                <td><span v-text="itemInfo.posiName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'用户','EN':'User','TW':'用戶'}[language]"></span></td>
+                                <td><span v-text="itemInfo.userName"></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </Modal>
+        </template>
+
+
+        <script src="/airport/assets/js/vue.min.js"></script>
+        <script src="/airport/assets/vender/iView/iview.min.js"></script>
+        <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
+        <script src="/airport/assets/js/md5.min.js"></script>
+        <script src="/airport/assets/js/config.min.js?v=5756574646372"></script>
+        <script src="/airport/assets/js/utility.min.js?v=5756574646372"></script>
+        <script src="/airport/www/module/departUser/departUser.min.js?v=5756574646372"></script>
     </div>
-    <script src="/airport/assets/js/vue.min.js"></script>
-    <script src="/airport/assets/vender/iView/iview.min.js"></script>
-    <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
-    <script src="/airport/assets/js/md5.min.js"></script>
-    <script src="/airport/assets/js/config.min.js"></script>
-    <script src="/airport/assets/js/utility.min.js"></script>
-    <script src="/airport/www/module/departUser/departUser.min.js?v=djdjdj"></script>
 </body>
 
 </html>

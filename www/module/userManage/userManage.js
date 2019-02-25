@@ -9,6 +9,7 @@
             "isTableLoading": true,
             "isShowModal": false,
             "isShowReset": false,
+            "isShowDetail": false,
             "isModalLoading": true,
             "modalTitle": "",
             "tableHeight": (function () {
@@ -40,7 +41,7 @@
                 "id": 0,
                 "count": 0,
                 "pageNum": 1,
-                "pageSize": 15,
+                "pageSize": 20,
                 "userCode": "", // 查询关键字（角色名称）
                 "userName": "", // 查询关键字（用户名称）
                 "companyId": "", // 公司ID
@@ -86,6 +87,60 @@
                 {
                     "title": { "CN": "备注", "EN": "Remarks", "TW": "備註" }[language["language"]],
                     "key": "remark"
+                },
+                {
+                    "title": { "CN": "操作", "EN": "Operation", "TW": "操作" }[language["language"]],
+                    "key": "operation",
+                    "width": 180,
+                    "render": function (h, params) {
+                        return h("div", [
+                            h("Button", {
+                                "props": {
+                                    "type": "primary",
+                                    "size": "small",
+                                },
+                                "style": {
+                                    "marginRight": '5px'
+                                },
+                                "on": {
+                                    "click": function () {
+                                        pageVue.index = params.index;
+                                        pageVue.selectItem = params.row;
+                                        pageVue.showDetail();
+                                    }
+                                }
+                            }, { "CN": "详情", "EN": "Detail", "TW": "詳情" }[language["language"]]),
+                            h("Button", {
+                                "props": {
+                                    "type": "warning",
+                                    "size": "small",
+                                },
+                                "style": {
+                                    "marginRight": '5px'
+                                },
+                                "on": {
+                                    "click": function () {
+                                        pageVue.index = params.index;
+                                        pageVue.selectItem = params.row;
+                                        pageVue.editItem();
+                                    }
+                                }
+                            }, { "CN": "编辑", "EN": "Edite", "TW": "編輯" }[language["language"]]),
+                            h("Button", {
+                                "props": {
+                                    "type": "error",
+                                    "size": "small",
+                                },
+                                "on": {
+                                    "click": function () {
+                                        pageVue.index = params.index;
+                                        pageVue.selectItem = params.row;
+                                        pageVue.delItem();
+                                    }
+                                }
+                            }, { "CN": "删除", "EN": "Delete", "TW": "刪除" }[language["language"]])
+                        ]);
+                    }
                 }
             ],
             "tableRowList": [],
@@ -145,35 +200,71 @@
                     self.modalTitle = { "CN": "修改", "EN": "Edit", "TW": "修改" }[self.language];
                 });
             },
+            // 修改
+            "showDetail": function () {
+                var self = this;
+                utility.showMessageTip(self, function () {
+                    self.itemInfo = self.userList[self.index];
+                    self.itemInfo.userName = decodeURI(self.itemInfo.userName);
+                    self.itemInfo.remark = decodeURI(self.itemInfo.remark);
+                    self.itemInfo.address = decodeURI(self.itemInfo.address);
+                    self.itemInfo.sexName = (function () {
+                        var sex = "";
+                        for (var s = 0, slen = self.sexTypeList.length; s < slen; s++) {
+                            if (self.sexTypeList[s]["type"] == self.itemInfo["sex"]) {
+                                sex = self.sexTypeList[s]["name"];
+                                break;
+                            }
+                        }
+                        return sex
+                    }());
+                    self.itemInfo.statusName = (function () {
+                        var statu = "";
+                        for (var s = 0, slen = self.userStatusTypeList.length; s < slen; s++) {
+                            if (self.userStatusTypeList[s]["type"] == self.itemInfo["status"]) {
+                                statu = self.userStatusTypeList[s]["name"];
+                                break;
+                            }
+                        }
+                        return statu
+                    }());
+                    self.isShowDetail = true;
+                });
+            },
             // 删除
             "delItem": function () {
                 var self = this;
-                self.itemInfo = self.userList[self.index];
-                // 先判断是否选择了一家公司
-                utility.showMessageTip(self, function () {
-                    utility.interactWithServer({
-                        url: CONFIG.HOST + CONFIG.SERVICE.userService + "?action=" + CONFIG.ACTION.delUser + "&ids=" + self.itemInfo.id + "&modifyUserId=" + userInfo["id"],
-                        actionUrl: CONFIG.SERVICE.userService,
-                        beforeSendCallback: function () {
-                            self.isTableLoading = true;
-                        },
-                        completeCallback: function () {
-                            self.isTableLoading = false;
-                        },
-                        successCallback: function (data) {
-                            if (data.code == 200) {
-                                self.getUserList(true);
-                            } else {
-                                self.$Message.error(data.message);
-                            }
-                        }
-                    });
+                self.$Modal.confirm({
+                    "title": "确定删除？",
+                    "width": 200,
+                    "onOk": function() {
+                        self.itemInfo = self.userList[self.index];
+                        utility.showMessageTip(self, function () {
+                            utility.interactWithServer({
+                                url: CONFIG.HOST + CONFIG.SERVICE.userService + "?action=" + CONFIG.ACTION.delUser + "&ids=" + self.itemInfo.id + "&modifyUserId=" + userInfo["id"],
+                                actionUrl: CONFIG.SERVICE.userService,
+                                beforeSendCallback: function () {
+                                    self.isTableLoading = true;
+                                },
+                                completeCallback: function () {
+                                    self.isTableLoading = false;
+                                },
+                                successCallback: function (data) {
+                                    if (data.code == 200) {
+                                        self.getUserList(true);
+                                    } else {
+                                        self.$Message.error(data.message);
+                                    }
+                                }
+                            });
+                        });
+                    }
                 });
             },
             // 页数改变时的回调
             "pageSizeChange": function (value) {
                 var self = this;
-                self.pageInfo.pageNum = parseInt(value, 10) - 1;
+                self.pageInfo.pageNum = parseInt(value, 10);
                 setTimeout(function () {
                     self.getUserList(false);
                 }, 200);
@@ -273,8 +364,8 @@
             "getUserList": function (bool) {
                 var self = this;
                 // 如果是查询，则重新从第一页开始
+                self.tableRowList = [];
                 if (bool == true) {
-                    self.tableRowList = [];
                     self.pageInfo.pageNum = 0;
                 }
                 utility.interactWithServer({

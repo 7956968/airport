@@ -14,385 +14,50 @@
                 var containerHeight = $(".tableContainer").height();
                 return containerHeight - 100;
             }()),
-            "itemInfo": null,
-            "columnsList": [
+            "pageInfo": {
+                "count": 0,
+                "pageNum": 1,
+                "pageSize": 20,
+            },
+            "timeDefensTableList": [],
+            "msgTableList": [],
+            "msgColumList": [
                 {
-                    "type": "index",
-                    "width": 60,
-                    "align": "center"
+                    "title": { "CN": "防区", "EN": "Defens", "TW": "防區" }[language["language"]],
+                    "key": "areaName"
                 },
                 {
-                    "title": { "CN": "唯一ID", "EN": "Unique ID", "TW": "車輛名稱" }[language["language"]],
-                    "key": "uniqueId"
+                    "title": { "CN": "防区编码", "EN": "Defens Code", "TW": "防區編碼" }[language["language"]],
+                    "key": "areaCode"
                 },
                 {
-                    "title": { "CN": "名字", "EN": "Name", "TW": "名字" }[language["language"]],
-                    "key": "name"
+                    "title": { "CN": "车辆", "EN": "Vehicle Name", "TW": "車輛" }[language["language"]],
+                    "key": "vehicleName"
                 },
                 {
-                    "title": { "CN": "状态", "EN": "State", "TW": "歸屬公司" }[language["language"]],
-                    "key": "state"
+                    "title": { "CN": "车辆编码", "EN": "Vehicle Code", "TW": "車輛編碼" }[language["language"]],
+                    "key": "vehicleCode"
                 },
                 {
-                    "title": { "CN": "速度", "EN": "Speed", "TW": "速度" }[language["language"]],
-                    "key": "speed"
+                    "title": { "CN": "状态", "EN": "State", "TW": "狀態" }[language["language"]],
+                    "key": "crossTypeName"
                 },
                 {
-                    "title": { "CN": "车辆类型", "EN": "Vehicle Type", "TW": "車輛類型" }[language["language"]],
-                    "key": "vehicleType"
+                    "title": { "CN": "时间", "EN": "Time", "TW": "時間" }[language["language"]],
+                    "key": "crossTime",
+                    "width": 150
                 },
                 {
-                    "title": { "CN": "消息时间", "EN": "Message Time", "TW": "消息時間" }[language["language"]],
-                    "key": "time"
-                },
-                {
-                    "title": { "CN": "电量", "EN": "Electric Quantity", "TW": "電量" }[language["language"]],
-                    "key": "electric"
-                },
-                {
-                    "title": { "CN": "朝向", "EN": "Orientation", "TW": "朝向" }[language["language"]],
-                    "key": "orientation"
-                },
-                {
-                    "title": { "CN": "行驶长度", "EN": "Driving Length", "TW": "行駛長度" }[language["language"]],
-                    "key": "lenght"
-                }
-            ],
-            "dataList": [
-                {
-                    "id": 1,
-                    "uniqueId": "唯一ID",
-                    
-                    "name": "名字",
-                    "state": "状态",
-                    "speed": "速度",
-                    "vehicleType": "车辆类型",
-                    "time": "消息时间",
-                    "electric": "电量",
-                    "orientation": "朝向",
-                    "lenght": "行驶长度"
-                },
-                {
-                    "id": 2,
-                    "uniqueId": "唯一ID",
-                    
-                    "name": "名字",
-                    
-                    "state": "状态",
-                    "speed": "速度",
-                    
-                    
-                    "vehicleType": "车辆类型",
-                    "time": "消息时间",
-                    "electric": "电量",
-                    "orientation": "朝向",
-                    "lenght": "行驶长度"
-                },
-                {
-                    "id": 3,
-                    "uniqueId": "唯一ID",
-                    
-                    "name": "名字",
-                    
-                    "state": "状态",
-                    "speed": "速度",
-                    
-                    
-                    "vehicleType": "车辆类型",
-                    "time": "消息时间",
-                    "electric": "电量",
-                    "orientation": "朝向",
-                    "lenght": "行驶长度"
-                },
-                {
-                    "id": 4,
-                    "uniqueId": "唯一ID",
-                    
-                    "name": "名字",
-                    
-                    "state": "状态",
-                    "speed": "速度",
-                    
-                    
-                    "vehicleType": "车辆类型",
-                    "time": "消息时间",
-                    "electric": "电量",
-                    "orientation": "朝向",
-                    "lenght": "行驶长度"
-                },
-                {
-                    "id": 5,
-                    "uniqueId": "唯一ID",
-                    
-                    "name": "名字",
-                    
-                    "state": "状态",
-                    "speed": "速度",
-                    
-                    
-                    "vehicleType": "车辆类型",
-                    "time": "消息时间",
-                    "electric": "电量",
-                    "orientation": "朝向",
-                    "lenght": "行驶长度"
-                },
-                {
-                    "id": 6,
-                    "uniqueId": "唯一ID",
-                    
-                    "name": "名字",
-                    
-                    "state": "状态",
-                    "speed": "速度",
-                    
-                    
-                    "vehicleType": "车辆类型",
-                    "time": "消息时间",
-                    "electric": "电量",
-                    "orientation": "朝向",
-                    "lenght": "行驶长度"
-                },
-                {
-                    "id": 7,
-                    "uniqueId": "唯一ID",
-                    
-                    "name": "名字",
-                    
-                    "state": "状态",
-                    "speed": "速度",
-                    
-                    
-                    "vehicleType": "车辆类型",
-                    "time": "消息时间",
-                    "electric": "电量",
-                    "orientation": "朝向",
-                    "lenght": "行驶长度"
-                },
-                {
-                    "id": 8,
-                    "uniqueId": "唯一ID",
-                    
-                    "name": "名字",
-                    
-                    "state": "状态",
-                    "speed": "速度",
-                    
-                    
-                    "vehicleType": "车辆类型",
-                    "time": "消息时间",
-                    "electric": "电量",
-                    "orientation": "朝向",
-                    "lenght": "行驶长度"
-                },
-                {
-                    "id": 9,
-                    "uniqueId": "唯一ID",
-                    
-                    "name": "名字",
-                    
-                    "state": "状态",
-                    "speed": "速度",
-                    
-                    
-                    "vehicleType": "车辆类型",
-                    "time": "消息时间",
-                    "electric": "电量",
-                    "orientation": "朝向",
-                    "lenght": "行驶长度"
-                },
-                {
-                    "id": 10,
-                    "uniqueId": "唯一ID",
-                    
-                    "name": "名字",
-                    
-                    "state": "状态",
-                    "speed": "速度",
-                    
-                    
-                    "vehicleType": "车辆类型",
-                    "time": "消息时间",
-                    "electric": "电量",
-                    "orientation": "朝向",
-                    "lenght": "行驶长度"
-                },
-                {
-                    "id": 11,
-                    "uniqueId": "唯一ID",
-                    
-                    "name": "名字",
-                    
-                    "state": "状态",
-                    "speed": "速度",
-                    
-                    
-                    "vehicleType": "车辆类型",
-                    "time": "消息时间",
-                    "electric": "电量",
-                    "orientation": "朝向",
-                    "lenght": "行驶长度"
-                },
-                {
-                    "id": 12,
-                    "uniqueId": "唯一ID",
-                    
-                    "name": "名字",
-                    
-                    "state": "状态",
-                    "speed": "速度",
-                    
-                    
-                    "vehicleType": "车辆类型",
-                    "time": "消息时间",
-                    "electric": "电量",
-                    "orientation": "朝向",
-                    "lenght": "行驶长度"
-                },
-                {
-                    "id": 13,
-                    "uniqueId": "唯一ID",
-                    
-                    "name": "名字",
-                    
-                    "state": "状态",
-                    "speed": "速度",
-                    
-                    
-                    "vehicleType": "车辆类型",
-                    "time": "消息时间",
-                    "electric": "电量",
-                    "orientation": "朝向",
-                    "lenght": "行驶长度"
-                },
-                {
-                    "id": 14,
-                    "uniqueId": "唯一ID",
-                    
-                    "name": "名字",
-                    
-                    "state": "状态",
-                    "speed": "速度",
-                    
-                    
-                    "vehicleType": "车辆类型",
-                    "time": "消息时间",
-                    "electric": "电量",
-                    "orientation": "朝向",
-                    "lenght": "行驶长度"
-                },
-                {
-                    "id": 15,
-                    "uniqueId": "唯一ID",
-                    
-                    "name": "名字",
-                    
-                    "state": "状态",
-                    "speed": "速度",
-                    
-                    
-                    "vehicleType": "车辆类型",
-                    "time": "消息时间",
-                    "electric": "电量",
-                    "orientation": "朝向",
-                    "lenght": "行驶长度"
-                },
-                {
-                    "id": 16,
-                    "uniqueId": "唯一ID",
-                    
-                    "name": "名字",
-                    
-                    "state": "状态",
-                    "speed": "速度",
-                    
-                    
-                    "vehicleType": "车辆类型",
-                    "time": "消息时间",
-                    "electric": "电量",
-                    "orientation": "朝向",
-                    "lenght": "行驶长度"
-                },
-                {
-                    "id": 17,
-                    "uniqueId": "唯一ID",
-                    
-                    "name": "名字",
-                    
-                    "state": "状态",
-                    "speed": "速度",
-                    
-                    
-                    "vehicleType": "车辆类型",
-                    "time": "消息时间",
-                    "electric": "电量",
-                    "orientation": "朝向",
-                    "lenght": "行驶长度"
-                },
-                {
-                    "id": 18,
-                    "uniqueId": "唯一ID",
-                    
-                    "name": "名字",
-                    
-                    "state": "状态",
-                    "speed": "速度",
-                    
-                    
-                    "vehicleType": "车辆类型",
-                    "time": "消息时间",
-                    "electric": "电量",
-                    "orientation": "朝向",
-                    "lenght": "行驶长度"
-                },
-                {
-                    "id": 19,
-                    "uniqueId": "唯一ID",
-                    
-                    "name": "名字",
-                    
-                    "state": "状态",
-                    "speed": "速度",
-                    
-                    
-                    "vehicleType": "车辆类型",
-                    "time": "消息时间",
-                    "electric": "电量",
-                    "orientation": "朝向",
-                    "lenght": "行驶长度"
-                },
-                {
-                    "id": 19,
-                    "uniqueId": "唯一ID",
-                    
-                    "name": "名字",
-                    
-                    "state": "状态",
-                    "speed": "速度",
-                    
-                    
-                    "vehicleType": "车辆类型",
-                    "time": "消息时间",
-                    "electric": "电量",
-                    "orientation": "朝向",
-                    "lenght": "行驶长度"
-                },
-                {
-                    "id": 20,
-                    "uniqueId": "唯一ID",
-                    
-                    "name": "名字",
-                    
-                    "state": "状态",
-                    "speed": "速度",
-                    
-                    
-                    "vehicleType": "车辆类型",
-                    "time": "消息时间",
-                    "electric": "电量",
-                    "orientation": "朝向",
-                    "lenght": "行驶长度"
+                    "title": { "CN": "坐标位置", "EN": "Coordinate", "TW": "座標位置" }[language["language"]],
+                    "key": "currPosition",
+                    "width": 250,
+                    "render": function (h, params) {
+                        var coordinates = JSON.parse(pageVue.msgTableList[params.index]["currPosition"])["coordinates"].join(",");
+                        return h("div", coordinates);
+                    }
                 }
             ]
+        
         },
         "watch": {
 
@@ -409,43 +74,51 @@
                     }, 3000);
                 }
             },
-            //新增
-            "add": function () {
+            // 页数改变时的回调
+            "pageSizeChange": function (value) {
                 var self = this;
-                self.isShowModal = true;
-                self.isModalLoading = true;
-                self.modalTitle = { "CN": "新增", "EN": "Add", "TW": "新增" }[self.language];
+                self.pageInfo.pageNum = parseInt(value, 10);
+                setTimeout(function () {
+                    self.getCrossAreaList(false);
+                }, 200);
             },
-            //编辑
-            "edit": function () {
+            // 切换每页条数时的回调
+            "pageRowChange": function (value) {
                 var self = this;
-                utility.showMessageTip(self, function() {
-                    self.isShowModal = true;
-                    self.modalTitle = { "CN": "修改", "EN": "Edit", "TW": "修改" }[self.language]; 
+                self.pageInfo.pageSize = parseInt(value, 10);
+                setTimeout(function () {
+                    self.getCrossAreaList(false);
+                }, 200);
+            },
+            // 实时防区信息
+            "getCrossAreaList": function (bool) {
+                var self = this;
+                self.msgTableList = [];
+                if(bool == true) {
+                    self.pageInfo.pageNum = 1;
+                }
+                // 如果是查询，则重新从第一页开始
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getCrossAreaList,
+                    actionUrl: CONFIG.SERVICE.vehicleService,
+                    dataObj: {
+                        "pageNum": self.pageInfo.pageNum,
+                        "pageSize": self.pageInfo.pageSize,
+                    },
+                    beforeSendCallback: function () {
+                        self.isTableLoading = true;
+                    },
+                    completeCallback: function () {
+                        self.isTableLoading = false;
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            self.pageInfo.count = data.count;
+                            self.msgTableList = data.data;
+                        }
+                    }
                 });
             },
-            // 选择终端
-            "selectTerminal": function() {
-                var self = this;
-                self.isShowTerminal = true;
-            },
-            // 当选择的行发生变化时 
-            "setCurrentRowData": function (event) {
-                var self = this;
-
-                console.log(event);
-
-                if (!!event) {
-                    self.itemInfo = event;
-                }
-            },
-            // 提交信息到服務器
-            "uploadDataToServer": function () {
-                var self = this;
-                setTimeout(function () {
-                    self.isModalLoading = false;
-                }, 2000);
-            }
         },
         "created": function () {
             var self = this;
@@ -454,8 +127,9 @@
             utility.isLogin(false);
 
             setTimeout(function () {
-                self.isTableLoading = false;
-            }, 2000);
+                // 实时防区信息
+                self.getCrossAreaList();
+            }, 500);
         }
     });
 

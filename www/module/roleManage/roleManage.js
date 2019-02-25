@@ -13,7 +13,10 @@
             "isShowMember": false,
             "isShowFunctions": false,
             "isUserList": false,
+            "isUserListTree": false,
             "isFunctionList": false,
+            "isShowDataGroup": false,
+            "isDataGroupList": false,
             "tableHeight": (function () {
                 var containerHeight = $(".tableContainer").height();
                 return containerHeight - 100;
@@ -23,7 +26,7 @@
                 "id": 0,
                 "count": 0,
                 "pageNum": 1,
-                "pageSize": 15,
+                "pageSize": 20,
                 "roleName": "", // 查询关键字（角色名称）
                 "companyId": "", // 公司ID
             },
@@ -72,7 +75,7 @@
                 {
                     "title": { "CN": "操作", "EN": "State", "TW": "操作" }[language["language"]],
                     "key": "state",
-                    "width": 200,
+                    "width": 350,
                     "align": "center",
                     "render": function (h, params) {
                         return h('div', [
@@ -96,6 +99,23 @@
                             }, { "CN": "可用功能", "EN": "Role Functions", "TW": "可用功能" }[language["language"]]),
                             h('Button', {
                                 "props": {
+                                    "type": 'primary',
+                                    "size": 'small'
+                                },
+                                "style": {
+                                    "marginRight": '5px'
+                                },
+                                "on": {
+                                    "click": function () {
+                                        pageVue.isShowDataGroup = true;
+                                        pageVue.roleDataGroupPageInfo.roleId = pageVue.roleList[params.index]["id"];
+                                        pageVue.roleDataGroupPageInfo.companyId = pageVue.roleList[params.index]["companyId"];
+                                        pageVue.getRoleDataGroupList(true);
+                                    }
+                                }
+                            }, { 'CN': '数据权限', 'EN': 'DataGroup', 'TW': '數據權限' }[language["language"]]),
+                            h('Button', {
+                                "props": {
                                     "type": 'info',
                                     "size": 'small'
                                 },
@@ -108,10 +128,40 @@
                                         pageVue.roleMemberPageInfo.roleId = pageVue.roleList[params.index]["id"];
                                         pageVue.roleMemberPageInfo.companyId = pageVue.roleList[params.index]["companyId"];
                                         pageVue.userPageInfo.companyId = pageVue.roleList[params.index]["companyId"];
+                                        pageVue.getSuperiorDepartmentList();
                                         pageVue.getRoleMemberList(true);
                                     }
                                 }
-                            }, { 'CN': '角色成员', 'EN': 'Role Members', 'TW': '角色成員' }[language["language"]])
+                            }, { 'CN': '角色成员', 'EN': 'Role Members', 'TW': '角色成員' }[language["language"]]),
+                            h("Button", {
+                                "props": {
+                                    "type": "warning",
+                                    "size": "small",
+                                },
+                                "style": {
+                                    "marginRight": '5px'
+                                },
+                                "on": {
+                                    "click": function () {
+                                        pageVue.index = params.index;
+                                        pageVue.selectItem = params.row;
+                                        pageVue.editItem();
+                                    }
+                                }
+                            }, { "CN": "编辑", "EN": "Edite", "TW": "編輯" }[language["language"]]),
+                            h("Button", {
+                                "props": {
+                                    "type": "error",
+                                    "size": "small",
+                                },
+                                "on": {
+                                    "click": function () {
+                                        pageVue.index = params.index;
+                                        pageVue.selectItem = params.row;
+                                        pageVue.delItem();
+                                    }
+                                }
+                            }, { "CN": "删除", "EN": "Delete", "TW": "刪除" }[language["language"]]),
                         ]);
                     }
                 }
@@ -121,10 +171,11 @@
             "roleList": [],
             "departList": [],
             "roleMemberIndex": 0,
+            "userType": 1,
             "roleMemberPageInfo": {
                 "count": 0,
                 "pageNum": 1,
-                "pageSize": 15,
+                "pageSize": 20,
                 "roleId": "", // 角色ID
                 "companyId": "", // 公司ID
             },
@@ -169,7 +220,8 @@
             "userPageInfo": {
                 "count": 0,
                 "pageNum": 1,
-                "pageSize": 15,
+                "deptId": [], // 部门ID
+                "pageSize": 20,
                 "companyId": "", // 公司ID
             },
             "userColumnsList": [
@@ -181,27 +233,23 @@
                 {
                     "title": { "CN": "ID", "EN": "ID", "TW": "ID" }[language["language"]],
                     "width": 60,
-                    "key": "id"
+                    "key": "userId"
                 },
                 {
                     "title": { "CN": "姓名", "EN": "Name", "TW": "姓名" }[language["language"]],
                     "key": "userName"
                 },
                 {
-                    "title": { "CN": "性别", "EN": "Gender", "TW": "性別" }[language["language"]],
-                    "key": "sex"
-                },
-                {
-                    "title": { "CN": "手机号", "EN": "cellPhone No.", "TW": "手機號" }[language["language"]],
-                    "key": "mobile"
-                },
-                {
                     "title": { "CN": "所属公司", "EN": "Company", "TW": "所屬公司" }[language["language"]],
-                    "key": "company"
+                    "key": "companyName"
                 },
                 {
-                    "title": { "CN": "员工工号", "EN": "Staff Number", "TW": "員工工號" }[language["language"]],
-                    "key": "userSeq"
+                    "title": { "CN": "所属部门", "EN": "Department", "TW": "所屬部門" }[language["language"]],
+                    "key": "deptName"
+                },
+                {
+                    "title": { "CN": "员工职位", "EN": "Position", "TW": "員工職位" }[language["language"]],
+                    "key": "posiName"
                 }
             ],
             "userTableRowList": [],
@@ -211,14 +259,12 @@
             "roleFunctionPageInfo": {
                 "count": 0,
                 "pageNum": 1,
-                "pageSize": 15,
+                "pageSize": 20,
                 "roleId": "", // 角色ID
                 "companyId": "", // 公司ID
             },
             "roleFunctionIndex": 0,
-            "roleFunctionItem": {
-
-            },
+            "roleFunctionItem": {},
             "roleFunctionList": [],
             "selectRoleFunction": [],
             "roleFunctionColumsList": [
@@ -229,7 +275,7 @@
                 },
                 {
                     "title": { "CN": "ID", "EN": "ID", "TW": "ID" }[language["language"]],
-                    "width": 60,
+                    "width": 100,
                     "key": "id"
                 },
                 {
@@ -240,10 +286,6 @@
                     "title": { "CN": "角色名称", "EN": "Role", "TW": "角色名稱" }[language["language"]],
                     "key": "roleName"
                 },
-                // {
-                //     "title": { "CN": "功能类型", "EN": "Functions Type", "TW": "功能類型" }[language["language"]],
-                //     "key": "functionType"
-                // },
                 {
                     "title": { "CN": "功能名称", "EN": "Functions Name", "TW": "功能名稱" }[language["language"]],
                     "key": "functionName"
@@ -254,7 +296,7 @@
             "functionsPageInfo": {
                 "count": 0,
                 "pageNum": 1,
-                "pageSize": 20,
+                "pageSize": 1000,
             },
             "functionList": [],
             "selectFunction": [],
@@ -267,7 +309,7 @@
                 },
                 {
                     "title": { "CN": "ID", "EN": "ID", "TW": "ID" }[language["language"]],
-                    "width": 60,
+                    "width": 100,
                     "key": "id"
                 },
                 {
@@ -288,6 +330,95 @@
                 }
             ],
             "functionsTableRowList": [],
+            "superiorDepartmentList": [],
+            "superiorDepartmentTree": [],
+
+            "roleDataGroupPageInfo": {
+                "count": 0,
+                "pageNum": 1,
+                "pageSize": 20,
+                "roleId": "", // 角色ID
+                "companyId": "", // 公司ID
+                "resName": ""
+            },
+            "roleDataGroupItem": {
+                "id": "",
+                "roleId": "",
+                "roleName": "",
+                "companyId": "",
+                "userId": "",
+                "userName": "",
+                "createUserId": userInfo["id"], // 创建用户ID，新增时必传
+                "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传
+            },
+            "roleDataGroupColumsList": [
+                {
+                    "type": "selection",
+                    "width": 60,
+                    "align": "center"
+                },
+                {
+                    "title": { "CN": "ID", "EN": "ID", "TW": "ID" }[language["language"]],
+                    "width": 100,
+                    "key": "id"
+                },
+                {
+                    "title": { "CN": "公司名称", "EN": "Company Name", "TW": "公司名稱" }[language["language"]],
+                    "key": "companyName"
+                },
+                {
+                    "title": { "CN": "角色名称", "EN": "Role", "TW": "角色名稱" }[language["language"]],
+                    "key": "roleName"
+                },
+                {
+                    "title": { "CN": "数据组类型", "EN": "DataGroup Type", "TW": "數據組類型" }[language["language"]],
+                    "key": "resTypeName"
+                },
+                {
+                    "title": { "CN": "数据组名称", "EN": "DataGroup Name", "TW": "數據組名稱" }[language["language"]],
+                    "key": "resName"
+                }
+            ],
+            "roleDataGroupTableRowList": [],
+            "selectRoleDataGroup": [],
+            "roleDataGroupList": [],
+            "dataGroupPageInfo": {
+                "count": 0,
+                "pageNum": 1,
+                "deptId": [], // 部门ID
+                "pageSize": 20,
+                "companyId": "", // 公司ID
+            },
+            "dataGroupColumnsList": [
+                {
+                    "type": "selection",
+                    "width": 60,
+                    "align": "center"
+                },
+                {
+                    "title": { "CN": "所在公司", "EN": "Company Name", "TW": "所在公司" }[language["language"]],
+                    "key": "companyName"
+                },
+                {
+                    "title": { "CN": "组名称", "EN": "Group Name", "TW": "組名稱" }[language["language"]],
+                    "key": "groupName"
+                },
+                {
+                    "title": { "CN": "分组类型", "EN": "Gruop Type", "TW": "分組類型" }[language["language"]],
+                    "key": "groupTypeName"
+                },
+                {
+                    "title": { "CN": "组描述", "EN": "Role Description", "TW": "組描述" }[language["language"]],
+                    "key": "groupDesc"
+                },
+                {
+                    "title": { "CN": "是否可用", "EN": "Availability", "TW": "是否可用" }[language["language"]],
+                    "key": "isValid"
+                },
+            ],
+            "dataGroupTableRowList": [],
+            "dataGroupList": [],
+            "selectDataGroup": [],
 
         },
         "methods": {
@@ -332,31 +463,37 @@
             // 删除
             "delItem": function () {
                 var self = this;
-                self.itemInfo = self.roleList[self.index];
-                // 先判断是否选择了一家公司
-                utility.showMessageTip(self, function () {
-                    utility.interactWithServer({
-                        url: CONFIG.HOST + CONFIG.SERVICE.permissionService + "?action=" + CONFIG.ACTION.delRole,
-                        actionUrl: CONFIG.SERVICE.permissionService,
-                        dataObj: {
-                            ids: self.itemInfo.id, // 角色id
-                            modifyUserId: userInfo["id"], // 修改用户的id
-                        },
-                        beforeSendCallback: function () {
-                            self.isTableLoading = true;
-                        },
-                        completeCallback: function () {
-                            self.isTableLoading = false;
-                        },
-                        successCallback: function (data) {
-                            if (data.code == 200) {
-                                self.getRoleDataList(true);
-                            } else {
-                                self.$Message.error(data.message);
-                            }
-                        }
-                    });
+                self.$Modal.confirm({
+                    "title": "确定删除？",
+                    "width": 200,
+                    "onOk": function() {
+                        self.itemInfo = self.roleList[self.index];
+                        utility.showMessageTip(self, function () {
+                            utility.interactWithServer({
+                                url: CONFIG.HOST + CONFIG.SERVICE.permissionService + "?action=" + CONFIG.ACTION.delRole,
+                                actionUrl: CONFIG.SERVICE.permissionService,
+                                dataObj: {
+                                    ids: self.itemInfo.id, // 角色id
+                                    modifyUserId: userInfo["id"], // 修改用户的id
+                                },
+                                beforeSendCallback: function () {
+                                    self.isTableLoading = true;
+                                },
+                                completeCallback: function () {
+                                    self.isTableLoading = false;
+                                },
+                                successCallback: function (data) {
+                                    if (data.code == 200) {
+                                        self.getRoleDataList(true);
+                                    } else {
+                                        self.$Message.error(data.message);
+                                    }
+                                }
+                            });
+                        });
+                    }
                 });
+                
             },
             // 当选择的行发生变化时 
             "setCurrentRowData": function (item, index) {
@@ -369,7 +506,7 @@
             // 页数改变时的回调
             "pageSizeChange": function (value) {
                 var self = this;
-                self.pageInfo.pageNum = parseInt(value, 10) - 1;
+                self.pageInfo.pageNum = parseInt(value, 10);
                 setTimeout(function () {
                     self.getRoleDataList(false);
                 }, 200);
@@ -377,17 +514,21 @@
             // 切换每页条数时的回调
             "pageRowChange": function (value) {
                 var self = this;
-                console.log(value);
                 self.pageInfo.pageSize = parseInt(value, 10);
                 setTimeout(function () {
                     self.getRoleDataList(false);
                 }, 200);
             },
             // 显示用户层
-            "showUserLayer": function () {
+            "showUserLayer": function (type) {
                 var self = this;
-                self.isUserList = true;
-                self.getUserList(true);
+                self[type] = true;
+                if(type == 'isUserList') {
+                    self.getUserList(true);
+                    self.userType = 1;
+                } else if(type == "isUserListTree") {
+                    self.userType = 2;
+                }
             },
             // 格式化角色成员列表
             "formatRoleMember": function () {
@@ -405,9 +546,9 @@
             "getRoleMemberList": function (bool) {
                 var self = this;
                 // 如果是查询，则重新从第一页开始
+                self.roleMemberTableRowList = [];
                 if (bool == true) {
-                    self.roleMemberTableRowList = [];
-                    self.roleMemberPageInfo.pageNum = 0;
+                    self.roleMemberPageInfo.pageNum = 1;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.permissionService + "?action=" + CONFIG.ACTION.getRoleUserList,
@@ -468,7 +609,7 @@
             // 页数改变时的回调
             "roleMemberPageSizeChange": function (value) {
                 var self = this;
-                self.roleMemberPageInfo.pageNum = parseInt(value, 10) - 1;
+                self.roleMemberPageInfo.pageNum = parseInt(value, 10);
                 setTimeout(function () {
                     self.getRoleMemberList(false);
                 }, 200);
@@ -484,7 +625,7 @@
             // 页数改变时的回调
             "userPageSizeChange": function (value) {
                 var self = this;
-                self.userPageInfo.pageNum = parseInt(value, 10) - 1;
+                self.userPageInfo.pageNum = parseInt(value, 10);
                 setTimeout(function () {
                     self.getUserList(false);
                 }, 200);
@@ -575,6 +716,7 @@
                         "roleId": self.roleMemberPageInfo.roleId, // 系统角色ID，修改时必传
                         "companyId": self.roleMemberPageInfo.companyId, // 所属公司ID，手动从公司列表选择
                         "userIds": self.selectUser.join(","), // 角色名称
+                        "userType": self.userType, // 用户类型
                         "createUserId": userInfo["id"], // 创建用户ID，新增时必传
                         "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传
                     },
@@ -585,6 +727,7 @@
                         if (data.code == 200) {
                             self.getRoleMemberList(true);
                             self.isUserList = false;
+                            self.isUserListTree = false;
                         } else {
                             self.$Message.error(data.message);
                         }
@@ -595,9 +738,9 @@
             "getRoleDataList": function (bool) {
                 var self = this;
                 // 如果是查询，则重新从第一页开始
+                self.tableRowList = [];
                 if (bool == true) {
-                    self.tableRowList = [];
-                    self.pageInfo.pageNum = 0;
+                    self.pageInfo.pageNum = 1;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.permissionService + "?action=" + CONFIG.ACTION.getRoleList,
@@ -646,22 +789,38 @@
                 var ids = [];
 
                 for (var i = 0, len = selection.length; i < len; i++) {
+                    ids.push(selection[i]["userId"]);
+                }
+
+                self.selectUser = ids;
+            },
+            // 当选择的行发生变化时 
+            "selectDepartmentTreeChange": function (selection) {
+                var self = this;
+                var ids = [];
+
+                for (var i = 0, len = selection.length; i < len; i++) {
                     ids.push(selection[i]["id"]);
                 }
 
                 self.selectUser = ids;
+            },
+            // 通过部门选择员工
+            "getUserListByDept": function(value, selectedData) {
+                var self = this;
+                self.userPageInfo.deptId = value;
+                self.getUserList(true);
             },
             // 格式化用户列表
             "formatUserData": function () {
                 var self = this;
                 for (var i = 0, len = self.userList.length; i < len; i++) {
                     self.userTableRowList.push({
-                        "id": decodeURI(self.userList[i]["id"]), //"员工姓名",
-                        "userName": decodeURI(self.userList[i]["userName"]), //"员工姓名",
-                        "sex": self.userList[i]["sex"], //"性别",
-                        "mobile": self.userList[i]["mobile"], //"手机号",
-                        "userSeq": decodeURI(self.userList[i]["userSeq"]), //"员工工号",
-                        "company": decodeURI(self.userList[i]["companyName"]), //"所属公司",
+                        "userId": self.userList[i]["userId"],
+                        "userName": decodeURI(self.userList[i]["userName"]),
+                        "deptName": decodeURI(self.userList[i]["deptName"]),
+                        "posiName": decodeURI(self.userList[i]["posiName"]),
+                        "companyName": decodeURI(self.userList[i]["companyName"]),
                     });
                 }
             },
@@ -669,14 +828,18 @@
             "getUserList": function (bool) {
                 var self = this;
                 // 如果是查询，则重新从第一页开始
+                self.userTableRowList = [];
                 if (bool == true) {
-                    self.userTableRowList = [];
-                    self.userPageInfo.pageNum = 0;
+                    self.userPageInfo.pageNum = 1;
                 }
                 utility.interactWithServer({
-                    url: CONFIG.HOST + CONFIG.SERVICE.userService + "?action=" + CONFIG.ACTION.getUserList,
-                    actionUrl: CONFIG.SERVICE.userService,
-                    dataObj: self.userPageInfo,
+                    url: CONFIG.HOST + CONFIG.SERVICE.deptUserService + "?action=" + CONFIG.ACTION.getDeptUserList,
+                    actionUrl: CONFIG.SERVICE.deptUserService,
+                    dataObj: {
+                        pageSize: 20,
+                        pageNum: self.userPageInfo.pageNum,
+                        deptId: self.userPageInfo.deptId[self.userPageInfo.deptId.length-1],
+                    },
                     beforeSendCallback: function () {
                         self.isTableLoading = true;
                     },
@@ -698,7 +861,7 @@
             // 页数改变时的回调
             "roleFunctionsPageSizeChange": function (value) {
                 var self = this;
-                self.roleFunctionPageInfo.pageNum = parseInt(value, 10) - 1;
+                self.roleFunctionPageInfo.pageNum = parseInt(value, 10);
                 setTimeout(function () {
                     self.getRoleFunctionsDataList(false);
                 }, 200);
@@ -760,7 +923,6 @@
             // 提交功能信息到服務器
             "uploadFunctionDataToServer": function () {
                 var self = this;
-                var self = this;
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.permissionService + "?action=" + CONFIG.ACTION.saveRoleFunction,
                     actionUrl: CONFIG.SERVICE.permissionService,
@@ -777,7 +939,7 @@
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.getRoleFunctionsDataList(true);
-                            self.isUserList = false;
+                            self.isFunctionList = false;
                         } else {
                             self.$Message.error(data.message);
                         }
@@ -792,16 +954,6 @@
                         "id": self.roleFunctionList[i]["id"], //"角色名称",
                         "roleName": decodeURI(self.roleFunctionList[i]["roleName"]), //"角色名称",
                         "companyName": decodeURI(self.roleFunctionList[i]["companyName"]), //"公司名称",
-                        // "functionType": (function() {
-                        //     var type = "";
-                        //     for(var f = 0, flen = self.permissionFunctionTypeLis.length; f < flen; f++) {
-                        //         if(self.permissionFunctionTypeLis[f]["type"] == self.roleFunctionList[f]["functionType"]) {
-                        //             type = self.permissionFunctionTypeLis[f]["name"];
-                        //             break;
-                        //         }
-                        //     }
-                        //     return type;
-                        // }()), // self.permissionFunctionTypeLis[self.roleFunctionList[i]["functionType"]], //"功能类型",
                         "functionName": decodeURI(self.roleFunctionList[i]["functionName"]), //"功能名称",
                     });
                 }
@@ -809,9 +961,10 @@
             // 获取角色可用功能列表数据接口
             "getRoleFunctionsDataList": function (bool) {
                 var self = this;
+                self.roleFunctionList = [];
+                self.roleFunctionTableRowList = [];
                 if (bool == true) {
-                    self.roleFunctionTableRowList = [];
-                    self.roleFunctionPageInfo.pageNum = 0;
+                    self.roleFunctionPageInfo.pageNum = 1;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.permissionService + "?action=" + CONFIG.ACTION.getRoleFunctionList,
@@ -857,35 +1010,19 @@
             // 格式化系统操作权限功能
             "formatFunctions": function () {
                 var self = this;
-                for (var i = 0, len = self.functionList.length; i < len; i++) {
-                    self.functionsTableRowList.push({
-                        "id": self.functionList[i]["id"], //"角色名称",
-                        "functionLevel": self.functionList[i]["functionLevel"], //"权限所处层级",
-                        "functionType": (function() {
-                            var type = "";
-                            for(var f = 0, flen = self.permissionFunctionTypeLis.length; f < flen; f++) {
-                                if(self.permissionFunctionTypeLis[f]["type"] == self.functionList[f]["functionType"]) {
-                                    type = self.permissionFunctionTypeLis[f]["name"];
-                                    break;
-                                }
-                            }
-                            return type;
-                        }()), // self.permissionFunctionTypeLis[self.functionList[i]["functionType"]], //"功能类型",
-                        "functionName": decodeURI(self.functionList[i]["functionName"]), //"功能名称",
-                        "functionCode": decodeURI(self.functionList[i]["functionCode"]), //"功能权限项描述",
-                        "isValid": { "1": { 'CN': '是', 'EN': 'Yes', 'TW': '是' }[self.language], "0": { 'CN': '否', 'EN': 'No', 'TW': '否' }[self.language] }[self.functionList[i]["isValid"] + ""], //"是否有效"
-                    });
-                }
+                var fun = JSON.stringify(self.functionList).replace(/(subFunctionList)/g,'children').replace(/(functionName)/g, 'title').replace(/isValid/g, 'expand');
+                self.functionsTableRowList = JSON.parse(fun);
             },
             // 获取系统操作权限功能项目列表接口
             "getFunctionsDataList": function (bool) {
                 var self = this;
+                self.functionList = [];
+                self.functionsTableRowList = [];
                 if (bool == true) {
-                    self.functionsTableRowList = [];
-                    self.functionsPageInfo.pageNum = 0;
+                    self.functionsPageInfo.pageNum = 1;
                 }
                 utility.interactWithServer({
-                    url: CONFIG.HOST + CONFIG.SERVICE.permissionService + "?action=" + CONFIG.ACTION.getFunctionList,
+                    url: CONFIG.HOST + CONFIG.SERVICE.permissionService + "?action=" + CONFIG.ACTION.getFunctionTreeList,
                     actionUrl: CONFIG.SERVICE.permissionService,
                     dataObj: self.functionsPageInfo,
                     beforeSendCallback: function () {
@@ -908,7 +1045,7 @@
             // 页数改变时的回调
             "functionsPageSizeChange": function (value) {
                 var self = this;
-                self.functionsPageInfo.pageNum = parseInt(value, 10) - 1;
+                self.functionsPageInfo.pageNum = parseInt(value, 10);
                 setTimeout(function () {
                     self.getFunctionsDataList(false);
                 }, 200);
@@ -916,11 +1053,222 @@
             // 切换每页条数时的回调
             "functionsPageRowChange": function (value) {
                 var self = this;
-                console.log(value);
                 self.functionsPageInfo.pageSize = parseInt(value, 10);
                 setTimeout(function () {
                     self.getFunctionsDataList(false);
                 }, 200);
+            },
+            // 格式化上级部门
+            "formatSuperiorDeprt": function(list) {
+                var self = this;
+                var listInfo = JSON.stringify(list).replace(/id/g, 'value').replace(/deptName/g, 'label').replace(/subDeptList/g, 'children');
+                var listTree = JSON.stringify(list).replace(/deptName/g, 'title').replace(/subDeptList/g, 'children');
+                self.superiorDepartmentList = JSON.parse(listInfo);
+                self.superiorDepartmentTree = JSON.parse(listTree);
+            },
+            // 获取机构信息
+            "getSuperiorDepartmentList": function () {
+                var self = this;
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.deptService + "?action=" + CONFIG.ACTION.getDeptTreeList,
+                    actionUrl: CONFIG.SERVICE.deptService,
+                    dataObj: {
+                        "pageNum": 1,
+                        "pageSize": 10000,
+                        "companyId": self.userPageInfo.companyId, // 公司ID
+                    },
+                    beforeSendCallback: function () {
+                        self.isTableLoading = true;
+                    },
+                    completeCallback: function () {
+                        self.isTableLoading = false;
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            self.superiorDepartmentList = [];
+                            self.formatSuperiorDeprt(data.data);
+                        }
+                    }
+                });
+            },
+            // 获取数据权限组列表数据
+            "getRoleDataGroupList": function(bool) {
+                var self = this;
+                self.roleDataGroupList = [];
+                if (bool == true) {
+                    self.roleDataGroupPageInfo.pageNum = 1;
+                }
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.permissionService + "?action=" + CONFIG.ACTION.getUserGroupDataResList,
+                    actionUrl: CONFIG.SERVICE.permissionService,
+                    dataObj: self.roleDataGroupPageInfo,
+                    beforeSendCallback: function () {
+                        self.isTableLoading = true;
+                    },
+                    completeCallback: function () {
+                        self.isTableLoading = false;
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            self.roleDataGroupPageInfo.count = data.count;
+                            self.roleDataGroupTableRowList = data.data;
+                        } else {
+                            self.$Message.error(data.message);
+                        }
+                    }
+                });
+            },
+            // 页数改变时的回调
+            "roleDataGroupPageSizeChange": function (value) {
+                var self = this;
+                self.roleDataGroupPageInfo.pageNum = parseInt(value, 10);
+                setTimeout(function () {
+                    self.getRoleDataGroupList(false);
+                }, 200);
+            },
+            // 切换每页条数时的回调
+            "roleDataGroupPageRowChange": function (value) {
+                var self = this;
+                self.roleDataGroupPageInfo.pageSize = parseInt(value, 10);
+                setTimeout(function () {
+                    self.getRoleDataGroupList(false);
+                }, 200);
+            },
+            // 当选择的行发生变化时 
+            "selectRoleDataGroupChange": function (selection) {
+                var self = this;
+                var ids = [];
+
+                for (var i = 0, len = selection.length; i < len; i++) {
+                    ids.push(selection[i]["id"]);
+                }
+
+                self.selectRoleDataGroup = ids;
+            },
+            // 删除角色数据组
+            "deleteRoleDataGroup": function() {
+                var self = this;
+                if (self.selectRoleDataGroup.length == 0) {
+                    self.$Message.error({
+                        "content": { "CN": "请选择一条数据", "EN": "Please select a data", "TW": "請選擇一條數據" }[self.language],
+                        "top": 200,
+                        "duration": 3
+                    });
+                    return;
+                }
+                self.isModalLoading = true;
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.permissionService + "?action=" + CONFIG.ACTION.delUserGroupDataResList,
+                    actionUrl: CONFIG.SERVICE.permissionService,
+                    dataObj: {
+                        ids: self.selectRoleDataGroup.join(","), // 公司id
+                        modifyUserId: userInfo["id"], // 修改用户的id
+                    },
+                    beforeSendCallback: function () {
+                        self.isTableLoading = true;
+                    },
+                    completeCallback: function () {
+                        self.isTableLoading = false;
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            self.getRoleDataGroupList(true);
+                        } else {
+                            self.$Message.error(data.message);
+                        }
+                    }
+                });
+            },
+            // 显示数据组权限列表
+            "showDataGroupLayer": function() {
+                var self = this;
+                self.isDataGroupList = true;
+                self.getDataGroupList(true);
+            },
+
+            // 获取数据权限组列表数据
+            "getDataGroupList": function(bool) {
+                var self = this;
+                self.roleDataGroupList = [];
+                if (bool == true) {
+                    self.dataGroupPageInfo.pageNum = 1;
+                }
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.groupService + "?action=" + CONFIG.ACTION.getGroupList,
+                    actionUrl: CONFIG.SERVICE.groupService,
+                    dataObj: {
+                        pageNum: self.dataGroupPageInfo.pageNum,
+                        pageSize: self.dataGroupPageInfo.pageSize,
+                        companyId: self.roleDataGroupPageInfo.companyId
+                    },
+                    beforeSendCallback: function () {
+                        self.isTableLoading = true;
+                    },
+                    completeCallback: function () {
+                        self.isTableLoading = false;
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            self.dataGroupPageInfo.count = data.count;
+                            self.dataGroupTableRowList = data.data;
+                        } else {
+                            self.$Message.error(data.message);
+                        }
+                    }
+                });
+            },
+            // 页数改变时的回调
+            "dataGroupPageSizeChange": function (value) {
+                var self = this;
+                self.dataGroupPageInfo.pageNum = parseInt(value, 10);
+                setTimeout(function () {
+                    self.getDataGroupList(false);
+                }, 200);
+            },
+            // 切换每页条数时的回调
+            "dataGroupPageRowChange": function (value) {
+                var self = this;
+                self.dataGroupPageInfo.pageSize = parseInt(value, 10);
+                setTimeout(function () {
+                    self.getDataGroupList(false);
+                }, 200);
+            },
+            // 当选择的行发生变化时 
+            "selectDataGroupChange": function (selection) {
+                var self = this;
+                var ids = [];
+
+                for (var i = 0, len = selection.length; i < len; i++) {
+                    ids.push(selection[i]["id"]);
+                }
+
+                self.selectDataGroup = ids;
+            },
+            // 添加角色数据组
+            "addRoleDataGroup": function(){
+                var self = this;
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.permissionService + "?action=" + CONFIG.ACTION.saveUserGroupDataRes,
+                    actionUrl: CONFIG.SERVICE.permissionService,
+                    dataObj: {
+                        "roleId": self.roleDataGroupPageInfo.roleId, // 系统角色ID，修改时必传
+                        "companyId": self.roleDataGroupPageInfo.companyId, // 所属公司ID，手动从公司列表选择
+                        "resIds": self.selectDataGroup.join(","), // 角色名称
+                        "createUserId": userInfo["id"], // 创建用户ID，新增时必传
+                        "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传
+                    },
+                    completeCallback: function () {
+                        self.isModalLoading = false;
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            self.getRoleDataGroupList(true);
+                            self.isDataGroupList = false;
+                        } else {
+                            self.$Message.error(data.message);
+                        }
+                    }
+                });
             },
         },
         "created": function () {

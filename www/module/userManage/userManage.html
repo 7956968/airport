@@ -52,7 +52,7 @@
     <div id="js-vue" class="tableContainer">
         <div class="top">
             <Row type="flex" justify="start" gutter="10">
-                <i-col span="16" class-name="">
+                <i-col span="16">
                     <div class="searchWrap">
                         <table>
                             <tbody>
@@ -81,14 +81,14 @@
                         </table>
                     </div>
                 </i-col>
-                <i-col span="8" class-name="">
+                <i-col span="8">
                     <div class="actionWrap">
                         <template>
                             <i-buttonGroup>
                                 <i-button @click="refresh" size="small" icon="ios-refresh">{{{'CN':'刷新','EN':'Refresh','TW':'刷新'}[language]}}</i-button>
-                                <i-button @click="addItem" size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
-                                <i-button @click="editItem" size="small" type="warning" icon="ios-paper-outline">{{{'CN':'编辑','EN':'Edit','TW':'編輯'}[language]}}</i-button>
-                                <i-button @click="delItem" size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button>
+                                <i-button @click="addItem" size="small" type="success" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
+                                <!-- <i-button @click="editItem" size="small" type="warning" icon="ios-paper-outline">{{{'CN':'编辑','EN':'Edit','TW':'編輯'}[language]}}</i-button>
+                                <i-button @click="delItem" size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button> -->
                             </i-buttonGroup>
                         </template>
                     </div>
@@ -193,13 +193,13 @@
                             <tr>
                                 <td class="label">
                                     <span class="request">＊</span>
-                                    <span v-text="{'CN':'手机','EN':'Zip Code','TW':'手機'}[language]"></span>
+                                    <span v-text="{'CN':'手机','EN':'Mobile Phone','TW':'手機'}[language]"></span>
                                 </td>
                                 <td>
                                     <i-input v-model="itemInfo.mobile"/>
                                 </td>
                                 <td class="label">
-                                    <span v-text="{'CN':'固话','EN':'Official Website','TW':'固話'}[language]"></span>
+                                    <span v-text="{'CN':'固话','EN':'Fixed Phone','TW':'固話'}[language]"></span>
                                 </td>
                                 <td>
                                     <i-input v-model="itemInfo.telephone" />
@@ -208,13 +208,13 @@
 
                             <tr>
                                 <td class="label">
-                                    <span v-text="{'CN':'生日','EN':'Founding Time','TW':'生日'}[language]"></span>
+                                    <span v-text="{'CN':'生日','EN':'Birthday','TW':'生日'}[language]"></span>
                                 </td>
                                 <td>
                                     <date-picker v-model="itemInfo.birthday" format="yyyy-MM-dd" type="date" :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"></date-picker>
                                 </td>
                                 <td class="label">
-                                    <span v-text="{'CN':'邮箱','EN':'Zip Code','TW':'郵箱'}[language]"></span>
+                                    <span v-text="{'CN':'邮箱','EN':'Email','TW':'郵箱'}[language]"></span>
                                 </td>
                                 <td>
                                     <i-input v-model="itemInfo.email" />
@@ -243,14 +243,78 @@
             </Modal>
         </template>
 
-    </div>
+        <template>
+            <Modal v-model="isShowDetail" :styles="{top: '60px'}" width="25" title="查看详情">
+                <div class="modifiedWrap">
+                    <table>
+                        <tbody>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'账户：','EN':'Account：','TW':'帳戶：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.userCode"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'帐号状态：','EN':'Email：','TW':'帳號狀態：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.statusName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'工号：','EN':'Work No.：','TW':'工號：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.userSeq"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'姓名：','EN':'Name：','TW':'姓名：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.userName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'性別：','EN':'Sex：','TW':'性別：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.sexName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'公司：','EN':'Company：','TW':'公司：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.companyName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'身份证号：','EN':'ID Card No.：','TW':'身份證號：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.idNo"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span class="detailLabel" v-text="{'CN':'电话：','EN':'Mobile Phone：','TW':'電話：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.mobile"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'固话：','EN':'Fixed Phone：','TW':'固話：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.telephone"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'生日：','EN':'Birthday：','TW':'生日：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.birthday"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'邮箱：','EN':'Email：','TW':'郵箱：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.email"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'家庭地址：','EN':'Home Address：','TW':'家庭地址：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.address"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span class="detailLabel" v-text="{'CN':'备注：','EN':'Remarks：','TW':'備註：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.remark"></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </Modal>
+        </template>
+
     <script src="/airport/assets/js/vue.min.js"></script>
     <script src="/airport/assets/vender/iView/iview.min.js"></script>
     <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
     <script src="/airport/assets/js/md5.min.js"></script>
-    <script src="/airport/assets/js/config.min.js"></script>
-    <script src="/airport/assets/js/utility.min.js"></script>
-    <script src="/airport/www/module/userManage/userManage.min.js?v=093939"></script>
+    <script src="/airport/assets/js/config.min.js?v=5756574646372"></script>
+    <script src="/airport/assets/js/utility.min.js?v=5756574646372"></script>
+    <script src="/airport/www/module/userManage/userManage.min.js?v=5756574646372"></script>
+    </div>
+    
 </body>
 
 </html>

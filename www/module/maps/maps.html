@@ -46,6 +46,7 @@
     <meta name="x5-page-mode" content="app">
     <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
     <link rel="stylesheet" href="/airport/assets/vender/openLayer/ol.min.css">
+    <link rel="stylesheet" href="/airport/assets/vender/radar/radar.min.css">
     <link rel="stylesheet" type="text/css" href="/airport/www/css/common.css" />
     
 </head>
@@ -61,11 +62,69 @@
             </div>
         </div>
 
+        <!-- 车辆轨迹点信息 -->
+        <div id="popup" class="ol-popup popupLayer">
+            <template v-if="!!mapContainer.animationInfo.trajectoryItem">
+                <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+                <div id="popup-content">
+                    <p>车辆编码：{{mapContainer.animationInfo.trajectoryItem.vehicleCode}}</p>
+                    <p>上传时间：{{mapContainer.animationInfo.trajectoryItem.time}}</p>
+                    <p>车辆速度：{{mapContainer.animationInfo.trajectoryItem.speed}}</p>
+                </div>
+            </template>
+        </div>
+
+        <!-- 移动车辆 -->
+        <div id="ol-moveVehicle" class="moveVehicle popupLayer"></div>
+        <!--  id="ol-dbClickSearch" -->
+        <div id="ol-dbClickSearch" class="searchVehicle popupLayer">
+            <div class="radar"></div>
+        </div>
+
+        <!-- 车辆基础信息弹出层 -->
+        <div id="ol-vehicle" class="ol-popup ol-vehicle">
+            <template v-if="!!vehicleItemPop">
+                <a href="#" id="popup-closer--vehicle" class="ol-popup-closer"></a>
+                <div id="popup-content">
+                    <p>{{{'CN':'公司名称','EN':'Company','TW':'公司名稱'}[language]}}：{{vehicleItemPop.companyName}}</p>
+                    <p>{{{'CN':'部门名称','EN':'Department','TW':'部門名稱'}[language]}}：{{vehicleItemPop.deptName}}</p>
+                    <p>{{{'CN':'车辆编码','EN':'Code','TW':'車輛編碼'}[language]}}：{{vehicleItemPop.vehicleCode}}</p>
+                    <p>{{{'CN':'车辆名称','EN':'Name','TW':'車輛名稱'}[language]}}：{{vehicleItemPop.vehicleName}}</p>
+                    <p>{{{'CN':'车辆类型','EN':'Type','TW':'車輛類型'}[language]}}：{{vehicleItemPop.vehicleTypeName}}</p>
+                    <p>{{{'CN':'终端设备','EN':'Termina','TW':'終端設備'}[language]}}：{{vehicleItemPop.gpsDeviceCode}}</p>
+                    <p>{{{'CN':'车辆速度','EN':'Speed','TW':'車輛速度'}[language]}}：{{vehicleItemPop.speed}}</p>
+                    <p>{{{'CN':'车辆状态','EN':'State','TW':'車輛狀態'}[language]}}：{{vehicleItemPop.vehicleStatusName}}</p>
+                    <p>{{{'CN':'回放速度','EN':'Speed','TW':'回放速度'}[language]}}：<Slider v-model="mapContainer.animationInfo.speed" :min="10" :max="120" show-tip="always"></Slider></p>
+                    <Row gutter="5" class="trajectoryAction">
+                        <i-col span="8">
+                            <i-button size="small" long @click="getSingleVehicleTrack" type="primary" icon="ios-search-outline">{{{'CN':'查轨迹','EN':'Track','TW':'查軌跡'}[language]}}</i-button>
+                        </i-col>
+                        <i-col span="8">
+                                <i-button size="small" long @click="startVehicleAnimation" type="warning" icon="ios-git-branch">{{{'CN':'回放','EN':'Replay','TW':'回放'}[language]}}</i-button>
+                        </i-col>
+                        <i-col span="8">
+                            <i-button size="small" long @click="clearTrack" type="default" icon="ios-trash-outline">{{{'CN':'清除','EN':'Clear','TW':'清除'}[language]}}</i-button>
+                        </i-col>
+                    </Row>
+                </div>
+            </template>
+        </div>
+
         <!-- 搜索 -->
         <div class="searchWrap">
-            <template>
-                <i-input @on-search="refresh" size="large" search enter-button :placeholder="{'CN':'搜索车名或编码','EN':'Search Vehicle Name Or Code','TW':'搜索車名或編碼'}[language]" />
-            </template>
+            <Row type="flex" justify="start" gutter="5">
+                <i-col span="14">
+                    <template>
+                        <i-input v-model="searchCode" @on-search="searchMap" size="large" search enter-button :placeholder="{'CN':'车辆编码','EN':'Vehicle Code','TW':'車輛編碼'}[language]" />
+                    </template>
+                </i-col>
+                <i-col span="10">
+                    <template>
+                        <i-button @click="refresh" size="large" type="info"><template><Icon size="20" type="ios-refresh-circle" /></template>{{{'CN':'刷新页面','EN':'Refresh Page','TW':'刷新頁面'}[language]}}</i-button>
+                        <i-button @click="resetView" size="large" type="warning"><template><Icon size="20" type="ios-refresh-circle-outline" /></template>{{{'CN':'重置视图','EN':'Reset View','TW':'重置視圖'}[language]}}</i-button>
+                    </template>
+                </i-col>
+            </Row>
         </div>
 
         <!-- 菜单 -->
@@ -73,12 +132,18 @@
             <template>
                 <i-menu mode="horizontal">
                     <menu-item name="1">
+                        <div @click="showModal('isSearch')">
+                            <span class="icon"><Icon type="ios-search-outline" /></span>
+                            <span class="label" v-text="{'CN':'车辆实时查询','EN':'Vehicle Search','TW':'車輛实时查詢'}[language]"></span>
+                        </div>
+                    </menu-item>
+                    <!-- <menu-item name="2">
                         <div @click="showModal('isVehicle')">
                             <span class="icon"><Icon type="ios-bus-outline" /></span>
                             <span class="label" v-text="{'CN':'车辆管理','EN':'Vehicle Management','TW':'車輛管理'}[language]"></span>
                         </div>
-                    </menu-item>
-                    <menu-item name="2">
+                    </menu-item> -->
+                    <menu-item name="3">
                         <div @click="showModal('isHistory')">
                             <span class="icon"><Icon type="ios-git-branch" /></span>
                             <span class="label" v-text="{'CN':'历史轨迹','EN':'Historical Track','TW':'歷史軌跡'}[language]"></span>
@@ -102,26 +167,20 @@
                             <span class="label" v-text="{'CN':'图层控制','EN':'Layer Control','TW':'圖層控制'}[language]"></span>
                         </div>
                     </menu-item>
-                    <menu-item name="7">
+                    <!-- <menu-item name="7">
                         <div @click="showModal('isAlarm')">
                             <span class="icon"><Icon type="ios-alert-outline" /></span>
                             <span class="label" v-text="{'CN':'告警管理','EN':'Alarm Management','TW':'告警管理'}[language]"></span>
                         </div>
-                    </menu-item>
-                    <menu-item name="8">
-                        <div @click="showModal('isSearch')">
-                            <span class="icon"><Icon type="ios-search-outline" /></span>
-                            <span class="label" v-text="{'CN':'车辆查询','EN':'Vehicle Search','TW':'車輛查詢'}[language]"></span>
-                        </div>
-                    </menu-item>
+                    </menu-item> -->
                 </i-menu>
             </template>
         </div>
 
         <!-- 车辆管理 -->
-        <template>
+        <!-- <template>
             <Modal v-model="modal.isVehicle" 
-                :styles="{top: '130px', left: '50px', position: 'absolute'}" 
+                :styles="{top: '120px', left: '50px', position: 'absolute'}" 
                 width="35"
                 footer-hide="true"
                 :mask="false"
@@ -134,19 +193,18 @@
                     <table>
                         <tbody>
                             <tr>
-                                <td>
-                                    <span class="label" v-text="{'CN':'车辆编码','EN':'Vehicle Coding','TW':'車輛編號'}[language]"></span>
+                                <td style="width: 80px;">
+                                    <span class="label" v-text="{'CN':'车辆编码','EN':'Code','TW':'車輛編號'}[language]"></span>
                                 </td>
                                 <td>
                                     <template>
-                                        <i-input :placeholder="{'CN':'请输入车辆编码','EN':'Vehicle Coding','TW':'請輸入車輛編號'}[language]" style="width: 100%"></i-input>
+                                        <i-input v-model="vehiclePageInfo.vehicleCode" :placeholder="{'CN':'请输入车辆编码','EN':'Vehicle Coding','TW':'請輸入車輛編號'}[language]" style="width: 100%"></i-input>
                                     </template>
                                 </td>
                                 <td>
                                     <template>
                                         <div class="btnList">
-                                            <i-button @click="getVehicleList(true)" size="small" type="primary" icon="ios-search-outline">{{{'CN':'查询','EN':'Search','TW':'查詢'}[language]}}</i-button>
-                                            <i-button size="small" type="info" icon="ios-open-outline">{{{'CN':'导出','EN':'Export','TW':'導出'}[language]}}</i-button>
+                                            <i-button @click="getVehicleList(true)" long size="small" type="primary" icon="ios-search-outline">{{{'CN':'查询','EN':'Search','TW':'查詢'}[language]}}</i-button>
                                         </div>
                                     </template>
                                 </td>
@@ -157,7 +215,7 @@
                 <div class="modifiedWrap">
                     <div class="tableWrap">
                         <template>
-                            <i-table height="400" highlight-row :columns="vehicleColumns" :data="vehicleDatas" stripe="true" size="small"></i-table>
+                            <i-table height="300" @on-row-click="showVehicleRowData" highlight-row :columns="vehicleColumns" :data="vehicleDatas" stripe="true" size="small"></i-table>
                         </template>
                     </div>
             
@@ -168,12 +226,12 @@
                     </div>
                 </div>
             </Modal>
-        </template>
+        </template> -->
 
         <!-- 历史轨迹 -->
         <template>
             <Modal v-model="modal.isHistory" 
-                :styles="{top: '130px', left: '50px', position: 'absolute'}" 
+                :styles="{top: '120px', left: '50px', position: 'absolute'}" 
                 width="30"
                 footer-hide="true"
                 :mask="false"
@@ -186,12 +244,12 @@
                     <table>
                         <tbody>
                             <tr>
-                                <td style="width: 100px;">
-                                    <span class="label" v-text="{'CN':'车辆','EN':'Vehicle','TW':'車輛'}[language]"></span>
+                                <td style="width: 60px;">
+                                    <span class="label" v-text="{'CN':'车辆编码','EN':'Vehicle Code','TW':'車輛编码'}[language]"></span>
                                 </td>
                                 <td>
                                     <template>
-                                        <i-input :placeholder="{'CN':'请输入车辆','EN':'','TW':'請輸入車輛'}[language]" style="width: 100%"></i-input>
+                                        <i-input v-model="singleVehiclePageInfo.vehicleCode" :placeholder="{'CN':'请输入编码','EN':'Code','TW':'請輸入編碼'}[language]" style="width: 100%"></i-input>
                                     </template>
                                 </td>
                             </tr>
@@ -201,7 +259,7 @@
                                 </td>
                                 <td>
                                     <template>
-                                        <date-picker style="width: 100%;" type="date" confirm  :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"></date-picker>
+                                        <date-picker @on-change="getBeginTime" style="width: 100%;" type="datetime" format="yyyy-MM-dd HH:mm:ss" confirm  :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"></date-picker>
                                     </template>
                                 </td>
                             </tr>
@@ -211,18 +269,16 @@
                                 </td>
                                 <td>
                                     <template>
-                                        <date-picker style="width: 100%;" type="date" confirm  :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"></date-picker>
+                                        <date-picker @on-change="getEndTime" style="width: 100%;" type="datetime" format="yyyy-MM-dd HH:mm:ss" confirm  :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"></date-picker>
                                     </template>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <span class="label" v-text="{'CN':'播放速度','EN':'Playback Speed','TW':'播放速度'}[language]"></span>
+                                    <span class="label" v-text="{'CN':'回放速度','EN':'Speed','TW':'回放速度'}[language]"></span>
                                 </td>
                                 <td>
-                                    <template>
-                                        <i-input :placeholder="{'CN':'请输入播放速度','EN':'Playback Speed','TW':'請輸入播放速度'}[language]" style="width: 100%"></i-input>
-                                    </template>
+                                    <Slider v-model="mapContainer.animationInfo.speed" :min="10" :max="120" :show-input="true" input-size="small"></Slider>
                                 </td>
                             </tr>
                             <tr>
@@ -230,8 +286,9 @@
                                 <td>
                                     <template>
                                         <div class="btnList">
-                                            <i-button size="small" type="primary" icon="ios-search-outline">{{{'CN':'查询','EN':'Search','TW':'查詢'}[language]}}</i-button>
-                                            <i-button size="small" type="warning" icon="ios-git-branch">{{{'CN':'轨迹回放','EN':'Track Replay','TW':'軌跡回放'}[language]}}</i-button>
+                                            <i-button size="small" @click="getSingleVehicleTrack" style="width: 35%;" type="primary" icon="ios-search-outline">{{{'CN':'查轨迹','EN':'Track','TW':'查軌跡'}[language]}}</i-button>
+                                            <i-button size="small" @click="startVehicleAnimation" style="width: 30%;" type="warning" icon="ios-git-branch">{{{'CN':'回放','EN':'Replay','TW':'回放'}[language]}}</i-button>
+                                            <i-button size="small" @click="clearTrack" style="width: 30%;" type="default" icon="ios-trash-outline">{{{'CN':'清除','EN':'Clear Track','TW':'清除'}[language]}}</i-button>
                                         </div>
                                     </template>
                                 </td>
@@ -239,18 +296,13 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="modifiedWrap">
-                    <div class="sliderWrap">
-                        <Slider value="10"></Slider>
-                    </div>
-                </div>
             </Modal>
         </template>
 
         <!-- 防区管理 -->
         <template>
             <Modal v-model="modal.isDefense" 
-                :styles="{top: '130px', left: '50px', position: 'absolute'}" 
+                :styles="{top: '120px', left: '50px', position: 'absolute'}" 
                 width="35"
                 footer-hide="true"
                 :mask="false"
@@ -274,18 +326,20 @@
                                         </i-select>
                                     </template>
                                 </td>
-                                <td>
-                                    <template v-if="!isAddDefensAction">
-                                        <div class="btnList">
-                                            <i-button @click="addDefensAction" long size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
-                                        </div>
-                                    </template>
-                                    <template v-if="isAddDefensAction">
-                                        <div class="btnList">
-                                            <i-button @click="deleteDefensAction" long size="small" type="warning" icon="ios-close-circle-outline">{{{'CN':'取消新增','EN':'cancel New','TW':'取消新增'}[language]}}</i-button>
-                                        </div>
-                                    </template>
-                                </td>
+                                <template v-if="defensFunc==true">
+                                    <td>
+                                        <template v-if="!isAddDefensAction">
+                                            <div class="btnList">
+                                                <i-button @click="addDefensAction" long size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
+                                            </div>
+                                        </template>
+                                        <template v-if="isAddDefensAction">
+                                            <div class="btnList">
+                                                <i-button @click="deleteDefensAction" long size="small" type="warning" icon="ios-close-circle-outline">{{{'CN':'取消新增','EN':'cancel New','TW':'取消新增'}[language]}}</i-button>
+                                            </div>
+                                        </template>
+                                    </td>
+                                </template>
                             </tr>
                         </tbody>
                     </table>
@@ -294,7 +348,7 @@
                 <div class="modifiedWrap">
                     <div class="tableWrap">
                         <template>
-                            <i-table height="400" @on-row-click="setDefensRowData" highlight-row :columns="defensColumns" :data="defensDatas" stripe="true" size="small"></i-table>
+                            <i-table height="300" @on-row-click="setDefensRowData" highlight-row :columns="defensColumns" :data="defensDatas" stripe="true" size="small"></i-table>
                         </template>
                     </div>
             
@@ -309,42 +363,55 @@
                 id="addDefensArea" 
                 width="25" 
                 :mask="false"
-                :styles="{top: '130px',left: '200px',}" 
-                class-name="mapModal detailInfoModal">
+                :styles="{top: '120px',left: '200px'}" 
+                class-name="mapModal detailInfoModal"
+                @on-cancel="closeDefensLayer">
                 <div slot="header" class="modalTitle">
                     <span class="label" v-text="{'CN':'防区详细信息','EN':'Defense Area Detail Infomation','TW':'防區詳細信息'}[language]"></span>
                 </div>
-                <div slot="footer">
-                    <Row type="flex" justify="start" gutter="10">
-                        <i-col span="6"></i-col>
-                        <i-col span="9">
-                            <Poptip
-                                confirm
-                                width="200"
-                                :title="{'CN':'您确定删除防区?','EN':'Are You Sure You Want To Delete The Defense Area?','TW':'您確定要刪除防區嗎?'}[language]"
-                                @on-ok="deleteDefensArea">
-                                <i-button type="error" long>{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button>
-                            </Poptip>
-                        </i-col>
-                        <i-col span="9">
-                            <i-button type="primary" long :loading="addLoading" @click="uploadDefensAreaDetailInfoToServer">{{{'CN':'确定','EN':'Add Camera','TW':'確定'}[language]}}</i-button>
-                        </i-col>
-                    </Row>
-                </div>
+                <template v-if="defensFunc==true">
+                    <div slot="footer">
+                        <Row type="flex" justify="start" gutter="10">
+                            <i-col span="6"></i-col>
+                            <i-col span="9">
+                                <Poptip
+                                    confirm
+                                    width="200"
+                                    :title="{'CN':'您确定删除防区?','EN':'Are You Sure You Want To Delete The Defense Area?','TW':'您確定要刪除防區嗎?'}[language]"
+                                    @on-ok="deleteDefensArea">
+                                    <i-button type="error" long>{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button>
+                                </Poptip>
+                            </i-col>
+                            <i-col span="9">
+                                <i-button type="primary" long :loading="addLoading" @click="uploadDefensAreaDetailInfoToServer">{{{'CN':'确定','EN':'Add Camera','TW':'確定'}[language]}}</i-button>
+                            </i-col>
+                        </Row>
+                    </div>
+                </template>
                 <div class="mapSearch">
                     <table>
                         <tbody>
                             <tr>
                                 <td style="width: 100px;">
                                     <span class="request">＊</span>
-                                    <span class="label" v-text="{'CN':'公司','EN':'Head','TW':'公司'}[language]"></span>
+                                    <span class="label" v-text="{'CN':'公司','EN':'Company','TW':'公司'}[language]"></span>
                                 </td>
                                 <td>
                                     <template>
-                                        <i-select v-model="defensAreaDetailInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
-                                            <i-option value="">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
+                                        <i-select :disabled="!defensFunc" @on-change="getDepartmentList('defensAreaDetailInfo')" v-model="defensAreaDetailInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
                                             <i-option v-for="item in companyList" :value="item.id">{{item.companyName}}</i-option>
                                         </i-select>
+                                    </template>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="request">＊</span>
+                                    <span v-text="{'CN':'部门','EN':'Superior Department','TW':'部門'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <Cascader :disabled="!defensFunc" :data="departmentList" v-model="defensAreaDetailInfo.deptId" trigger="hover" change-on-select></Cascader>
                                     </template>
                                 </td>
                             </tr>
@@ -354,7 +421,7 @@
                                     <span class="label" v-text="{'CN':'名称','EN':'Name','TW':'名稱'}[language]"></span>
                                 </td>
                                 <td>
-                                    <i-input v-model="defensAreaDetailInfo.areaName" />
+                                    <i-input :disabled="!defensFunc" v-model="defensAreaDetailInfo.areaName" />
                                 </td>
                             </tr>
                             <tr>
@@ -363,7 +430,7 @@
                                     <span class="label" v-text="{'CN':'编码','EN':'Code','TW':'編碼'}[language]"></span>
                                 </td>
                                 <td>
-                                    <i-input v-model="defensAreaDetailInfo.areaCode" />
+                                    <i-input :disabled="!defensFunc" v-model="defensAreaDetailInfo.areaCode" />
                                 </td>
                             </tr>
                             <tr>
@@ -372,16 +439,79 @@
                                     <span class="label" v-text="{'CN':'限速(m/s)','EN':'Speed Limit(m/s)','TW':'限速(m/s)'}[language]"></span>
                                 </td>
                                 <td>
-                                    <i-input v-model="defensAreaDetailInfo.speedLimit" />
+                                    <!-- <i-input v-model="defensAreaDetailInfo.speedLimit" /> -->
+                                    <template>
+                                        <Input-number
+                                            :disabled="!defensFunc"
+                                            v-model="defensAreaDetailInfo.speedLimit"
+                                            style="width: 100%">
+                                        </Input-number>
+                                    </template>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="label" v-text="{'CN':'停留时长(s)','EN':'Stay(s)','TW':'停留時長(s)'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <Input-number
+                                            :disabled="!defensFunc"
+                                            v-model="defensAreaDetailInfo.staySecond"
+                                            style="width: 100%">
+                                        </Input-number>
+                                    </template>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <span class="request">＊</span>
-                                    <span class="label" v-text="{'CN':'停留时长(s)','EN':'Stay(s)','TW':'停留時長(s)'}[language]"></span>
+                                    <span class="label" v-text="{'CN':'允许车辆驾入','EN':'Drive In','TW':'允許車輛駕入'}[language]"></span>
                                 </td>
                                 <td>
-                                    <i-input v-model="defensAreaDetailInfo.staySecond" />
+                                    <template>
+                                        <i-select :disabled="!defensFunc || !!defensAreaDetailInfo.id" v-model="defensAreaDetailInfo.canEnter" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <template v-for="item in secureAreaLimitTypeList">
+                                                <template v-if="item.type==720||item.type==721||item.type==722">
+                                                    <i-option :value="item.type">{{item.name}}</i-option>
+                                                </template>
+                                            </template>
+                                        </i-select>
+                                    </template>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="request">＊</span>
+                                    <span class="label" v-text="{'CN':'允许车辆驾出','EN':'Driving Out','TW':'允許車輛駕出'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <i-select :disabled="!defensFunc || !!defensAreaDetailInfo.id" v-model="defensAreaDetailInfo.canExit" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <template v-for="item in secureAreaLimitTypeList">
+                                                <template v-if="item.type==720||item.type==723||item.type==724">
+                                                    <i-option :value="item.type">{{item.name}}</i-option>
+                                                </template>
+                                            </template>
+                                        </i-select>
+                                    </template>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="request">＊</span>
+                                    <span class="label" v-text="{'CN':'允许车辆停留','EN':'Stop','TW':'防區狀態'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <i-select :disabled="!defensFunc || !!defensAreaDetailInfo.id" v-model="defensAreaDetailInfo.canStay" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <template v-for="item in secureAreaLimitTypeList">
+                                                <template v-if="item.type==720||item.type==725||item.type==726">
+                                                    <i-option :value="item.type">{{item.name}}</i-option>
+                                                </template>
+                                            </template>
+                                        </i-select>
+                                    </template>
                                 </td>
                             </tr>
                             <tr>
@@ -391,7 +521,7 @@
                                 </td>
                                 <td>
                                     <template>
-                                        <i-select v-model="defensAreaDetailInfo.secureStatus" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                        <i-select :disabled="!defensFunc" @on-change="defensStatuChange" v-model="defensAreaDetailInfo.secureStatus" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
                                             <i-option v-for="item in secureAreaStatusList" :value="item.type">{{item.name}}</i-option>
                                         </i-select>
                                     </template>
@@ -402,7 +532,7 @@
                                     <span class="label" v-text="{'CN':'备注','EN':'Remark','TW':'備註'}[language]"></span>
                                 </td>
                                 <td>
-                                    <i-input v-model="defensAreaDetailInfo.remark" />
+                                    <i-input :disabled="!defensFunc" v-model="defensAreaDetailInfo.remark" />
                                 </td>
                             </tr>
                         </tbody>
@@ -414,8 +544,8 @@
         <!-- 摄像机管理 -->
         <template>
             <Modal v-model="modal.isCamera" 
-                :styles="{top: '130px', left: '50px', position: 'absolute'}" 
-                width="30"
+                :styles="{top: '120px', left: '50px', position: 'absolute'}" 
+                width="35"
                 footer-hide="true"
                 :mask="false"
                 @on-visible-change="isAddCameraAction=false"
@@ -429,44 +559,45 @@
                         <tbody>
                             <tr>
                                 <td style="width: 60px;">
-                                    <span class="label" v-text="{'CN':'选择图层','EN':'select layer','TW':'車輛'}[language]"></span>
+                                    <span class="label" v-text="{'CN':'监控状态','EN':'State','TW':'監控狀態'}[language]"></span>
                                 </td>
                                 <td style="width: 61%;">
                                     <template>
-                                        <i-select disabled clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100%;">
-                                            <i-option v-text="{'CN':'牵引车','EN':'Tractor','TW':'牽引車'}[language]"></i-option>
-                                            <i-option v-text="{'CN':'拖挂车','EN':'Trailer','TW':'拖掛車'}[language]"></i-option>
-                                            <i-option v-text="{'CN':'三面车','EN':'Three Side Car','TW':'三面車'}[language]"></i-option>
+                                        <i-select @on-change="getCameraList(true)" v-model="cameraPageInfo.monitorStatus" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
+                                            <i-option v-for="item in monitorStatusList" :value="item.type">{{item.name}}</i-option>
                                         </i-select>
                                     </template>
                                 </td>
-                                <td>
-                                    <template v-if="!isAddCameraAction">
-                                        <div class="btnList">
-                                            <i-button @click="isAddCameraAction=true" long size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
-                                        </div>
-                                    </template>
-                                    <template v-if="isAddCameraAction">
-                                        <div class="btnList">
-                                            <i-button @click="isAddCameraAction=false" long size="small" type="warning" icon="ios-close-circle-outline">{{{'CN':'取消新增','EN':'cancel New','TW':'取消新增'}[language]}}</i-button>
-                                        </div>
-                                    </template>
-                                </td>
+                                <template v-if="cameraFunc==true">
+                                    <td>
+                                        <template v-if="!isAddCameraAction">
+                                            <div class="btnList">
+                                                <i-button @click="isAddCameraAction=true" long size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
+                                            </div>
+                                        </template>
+                                        <template v-if="isAddCameraAction">
+                                            <div class="btnList">
+                                                <i-button @click="isAddCameraAction=false" long size="small" type="warning" icon="ios-close-circle-outline">{{{'CN':'取消新增','EN':'cancel New','TW':'取消新增'}[language]}}</i-button>
+                                            </div>
+                                        </template>
+                                    </td>
+                                </template>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <p class="tip" v-text="{'CN':'注:表格仅显示当前视域内数据','EN':'Notes:The table shows only the data in the current view.','TW':'注:表格僅顯示當前視域內數據'}[language]"></p>
+                <!-- <p class="tip" v-text="{'CN':'注:表格仅显示当前视域内数据','EN':'Notes:The table shows only the data in the current view.','TW':'注:表格僅顯示當前視域內數據'}[language]"></p> -->
                 <div class="modifiedWrap">
                     <div class="tableWrap">
                         <template>
-                            <i-table @on-row-click="selectCamera($event)" height="400" highlight-row :columns="cameraColumns" :data="camersDatas" stripe="true" size="small"></i-table>
+                            <i-table @on-row-click="setCameraRowData" height="300" highlight-row :columns="cameraColumns" :data="camersDatas" stripe="true" size="small"></i-table>
                         </template>
                     </div>
             
                     <div class="pageWrap">
                         <template>
-                            <Page :total="100" show-total />
+                            <Page :total="cameraPageInfo.count" @on-change="cameraPageSizeChange" :page-size="20" show-sizer show-total/>
                         </template>
                     </div>
                 </div>
@@ -474,62 +605,100 @@
         
             <Modal v-model="isAddcameraDetailInfo" 
                 id="addCamera" 
-                width="20" 
+                width="30" 
+                :styles="{top: '120px',left: '200px'}" 
                 :mask="false"
-                class-name="mapModal detailInfoModal">
+                class-name="mapModal detailInfoModal"
+                @on-cancel="closeCameraLayer">
                 <div slot="header" class="modalTitle">
                     <span class="label" v-text="{'CN':'摄像机详细信息','EN':'Camera Detail Infomation','TW':'攝像機詳細信息'}[language]"></span>
                 </div>
-                <div slot="footer">
-                    <Row type="flex" justify="start" gutter="10">
-                        <i-col span="6"></i-col>
-                        <i-col span="9">
-                            <Poptip
-                                confirm
-                                width="200"
-                                :title="{'CN':'您确定删除摄像机?','EN':'Are You Sure You Want To Delete The Camera?','TW':'您確定要刪除攝像機嗎?'}[language]"
-                                @on-ok="deleteCamera">
-                                <i-button type="error" long>{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button>
-                            </Poptip>
-                        </i-col>
-                        <i-col span="9">
-                            <i-button type="primary" long :loading="addLoading" @click="uploadCameraDetailInfoToServer">{{{'CN':'确定','EN':'Add Camera','TW':'確定'}[language]}}</i-button>
-                        </i-col>
-                    </Row>
-                </div>
+                <template v-if="cameraFunc==true">
+                    <div slot="footer">
+                        <Row type="flex" justify="start" gutter="10">
+                            <i-col span="16"></i-col>
+                            <i-col span="4">
+                                <Poptip
+                                    confirm
+                                    width="200"
+                                    :title="{'CN':'您确定删除摄像机?','EN':'Are You Sure You Want To Delete The Camera?','TW':'您確定要刪除攝像機嗎?'}[language]"
+                                    @on-ok="deleteCamera">
+                                    <i-button type="error" long>{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button>
+                                </Poptip>
+                            </i-col>
+                            <i-col span="4">
+                                <i-button type="primary" long :loading="addLoading" @click="uploadCameraDetailInfoToServer">{{{'CN':'确定','EN':'Add Camera','TW':'確定'}[language]}}</i-button>
+                            </i-col>
+                        </Row>
+                    </div>
+                </template>
                 <div class="mapSearch">
                     <table>
                         <tbody>
                             <tr>
                                 <td style="width: 60px;">
+                                    <span class="request">＊</span>
+                                    <span class="label" v-text="{'CN':'公司','EN':'Company','TW':'公司'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <i-select :disabled="!cameraFunc" @on-change="getDepartmentList('cameraDetailInfo')" v-model="cameraDetailInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <i-option v-for="item in companyList" :value="item.id">{{item.companyName}}</i-option>
+                                        </i-select>
+                                    </template>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="request">＊</span>
+                                    <span v-text="{'CN':'部门','EN':'Superior Department','TW':'部門'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <Cascader :disabled="!cameraFunc" :data="departmentList" v-model="cameraDetailInfo.deptId" trigger="hover" change-on-select></Cascader>
+                                    </template>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 60px;">
+                                    <span class="request">＊</span>
                                     <span class="label" v-text="{'CN':'名称','EN':'Name','TW':'名稱'}[language]"></span>
                                 </td>
                                 <td>
-                                    <i-input v-model="cameraDetailInfo.name" />
+                                    <i-input :disabled="!cameraFunc" v-model="cameraDetailInfo.cameraName" />
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <span class="label" v-text="{'CN':'描述','EN':'Account','TW':'描述'}[language]"></span>
+                                    <span class="label" v-text="{'CN':'编码','EN':'Code','TW':'編碼'}[language]"></span>
                                 </td>
                                 <td>
-                                    <i-input v-model="cameraDetailInfo.describe" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <span class="label" v-text="{'CN':'trsp','EN':'trsp','TW':'trsp'}[language]"></span>
-                                </td>
-                                <td>
-                                    <i-input v-model="cameraDetailInfo.rtsp"/>
+                                    <i-input :disabled="!cameraFunc" v-model="cameraDetailInfo.cameraCode" />
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <span class="label" v-text="{'CN':'方向','EN':'direction','TW':'方向'}[language]"></span>
+                                    <span class="request">＊</span>
+                                    <span class="label" v-text="{'CN':'描述','EN':'Describe','TW':'描述'}[language]"></span>
                                 </td>
                                 <td>
-                                    <i-input v-model="cameraDetailInfo.direction" />
+                                    <i-input :disabled="!cameraFunc" v-model="cameraDetailInfo.cameraDesc" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="label" v-text="{'CN':'直播地址','EN':'Live URL','TW':'直播地址'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input :disabled="!cameraFunc" v-model="cameraDetailInfo.rtspLiveUrl"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="label" v-text="{'CN':'录播地址','EN':'Delayed URL','TW':'錄播地址'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input :disabled="!cameraFunc" v-model="cameraDetailInfo.rtspHisUrl"/>
                                 </td>
                             </tr>
                             <tr>
@@ -537,7 +706,12 @@
                                     <span class="label" v-text="{'CN':'半径','EN':'raduis','TW':'半徑'}[language]"></span>
                                 </td>
                                 <td>
-                                    <i-input v-model="cameraDetailInfo.raduis" />
+                                    <!-- <i-input v-model="cameraDetailInfo.radius" /> -->
+                                    <Input-number
+                                        :disabled="!cameraFunc"
+                                        v-model="cameraDetailInfo.radius"
+                                        style="width: 100%">
+                                    </Input-number>
                                 </td>
                             </tr>
                             <tr>
@@ -545,7 +719,34 @@
                                     <span class="label" v-text="{'CN':'视野角度','EN':'Angle of view','TW':'視野角度'}[language]"></span>
                                 </td>
                                 <td>
-                                    <i-input v-model="cameraDetailInfo.view"/>
+                                    <!-- <i-input v-model="cameraDetailInfo.angle"/> -->
+                                    <Input-number
+                                        :min="0"
+                                        :max="360"
+                                        :disabled="!cameraFunc"
+                                        v-model="cameraDetailInfo.angle"
+                                        style="width: 100%">
+                                    </Input-number>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="label" v-text="{'CN':'状态','EN':'state','TW':'狀態'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <i-select :disabled="!cameraFunc" v-model="cameraDetailInfo.monitorStatus" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <i-option v-for="item in monitorStatusList" :value="item.type">{{item.name}}</i-option>
+                                        </i-select>
+                                    </template>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="label" v-text="{'CN':'备注','EN':'Remark','TW':'備註'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input :disabled="!cameraFunc" v-model="cameraDetailInfo.remark" />
                                 </td>
                             </tr>
                         </tbody>
@@ -557,8 +758,8 @@
         <!-- 图层控制 -->
         <template>
             <Modal v-model="modal.isLayer" 
-                :styles="{top: '130px', left: '50px', position: 'absolute'}" 
-                width="30"
+                :styles="{top: '120px', right: '50px', position: 'absolute'}" 
+                width="18"
                 footer-hide="true"
                 :mask="false"
                 class-name="mapModal">
@@ -569,7 +770,7 @@
         
                 <div class="modifiedWrap">
                     <Row type="flex" justify="start" class-name="layerWrap">
-                        <i-col span="12" class-name="layerMenu">
+                        <!-- <i-col span="12" class-name="layerMenu">
                             <template>
                                 <radio-group value="1" style="width: 100%;">
                                     <i-menu theme="light" active-name="1" mode="vertical" width="auto">
@@ -596,8 +797,8 @@
                                     </i-menu>        
                                 </radio-group>
                             </template>
-                        </i-col>
-                        <i-col span="12" class-name="layerMenu">
+                        </i-col> -->
+                        <i-col span="24" class-name="layerMenu">
                                 <template>
                                     <checkbox-group v-model="layerControl" style="width: 100%;">
                                         <i-menu theme="light" mode="vertical" width="auto">
@@ -606,7 +807,7 @@
                                                     <span class="label" v-text="{'CN':'背景','EN':'Background','TW':'背景'}[language]"></span>
                                                 </Checkbox>
                                             </menu-item>
-                                            <menu-item name="seat">
+                                            <!-- <menu-item name="seat">
                                                 <Checkbox label="seat">
                                                     <span class="label" v-text="{'CN':'机位','EN':'Seat','TW':'機位'}[language]"></span>
                                                 </Checkbox>
@@ -615,15 +816,15 @@
                                                 <Checkbox label="alarm">
                                                     <span class="label" v-text="{'CN':'告警','EN':'Alarm','TW':'告警'}[language]"></span>
                                                 </Checkbox>
-                                            </menu-item>
+                                            </menu-item> -->
                                             <menu-item name="vehicle">
                                                 <Checkbox label="vehicle">
                                                     <span class="label" v-text="{'CN':'车辆','EN':'Vehicle','TW':'車輛'}[language]"></span>
                                                 </Checkbox>
                                             </menu-item>
-                                            <menu-item name="warning">
-                                                <Checkbox label="warning">
-                                                    <span class="label" v-text="{'CN':'告警防区','EN':'Warning Area','TW':'告警防區'}[language]"></span>
+                                            <menu-item name="defens">
+                                                <Checkbox label="defens">
+                                                    <span class="label" v-text="{'CN':'防区','EN':'Warning Area','TW':'防區'}[language]"></span>
                                                 </Checkbox>
                                             </menu-item>
                                             <menu-item name="camera">
@@ -643,7 +844,7 @@
         <!-- 告警管理 -->
         <template>
             <Modal v-model="modal.isAlarm" 
-                :styles="{top: '130px', left: '50px', position: 'absolute'}" 
+                :styles="{top: '120px', left: '50px', position: 'absolute'}" 
                 width="30"
                 footer-hide="true"
                 :mask="false"
@@ -679,7 +880,7 @@
                 <div class="modifiedWrap">
                     <div class="tableWrap">
                         <template>
-                            <i-table height="400" highlight-row :columns="vehicleColumns" :data="vehicleDatas" stripe="true" size="small"></i-table>
+                            <i-table height="300" highlight-row :columns="vehicleColumns" :data="vehicleDatas" stripe="true" size="small"></i-table>
                         </template>
                     </div>
             
@@ -695,38 +896,68 @@
         <!-- 车辆查询 -->
         <template>
             <Modal v-model="modal.isSearch" 
-                :styles="{top: '130px', left: '50px', position: 'absolute'}" 
+                :styles="{top: '120px', left: '50px', position: 'absolute'}" 
                 width="35"
                 footer-hide="true"
                 :mask="false"
                 class-name="mapModal">
                 <div slot="header" class="modalTitle">
                     <span class="icon"><Icon type="ios-search-outline" /></span>
-                    <span class="label" v-text="{'CN':'车辆查询','EN':'Vehicle Search','TW':'車輛查詢'}[language]"></span>
+                    <span class="label" v-text="{'CN':'车辆实时查询','EN':'Vehicle RealTime Search','TW':'車輛實時查詢'}[language]"></span>
+                    <span class="areaTip">双击地图可实时范围查询</span>
+                    &nbsp;&nbsp;&nbsp;<i-button @click="cancelAreaSearch" size="small" icon="md-refresh-circle">{{{'CN':'取消范围查询','EN':'Cancel Range Search','TW':'取消範圍查詢'}[language]}}</i-button>
                 </div>
                 <div class="mapSearch">
                     <table>
                         <tbody>
                             <tr>
-                                <td style="width: 80px;">
-                                    <span class="label" v-text="{'CN':'车辆类型','EN':'Vehicle Type','TW':'車輛類型'}[language]"></span>
+                                <td>
+                                    <span class="label" v-text="{'CN':'半径范围','EN':'Radius','TW':'半徑範圍'}[language]"></span>
                                 </td>
-                                <td style="width: 35%">
+                                <td>
+                                    <i-input v-model="vehiclePositonPageInfo.span" :placeholder="{'CN':'请输入半径(单位/米)','EN':'Radius(unit/m)','TW':'請輸入半徑(單位/米)'}[language]"></i-input>
+                                </td>
+                                <td>
+                                    <span class="label" v-text="{'CN':'坐标原点','EN':'Coordinate','TW':'座標原點'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input v-model="vehiclePositonPageInfo.centerPosition" :placeholder="{'CN':'格式:113.8077, 22.6286','EN':'Format:113.8077, 22.6286','TW':'格式:113.8077, 22.6286'}[language]"></i-input>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="label" v-text="{'CN':'车辆编号','EN':'Vehicle Number','TW':'車輛編號'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input v-model="vehiclePositonPageInfo.vehicleCode" :placeholder="{'CN':'请输入车辆编号','EN':'Vehicle Number','TW':'請輸入車輛編號'}[language]"></i-input>
+                                </td>
+                                <td>
+                                    <span class="label" v-text="{'CN':'车辆名称','EN':'Vehicle Name','TW':'車輛名稱'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input v-model="vehiclePositonPageInfo.vehicleName" :placeholder="{'CN':'请输入车辆名称','EN':'Vehicle Name','TW':'請輸入車輛名稱'}[language]"></i-input>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 15%;">
+                                    <span class="label" v-text="{'CN':'车辆状态','EN':'Vehicle Statu','TW':'車輛狀態'}[language]"></span>
+                                </td>
+                                <td style="width: 35%;">
                                     <template>
-                                        <i-select clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100%;">
-                                            <i-option v-text="{'CN':'牵引车','EN':'Tractor','TW':'牽引車'}[language]"></i-option>
-                                            <i-option v-text="{'CN':'拖挂车','EN':'Trailer','TW':'拖掛車'}[language]"></i-option>
-                                            <i-option v-text="{'CN':'三面车','EN':'Three Side Car','TW':'三面車'}[language]"></i-option>
+                                        <i-select v-model="vehiclePositonPageInfo.vehicleStatus" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <i-option v-text="{'CN':'全部','EN':'All','TW':'全部'}[language]"></i-option>
+                                            <i-option v-for="item in terminalStatusList" :value="item.type">{{item.name}}</i-option>
                                         </i-select>
                                     </template>
                                 </td>
-                                <td style="width: 80px;">
-                                    <span class="label" v-text="{'CN':'归属公司','EN':'Ownership Company','TW':'歸屬公司'}[language]"></span>
+                                <td style="width: 15%;">
+                                    <span class="label" v-text="{'CN':'车辆类型','EN':'Vehicle Type','TW':'車輛類型'}[language]"></span>
                                 </td>
-                                <td style="width: 35%">
+                                <td style="width: 35%;">
                                     <template>
-                                        <i-select clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100%;">
-                                            <i-option v-text="{'CN':'机场地服','EN':'Airport Clothing','TW':'機場地服'}[language]"></i-option>
+                                        <i-select v-model="vehiclePositonPageInfo.vehicleTypeId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <i-option v-text="{'CN':'全部','EN':'All','TW':'全部'}[language]"></i-option>
+                                            <i-option v-for="item in vehicleTypeList" :value="item.type">{{item.name}}</i-option>
                                         </i-select>
                                     </template>
                                 </td>
@@ -737,11 +968,9 @@
                                 </td>
                                 <td>
                                     <template>
-                                        <i-select clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100%;">
-                                            <i-option v-text="{'CN':'白色','EN':'White','TW':'白色'}[language]"></i-option>
-                                            <i-option v-text="{'CN':'黑色','EN':'Black','TW':'黑色'}[language]"></i-option>
-                                            <i-option v-text="{'CN':'黃色','EN':'Yellow','TW':'黃色'}[language]"></i-option>
-                                            <i-option v-text="{'CN':'蓝色','EN':'Blue','TW':'藍色'}[language]"></i-option>
+                                        <i-select v-model="vehiclePositonPageInfo.vehicleColorId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <i-option v-text="{'CN':'全部','EN':'All','TW':'全部'}[language]"></i-option>
+                                            <i-option v-for="item in vehicleColorList" :value="item.type">{{item.name}}</i-option>
                                         </i-select>
                                     </template>
                                 </td>
@@ -750,56 +979,41 @@
                                 </td>
                                 <td>
                                     <template>
-                                        <i-select clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
-                                            <i-option v-text="{'CN':'HELI','EN':'HELI','TW':'HELI'}[language]"></i-option>
+                                        <i-select v-model="vehiclePositonPageInfo.vehicleBrandId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <i-option v-text="{'CN':'全部','EN':'All','TW':'全部'}[language]"></i-option>
+                                            <i-option v-for="item in vehicleBrandList" :value="item.type">{{item.name}}</i-option>
                                         </i-select>
-                                    </template>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <span class="label" v-text="{'CN':'车辆编号','EN':'Vehicle Number','TW':'車輛編號'}[language]"></span>
-                                </td>
-                                <td colspan="2">
-                                    <i-input :placeholder="{'CN':'请输入车辆编号','EN':'Please Input Query Key','TW':'請輸入車輛編號'}[language]" style="width: 100%"></i-input>
-                                </td>
-                                <td style="width: 100px;">
-                                    <template>
-                                        <div class="btnList">
-                                            <i-button long size="small" type="primary" icon="ios-search-outline">{{{'CN':'查询','EN':'Search','TW':'查詢'}[language]}}</i-button>
-                                        </div>
                                     </template>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <p class="tip" v-text="{'CN':'注:表格仅显示当前视域内数据','EN':'Notes:The table shows only the data in the current view.','TW':'注:表格僅顯示當前視域內數據'}[language]"></p>
                 <div class="modifiedWrap">
                     <div class="tableWrap">
                         <template>
-                            <i-table height="300" highlight-row :columns="searchColumns" :data="searchDatas" stripe="true" size="small"></i-table>
+                            <i-table height="250" @on-row-click="showRowDataPosition" :loading="isSearchLoading" highlight-row :columns="searchColumns" :data="searchDatas" stripe="true" size="small"></i-table>
                         </template>
                     </div>
-            
                     <div class="pageWrap">
                         <template>
-                            <Page :total="100" show-total />
+                            <p style="text-align: center; font-size: 14px;">{{{'CN':'实时车辆','EN':'RealTime Vehicle','TW':'實時車輛'}[language]}}：<span style="font-weight: bolder; padding: 0 10px 0 0; font-size: 20px; color: #2D8CF0;">{{vehiclePositonPageInfo.count}}</span>{{{'CN':'辆','EN':'Car','TW':'輛'}[language]}}</p>
                         </template>
                     </div>
                 </div>
             </Modal>
         </template>
 
+        <script src="/airport/assets/js/vue.min.js"></script>
+        <script src="/airport/assets/vender/iView/iview.min.js"></script>
+        <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
+        <script src="/airport/assets/js/md5.min.js"></script>
+        <script src="/airport/assets/vender/openLayer/ol.min.js"></script>
+        <script src="/airport/assets/vender/radar/radar.min.js"></script>
+        <script src="/airport/assets/js/config.min.js?v=5756574646372"></script>
+        <script src="/airport/assets/js/utility.min.js?v=5756574646372"></script>
+        <script src="/airport/www/module/maps/maps.min.js?v=5756574646372"></script>
     </div>
-    <script src="/airport/assets/js/vue.min.js"></script>
-    <script src="/airport/assets/vender/iView/iview.min.js"></script>
-    <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
-    <script src="/airport/assets/js/md5.min.js"></script>
-    <script src="/airport/assets/js/config.min.js"></script>
-    <script src="/airport/assets/vender/openLayer/ol.min.js"></script>
-    <script src="/airport/assets/js/utility.min.js"></script>
-    <script src="/airport/www/module/maps/maps.js?v=958584"></script>
 </body>
 
 </html>

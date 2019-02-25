@@ -1,23 +1,75 @@
 (function () {
     var language = utility.getLocalStorage("language");
     var userInfo = utility.getLocalStorage("userInfo");
+    var bizParam = utility.getLocalStorage("bizParam");
     var pageVue = new Vue({
         "el": "#js-vue",
         "data": {
             "language": !!language ? language["language"] : "CN",
             "isTableLoading": true,
             "isShowModal": false,
-            "isShowTerminal": false,
             "isModalLoading": true,
-            "modalTitle": "",
             "tableHeight": (function () {
                 var containerHeight = $(".tableContainer").height();
                 return containerHeight - 100;
             }()),
-            "itemInfo": null,    
-        },
-        "watch": {
-
+            "vehicleColorList": bizParam["vehicleColor"], // 车辆颜色
+            "vehicleTypeList": bizParam["vehicleType"], // 车辆类型
+            "vehicleBrandList": bizParam["vehicleBrand"], // 车辆品牌
+            "pageInfo": {
+                "id": "", // 指定的维护记录ID
+                "count": 0,
+                "pageNum": 0,
+                "pageSize": 20,
+                "deptId": "", // 部门ID
+                "companyId": "", // 所属公司ID
+                "vehicleCode": "",// 车辆编码
+                "vehicleColorId": "",// 所属公司ID
+                "vehicleTypeId": "",// 车辆颜色ID
+                "vehicleBrandId": "",// 车辆类型ID
+                "vehicleTypeId": "",// 车辆品牌ID
+                "beginMiles": "",// 最大里程数
+                "endMiles": "",// 最大里程数
+                "beginTime": "", // 开始时间
+                "endTime": "", // 结束时间
+            },
+            "columnsList": [
+                {
+                    "type": "index",
+                    "width": 60,
+                    "align": "center"
+                },
+                {
+                    "title": { "CN": "公司", "EN": "Company", "TW": "公司" }[language["language"]],
+                    "key": "companyName"
+                },
+                {
+                    "title": { "CN": "部门", "EN": "Department", "TW": "部門" }[language["language"]],
+                    "key": "deptName"
+                },
+                {
+                    "title": { "CN": "车辆名称", "EN": "Vehicle Name", "TW": "車輛名稱" }[language["language"]],
+                    "key": "vehicleName"
+                },
+                {
+                    "title": { "CN": "车辆编码", "EN": "Vehicle Name", "TW": "車輛編碼" }[language["language"]],
+                    "key": "vehicleCode"
+                },
+                {
+                    "title": { "CN": "里程数(公里)", "EN": "Mileage(km)", "TW": "里程數(公里)" }[language["language"]],
+                    "key": "miles",
+                    "sortable": true
+                },
+                {
+                    "title": { "CN": "里程占比", "EN": "Mileage(percent)", "TW": "里程數占比" }[language["language"]],
+                    "key": "mileRate",
+                    "sortable": true
+                },
+            ],
+            "departmentList": [],
+            "vehicleList": [],
+            "companyList": [],
+            "userList": [],
         },
         "methods": {
             // 刷新
@@ -31,43 +83,96 @@
                     }, 3000);
                 }
             },
-            //新增
-            "add": function () {
+            // 时间变化
+            "beginRepairTime": function(value, item) {
                 var self = this;
-                self.isShowModal = true;
-                self.isModalLoading = true;
-                self.modalTitle = { "CN": "新增", "EN": "Add", "TW": "新增" }[self.language];
+                self.pageInfo.beginTime = value;
             },
-            //编辑
-            "edit": function () {
+            "endRepairTime": function(value, item) {
                 var self = this;
-                utility.showMessageTip(self, function() {
-                    self.isShowModal = true;
-                    self.modalTitle = { "CN": "修改", "EN": "Edit", "TW": "修改" }[self.language]; 
+                self.pageInfo.endTime = value;
+            },
+            // 页数改变时的回调
+            "pageSizeChange": function (value) {
+                var self = this;
+                self.pageInfo.pageNum = parseInt(value, 10);
+                setTimeout(function () {
+                    self.getVehicleMileRateReport(false);
+                }, 200);
+            },
+            // 切换每页条数时的回调
+            "pageRowChange": function (value) {
+                var self = this;
+                self.pageInfo.pageSize = parseInt(value, 10);
+                setTimeout(function () {
+                    self.getVehicleMileRateReport(false);
+                }, 200);
+            },
+            
+            // 获取车辆信息
+            "getVehicleMileRateReport": function (bool) {
+                var self = this;
+                self.vehicleList = [];
+                if (bool == true) {
+                    self.pageInfo.pageNum = 0;
+                }
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getVehicleMileRateReport,
+                    actionUrl: CONFIG.SERVICE.vehicleService,
+                    dataObj: self.pageInfo,
+                    beforeSendCallback: function () {
+                        self.isTableLoading = true;
+                    },
+                    completeCallback: function () {
+                        self.isTableLoading = false;
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            self.vehicleList = data.data;
+                            self.pageInfo.count = data.count;
+                        }
+                    }
                 });
             },
-            // 选择终端
-            "selectTerminal": function() {
+            "changeToGetDetp": function() {
                 var self = this;
-                self.isShowTerminal = true;
+                self.getDepartmentList();
             },
-            // 当选择的行发生变化时 
-            "setCurrentRowData": function (event) {
+            // 获取部门信息
+            "getDepartmentList": function () {
                 var self = this;
-
-                console.log(event);
-
-                if (!!event) {
-                    self.itemInfo = event;
-                }
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.deptService + "?action=" + CONFIG.ACTION.getDeptList,
+                    actionUrl: CONFIG.SERVICE.deptService,
+                    dataObj: {
+                        id: 0,
+                        companyId: self.pageInfo.companyId,
+                        pageSize: 10000,
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            self.departmentList = data.data;
+                        }
+                    }
+                });
             },
-            // 提交信息到服務器
-            "uploadDataToServer": function () {
+            // 获取公司列表
+            "getCompanyList": function () {
                 var self = this;
-                setTimeout(function () {
-                    self.isModalLoading = false;
-                }, 2000);
-            }
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.companyService + "?action=" + CONFIG.ACTION.getCompanyList,
+                    actionUrl: CONFIG.SERVICE.companyService,
+                    dataObj: {
+                        id: 0,
+                        pageSize: 10000,
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            self.companyList = data.data;
+                        }
+                    }
+                });
+            },
         },
         "created": function () {
             var self = this;
@@ -76,8 +181,10 @@
             utility.isLogin(false);
 
             setTimeout(function () {
-                self.isTableLoading = false;
-            }, 2000);
+                self.getVehicleMileRateReport(true);
+                self.getDepartmentList();
+                self.getCompanyList();
+            }, 500);
         }
     });
 

@@ -21,23 +21,22 @@
             "groupTypeList": bizParam["groupType"],
             "index": 0,
             "pageInfo": {
-                "id": 0,
+                "id": "", // 查询关键字（角色名称）
                 "count": 0,
                 "pageNum": 1,
-                "pageSize": 15,
-                "id": "", // 查询关键字（角色名称）
-                "groupTypeId": "", // 查询关键字（用户名称）
+                "pageSize": 20,
                 "groupName": "", // 查询关键字（用户名称）
                 "companyId": "", // 公司ID
+                "groupTypeId": "", // 查询关键字（用户名称）
             },
             "selectItem": null,
             "itemInfo": {
                 "id": "",
                 "companyId": "",
-                "groupTypeId": "",
                 "groupName": "",
                 "groupDesc": "",
                 "isValid": "1",
+                "groupTypeId": "",
                 "createUserId": userInfo["id"], // 创建用户ID，新增时必传
                 "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传
             },
@@ -77,6 +76,71 @@
                     "width": 200,
                     "align": "center",
                     "render": function (h, params) {
+                        // var groupTypeId = pageVue.groupList[params.index]["groupTypeId"];
+                        // var actionList = [];
+                        // if(groupTypeId==121) {
+                        //     actionList = [
+                        //         h('Button', {
+                        //             "props": {
+                        //                 "type": "primary",
+                        //                 "size": "small"
+                        //             },
+                        //             "style": {
+                        //                 "marginRight": "5px"
+                        //             },
+                        //             "on": {
+                        //                 "click": function () {
+                        //                     pageVue.groupMemberPageInfo.groupId = pageVue.groupList[params.index]["id"];
+                        //                     pageVue.groupMemberPageInfo.companyId = pageVue.groupList[params.index]["companyId"];
+                        //                     pageVue.groupTypeId = pageVue.groupList[params.index]["groupTypeId"];
+                        //                     pageVue.itemInfo.id = pageVue.groupList[params.index]["id"];
+                        //                     pageVue.isShowMember = true;
+                        //                     pageVue.getGroupMemberList(true);
+                        //                 }
+                        //             }
+                        //         }, { 'CN': '组成员', 'EN': 'Group Members', 'TW': '組成員' }[language["language"]]),
+                        //         h('Button', {
+                        //             "props": {
+                        //                 "type": "info",
+                        //                 "size": "small"
+                        //             },
+                        //             "style": {
+                        //                 "marginRight": "5px"
+                        //             },
+                        //             "on": {
+                        //                 "click": function () {
+                        //                     pageVue.permissionsPageInfo.groupId = pageVue.groupList[params.index]["id"];
+                        //                     pageVue.permissionsPageInfo.companyId = pageVue.groupList[params.index]["companyId"];
+                        //                     pageVue.groupTypeId = pageVue.groupList[params.index]["groupTypeId"];
+                        //                     pageVue.isPermissions = true;
+                        //                     pageVue.getPermissionsDataList(true);
+                        //                 }
+                        //             }
+                        //         }, { "CN": "数据权限", "EN": "Data Permissions", "TW": "數據權限" }[language["language"]])
+                        //     ]
+                        // } else {
+                        //     actionList = [
+                        //         h('Button', {
+                        //             "props": {
+                        //                 "type": "primary",
+                        //                 "size": "small"
+                        //             },
+                        //             "style": {
+                        //                 "marginRight": "5px"
+                        //             },
+                        //             "on": {
+                        //                 "click": function () {
+                        //                     pageVue.groupMemberPageInfo.groupId = pageVue.groupList[params.index]["id"];
+                        //                     pageVue.groupMemberPageInfo.companyId = pageVue.groupList[params.index]["companyId"];
+                        //                     pageVue.groupTypeId = pageVue.groupList[params.index]["groupTypeId"];
+                        //                     pageVue.itemInfo.id = pageVue.groupList[params.index]["id"];
+                        //                     pageVue.isShowMember = true;
+                        //                     pageVue.getGroupMemberList(true);
+                        //                 }
+                        //             }
+                        //         }, { 'CN': '组成员', 'EN': 'Group Members', 'TW': '組成員' }[language["language"]])
+                        //     ]
+                        // }
                         return h('div', [
                             h('Button', {
                                 "props": {
@@ -97,25 +161,38 @@
                                     }
                                 }
                             }, { 'CN': '组成员', 'EN': 'Group Members', 'TW': '組成員' }[language["language"]]),
-                            h('Button', {
+                            h("Button", {
                                 "props": {
-                                    "type": "info",
-                                    "size": "small"
+                                    "type": "warning",
+                                    "size": "small",
                                 },
                                 "style": {
-                                    "marginRight": "5px"
+                                    "marginRight": '5px'
                                 },
                                 "on": {
                                     "click": function () {
-                                        pageVue.permissionsPageInfo.groupId = pageVue.groupList[params.index]["id"];
-                                        pageVue.permissionsPageInfo.companyId = pageVue.groupList[params.index]["companyId"];
-                                        pageVue.groupTypeId = pageVue.groupList[params.index]["groupTypeId"];
-                                        pageVue.isPermissions = true;
-                                        pageVue.getPermissionsDataList(true);
+                                        pageVue.index = params.index;
+                                        pageVue.selectItem = params.row;
+                                        pageVue.editItem();
                                     }
                                 }
-                            }, { "CN": "数据权限", "EN": "Data Permissions", "TW": "數據權限" }[language["language"]]),
-
+                            }, { "CN": "编辑", "EN": "Edite", "TW": "編輯" }[language["language"]]),
+                            h("Button", {
+                                "props": {
+                                    "type": "error",
+                                    "size": "small",
+                                },
+                                "style": {
+                                    "marginRight": '5px'
+                                },
+                                "on": {
+                                    "click": function () {
+                                        pageVue.index = params.index;
+                                        pageVue.selectItem = params.row;
+                                        pageVue.delItem();
+                                    }
+                                }
+                            }, { "CN": "删除", "EN": "Delete", "TW": "刪除" }[language["language"]])
                         ]);
                     }
                 }
@@ -171,7 +248,7 @@
             "groupTypePageInfo": {
                 "count": 0,
                 "pageNum": 1,
-                "pageSize": 20,
+                "pageSize": 20
             },
             "groupTypeColumsList": [],
             "groupTypeDataList": [],
@@ -205,7 +282,7 @@
                 },
                 // 设备
                 "124": {
-                    "service": CONFIG.SERVICE.vehicleService,
+                    "service": CONFIG.SERVICE.deviceService,
                     "action": CONFIG.ACTION.getDeviceList,
                     "columnsList": "deviceColumnsList",
                     "tableRowList": "deviceTableRowList",
@@ -268,38 +345,27 @@
                     "align": "center"
                 },
                 {
-                    "title": { "CN": "防区姓名", "EN": "Name", "TW": "姓名" }[language["language"]],
-                    "key": "userName"
+                    "title": { "CN": "名称", "EN": "Name", "TW": "名稱" }[language["language"]],
+                    "key": "areaName",
                 },
                 {
-                    "title": { "CN": "性别", "EN": "Gender", "TW": "性別" }[language["language"]],
-                    "key": "sex"
+                    "title": { "CN": "编码", "EN": "Code", "TW": "編碼" }[language["language"]],
+                    "key": "areaCode",
                 },
                 {
-                    "title": { "CN": "手机号", "EN": "cellPhone No.", "TW": "手機號" }[language["language"]],
-                    "key": "mobile"
+                    "title": { "CN": "状态", "EN": "Status", "TW": "狀態" }[language["language"]],
+                    "key": "secureStatus",
                 },
                 {
-                    "title": { "CN": "所属公司", "EN": "Company", "TW": "所屬公司" }[language["language"]],
-                    "key": "company"
+                    "title": { "CN": "速度上限", "EN": "Speed Limit", "TW": "速度上限" }[language["language"]],
+                    "key": "speedLimit",
                 },
                 {
-                    "title": { "CN": "员工工号", "EN": "Staff Number", "TW": "員工工號" }[language["language"]],
-                    "key": "userSeq"
-                }
+                    "title": { "CN": "停留时长", "EN": "Length Of Stay", "TW": "停留時長" }[language["language"]],
+                    "key": "staySecond",
+                },
             ],
-            "areaTableRowList": [
-                {
-                    "userCode": "账号",
-                    "userName": "员工姓名",
-                    "userSeq": "员工工号",
-                    "sex": "性别",
-                    "mobile": "固话",
-                    "telephone": "手机号",
-                    "company": "所属公司",
-                    "remark": "备注",
-                }
-            ],
+            "areaTableRowList": [],
 
             // 车辆
             "vehicleList": [],
@@ -310,38 +376,32 @@
                     "align": "center"
                 },
                 {
-                    "title": { "CN": "车辆姓名", "EN": "Name", "TW": "姓名" }[language["language"]],
-                    "key": "userName"
+                    "title": { "CN": "ID", "EN": "ID", "TW": "ID" }[language["language"]],
+                    "width": 60,
+                    "key": "id"
                 },
                 {
-                    "title": { "CN": "性别", "EN": "Gender", "TW": "性別" }[language["language"]],
-                    "key": "sex"
+                    "title": { "CN": "公司", "EN": "Company", "TW": "公司" }[language["language"]],
+                    "key": "companyName"
                 },
                 {
-                    "title": { "CN": "手机号", "EN": "cellPhone No.", "TW": "手機號" }[language["language"]],
-                    "key": "mobile"
+                    "title": { "CN": "名称", "EN": "Name", "TW": "名稱" }[language["language"]],
+                    "key": "vehicleName"
                 },
                 {
-                    "title": { "CN": "所属公司", "EN": "Company", "TW": "所屬公司" }[language["language"]],
-                    "key": "company"
+                    "title": { "CN": "类型", "EN": "Type", "TW": "類型" }[language["language"]],
+                    "key": "vehicleTypeName"
                 },
                 {
-                    "title": { "CN": "员工工号", "EN": "Staff Number", "TW": "員工工號" }[language["language"]],
-                    "key": "userSeq"
+                    "title": { "CN": "编码", "EN": "Code", "TW": "編碼" }[language["language"]],
+                    "key": "vehicleCode"
+                },
+                {
+                    "title": { "CN": "状态", "EN": "State", "TW": "狀態" }[language["language"]],
+                    "key": "vehicleStatus"
                 }
             ],
-            "vehicleTableRowList": [
-                {
-                    "userCode": "账号",
-                    "userName": "员工姓名",
-                    "userSeq": "员工工号",
-                    "sex": "性别",
-                    "mobile": "固话",
-                    "telephone": "手机号",
-                    "company": "所属公司",
-                    "remark": "备注",
-                }
-            ],
+            "vehicleTableRowList": [],
 
             // 定位设备
             "deviceList": [],
@@ -352,38 +412,32 @@
                     "align": "center"
                 },
                 {
-                    "title": { "CN": "定位设备姓名", "EN": "Name", "TW": "姓名" }[language["language"]],
-                    "key": "userName"
+                    "title": { "CN": "ID", "EN": "ID", "TW": "ID" }[language["language"]],
+                    "width": 60,
+                    "key": "id"
                 },
                 {
-                    "title": { "CN": "性别", "EN": "Gender", "TW": "性別" }[language["language"]],
-                    "key": "sex"
+                    "title": { "CN": "公司", "EN": "Company", "TW": "公司" }[language["language"]],
+                    "key": "companyName"
                 },
                 {
-                    "title": { "CN": "手机号", "EN": "cellPhone No.", "TW": "手機號" }[language["language"]],
-                    "key": "mobile"
+                    "title": { "CN": "运行状态", "EN": "Working Condition", "TW": "運行狀態" }[language["language"]],
+                    "key": "deviceStatusName"
                 },
                 {
-                    "title": { "CN": "所属公司", "EN": "Company", "TW": "所屬公司" }[language["language"]],
-                    "key": "company"
+                    "title": { "CN": "供应商", "EN": "Supplier", "TW": "廠家名稱" }[language["language"]],
+                    "key": "providerName"
                 },
                 {
-                    "title": { "CN": "员工工号", "EN": "Staff Number", "TW": "員工工號" }[language["language"]],
-                    "key": "userSeq"
-                }
-            ],
-            "deviceTableRowList": [
+                    "title": { "CN": "系统版本", "EN": "System Version", "TW": "系統版本" }[language["language"]],
+                    "key": "versionName"
+                },
                 {
-                    "userCode": "账号",
-                    "userName": "员工姓名",
-                    "userSeq": "员工工号",
-                    "sex": "性别",
-                    "mobile": "固话",
-                    "telephone": "手机号",
-                    "company": "所属公司",
-                    "remark": "备注",
+                    "title": { "CN": "系统版本号", "EN": "System Version No.", "TW": "系統版本號" }[language["language"]],
+                    "key": "versionNum"
                 },
             ],
+            "deviceTableRowList": [],
 
             // 摄像头
             "cameraList": [],
@@ -394,38 +448,32 @@
                     "align": "center"
                 },
                 {
-                    "title": { "CN": "摄像头姓名", "EN": "Name", "TW": "姓名" }[language["language"]],
-                    "key": "userName"
+                    "title": { "CN": "ID", "EN": "ID", "TW": "ID" }[language["language"]],
+                    "width": 60,
+                    "key": "id"
                 },
                 {
-                    "title": { "CN": "性别", "EN": "Gender", "TW": "性別" }[language["language"]],
-                    "key": "sex"
+                    "title": { "CN": "公司", "EN": "Company", "TW": "公司" }[language["language"]],
+                    "key": "companyName"
                 },
                 {
-                    "title": { "CN": "手机号", "EN": "cellPhone No.", "TW": "手機號" }[language["language"]],
-                    "key": "mobile"
+                    "title": { "CN": "名称", "EN": "Name", "TW": "名稱" }[language["language"]],
+                    "key": "cameraName"
                 },
                 {
-                    "title": { "CN": "所属公司", "EN": "Company", "TW": "所屬公司" }[language["language"]],
-                    "key": "company"
+                    "title": { "CN": "公司", "EN": "Company", "TW": "公司" }[language["language"]],
+                    "key": "companyName"
                 },
                 {
-                    "title": { "CN": "员工工号", "EN": "Staff Number", "TW": "員工工號" }[language["language"]],
-                    "key": "userSeq"
-                }
-            ],
-            "cameraTableRowList": [
+                    "title": { "CN": "编码", "EN": "Code", "TW": "編碼" }[language["language"]],
+                    "key": "cameraCode"
+                },
                 {
-                    "userCode": "账号",
-                    "userName": "员工姓名",
-                    "userSeq": "员工工号",
-                    "sex": "性别",
-                    "mobile": "固话",
-                    "telephone": "手机号",
-                    "company": "所属公司",
-                    "remark": "备注",
+                    "title": { "CN": "描述", "EN": "Describe", "TW": "描述" }[language["language"]],
+                    "key": "cameraDesc"
                 },
             ],
+            "cameraTableRowList": [],
 
             // 数据权限
             "permissionsItem": {
@@ -555,26 +603,31 @@
             // 删除
             "delItem": function () {
                 var self = this;
-                self.itemInfo = self.groupList[self.index];
-                // 先判断是否选择了一家公司
-                utility.showMessageTip(self, function () {
-                    utility.interactWithServer({
-                        url: CONFIG.HOST + CONFIG.SERVICE.groupService + "?action=" + CONFIG.ACTION.delGroup + "&ids=" + self.itemInfo.id + "&modifyUserId=" + userInfo["id"],
-                        actionUrl: CONFIG.SERVICE.groupService,
-                        beforeSendCallback: function () {
-                            self.isTableLoading = true;
-                        },
-                        completeCallback: function () {
-                            self.isTableLoading = false;
-                        },
-                        successCallback: function (data) {
-                            if (data.code == 200) {
-                                self.getGroupList(true);
-                            } else {
-                                self.$Message.error(data.message);
-                            }
-                        }
-                    });
+                self.$Modal.confirm({
+                    "title": "确定删除？",
+                    "width": 200,
+                    "onOk": function() {
+                        self.itemInfo = self.groupList[self.index];
+                        utility.showMessageTip(self, function () {
+                            utility.interactWithServer({
+                                url: CONFIG.HOST + CONFIG.SERVICE.groupService + "?action=" + CONFIG.ACTION.delGroup + "&ids=" + self.itemInfo.id + "&modifyUserId=" + userInfo["id"],
+                                actionUrl: CONFIG.SERVICE.groupService,
+                                beforeSendCallback: function () {
+                                    self.isTableLoading = true;
+                                },
+                                completeCallback: function () {
+                                    self.isTableLoading = false;
+                                },
+                                successCallback: function (data) {
+                                    if (data.code == 200) {
+                                        self.getGroupList(true);
+                                    } else {
+                                        self.$Message.error(data.message);
+                                    }
+                                }
+                            });
+                        });
+                    }
                 });
             },
             // 角色成员
@@ -625,7 +678,7 @@
             // 页数改变时的回调
             "pageSizeChange": function (value) {
                 var self = this;
-                self.pageInfo.pageNum = parseInt(value, 10) - 1;
+                self.pageInfo.pageNum = parseInt(value, 10);
                 setTimeout(function () {
                     self.getDataList(false);
                 }, 200);
@@ -657,8 +710,8 @@
             "getGroupList": function (bool) {
                 var self = this;
                 // 如果是查询，则重新从第一页开始
+                self.tableRowList = [];
                 if (bool == true) {
-                    self.tableRowList = [];
                     self.pageInfo.pageNum = 0;
                 }
                 utility.interactWithServer({
@@ -715,8 +768,8 @@
             // 获取组成员信息
             "getGroupMemberList": function (bool) {
                 var self = this;
+                self.groupMemberDataList = [];
                 if (bool == true) {
-                    self.groupMemberDataList = [];
                     self.groupMemberPageInfo.pageNum = 0;
                 }
                 utility.interactWithServer({
@@ -788,7 +841,7 @@
             // 页数改变时的回调
             "groupMemberPageSizeChange": function (value) {
                 var self = this;
-                self.groupMemberPageInfo.pageNum = parseInt(value, 10) - 1;
+                self.groupMemberPageInfo.pageNum = parseInt(value, 10);
                 setTimeout(function () {
                     self.getGroupMemberList(false);
                 }, 200);
@@ -804,76 +857,41 @@
             // 页数改变时的回调
             "groupTypePageSizeChange": function (value) {
                 var self = this;
-                self.groupTypePageInfo.pageNum = parseInt(value, 10) - 1;
+                self.groupTypePageInfo.pageSize = parseInt(value, 10);
                 setTimeout(function () {
-                    self.getGroupMemberList(false);
+                    self.showGroupTypeList(false);
                 }, 200);
             },
             // 切换每页条数时的回调
             "groupTypePageRowChange": function (value) {
                 var self = this;
-                self.groupTypePageInfo.pageSize = parseInt(value, 10);
-                setTimeout(function () {
-                    self.getGroupMemberList(false);
-                }, 200);
-            },
-            // 当分组类型改变时
-            "groupTypeChange": function (value) {
-                var self = this;
-                self.groupTypeId = value;
-
+                self.groupTypePageInfo.pageNum = parseInt(value, 10);
                 setTimeout(function () {
                     self.showGroupTypeList(false);
-                }, 500);
+                }, 200);
             },
             // 格式化组类型数据
             "formatGroupTypeData": function () {
                 var self = this;
                 var list = self[self.groupTypeInterFace[self.groupTypeId]["dataList"]];
-                if (self.groupTypeId == "121") {
-                    for (var i = 0, len = list.length; i < len; i++) {
-                        self[self.groupTypeInterFace[self.groupTypeId]["tableRowList"]].push({
-                            "id": list[i]["id"], //"id",
-                            "userCode": list[i]["userCode"], //"账号",
-                            "userName": decodeURI(list[i]["userName"]), //"员工姓名",
-                            "userSeq": list[i]["userSeq"], //"员工工号",
-                            "mobile": list[i]["mobile"], //"固话",
-                            "telephone": list[i]["telephone"], //"手机号",
-                            "company": decodeURI(list[i]["companyName"]), //"所属公司",
-                            "remark": decodeURI(list[i]["remark"]), //"备注",
-                            "sex": (function () {
-                                var sex = "";
-                                for (var s = 0, slen = self.sexTypeList.length; s < slen; s++) {
-                                    if (self.sexTypeList[s]["type"] == list[i]["sex"]) {
-                                        sex = self.sexTypeList[s]["name"];
-                                        break;
-                                    }
-                                }
-                                return sex
-                            }()), //"性别",
-                            "state": (function () {
-                                var statu = "";
-                                for (var s = 0, slen = self.userStatusTypeList.length; s < slen; s++) {
-                                    if (self.userStatusTypeList[s]["type"] == list[i]["status"]) {
-                                        statu = self.userStatusTypeList[s]["name"];
-                                        break;
-                                    }
-                                }
-                                return statu
-                            }()),
-                        });
-                    }
-                }
+                self[self.groupTypeInterFace[self.groupTypeId]["tableRowList"]] = list;
             },
             // 获取不同类型的列表数据
-            "getGroupTypeDataList": function (callback) {
+            "getGroupTypeDataList": function (bool,callback) {
                 var self = this;
+                self[self.groupTypeInterFace[self.groupTypeId]["dataList"]] = [];
                 self[self.groupTypeInterFace[self.groupTypeId]["tableRowList"]] = [];
-                self.groupTypePageInfo.pageNum = 0;
+                
+                if (bool == true) {
+                    self.groupTypePageInfo.pageNum = 1;
+                }
                 utility.interactWithServer({
                     url: CONFIG.HOST + self.groupTypeInterFace[self.groupTypeId]["service"] + "?action=" + self.groupTypeInterFace[self.groupTypeId]["action"],
                     actionUrl: self.groupTypeInterFace[self.groupTypeId]["service"],
-                    dataObj: self.groupTypePageInfo,
+                    dataObj: {
+                        pageNum: self.groupTypePageInfo.pageNum,
+                        pageSize: self.groupTypePageInfo.pageSize,
+                    },
                     beforeSendCallback: function () {
                         self.isTableLoading = true;
                     },
@@ -882,10 +900,9 @@
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
-                            self[self.groupTypeInterFace[self.groupTypeId]["dataList"]] = data.data;
+                            self[self.groupTypeInterFace[self.groupTypeId]["dataList"]] = data.data.reverse();
                             self.groupTypePageInfo.count = data.count;
                             self.formatGroupTypeData();
-
                             !!callback && callback();
                         }
                     }
@@ -894,10 +911,14 @@
             // 显示不同分组成员列表
             "showGroupTypeList": function (bool) {
                 var self = this;
-                self.getGroupTypeDataList(function () {
+                self.getGroupTypeDataList(bool,function () {
                     self.groupTypeColumsList = self[self.groupTypeInterFace[self.groupTypeId]["columnsList"]];
                     self.groupTypeDataList = self[self.groupTypeInterFace[self.groupTypeId]["tableRowList"]];
-                    self.isShowGroupTypeList = bool;
+                    if(self.groupTypeDataList.lengt==0) {
+                        self.$Message.error("没有成员数组");
+                        return;
+                    }
+                    self.isShowGroupTypeList = true;
                 });
             },
             "selectTypeMemberChange": function (selection) {
@@ -985,7 +1006,7 @@
             },
             "permissionsPageSizeChange": function (value) {
                 var self = this;
-                self.permissionsPageInfo.pageNum = parseInt(value, 10) - 1;
+                self.permissionsPageInfo.pageNum = parseInt(value, 10);
                 setTimeout(function () {
                     self.getPermissionsDataList(false);
                 }, 200);
@@ -993,7 +1014,6 @@
             // 切换每页条数时的回调
             "permissionsPageRowChange": function (value) {
                 var self = this;
-                console.log(value);
                 self.permissionsPageInfo.pageSize = parseInt(value, 10);
                 setTimeout(function () {
                     self.getPermissionsDataList(false);
@@ -1015,8 +1035,8 @@
             // 获取角色可用功能列表数据接口
             "getPermissionsDataList": function (bool) {
                 var self = this;
+                self.permissionsTableRowList = [];
                 if (bool == true) {
-                    self.permissionsTableRowList = [];
                     self.permissionsPageInfo.pageNum = 0;
                 }
                 utility.interactWithServer({
@@ -1121,6 +1141,7 @@
 
                 self.selectFunction = ids;
             },
+            
             // 格式化系统操作权限功能
             "formatFunctions": function () {
                 var self = this;
@@ -1147,8 +1168,8 @@
             // 获取系统操作权限功能项目列表接口
             "getFunctionsDataList": function (bool) {
                 var self = this;
+                self.functionsTableRowList = [];
                 if (bool == true) {
-                    self.functionsTableRowList = [];
                     self.functionsPageInfo.pageNum = 0;
                 }
                 utility.interactWithServer({
