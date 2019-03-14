@@ -38,6 +38,8 @@
                     "airportLine": null, // 机场线
                     "airportPoint": null, // 机场点
                     "airportPolygo": null, // 机场面
+                    "OSM": null, // 底图
+                    "satellite": null, // 卫星图
                 },
                 // 资源信息
                 "sourceInfo": {
@@ -46,7 +48,7 @@
                     "defens": null, // 防区
                     "camera": null, // 摄像机
                     "vehicle": null, // 车辆
-                    "trajectory": null // 摄像机
+                    "trajectory": null, // 摄像机
                 },
                 // 控件信息
                 "controlsInfo": {
@@ -583,7 +585,9 @@
         "methods": {
             // 刷新
             "refresh": function () {
-                window.location.href = window.location.href;
+                var hrefInfo = window.location.href.split("?");
+                // console.log(hrefInfo[0] + "v=" + Date.parse(new Date()));
+                window.location.href = hrefInfo[0] + "?v=" + Date.parse(new Date());
             },
             // searchMap
             "searchMap": function () {
@@ -643,13 +647,22 @@
             // 创建地图
             "createdMap": function () {
                 var self = this;
+                
+                self.mapContainer.layersInfo.OSM = new ol.layer.Tile({
+                    "source": new ol.source.OSM()
+                });
+
+                // self.mapContainer.layersInfo.satellite = new ol.layer.Image({
+                //     "source": new ol.source.ImageStatic({
+                //         "url": "https://test2.cityeasyplay.com/geoserver/gwc/demo/sz:sz_satellite_baidu?gridSet=EPSG:4326&format=image/png"
+                //     })
+                // });
 
                 self.mapContainer.map = new ol.Map({
                     "target": "map", // 地图容器div的id
                     "layers": [
-                        new ol.layer.Tile({
-                            "source": new ol.source.OSM()
-                        })
+                        self.mapContainer.layersInfo.OSM,
+                        // self.mapContainer.layersInfo.satellite
                     ],
                     "controls": ol.control.defaults({
                         attribution: false
@@ -724,19 +737,19 @@
                 self.mapContainer.layersInfo.airportPoint = new ol.layer.Tile({
                     "visible": false,
                     "source": new ol.source.TileWMS({
-                        "url": "http://43.247.68.26:9090/geoserver/sz/wms?service=WMS&version=1.1.0&request=GetMap&layers=sz:surface_region&styles=&bbox=113.76931608,22.60251774,113.84250732,22.67499654&width=768&height=760&srs=EPSG:4326&format=application/openlayers"
+                        "url": "https://test2.cityeasyplay.com/geoserver/sz/wms?service=WMS&version=1.1.0&request=GetMap&layers=sz:surface_region&styles=&bbox=113.76931608,22.60251774,113.84250732,22.67499654&width=768&height=760&srs=EPSG:4326&format=application/openlayers"
                     })
                 });
                 self.mapContainer.layersInfo.airportLine = new ol.layer.Tile({
                     "visible": false,
                     "source": new ol.source.TileWMS({
-                        "url": "http://43.247.68.26:9090/geoserver/sz/wms?service=WMS&version=1.1.0&request=GetMap&layers=sz:line_polyline&styles=&bbox=113.76640439999998,22.59093897,113.84873603999999,22.696465319999998&width=599&height=768&srs=EPSG:4326&format=application/openlayers"
+                        "url": "https://test2.cityeasyplay.com/geoserver/sz/wms?service=WMS&version=1.1.0&request=GetMap&layers=sz:line_polyline&styles=&bbox=113.76640439999998,22.59093897,113.84873603999999,22.696465319999998&width=599&height=768&srs=EPSG:4326&format=application/openlayers"
                     })
                 });
                 self.mapContainer.layersInfo.airportPolygo = new ol.layer.Tile({
                     "visible": false,
                     "source": new ol.source.TileWMS({
-                        "url": "http://43.247.68.26:9090/geoserver/sz/wms?service=WMS&version=1.1.0&request=GetMap&layers=sz:point_position_point&styles=&bbox=113.786041,22.616661,113.824471,22.655542&width=759&height=768&srs=EPSG:4326&format=application/openlayers"
+                        "url": "https://test2.cityeasyplay.com/geoserver/sz/wms?service=WMS&version=1.1.0&request=GetMap&layers=sz:point_position_point&styles=&bbox=113.786041,22.616661,113.824471,22.655542&width=759&height=768&srs=EPSG:4326&format=application/openlayers"
                     })
                 });
 
@@ -1301,8 +1314,6 @@
             "selectCamera": function (params) {
                 var self = this;
                 var coordinate = JSON.parse(self.cameraList[params.index].areaRange.value.replace(/\(/g, "[").replace(/\)/g, "]"));
-
-                // [[[113.80963683128357, 22.631996870040894], [113.8097870349884, 22.62787699699402], [113.80701899528503, 22.6288640499115], [113.80738377571106, 22.63058066368103], [113.8082206249237, 22.631481885910034], [113.80963683128357, 22.631996870040894]]]
 
                 if (self.isDeleteCamera == false) {
                     self.cameraDetailInfo = self.cameraList[params.index];
@@ -1892,13 +1903,16 @@
                             var coordinate = [];
                             var coorArr = [];
                             var track = [];
+
                             self.singleVehicleItem = data.data;
                             self.vehicleItemPop = data.data;
-                            track = self.vehicleItemPop["track"].split("/");
-                            coorArr = track[track.length-1].split(",");
-                            coordinate = [coorArr[0], coorArr[1]];
-                            self.showVehicleOverLayer(coordinate);
+
+                            // 如果轨迹信息
                             if(self.singleVehicleItem.track) {
+                                track = self.vehicleItemPop["track"].split("/");
+                                coorArr = track[track.length-1].split(",");
+                                coordinate = [coorArr[0], coorArr[1]];
+                                self.showVehicleOverLayer(coordinate);
                                 self.formatTrajectoryInfo(); // 格式化轨迹数据
                                 self.clearTrack(); // 先清除轨迹
                                 self.drawTrajPoint(); // 画轨迹上的点
@@ -1906,7 +1920,7 @@
                                 self.createTrajOverLayer(); // 画轨迹点上的详细信息
                                 self.setAnimation(self.mapContainer.animationInfo.coordinates[Math.ceil(Math.random() * self.mapContainer.animationInfo.coordinates.length)], 16);
                             } else {
-                                self.$Message.error("没有轨迹数据");
+                                self.$Message.error("查询不到轨迹数据");
                             }
                         }
                     }
@@ -2091,6 +2105,7 @@
             "showTrajPopLayer": function (coordinate, id) {
                 var self = this;
                 var index = parseInt(id.split("-")[1]);
+                $("body").find("#popup").show();
                 self.mapContainer.overlayInfo["trajectory"].setPosition(coordinate);
                 self.mapContainer.animationInfo.trajectoryItem = self.mapContainer.animationInfo.trajectoryInfo[index];
                 $("body").on("click", "#popup-closer", function () {

@@ -134,9 +134,12 @@
                 }, 200);
             },
             // 获取车辆使用情况
-            "getVehicleList": function () {
+            "getVehicleList": function (bool) {
                 var self = this;
                 self.vehiclePositionList = [];
+                 if (bool == true) {
+                     self.vehiclePositonPageInfo.pageNum = 1;
+                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getAllVehiclePositonList,
                     actionUrl: CONFIG.SERVICE.vehicleService,
@@ -277,12 +280,28 @@
             // 获取所有车辆使用情况数据
             "getAllVehicleList": function () {
                 var self = this;
+                self.errInfo.xAxisData = [];
+                self.errInfo.seriesData = [];
+                self.mileInfo.xAxisData = [];
+                self.mileInfo.seriesData = [];
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getAllVehiclePositonList,
                     actionUrl: CONFIG.SERVICE.vehicleService,
                     dataObj: {
                         "pageNum": 1, //0,
                         "pageSize": 10000000, //20,
+                        "span": self.vehiclePositonPageInfo.span, //"", // 距离查询中间点的距离（密），不指定则默认为100米。 // 通过centerPosition+ span两个参数可以联合查询距离中心点多少米内的车辆最近位置
+                        "deptId": self.vehiclePositonPageInfo.deptId, //"", // 部门ID
+                        "vihecleId": self.vehiclePositonPageInfo.vihecleId, //"", // 车辆ID
+                        "companyId": self.vehiclePositonPageInfo.companyId, //"", // 所属公司ID
+                        "gpsDeviceCode": self.vehiclePositonPageInfo.gpsDeviceCode, //"", // 定位终端编号
+                        "vehicleTypeId": self.vehiclePositonPageInfo.vehicleTypeId, //"", // 车辆类型ID
+                        "vehicleStatus": self.vehiclePositonPageInfo.vehicleStatus, //"", // 车辆运行状态
+                        "vehicleColorId": self.vehiclePositonPageInfo.vehicleColorId, //"", // 车辆颜色ID
+                        "vehicleBrandId": self.vehiclePositonPageInfo.vehicleBrandId, //"", // 车辆品牌ID
+                        "centerPosition": self.vehiclePositonPageInfo.centerPosition, //"", // 查询中心点坐标，格式为：经度,纬度
+                        "vehicleName": encodeURI(self.vehiclePositonPageInfo.vehicleName), //"", // 车辆名称
+                        "vehicleCode": encodeURI(self.vehiclePositonPageInfo.vehicleCode), //"", // 车辆编码
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
@@ -304,6 +323,12 @@
                     }
                 });
             },
+            // 通过查询获取数据
+            "getDataBySearch": function() {
+                var self = this;
+                self.getVehicleList(true);
+                self.getAllVehicleList();
+            }
         },
         "created": function () {
             var self = this;
@@ -312,7 +337,7 @@
             utility.isLogin(false);
 
             setTimeout(function () {
-                self.getVehicleList();
+                self.getVehicleList(true);
                 self.getAllVehicleList();
             }, 500);
         }

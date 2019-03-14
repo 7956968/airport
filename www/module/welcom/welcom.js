@@ -7,6 +7,7 @@
             "language": !!language ? language["language"] : "CN",
             "isTableLoading": false,
             "innerHeight": window.innerHeight/6,
+            "resizeTime": null,
             "copyRight": { "CN": "@copyRight 民贵无动力设备管理系统", 'EN': "@copyRight Mingui Non-Powered Euipment Management System", 'TW': "@copyRight 民貴無動力管理系統" }[language["language"]],
             // 车辆信息
             "vehicleInfo": {
@@ -103,10 +104,10 @@
                         date.getMonth() + 1,
                         date.getDate()
                     ].join('-'));
-                    var b = parseInt(Math.random() * 100);
-                    var d = parseInt(Math.random() * 100);
+                    var b = parseInt(Math.random() * 1000);
+                    var d = parseInt(Math.random() * 1000);
                     allData.push(d + b);
-                    lineData.push(b)
+                    lineData.push(b);
                     recLineData.push(d);
                 }
 
@@ -321,59 +322,49 @@
                         {
                             name: '正在静止',
                             type: 'bar',
-                            data: [20, 32, 31, 34, 39, 33, 32]
+                            data: [200, 302, 310, 340, 390, 330, 320]
                         },
                         {
                             name: '活动',
                             type: 'bar',
                             stack: '活动',
-                            data: [20, 12, 10, 14, 30, 20, 21]
+                            data: [200, 120, 100, 140, 300, 200, 201]
                         },
                         {
                             name: '开始进入休眠',
                             type: 'bar',
                             stack: '开始进入休眠',
-                            data: [22, 12, 11, 24, 20, 30, 10]
+                            data: [220, 120, 110, 240, 200, 300, 100]
                         },
                         {
                             name: '运动传感器故障',
                             type: 'bar',
                             stack: '运动传感器故障',
-                            data: [10, 32, 21, 14, 19, 30, 10]
+                            data: [100, 302, 210, 104, 190, 300, 100]
                         },
                         {
                             name: '侧翻',
                             type: 'bar',
-                            data: [62, 18, 64, 26, 16, 16, 10],
-                            // markLine: {
-                            //     lineStyle: {
-                            //         normal: {
-                            //             type: 'dashed'
-                            //         }
-                            //     },
-                            //     data: [
-                            //         [{ type: 'min' }, { type: 'max' }]
-                            //     ]
-                            // }
+                            data: [620, 180, 640, 260, 160, 160, 100],
                         },
                         {
                             name: '离线',
                             type: 'bar',
                             barWidth: 5,
                             stack: '离线',
-                            data: [60, 32, 71, 74, 90, 30, 20]
+                            data: [600, 320, 710, 740, 900, 300, 200]
                         },
                         {
                             name: 'GPS未定位',
                             type: 'bar',
                             stack: 'GPS未定位',
-                            data: [20, 32, 11, 14, 90, 30, 20]
+                            data: [200, 320, 110, 140, 900, 300, 200]
                         },
                         {
                             name: '电压采集失败',
                             type: 'bar',
                             stack: '电压采集失败',
-                            data: [60, 72, 71, 74, 10, 10, 10]
+                            data: [600, 720, 710, 740, 100, 100, 100]
                         }
                     ]
                 };
@@ -447,17 +438,18 @@
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
-                            self.vehicleInfo["_401"] = 0;
-                            self.vehicleInfo["_402"] = 0;
-                            self.vehicleInfo["_403"] = 0;
-                            self.vehicleInfo["_404"] = 0;
-                            self.vehicleInfo["_405"] = 0;
-                            self.vehicleInfo["_406"] = 0;
-                            self.vehicleInfo["_407"] = 0;
-                            self.vehicleInfo["_408"] = 0;
-                            self.vehicleInfo.count = data.count;
+                            self.vehicleInfo["_401"] = 130;
+                            self.vehicleInfo["_402"] = 640;
+                            self.vehicleInfo["_403"] = 200;
+                            self.vehicleInfo["_404"] = 100;
+                            self.vehicleInfo["_405"] = 120;
+                            self.vehicleInfo["_406"] = 110;
+                            self.vehicleInfo["_407"] = 140;
+                            self.vehicleInfo["_408"] = 190;
+                            self.vehicleInfo.count = 1530;
+                            // self.vehicleInfo.count = data.count;
                             self.vehicleInfo.list = data.data;
-                            self.formatVehicle();
+                            // self.formatVehicle();
                         }
                     }
                 });
@@ -495,6 +487,14 @@
                     self.getVehicleList();
                 }, 500);
             }, 15000);
+            
+            // 当窗口变化时，重新调整高度
+            $(window).resize(function() {
+                clearTimeout(self.resizeTime);
+                self.resizeTime = setTimeout(function(){
+                    window.location.href = window.location.href;
+                }, 500);
+            });
         },
         "mounted": function () {
             var self = this;

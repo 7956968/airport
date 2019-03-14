@@ -163,22 +163,7 @@
                     }
                 }
             ],
-            "dataList": [
-                {
-                    "id": 1,
-                    "number": "车辆编号",
-                    "thisDate": "本次保养日期",
-                    "project": "保养项目",
-                    "type": "车辆类型",
-                    "ownerCompnay": "归属公司",
-                    "maintCompnnay": "保养单位",
-                    "currentMile": "当前里程数",
-                    "lastDate": "上次保养日期",
-                    "lastMile": "上次保养里程数",
-                    "person": "保养责任人",
-                    "nextMile": "下次保养里程数"
-                }
-            ],
+            "dataList": [],
             "maintenanceList": [],
             "vehicleList": [],
             "departmentList": [],
@@ -461,8 +446,8 @@
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getVehicleList,
                     actionUrl: CONFIG.SERVICE.vehicleService,
                     dataObj: {
-                        id: 0,
-                        pageSize: 10000,
+                        "id": 0,
+                        "pageSize": 10000,
                     },
                     beforeSendCallback: function () {
                         self.isTableLoading = true;
@@ -522,7 +507,8 @@
                         }
                     }
                 });
-            }
+            },
+
         },
         "created": function () {
             var self = this;

@@ -40,7 +40,7 @@
                     "key": "areaName"
                 },
                 {
-                    "title": { "CN": "防区", "EN": "Defense Code", "TW": "防區編碼" }[language["language"]],
+                    "title": { "CN": "防区编码", "EN": "Defense Code", "TW": "防區編碼" }[language["language"]],
                     "key": "areaCode"
                 },
                 {
@@ -52,7 +52,7 @@
                     "key": "vehicleCode"
                 },
                 {
-                    "title": { "CN": "类型", "EN": "Type", "TW": "類型" }[language["language"]],
+                    "title": { "CN": "防区类型", "EN": "Defense Type", "TW": "防區類型" }[language["language"]],
                     "key": "crossTypeName"
                 },
                 {
@@ -117,7 +117,18 @@
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getCrossAreaList,
                     actionUrl: CONFIG.SERVICE.vehicleService,
-                    dataObj: self.pageInfo,
+                    dataObj: {
+                        "areaId": self.pageInfo.areaId,
+                        "pageNum": self.pageInfo.pageNum,
+                        "areaCode": self.pageInfo.areaCode,
+                        "pageSize": self.pageInfo.pageSize,
+                        "vehicleId": self.pageInfo.vehicleId,
+                        "companyId": self.pageInfo.companyId,
+                        "vehicleCode": self.pageInfo.vehicleCode,
+                        "crossTypeId": self.pageInfo.crossTypeId,
+                        "areaName": encodeURI(self.pageInfo.areaName),
+                        "vehicleName": encodeURI(self.pageInfo.vehicleName),
+                    },
                     beforeSendCallback: function () {
                         self.isTableLoading = true;
                     },

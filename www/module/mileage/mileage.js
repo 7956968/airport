@@ -215,12 +215,27 @@
             // 获取所有车辆使用情况数据
             "getAllVehicleList": function () {
                 var self = this;
+
+                self.mileInfo.xAxisData = [];
+                self.mileInfo.seriesData = [];
+                
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getVehicleMilesReport,
                     actionUrl: CONFIG.SERVICE.vehicleService,
                     dataObj: {
                         "pageNum": 1, //0,
                         "pageSize": 10000000, //20,
+                        "deptId": self.pageInfo.deptId, // 部门ID
+                        "companyId": self.pageInfo.companyId, // 所属公司ID
+                        "vehicleCode": self.pageInfo.vehicleCode,// 车辆编码
+                        "vehicleColorId": self.pageInfo.vehicleColorId,// 所属公司ID
+                        "vehicleTypeId": self.pageInfo.vehicleTypeId,// 车辆颜色ID
+                        "vehicleBrandId": self.pageInfo.vehicleBrandId,// 车辆类型ID
+                        "vehicleTypeId": self.pageInfo.vehicleTypeId,// 车辆品牌ID
+                        "beginMiles": self.pageInfo.beginMiles,// 最大里程数
+                        "endMiles": self.pageInfo.endMiles,// 最大里程数
+                        "beginTime": self.pageInfo.beginTime, // 开始时间
+                        "endTime": self.pageInfo.endTime, // 结束时间
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
@@ -299,6 +314,12 @@
                         }
                     }
                 });
+            },
+            // 点击查询按钮查询数据
+            "getDataBySearch": function() {
+                var self = this;
+                self.getVehicleMilesReport(true);
+                self.getAllVehicleList();
             },
         },
         "created": function () {
