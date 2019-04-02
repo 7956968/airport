@@ -47,6 +47,7 @@
                 "bindDeviceFlag": "", // 是否绑定定位设备
                 "vehicleName": "", // 车辆名称
                 "vehicleCode": "", // 车辆编码
+                "licenseNumber": "", // 车牌号
                 "gpsDeviceId": "", // 
                 "vehicleColorId": "", // 
                 "vehicleTypeId": "", // 
@@ -74,8 +75,12 @@
                     "key": "vehicleName"
                 },
                 {
-                    "title": { "CN": "车辆编码", "EN": "Vehicle Name", "TW": "車輛編碼" }[language["language"]],
+                    "title": { "CN": "车辆编码", "EN": "Vehicle Code", "TW": "車輛編碼" }[language["language"]],
                     "key": "vehicleCode"
+                },
+                {
+                    "title": { "CN": "车牌号", "EN": "Plate No.", "TW": "車牌號" }[language["language"]],
+                    "key": "licenseNumber"
                 },
                 {
                     "title": { "CN": "状态", "EN": "State", "TW": "狀態" }[language["language"]],
@@ -100,12 +105,27 @@
                 {
                     "title": { "CN": "操作", "EN": "Operation", "TW": "操作" }[language["language"]],
                     "key": "operation",
-                    "width": 180,
+                    "width": 220,
                     "render": function (h, params) {
+                        var liveVideoBtn = null;
+
+                        if (!!params.row.licenseNumber) {
+                            liveVideoBtn = h("Button", {
+                                "props": {
+                                    "type": "primary",
+                                    "size": "small",
+                                },
+                                "on": {
+                                    "click": function () {
+                                        pageVue.showLiveVideo(params.row.licenseNumber);
+                                    }
+                                }
+                            }, { "CN": "视频", "EN": "Video", "TW": "視頻" }[language["language"]]);
+                        }
+
                         return h("div", [
                             h("Button", {
                                 "props": {
-                                    "type": "primary",
                                     "size": "small",
                                 },
                                 "style": {
@@ -140,6 +160,9 @@
                                     "type": "error",
                                     "size": "small",
                                 },
+                                "style": {
+                                    "marginRight": '5px'
+                                },
                                 "on": {
                                     "click": function () {
                                         pageVue.index = params.index;
@@ -147,7 +170,8 @@
                                         pageVue.delItem();
                                     }
                                 }
-                            }, { "CN": "删除", "EN": "Delete", "TW": "刪除" }[language["language"]])
+                            }, { "CN": "删除", "EN": "Delete", "TW": "刪除" }[language["language"]]),
+                            liveVideoBtn
                         ]);
                     }
                 }
@@ -204,8 +228,8 @@
                     self.modalTitle = { "CN": "修改", "EN": "Edit", "TW": "修改" }[self.language];
                 });
             },
-             // 查看详情
-             "showDetail": function () {
+            // 查看详情
+            "showDetail": function () {
                 var self = this;
                 utility.showMessageTip(self, function () {
                     self.itemInfo = self.vehicleList[self.index];
@@ -219,7 +243,7 @@
                 self.$Modal.confirm({
                     "title": "确定删除？",
                     "width": 200,
-                    "onOk": function() {
+                    "onOk": function () {
                         self.itemInfo = self.vehicleList[self.index];
                         utility.showMessageTip(self, function () {
                             utility.interactWithServer({
@@ -274,9 +298,10 @@
                     dataObj: {
                         "id": self.itemInfo["id"], // 车辆ID
                         "companyId": self.itemInfo["companyId"], // 所属公司ID，手动从公司列表选择
-                        "deptId": self.itemInfo["deptId"][self.itemInfo["deptId"].length-1], // 部门ID，可选
+                        "deptId": self.itemInfo["deptId"][self.itemInfo["deptId"].length - 1], // 部门ID，可选
                         "vehicleName": encodeURI(self.itemInfo["vehicleName"]), // 车辆名称
                         "vehicleCode": encodeURI(self.itemInfo["vehicleCode"]), // 车辆编码
+                        "licenseNumber": encodeURI(self.itemInfo["licenseNumber"]), // 车辆编码
                         "gpsDeviceId": self.itemInfo["gpsDeviceId"], // 
                         "vehicleColorId": self.itemInfo["vehicleColorId"], // 
                         "vehicleTypeId": self.itemInfo["vehicleTypeId"], // 
@@ -307,41 +332,42 @@
                         "deptId": self.vehicleList[i]["deptName"], // 部门ID，可选
                         "vehicleName": decodeURI(self.vehicleList[i]["vehicleName"]), // 车辆名称
                         "vehicleCode": decodeURI(self.vehicleList[i]["vehicleCode"]), // 车辆编码
+                        "licenseNumber": decodeURI(self.vehicleList[i]["licenseNumber"]), // 车牌号
                         "gpsDeviceId": self.vehicleList[i]["gpsDeviceCode"], // 
-                        "vehicleColorId": (function(){
+                        "vehicleColorId": (function () {
                             var label = "";
-                            for(var c = 0, clen = self.vehicleColorList.length; c < clen; c++) {
-                                if(self.vehicleList[i]["vehicleColorId"] == self.vehicleColorList[c]["type"]) {
+                            for (var c = 0, clen = self.vehicleColorList.length; c < clen; c++) {
+                                if (self.vehicleList[i]["vehicleColorId"] == self.vehicleColorList[c]["type"]) {
                                     label = self.vehicleColorList[c]["name"];
                                     break;
                                 }
                             }
                             return label;
                         }()), // self.vehicleList[i]["vehicleColorName"], // 
-                        "vehicleTypeId": (function(){
+                        "vehicleTypeId": (function () {
                             var label = "";
-                            for(var t = 0, tlen = self.vehicleTypeList.length; t < tlen; t++) {
-                                if(self.vehicleList[i]["vehicleTypeId"] == self.vehicleTypeList[t]["type"]) {
+                            for (var t = 0, tlen = self.vehicleTypeList.length; t < tlen; t++) {
+                                if (self.vehicleList[i]["vehicleTypeId"] == self.vehicleTypeList[t]["type"]) {
                                     label = self.vehicleTypeList[t]["name"];
                                     break;
                                 }
                             }
                             return label;
                         }()), // self.vehicleList[i]["vehicleTypeName"], // 
-                        "vehicleBrandId": (function(){
+                        "vehicleBrandId": (function () {
                             var label = "";
-                            for(var b = 0, blen = self.vehicleBrandList.length; b < blen; b++) {
-                                if(self.vehicleList[i]["vehicleBrandId"] == self.vehicleBrandList[b]["type"]) {
+                            for (var b = 0, blen = self.vehicleBrandList.length; b < blen; b++) {
+                                if (self.vehicleList[i]["vehicleBrandId"] == self.vehicleBrandList[b]["type"]) {
                                     label = self.vehicleBrandList[b]["name"];
                                     break;
                                 }
                             }
                             return label;
                         }()), // self.vehicleList[i]["vehicleBrandName"], // 
-                        "vehicleStatus": (function(){
+                        "vehicleStatus": (function () {
                             var label = "";
-                            for(var s = 0, slen = self.vehicleStatuList.length; s < slen; s++) {
-                                if(self.vehicleList[i]["vehicleStatus"] == self.vehicleStatuList[s]["type"]) {
+                            for (var s = 0, slen = self.vehicleStatuList.length; s < slen; s++) {
+                                if (self.vehicleList[i]["vehicleStatus"] == self.vehicleStatuList[s]["type"]) {
                                     label = self.vehicleStatuList[s]["name"];
                                     break;
                                 }
@@ -368,14 +394,15 @@
                         "pageNum": self.pageInfo.pageNum,
                         "pageSize": self.pageInfo.pageSize,
                         "companyId": self.pageInfo.companyId, // 所属公司ID，手动从公司列表选择
-                        "vehicleName":self.pageInfo.vehicleName, // 车辆名称
+                        "vehicleName": self.pageInfo.vehicleName, // 车辆名称
                         "vehicleCode": self.pageInfo.vehicleCode, // 车辆编码
+                        "licenseNumber": self.pageInfo.licenseNumber, // 车牌号
                         "gpsDeviceId": self.pageInfo.gpsDeviceId, // 
                         "vehicleTypeId": self.pageInfo.vehicleTypeId, // 
                         "bindDeviceFlag": self.pageInfo.bindDeviceFlag, // 是否绑定定位设备
                         "vehicleColorId": self.pageInfo.vehicleColorId, // 
                         "vehicleBrandId": self.pageInfo.vehicleBrandId, // 
-                        "deptId": self.pageInfo.deptId[self.pageInfo.deptId.length-1], // 部门ID，可选
+                        "deptId": self.pageInfo.deptId[self.pageInfo.deptId.length - 1], // 部门ID，可选
                     },
                     beforeSendCallback: function () {
                         self.isTableLoading = true;
@@ -427,7 +454,7 @@
                 });
             },
             // 格式化上级部门
-            "formatSuperiorDeprt": function(list) {
+            "formatSuperiorDeprt": function (list) {
                 var self = this;
                 var listInfo = JSON.stringify(list).replace(/id/g, 'value').replace(/deptName/g, 'label').replace(/subDeptList/g, 'children');
                 self.departmentList = JSON.parse(listInfo);
@@ -443,7 +470,7 @@
                     dataObj: {
                         id: 0,
                         pageSize: 10000,
-                        companyId: self[type]["companyId"]||0, // 公司ID
+                        companyId: self[type]["companyId"] || 0, // 公司ID
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
@@ -451,6 +478,15 @@
                         }
                     }
                 });
+            },
+            // 显示视屏
+            "showLiveVideo": function (vehicleNo) {
+                var self = this;
+                window.open(
+                    "http://43.247.68.26:9090/airport/www/module/liveVideo/liveVideo.html?vehicleNo=" + vehicleNo,
+                    "liveVideo",
+                    "toolbar=yes, location=0, directories=no, status=0, menubar=0, scrollbars=1, resizable=1, copyhistory=1, width=" + window.outerWidth + ", height=" + window.outerHeight
+                );
             },
         },
         "created": function () {

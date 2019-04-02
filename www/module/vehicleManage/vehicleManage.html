@@ -175,13 +175,22 @@
                                 </td>
                                 <td class="label">
                                     <span class="request">＊</span>
+                                    <span v-text="{'CN':'车牌号','EN':'Plate No.','TW':'車牌號'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <i-input v-model="itemInfo.licenseNumber"/>
+                                    </template>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <span class="request">＊</span>
                                     <span v-text="{'CN':'车辆编号','EN':'Vehicle Code','TW':'車輛編號'}[language]"></span>
                                 </td>
                                 <td>
                                     <i-input v-model="itemInfo.vehicleCode"/>
                                 </td>
-                            </tr>
-                            <tr>
                                 <td class="label">
                                     <span v-text="{'CN':'绑定终端','EN':'Terminal Number','TW':'綁定終端'}[language]"></span>
                                 </td>
@@ -192,6 +201,8 @@
                                         </i-select>
                                     </template>
                                 </td>
+                            </tr>
+                            <tr>
                                 <td class="label">
                                     <span class="request">＊</span>
                                     <span v-text="{'CN':'车辆类型','EN':'Vehicle Type','TW':'車輛類型'}[language]"></span>
@@ -203,8 +214,6 @@
                                         </i-select>
                                     </template>
                                 </td>
-                            </tr>
-                            <tr>
                                 <td class="label">
                                     <span class="request">＊</span>
                                     <span v-text="{'CN':'车辆颜色','EN':'Vehicle Color','TW':'車輛顔色'}[language]"></span>
@@ -216,6 +225,8 @@
                                         </i-select>
                                     </p>
                                 </td>
+                            </tr>
+                            <tr>
                                 <td class="label">
                                     <span class="request">＊</span>
                                     <span v-text="{'CN':'品牌','EN':'Brand','TW':'品牌'}[language]"></span>
@@ -263,6 +274,10 @@
                                 <td><span v-text="itemInfo.vehicleCode"></span></td>
                             </tr>
                             <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'车牌号：','EN':'Plate No.：','TW':'車牌號'}[language]"></span></td>
+                                <td><span v-text="itemInfo.licenseNumber"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
                                 <td class="detailLabel"><span v-text="{'CN':'绑定终端：','EN':'Terminal Number：','TW':'綁定終端：'}[language]"></span></td>
                                 <td><span v-text="itemInfo.gpsDeviceCode"></span></td>
                             </tr>
@@ -293,7 +308,7 @@
         <script src="/airport/assets/js/md5.min.js"></script>
         <script src="/airport/assets/js/config.min.js?v=5756574646372"></script>
         <script src="/airport/assets/js/utility.min.js?v=5756574646372"></script>
-        <script src="/airport/www/module/vehicleManage/vehicleManage.min.js?v=5756574646372"></script>
+        <script src="/airport/www/module/vehicleManage/vehicleManage.min.js?v=54644523423846372"></script>
     </div>
 </body>
 

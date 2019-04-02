@@ -178,10 +178,6 @@ window.utility = (function (utility) {
 
     // 把本地获取的文件读取为dataUrl格式
     utility.readAsDataURL = function (options) {
-        // if (!/imgage\/\w+/.test(options.file.type)) {
-        //     options.checkImg && options.checkImg();
-        //     return;
-        // }
 
         if (typeof FileReader == "undified") {
             alert("您老的浏览器不行了！");
@@ -231,8 +227,8 @@ window.utility = (function (utility) {
             },
             success: function (data) {
                 var isParent = window.parent;
-                if(data.code=="9003") {
-                    alert("请先登录！");
+                if(data.code==9003) {
+                    alert("登录令牌失效,请先登录!");
                     if(!!isParent) {
                         window.parent.window.location.href = "/airport/www/login.html";
                     } else  {

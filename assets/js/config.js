@@ -5,7 +5,7 @@ var CONFIG = (function (CONFIG) {
     // 服务器信息配置
     // CONFIG.HOST = LOCATION;
     CONFIG.HOST = "https://test2.cityeasyplay.com";
-
+    
     // 接口服务
     CONFIG.SERVICE = {
         "userService": "/airportCore/base/userService", // 用户服务
@@ -117,6 +117,6 @@ var CONFIG = (function (CONFIG) {
         "delVehicleRepairInfo": "delVehicleRepairInfo", // 删除车辆保养信息接口
         "saveVehicleRepairInfo": "saveVehicleRepairInfo", // 新增/修改车辆保养信息
     };
-    
+
     return CONFIG;
 }(CONFIG || {}));

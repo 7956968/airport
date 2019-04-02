@@ -89,6 +89,12 @@
                     <p>{{{'CN':'公司名称','EN':'Company','TW':'公司名稱'}[language]}}：{{vehicleItemPop.companyName}}</p>
                     <p>{{{'CN':'部门名称','EN':'Department','TW':'部門名稱'}[language]}}：{{vehicleItemPop.deptName}}</p>
                     <p>{{{'CN':'车辆编码','EN':'Code','TW':'車輛編碼'}[language]}}：{{vehicleItemPop.vehicleCode}}</p>
+                    <template v-if="vehicleItemPop.licenseNumber">
+                        <p>
+                            {{{'CN':'车牌号','EN':'Plate No.','TW':'車牌號'}[language]}}：{{vehicleItemPop.licenseNumber}}  
+                            <i-button size="small" @click="showLiveVideo(vehicleItemPop.licenseNumber)" type="primary" icon="md-play">{{{'CN':'视频','EN':'Video','TW':'視頻'}[language]}}</i-button>
+                        </p>
+                    </template>
                     <p>{{{'CN':'车辆名称','EN':'Name','TW':'車輛名稱'}[language]}}：{{vehicleItemPop.vehicleName}}</p>
                     <p>{{{'CN':'车辆类型','EN':'Type','TW':'車輛類型'}[language]}}：{{vehicleItemPop.vehicleTypeName}}</p>
                     <p>{{{'CN':'终端设备','EN':'Termina','TW':'終端設備'}[language]}}：{{vehicleItemPop.gpsDeviceCode}}</p>
@@ -1010,9 +1016,9 @@
         <script src="/airport/assets/js/md5.min.js"></script>
         <script src="/airport/assets/vender/openLayer/ol.min.js"></script>
         <script src="/airport/assets/vender/radar/radar.min.js"></script>
-        <script src="/airport/assets/js/config.min.js?v=5756574646372"></script>
-        <script src="/airport/assets/js/utility.min.js?v=5756574646372"></script>
-        <script src="/airport/www/module/maps/maps.min.js?v=5756574rururu646372"></script>
+        <script src="/airport/assets/js/config.min.js?v=57565096372"></script>
+        <script src="/airport/assets/js/utility.min.js?v=575609462"></script>
+        <script src="/airport/www/module/maps/maps.min.js?v=23423422345234"></script>
     </div>
 </body>
 

@@ -8,7 +8,7 @@
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
-  background-color: #F5F5F5; 
+  background-color: #F5F5F5;
 }
 /*定义滚动条轨道 内阴影+圆角*/
 ::-webkit-scrollbar-track {
@@ -16,7 +16,7 @@
   border-radius: 10px;
   background-color: #F5F5F5;
 }
-/*定义滑块 内阴影+圆角*/
+/*定义滑块 内阴影+圆角*/ 
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
   box-shadow: inset 0 0 6px rgba(208, 219, 245, 0.3);
@@ -849,6 +849,9 @@ table {
   bottom: 120px;
   left: -300px;
   opacity: 0;
+}
+.mapContainer .ivu-btn > .ivu-icon + span {
+  margin-left: 0;
 }
 .mapModal .ivu-modal-body {
   padding: 0;
