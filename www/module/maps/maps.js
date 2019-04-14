@@ -7,10 +7,11 @@
     var pageVue = new Vue({
         "el": "#js-vue",
         "data": {
+            "isShenZhen": false,
             "deleteLoading": false,
             "addLoading": false,
             "language": !!language ? language["language"] : "CN",
-            "airPort": !!airPort ? [parseFloat(airPort.airPort.split(",")[0], 10), parseFloat(airPort.airPort.split(",")[1], 10)]:[113.8077, 22.6286],
+            "airPort": !!airPort ? [parseFloat(airPort.airPort.split(",")[0], 10), parseFloat(airPort.airPort.split(",")[1], 10)] : [113.8077, 22.6286],
             "companyList": [],
             "departmentList": [],
             "userFuncList": userFuncList,
@@ -137,6 +138,7 @@
                 "vihecleId": "", // 车辆ID
                 "vehicleName": "", // 车辆名称
                 "vehicleCode": "", // 车辆编码
+                "licenseNumber": "", // 车牌号
                 "gpsDeviceCode": "", // 定位终端编号
                 "vehicleTypeId": "", // 车辆类型ID
                 "vehicleStatus": "", // 车辆运行状态
@@ -571,7 +573,7 @@
                             }
                         }, { "CN": "详情", "EN": "Detail", "TW": "詳情" }[language["language"]]);;
 
-                        if(!!params.row.licenseNumber) {
+                        if (!!params.row.licenseNumber) {
                             liveVideoBtn = h("Button", {
                                 "props": {
                                     "type": "primary",
@@ -579,7 +581,6 @@
                                 },
                                 "on": {
                                     "click": function () {
-                                        console.log(params.row.licenseNumber);
                                         pageVue.showLiveVideo(params.row.licenseNumber);
                                     }
                                 }
@@ -672,8 +673,10 @@
                 // 添加摄像机POP
                 self.createPop("addCamera", "camera");
 
-                // 添加防区POP
-                self.createPop("addDefensArea", "defens");
+                if(self.isShenZhen==true) {
+                    // 添加防区POP
+                    self.createPop("addDefensArea", "defens");
+                }
 
                 // 添加控件
                 self.createControls();
@@ -827,8 +830,10 @@
                 // 创建告警图层
                 createLayer("alarm", false);
 
-                // 创建防区图层
-                createLayer("defens", false);
+                if(self.isShenZhen==true) {
+                    // 创建防区图层
+                    createLayer("defens", false);
+                }
 
                 // 创建车辆轨迹
                 createLayer("trajectory", false);
@@ -1726,6 +1731,7 @@
             // 显赫车辆Pop
             "showVehicleOverLayer": function (coordinate) {
                 var self = this;
+                var view = self.mapContainer.map.getView().getZoom();
                 // 设置轨迹查询数据
                 self.singleVehiclePageInfo.vehicleId = self.vehicleItemPop.vihecleId;// 车辆ID
                 self.singleVehiclePageInfo.vehicleCode = encodeURI(self.vehicleItemPop.vehicleCode);// 车辆编码
@@ -1741,7 +1747,10 @@
                     self.mapContainer.map.addOverlay(self.mapContainer.overlayInfo["vehicle"]);
                 }
                 self.mapContainer.overlayInfo["vehicle"].setPosition(coordinate);
-                self.setAnimation(coordinate, 16);
+                if (view < 16) {
+                    view = 16;
+                }
+                self.setAnimation(coordinate, view);
                 $("body").on("click", "#popup-closer--vehicle", function () {
                     $("body").find("#ol-vehicle").hide();
                     self.mapContainer.overlayInfo["vehicle"].setPosition(undefined);
@@ -1828,14 +1837,14 @@
                         "lastPosition": JSON.parse(self.vehiclePositionList[i]["lastPosition"])["coordinates"], //"",
                         "vehicleTypeId": self.vehiclePositionList[i]["vehicleTypeName"], //"",
                         "gpsDeviceCode": self.vehiclePositionList[i]["gpsDeviceCode"], //"",
-                        "vehicleStatus": (function() {
+                        "vehicleStatus": (function () {
                             var vehicleStatusNameList = $.grep(self.terminalStatusList, function (item) {
                                 return item.type == self.vehiclePositionList[i]["vehicleStatus"];
                             });
                             if (!vehicleStatusNameList || vehicleStatusNameList.length == 0) {
                                 return "--";
                             }
-                        
+
                             return vehicleStatusNameList[0]["name"];
                         })(), //self.vehiclePositionList[i]["vehicleStatus"], //"",
                         "vehicleColorId": self.vehiclePositionList[i]["vehicleColorName"], //"",
@@ -1879,6 +1888,7 @@
                         "centerPosition": self.vehiclePositonPageInfo.centerPosition, //"", // 查询中心点坐标，格式为：经度,纬度
                         "vehicleName": encodeURI(self.vehiclePositonPageInfo.vehicleName), //"", // 车辆名称
                         "vehicleCode": encodeURI(self.vehiclePositonPageInfo.vehicleCode), //"", // 车辆编码
+                        "licenseNumber": encodeURI(self.vehiclePositonPageInfo.licenseNumber), //"", // 车牌号
                     }, //self.vehiclePositonPageInfo,
                     beforeSendCallback: function () {
                         self.isSearchLoading = true;
@@ -1967,6 +1977,7 @@
                             var coordinate = [];
                             var coorArr = [];
                             var track = [];
+                            var view = self.mapContainer.map.getView().getZoom();
 
                             self.singleVehicleItem = data.data;
                             self.vehicleItemPop = data.data;
@@ -1982,10 +1993,13 @@
                                 self.drawTrajPoint(); // 画轨迹上的点
                                 self.drawTrajectory(); // 画轨迹
                                 self.createTrajOverLayer(); // 画轨迹点上的详细信息
-                                self.setAnimation(self.mapContainer.animationInfo.coordinates[Math.ceil(Math.random() * self.mapContainer.animationInfo.coordinates.length)], 16);
-                                setTimeout(function() {
+                                if (view < 16) {
+                                    view = 16;
+                                }
+                                self.setAnimation(self.mapContainer.animationInfo.coordinates[Math.ceil(Math.random() * self.mapContainer.animationInfo.coordinates.length)], view);
+                                setTimeout(function () {
                                     self.$Message.destroy();
-                                    if(bool == true) {
+                                    if (bool == true) {
                                         self.startVehicleAnimation();
                                     }
                                 }, 3000);
@@ -1996,9 +2010,9 @@
                         } else {
                             self.$Message.destroy();
                         }
-                        
+
                     },
-                    errorCallback: function() {
+                    errorCallback: function () {
                         self.$Message.destroy();
                     }
                 });
@@ -2094,10 +2108,10 @@
             "startVehicleAnimation": function () {
                 var self = this;
                 var coordinates = self.mapContainer.animationInfo.coordinates;
-                
+
                 // self.mapContainer.overlayInfo["vehicle"].setPosition(undefined); // 先关闭弹出层
 
-                if(!!!self.singleVehicleItem.track || self.singleVehicleItem.track.length==0) {
+                if (!!!self.singleVehicleItem.track || self.singleVehicleItem.track.length == 0) {
                     self.getSingleVehicleTrack(true);
                     return;
                 } else {
@@ -2201,12 +2215,12 @@
                 });
             },
             // 显示视屏
-            "showLiveVideo": function(vehicleNo) {
+            "showLiveVideo": function (vehicleNo) {
                 var self = this;
                 window.open(
-                    "http://43.247.68.26:9090/airport/www/module/liveVideo/liveVideo.html?vehicleNo=" + vehicleNo, 
+                    "http://43.247.68.26:9090/airport/www/module/liveVideo/liveVideo.html?vehicleNo=" + encodeURI(vehicleNo),
                     "liveVideo",
-                    "toolbar=yes, location=0, directories=no, status=0, menubar=0, scrollbars=1, resizable=1, copyhistory=1, width="+ window.outerWidth +", height="+ window.outerHeight
+                    "toolbar=yes, location=0, directories=no, status=0, menubar=0, scrollbars=1, resizable=1, copyhistory=1, width=" + window.outerWidth + ", height=" + window.outerHeight
                 );
             },
             //#endregion
@@ -2247,16 +2261,16 @@
                     }, function (error) {
                         switch (error.code) {
                             case error.PERMISSION_DENIED:
-                            console.log("User denied the request for Geolocation.");
+                                console.log("User denied the request for Geolocation.");
                                 break;
                             case error.POSITION_UNAVAILABLE:
-                            console.log("Location information is unavailable.");
+                                console.log("Location information is unavailable.");
                                 break;
                             case error.TIMEOUT:
-                            console.log("The request to get user location timed out.");
+                                console.log("The request to get user location timed out.");
                                 break;
                             case error.UNKNOWN_ERROR:
-                            console.log("An unknown error occurred.");
+                                console.log("An unknown error occurred.");
                                 break;
                         }
                     });
@@ -2329,6 +2343,8 @@
         "created": function () {
             var self = this;
             var timePosition = null;
+
+            self.isShenZhen = (self.airPort.join(",") == "113.8077,22.6286");
 
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
             utility.isLogin(false);

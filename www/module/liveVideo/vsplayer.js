@@ -8,19 +8,23 @@ function VSClientSession(callback) {
     this.context = {};
     this.callback = callback;
     this.videos = [];
+    this.isListening = false;
+    this.audioElement = null;
+    this.listenParam = {};
+    this.audioPlayer = null;
 }
 
-// socket 链接IP,端口
+
 VSClientSession.prototype.webSocketHost = function () {
     return 'ws://' + this.serverIP + ':' + this.serverPort;
 }
 
-// socket 完整链接
+
 VSClientSession.prototype.getWSURL = function () {
     return this.webSocketHost() + "/session?user=" + this.username + "&password=" + this.password;
 }
 
-// 链接到 socket 服务器
+
 VSClientSession.prototype.connectToServer = function () {
     console.log("url:" + this.wsURL);
     this.connection = new WebSocket(this.wsURL);
@@ -32,7 +36,7 @@ VSClientSession.prototype.connectToServer = function () {
     this.connection.onmessage = this.onRecvServerMessage.bind(this);
 }
 
-// 登录 socket 服务器
+
 VSClientSession.prototype.login = function (username, password, serverIP, serverPort) {
     this.username = username;
     this.password = password;
@@ -123,7 +127,7 @@ VSClientSession.prototype.onlogon = function (info) {
         this.username = info.username;
     }
     this.hasLogon = true;
-    this.callback.onlogon(info);
+    this.callback.onlogon();
 }
 
 
@@ -133,6 +137,8 @@ VSClientSession.prototype.onLoginFailed = function (reason) {
 
 
 VSClientSession.prototype.onFrontOnOfflineEvent = function (event) {
+    console.log("front" + event.front + " " + (event.online ? "online" : "offline"));
+
     var frontId = event.front;
     var front = this.findFrontByID(frontId);
     if (!front) {
@@ -190,7 +196,6 @@ VSClientSession.prototype.startPlay = function (name, channel, videoCtrl) {
         return false;
     }
 
-
     front = front[0];
     if (!front.online) {
         return false;
@@ -218,6 +223,44 @@ VSClientSession.prototype.stopPlay = function (videoCtrl) {
             return;
         }
     }
+}
+//开始监听
+VSClientSession.prototype.startListening = function (name, channel) {
+    if (this.isListening) {
+        return;
+    }
+    var front = jQuery.grep(this.context.front, function (element) {
+        return element.name == name;
+    });
+    if (!front || front.length == 0) {
+        return false;
+    }
+
+    front = front[0];
+    if (!front.online) {
+        return false;
+    }
+
+    this.audioElement = document.createElement("audio");
+    this.audioElement.controls = false;
+    document.body.appendChild(this.audioElement);
+    $(this.audioElement).css({ width: 0, height: 0 });
+    this.audioPlayer = new Player(this.audioElement, front.id, channel, false, true);
+    this.audioPlayer.start();
+
+    this.isListening = true;
+}
+//停止监听
+VSClientSession.prototype.stopListening = function () {
+    if (!this.isListening) {
+        return;
+    }
+
+    this.audioPlayer.stop();
+    this.audioPlayer = null;
+    document.body.removeChild(this.audioElement);
+    this.audioElement = null;
+    this.isListening = false;
 }
 
 
@@ -307,6 +350,7 @@ Player.prototype.start = function () {
     }
 
     this.parseFrame = function (frame) {
+        //console.log('parse frame[' + this.frameCnt +'] size = ' + frame.byteLength);
 
         var offset = 0;
         var iskeyframe = false;
@@ -341,6 +385,8 @@ Player.prototype.start = function () {
         var mdatLen = 0;
         var duration1 = 90 * Math.floor((this.timestamps[this.timestamps.length - 1] - this.timestamps[0]) / (this.timestamps.length - 1));
         var delta = (this.timestamps[this.timestamps.length - 1] - this.timestamps[0]) * 90 - duration1 * (this.timestamps.length - 1);
+
+        //console.log('avg frame duration = ' + duration1);
 
         for (i = 0; i < this.frames.length - 1; ++i) {
             this.track.samples.push({
@@ -417,6 +463,7 @@ Player.prototype.start = function () {
                 var endTime = buf.end(buf.length - 1);
                 var maxOffset = (this.isAudio ? 1.0 : 4.0);
                 if (endTime - currTime > maxOffset) {
+                    //console.log('***********skip time ' + buf.start(buf.length - 1) + ' ' + currTime + ' ' + endTime);
                     if (this.isAudio) {
                         this.video.currentTime = endTime - 0.32;
                     } else {
@@ -425,6 +472,8 @@ Player.prototype.start = function () {
                 }
             }
             if (this.segments.length > 1) {
+                //this may drop the init segment
+                console.log('drop a segment');
                 this.segments.pop();
             }
         }
@@ -696,6 +745,7 @@ function getStream(frontId, channel, isPreview, isAudio) {
     return stream
 }
 
+
 function VideoStream(url, streamId, callback) {
     this.streamId = streamId
     this.url = url
@@ -743,6 +793,7 @@ VideoStream.prototype.start = function () {
 
     this.websockt.onerror = function () {
         console.log("websocket error " + this.readyState);
+
         this.error = true
     }
 

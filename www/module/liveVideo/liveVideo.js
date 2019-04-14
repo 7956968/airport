@@ -11,6 +11,7 @@
             "maxVideoNum": 10, // 最大视频数
             "isStop": true, // 是否开始了
             "isFullScream": false,
+            "channelIndex": 1,
             "fullScreamIndex": "",
             "defaultColor": "rgb(255,125,0)", // 当前激活视频样式
             "splitNum": 1,
@@ -266,7 +267,7 @@
                         if (front == null) {
                             self.$Message.destroy()
                             self.$Message.error({
-                                "content": "不存在该车辆" + self.mVehicleNo,
+                                "content": "不存在该车辆[" + self.mVehicleNo +"]",
                                 "closable": true
                             });
                             return;
@@ -327,7 +328,7 @@
                         }
                     },
                     onGpsData: function (frontGpsData) {//车辆信息+GPS信息
-                        console.log("frontGpsData:" + JSON.stringify(frontGpsData));
+                        // console.log("frontGpsData:" + JSON.stringify(frontGpsData));
                     }
                 };
                 window.vsclientSession = new VSClientSession(callback);
@@ -392,6 +393,7 @@
                     return 9;
                 }
             },
+
             // 播放视频
             "playVideo": function (front) {
                 var self = this;
@@ -414,6 +416,9 @@
                 self.updateVideoWin(splitcn);
                 for (var idx = 0; idx < channelNum; idx++) {
                     ret = vsclientSession.startPlay(self.mVehicleNo, idx, $("#video" + idx)[0]);
+                    if(idx == 0) {
+                        self.playAudio(idx+1);
+                    }
                 }
                 if (ret) {
                     self.isStop = true;
@@ -469,7 +474,22 @@
                 var self = this;
                 self.isFullScream = false;
                 $("body").find("#" + id).parents(".videoWrap").removeClass("fullScream");
-            }
+            },
+
+            // 播放声音
+            "playAudio": function(channel) {
+                var self = this;
+
+                self.channelIndex = channel;
+                vsclientSession.stopListening();
+                vsclientSession.startListening(self.mVehicleNo, channel);
+            },
+            // 停止播放声音
+            "stopAudio": function() {
+                var self = this;
+                self.channelIndex = 0;
+                vsclientSession.stopListening();
+            },
         },
         "mounted": function () {
             var self = this;
@@ -482,7 +502,7 @@
             });
 
             // "ip": "192.168.1.102",//"220.231.225.7",
-            // "port": 8080, //7668,
+            // "port": 8001, //7668,
             // "userName": "admin1", //"mgkj",
             // "pwd": "888888",
             self.init({
@@ -490,7 +510,7 @@
                 "pwd": "888888",
                 "userName": "mgkj",
                 "ip": "220.231.225.7",
-                "vehicleNo": queryInfo.vehicleNo,
+                "vehicleNo": decodeURI(queryInfo.vehicleNo),
             });
         }
     });

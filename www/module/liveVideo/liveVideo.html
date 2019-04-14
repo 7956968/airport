@@ -2,7 +2,7 @@
 <html lang="zh">
 
 <head>
-    <title>民贵无动力设备管理系统</title>
+    <title>特种车辆音视频可视化系统</title>
 
     <!-- 页面字符编码 -->
     <meta charset="utf-8">
@@ -94,8 +94,15 @@
             width: 100%;
             height: 95%;
         }
+        .video_ctrl_area .title {
+            float: left;
+            padding-left: 60px;
+            font-size: 16px;
+            color: #FFF;
+        }
         .video_ctrl_area .playWrap {
-            padding-left: 70px;
+            padding-left: 30px;
+            float: left;
         }
         .video_ctrl_area .splitWrap {
             display: inline-block;
@@ -163,7 +170,10 @@
 
             <!-- 顶部操作栏 -->
             <div class="video_ctrl_area">
-                <div class="logoIcon"><img src="/airport/www/img/logo.png"/></div>
+                <div class="logoIcon">
+                    <img src="/airport/www/img/logo.png"/>
+                </div>
+                <div class="title">特种车辆音视频可视化系统</div>
                 <div class="playWrap">
                     <div class="splitWrap">
                         <template>
@@ -198,6 +208,13 @@
                                 <template v-else>
                                     <i-button @click="setFullScream('video'+(index-1))" type="text"><Icon size="24" type="md-qr-scanner" /></i-button>
                                 </template>
+
+                                <template v-if="channelIndex == index">
+                                    <i-button @click="stopAudio" type="text"><Icon type="md-volume-up" size="24"/></i-button>
+                                </template>
+                                <template v-else>
+                                    <i-button @click="playAudio(index)" type="text"><Icon type="md-volume-off" size="24" /></i-button>
+                                </template>
                             </div>
                         </div>
                     </div>
@@ -210,8 +227,8 @@
     <script src="/airport/assets/vender/iView/iview.min.js"></script>
     <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
     <script src="/airport/assets/js/utility.min.js?v=74713523459"></script>
-    <script src="/airport/www/module/liveVideo/vsplayer.min.js?v=74533425349841"></script>
-    <script src="/airport/www/module/liveVideo/liveVideo.min.js?v=723434534841"></script>
+    <script src="/airport/www/module/liveVideo/vsplayer.min.js?v=3471237412370"></script>
+    <script src="/airport/www/module/liveVideo/liveVideo.min.js?v=efasdfqwerqioweru127481728947"></script>
 </body>
 
 </html>

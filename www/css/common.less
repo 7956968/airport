@@ -7,6 +7,7 @@
 @mainFontColor: #777E8E;
 @headerHeight: 50px;
 @tabHeight: 30px;
+
 *,
 *:before,
 *:after {
@@ -80,8 +81,9 @@ table {
         bottom: 0;
         width: 100%;
         height: 100%;
-        background: url(../img/login.jpg) no-repeat left center;
+        background: url("/airport/www/img/login.jpg") no-repeat left center;
         background-size: 100%;
+
         .wrap {
             position: absolute;
             z-index: 0;
@@ -91,14 +93,30 @@ table {
             bottom: 0;
             width: 100%;
             height: 100%;
-            background: url(../img/bg.png) no-repeat left center;
+            background: url("/airport/www/img/bg.png") no-repeat left center;
             background-size: 100%;
         }
+
         .header {
             text-align: center;
             padding-top: 10%;
-            ;
+
+            img {
+                width: 62px;
+                height: 62px;
+            }
+
+            .label {
+                font-size: 36px;
+                color: #005ddc;
+                font-weight: bold;
+                position: relative;
+                z-index: 0;
+                top: -15px;
+                left: 10px;
+            }
         }
+
         .inputInfo {
             position: absolute;
             z-index: 10000000;
@@ -110,29 +128,37 @@ table {
             border-radius: 5px;
             border: 1px solid rgba(185, 185, 185, 0.5);
             background-color: rgba(255, 255, 255, .7);
+
             label {
                 display: block;
                 padding: 10px 0;
+
                 &.ivu-checkbox-wrapper {
                     padding-top: 0;
                 }
+
                 .ivu-input-prefix {
                     width: 40px;
                 }
+
                 .ivu-input-with-prefix {
                     padding-left: 40px;
                 }
+
                 .ivu-input-prefix i {
                     font-size: 28px;
                 }
+
                 select {
                     display: block;
                     width: 100%;
                     height: 36px;
                 }
+
                 .ivu-poptip {
                     display: block;
                     width: 100%;
+
                     .ivu-poptip-rel {
                         display: block;
                     }
@@ -143,6 +169,7 @@ table {
 }
 
 .graphPage {
+
     // background-color: @color1; // 首页样式
     // 欢迎页样式
     .welcomPage {
@@ -158,44 +185,58 @@ table {
         padding-top: 40px;
         overflow-x: hidden;
         overflow-y: auto;
+
         .layout {
             padding: 0 10px 0 10px;
+
             .ivu-card {
                 border-radius: 2px;
                 transition: none;
                 background-color: rgb(15, 55, 95);
+
                 &:hover {
                     box-shadow: none;
                 }
+
                 &.ivu-card-bordered {
                     border-color: rgba(109, 106, 106, 0.7);
                 }
+
                 .ivu-card-head {
                     padding: 10px 16px;
                     border-bottom: 1px solid rgba(109, 106, 106, 0.5);
                 }
             }
+            .ivu-spin-fix {
+                background-color: transparent;
+            }
+
             .tile {
                 font-size: 18px;
                 color: @mainFontColor;
             }
+
             .infoList {
                 padding-bottom: 10px;
+
                 .infoItem {
                     .info {
                         height: 90px;
                         text-align: center;
                         overflow: hidden;
                         cursor: pointer;
+
                         p {
                             margin: 0;
                             padding: 0;
                         }
+
                         .label {
                             color: #fff;
                             padding: 8px 0;
                             font-size: 13px;
                         }
+
                         .detail {
                             position: relative;
                             z-index: 0;
@@ -203,14 +244,17 @@ table {
                             font-size: 42px;
                             color: #fff;
                         }
+
                         &.totalNum {
                             position: relative;
                             z-index: 0;
+
                             .label {
                                 padding-top: 20px;
                                 font-size: 24px;
                                 color: #FFF;
                             }
+
                             .detail {
                                 position: relative;
                                 z-index: 0;
@@ -218,10 +262,12 @@ table {
                                 font-size: 86px;
                                 color: #FFF;
                             }
+
                             .totalRow {
                                 position: relative;
                                 z-index: 10;
                             }
+
                             .totalIcon {
                                 position: absolute;
                                 z-index: 0;
@@ -230,43 +276,50 @@ table {
                             }
                         }
                     }
-                    
+
                 }
             }
         }
+
         .welcomTable {
+
             .ivu-table,
             .ivu-table td,
-            .ivu-table-stripe .ivu-table-body tr.ivu-table-row-hover td, 
+            .ivu-table-stripe .ivu-table-body tr.ivu-table-row-hover td,
             .ivu-table-stripe .ivu-table-fixed-body tr.ivu-table-row-hover td,
-            .ivu-table-stripe .ivu-table-body tr:nth-child(2n) td, 
+            .ivu-table-stripe .ivu-table-body tr:nth-child(2n) td,
             .ivu-table-stripe .ivu-table-fixed-body tr:nth-child(2n) td,
             .ivu-table:before,
             .ivu-table:after,
             .ivu-spin-fix {
                 background-color: transparent;
-                color:#fff;
-            } 
+                color: #fff;
+            }
+
             .ivu-table-stripe .ivu-table-body tr:nth-child(2n+1) td {
                 background-color: #18416B;
             }
+
             .ivu-table-wrapper,
             .ivu-table td,
             .ivu-table th,
             .ivu-table-wrapper>.ivu-spin-fix {
                 border: none;
             }
+
             .ivu-table-fixed-body {
                 .ivu-table-row {
                     background-color: #0F375F;
                 }
+
                 .ivu-table-cell {
                     padding-left: 10px;
                     padding-right: 5px;
-                    
+
                 }
             }
         }
+
         .copyRight {
             text-align: center;
             color: #fff;
@@ -276,6 +329,7 @@ table {
 }
 
 .index {
+
     // 头部样式
     .header {
         position: fixed;
@@ -286,21 +340,24 @@ table {
         width: 110px;
         height: 100%;
         background-color: @color1;
+
         .logo {
             padding: 10px 0 20px 0;
             text-align: center;
             background-color: #0f375f;
+
             img {
-                width: 58px;
-                height: 50px;
-                ;
+                width: 62px;
+                height: 62px;
             }
+
             p {
                 color: #fff;
                 text-align: center;
                 font-size: 16px;
             }
         }
+
         .navWrap {
             ul {
                 li {
@@ -309,34 +366,41 @@ table {
                     height: 48px;
                     line-height: 48px;
                     color: @fontColor;
-                    border-top: 1px solid rgba(255,255,255,.3);
+                    border-top: 1px solid rgba(255, 255, 255, .3);
                     border-left: none;
                     border-right: none;
                     padding: 0 0 0 5px;
                     font-size: 13px;
                     cursor: pointer;
+
                     &:last-child {
-                        border-bottom: 1px solid rgba(255,255,255,.3);
+                        border-bottom: 1px solid rgba(255, 255, 255, .3);
                     }
+
                     .navIcon {
                         position: relative;
                         z-index: 0;
+
                         i {
                             font-size: 18px;
                         }
+
                         .icon {
                             position: relative;
                             z-index: 0;
                             top: -2px;
                         }
+
                         .arrow {
                             float: right;
                             margin-right: 5px;
+
                             i {
                                 color: fade(@bgColor, 40%);
                             }
                         }
                     }
+
                     .subNav {
                         display: none;
                         position: absolute;
@@ -345,26 +409,31 @@ table {
                         left: 100%;
                         width: 130%;
                         color: #FFF;
-                        border: 1px solid rgba(255,255,255,.5);
+                        border: 1px solid rgba(255, 255, 255, .5);
                         border-left: none;
                         background-color: rgb(15, 55, 95);
+
                         p {
                             height: 47px;
                             line-height: 47px;
                             padding: 0 0 0 10px;
                             margin: 0;
+
                             &:nth-child(2n) {
                                 background-color: rgba(208, 219, 245, .5);
                             }
+
                             i {
                                 font-size: 16px;
                                 margin-right: 3px;
                             }
+
                             &:hover {
                                 background-color: rgba(208, 219, 245, .8);
                             }
                         }
                     }
+
                     &:hover {
                         height: 49px;
                         line-height: 49px;
@@ -372,6 +441,7 @@ table {
                         border-left: none;
                         border-right: none;
                         background-color: rgb(15, 55, 95);
+
                         .navIcon {
                             .arrow {
                                 i {
@@ -379,6 +449,7 @@ table {
                                 }
                             }
                         }
+
                         .subNav {
                             display: block;
                         }
@@ -386,6 +457,7 @@ table {
                 }
             }
         }
+
         .userInfo {
             position: fixed;
             z-index: 0;
@@ -396,10 +468,12 @@ table {
             line-height: @headerHeight;
             color: @fontColor;
             cursor: pointer;
+
             i {
                 font-size: 28px;
                 margin-right: 5px;
             }
+
             .logout {
                 text-align: center;
                 cursor: pointer;
@@ -408,7 +482,9 @@ table {
                 background-color: @logoutColor;
             }
         }
-    } // 固定导航
+    }
+
+    // 固定导航
     .fixedNav {
         position: fixed;
         z-index: 1000;
@@ -416,17 +492,20 @@ table {
         left: 110px;
         right: 0;
         height: 30px;
-        background-color:rgba(15, 55, 95, .4);
+        background-color: rgba(15, 55, 95, .4);
         box-shadow: 0 1px 5px rgba(62, 84, 130, .2);
+
         .fixedNavWrap {
             width: 100%;
             overflow-x: auto;
             overflow-y: hidden;
+
             .fixedNavBox {
                 height: 30px;
                 line-height: 30px;
             }
         }
+
         i {
             position: relative;
             z-index: 0;
@@ -434,6 +513,7 @@ table {
             font-size: 18px;
             margin-right: 3px;
         }
+
         .tabItem,
         .modifyPass {
             position: relative;
@@ -445,17 +525,21 @@ table {
             color: #fff;
             cursor: pointer;
             border-left: 1px solid fade(@color1, 30%);
+
             &:first-child {
                 padding: 0 10px;
                 border-left: none;
             }
+
             &:last-child {
                 border-right: 1px solid fade(@color1, 30%);
             }
+
             .item {
                 position: relative;
                 z-index: 0;
             }
+
             .close {
                 position: absolute;
                 z-index: 10000;
@@ -464,6 +548,7 @@ table {
                 width: 30px;
                 height: 30px;
                 line-height: 30px;
+
                 i {
                     display: inline-block;
                     width: 15px;
@@ -478,15 +563,18 @@ table {
                     background-color: fade(@color1, 10%);
                 }
             }
+
             &.active {
                 color: #0f375f;
                 background-color: white;
+
                 .close {
                     i {
                         color: fade(@mainFontColor, 50%);
                         background-color: fade(@color1, 30%);
                     }
                 }
+
                 &:hover {
                     .close {
                         i {
@@ -496,6 +584,7 @@ table {
                     }
                 }
             }
+
             &:hover {
                 .close {
                     i {
@@ -504,6 +593,7 @@ table {
                     }
                 }
             }
+
             &.modifyPassWrap {
                 position: absolute;
                 z-index: 1000;
@@ -512,6 +602,7 @@ table {
             }
         }
     }
+
     .mainWrap {
         position: fixed;
         z-index: 10;
@@ -519,6 +610,7 @@ table {
         left: 110px;
         right: 0;
         bottom: 0;
+
         iframe {
             position: absolute;
             z-index: 0;
@@ -534,16 +626,19 @@ table {
 
 .top {
     padding: 5px;
+
     .actionWrap {
         position: relative;
         z-index: 0;
         top: 2px;
         text-align: right;
     }
+
     button {
         i {
             font-size: 17px;
         }
+
         span {
             margin-left: 0;
             margin-right: 4px;
@@ -561,9 +656,11 @@ table {
 
 .menuWrap {
     border-right: 1px solid @borderColor;
+
     .ivu-menu-vertical.ivu-menu-light:after {
         display: none;
     }
+
     .icon {
         i {
             font-size: 24px;
@@ -590,13 +687,16 @@ table {
 .treeModel {
     .ivu-modal-body {
         padding: 0;
+
         .treeWrap {
             padding: 5px;
             border-right: 1px solid @borderColor;
+
             .ivu-tree {
                 ul {
                     li {
                         margin: 0;
+
                         ul {
                             li {
                                 margin: 8px 0;
@@ -606,24 +706,31 @@ table {
                 }
             }
         }
+
         .search {
             padding: 10px 10px 0 0;
         }
+
         .memberWrap {
             padding: 0 10px 10px 0;
             margin-top: 10px;
+
             .memberList {
                 .memberItem {
                     margin-bottom: 10px;
                     cursor: pointer;
+
                     .ivu-card {
                         overflow: hidden;
                     }
+
                     .left {
                         background-color: fade(@color1, 20%);
+
                         .head {
                             font-size: 32px;
                             text-align: center;
+
                             i {
                                 position: relative;
                                 z-index: 0;
@@ -631,8 +738,10 @@ table {
                             }
                         }
                     }
+
                     .info {
                         padding: 5px;
+
                         p {
                             font-size: 12px;
                         }
@@ -642,6 +751,7 @@ table {
         }
     }
 }
+
 .echartWrap {
     border-top: 1px solid #ddd;
 }
@@ -649,30 +759,38 @@ table {
 .tableWrap {
     padding-left: 2px;
     padding-right: 1px;
+
     .ivu-table-wrapper {
         border: none;
     }
+
     .ivu-table {
         border: none;
+
         &::before {
             background-color: rgba(214, 212, 212, 0.5);
         }
+
         &:after {
             display: none;
         }
+
         th {
             .setBgColor(60%);
             color: white;
             font-size: 13px;
         }
+
         i {
             font-size: 18px;
         }
     }
+
     .ivu-table-stripe .ivu-table-fixed-body tr.ivu-table-row-highlight:nth-child(2n) td {
         color: #fff;
         background-color: #2196F3;
     }
+
     .ivu-table-stripe {
         .ivu-table-body {
             tr {
@@ -685,6 +803,7 @@ table {
             }
         }
     }
+
     tr {
         &.ivu-table-row-highlight {
             &.ivu-table-row-hover {
@@ -695,6 +814,7 @@ table {
             }
         }
     }
+
     .ivu-table-row-highlight {
         td {
             color: #fff;
@@ -714,34 +834,43 @@ table {
     .pageWrap {
         padding: 5px 15px;
     }
+
     .detailInfo {
         line-height: 1.5;
+
         span {
             display: inline-block;
             font-size: 13px;
         }
+
         .detailLabel {
             width: 100px;
             text-align: right;
         }
     }
+
     table {
         width: 100%;
+
         td {
             padding: 5px;
+
             &.label {
                 min-width: 50px;
                 text-align: right;
                 padding: 5px 0;
             }
+
             .ivu-date-picker {
                 display: block;
             }
+
             .addressWrap {
                 .select {
                     float: left;
                     width: 70%;
                 }
+
                 .input {
                     float: left;
                     width: 30%;
@@ -749,10 +878,12 @@ table {
             }
         }
     }
+
     .top {
         .actionWrap {
             top: 0;
         }
+
         table {
             td {
                 padding: 0 5px;
@@ -763,8 +894,10 @@ table {
 
 .pageWrap {
     padding: 5px;
+
     .ivu-page-item-active {
         background-color: @pageActiveColor;
+
         a {
             color: white;
         }
@@ -779,6 +912,7 @@ table {
     left: 0;
     width: 100%;
     height: 100%;
+
     .mapWrap {
         position: fixed;
         z-index: 5;
@@ -786,6 +920,7 @@ table {
         left: 0;
         width: 100%;
         height: 100%;
+
         .mousePosition {
             position: absolute;
             bottom: 8px;
@@ -800,21 +935,26 @@ table {
             font-family: "微软雅黑";
             border: 1px solid #fff;
             border-top: none;
+
             .mousePositionLabel {
                 float: left;
             }
+
             .mousePositionInner {
                 margin-left: 10px;
                 float: left;
             }
         }
+
         .overViewMap {
             bottom: auto;
             left: auto;
             right: 10px;
             bottom: 5px;
+
             &:not(.ol-collapsed) {
                 border: 4px solid rgba(0, 0, 0, .2);
+
                 button {
                     bottom: auto;
                     left: auto;
@@ -822,39 +962,48 @@ table {
                     top: 1px;
                 }
             }
+
             .ol-overviewmap-map {
                 border: none;
                 width: 300px;
             }
+
             .ol-overviewmap-box {
                 border: 2px solid red;
             }
+
             &.ol-collapsed {
                 .ol-overviewmap-map {
                     display: none;
                 }
             }
         }
+
         .ol-full-screen {
             top: auto;
             bottom: 30px;
         }
+
         .ol-zoom {
             top: 2.5rem;
         }
+
         &.cursorMouse {
             cursor: url("/airport/assets/img/camera.png")
         }
+
         .ol-zoomslider {
             top: 90px;
         }
     }
+
     .searchWrap {
         position: absolute;
         z-index: 100000000000;
         top: 50px;
         left: 50px;
         width: 40%;
+
         .ivu-btn {
             position: relative;
             z-index: 10;
@@ -862,6 +1011,7 @@ table {
             padding: 5px;
             font-size: 13px;
         }
+
         .ivu-input-group {
             .ivu-input {
                 left: 0;
@@ -869,11 +1019,13 @@ table {
             }
         }
     }
+
     .menuWrap {
         position: absolute;
         z-index: 100000000;
         top: 50px;
         right: 0;
+
         ul {
             height: 40px;
             line-height: 40px;
@@ -882,18 +1034,22 @@ table {
             border-right: none;
             border-bottom: none;
             overflow: hidden;
+
             &.ivu-menu-light {
                 padding-right: 10px;
                 background-color: rgba(255, 255, 255, .8);
             }
+
             .ivu-menu-item {
                 padding: 0 5px;
             }
         }
+
         i {
             font-size: 24px;
         }
     }
+
     .ol-popup {
         display: none;
         position: absolute;
@@ -907,13 +1063,16 @@ table {
         bottom: 12px;
         left: -50px;
         min-width: 230px;
+
         &.ol-vehicle {
             bottom: 50px;
             min-width: 250px;
+
             .trajectoryAction {
                 padding: 5px 0;
             }
         }
+
         &:after,
         &:before {
             top: 100%;
@@ -924,41 +1083,46 @@ table {
             position: absolute;
             pointer-events: none;
         }
+
         &:after {
             border-top-color: white;
             border-width: 10px;
             left: 48px;
             margin-left: -10px;
         }
+
         &:before {
             border-top-color: #cccccc;
             border-width: 11px;
             left: 48px;
             margin-left: -11px;
         }
+
         .ol-popup-closer {
             text-decoration: none;
             position: absolute;
             top: 2px;
             right: 8px;
+
             &:after {
                 content: "X";
                 cursor: pointer;
             }
         }
     }
-    
+
     .moveVehicle,
     .searchVehicle {
         position: absolute;
         display: none;
         z-index: 0;
-        width:  40px;
+        width: 40px;
         height: 60px;
         bottom: -8px;
         left: -10px;
         background-size: 100%;
     }
+
     .searchVehicle {
         display: block;
         z-index: 100000;
@@ -968,6 +1132,7 @@ table {
         left: -300px;
         opacity: 0;
     }
+
     .ivu-btn>.ivu-icon+span {
         margin-left: 0;
     }
@@ -977,30 +1142,36 @@ table {
     .ivu-modal-body {
         padding: 0;
     }
+
     .ivu-modal-content {
         background-color: rgba(255, 255, 255, .7);
     }
+
     .ivu-modal-header {
         border-bottom-color: fade(@color1, 50%);
     }
+
     .tip {
         color: red;
         text-align: center;
         font-size: 12px;
         padding-bottom: 5px;
     }
+
     .modalTitle {
         .icon {
             i {
                 font-size: 24px;
             }
         }
+
         .label {
             position: relative;
             z-index: 0;
             top: 3px;
             font-size: 16px;
         }
+
         .areaTip {
             color: #fff;
             font-size: 12px;
@@ -1008,21 +1179,27 @@ table {
             padding: 3px;
         }
     }
+
     .mapSearch {
         padding: 10px 10px 5px 10px;
+
         table {
             width: 100%;
+
             td {
                 line-height: 0;
                 padding: 5px;
             }
         }
+
         .btnList {
             position: relative;
             z-index: 0;
+
             i {
                 font-size: 16px;
             }
+
             button {
                 span {
                     margin-left: 0;
@@ -1030,13 +1207,17 @@ table {
             }
         }
     }
+
     .tableWrap {
         padding: 5px 10px 10px 10px;
+
         .ivu-table-wrapper {
             border: none;
         }
+
         .ivu-table {
             background-color: transparent;
+
             thead {
                 tr {
                     background-color: white;
@@ -1044,28 +1225,36 @@ table {
             }
         }
     }
+
     .sliderWrap {
         padding: 20px 20px 50px 20px;
     }
+
     .pageWrap {
         padding: 0 10px 10px 10px;
     }
+
     .layerWrap {
         .ivu-menu-light {
             background-color: transparent;
         }
+
         .layerMenu {
             border-right: 1px solid @borderColor;
+
             ul {
                 position: relative;
                 z-index: 0;
                 height: 100%;
+
                 &.ivu-menu-vertical.ivu-menu-light:after {
                     display: none;
                 }
+
                 &.ivu-menu-vertical {
                     .ivu-menu-item {
                         padding: 0;
+
                         label {
                             display: block;
                             padding: 14px 24px;
@@ -1075,10 +1264,12 @@ table {
             }
         }
     }
+
     &.detailInfoModal {
         .ivu-poptip {
             text-align: left;
             width: 100%;
+
             .ivu-poptip-rel {
                 width: 100%;
             }
@@ -1091,6 +1282,7 @@ table {
     background: #fff;
     padding: 20px 10px;
     border-radius: 15px;
+
     table {
         width: 100%;
     }

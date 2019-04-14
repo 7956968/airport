@@ -7,7 +7,7 @@
         "data": {
             "userInfo": userInfo,
             "language": !!language ? language["language"] : "CN",
-            "title": { "CN": "特种车辆音视频可视化系统", 'EN': "Mingui Non-Powered Euipment Management System", 'TW': "民貴無動力管理系統" },
+            "title": { "CN": "民贵车辆管理系统", 'EN': "Mingui Non-Powered Euipment Management System", 'TW': "民貴無動力管理系統" },
             "tabList": [],
             "iframeList": [],
             "userFuncList": userFuncList,
@@ -33,7 +33,7 @@
                             utility.setLocalStorage("userInfo", null);
                             utility.setLocalStorage("userFuncList", null);
                             setTimeout(function() {
-                                window.location.href = "/airport/www/login.html";
+                                window.location.href = "/airport/www/indexMg.html";
                             }, 150);
                         } else {
                             self.$Message.error(data.message);

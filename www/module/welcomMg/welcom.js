@@ -1,14 +1,12 @@
 (function () {
     var language = utility.getLocalStorage("language");
     var userInfo = utility.getLocalStorage("userInfo");
-    var bizParam = utility.getLocalStorage("bizParam");
     var pageVue = new Vue({
         "el": "#js-vue",
         "data": {
             "language": !!language ? language["language"] : "CN",
             "isTableLoading": false,
-            "isLoading": true,
-            "innerHeight": window.innerHeight / 6,
+            "innerHeight": window.innerHeight/6,
             "resizeTime": null,
             "copyRight": { "CN": "@copyRight 民贵无动力设备管理系统", 'EN': "@copyRight Mingui Non-Powered Euipment Management System", 'TW': "@copyRight 民貴無動力管理系統" }[language["language"]],
             // 车辆信息
@@ -24,44 +22,58 @@
                 "_408": 0,
                 "count": 0
             },
-            "vehicleTypeInfo": {
-                "_301": {
-                    value: 0,
-                    name: "牵引车"
-                },
-                "_302": {
-                    value: 0,
-                    name: "拖挂车"
-                },
-                "_303": {
-                    value: 0,
-                    name: "三面卡"
-                },
-            },
-            "vehiclePassType": {
-                "_501": {
-                    value: 0,
-                    name: "驶入"
-                },
-                "_502": {
-                    value: 0,
-                    name: "驶出"
-                },
-                "_503": {
-                    value: 0,
-                    name: "停留"
-                },
-                "_504": {
-                    value: 0,
-                    name: "防区内行驶"
-                },
-                "_505": {
-                    value: 0,
-                    name: "超速"
-                },
-            },
             "isloadDefen": false,
-            "totalChartData": null,
+            "timeDefensTableList": [],
+            "defenColumList": [
+                {
+                    "title": { "CN": "车辆", "EN": "Vehicle Name", "TW": "車輛" }[language["language"]],
+                    "key": "vehicleName",
+                    "fixed": "left",
+                    "width": 110,
+                    "render": function (h, params) {
+                        var vehicleName = pageVue.timeDefensTableList[params.index]["vehicleName"];
+                        var vehicleCode = pageVue.timeDefensTableList[params.index]["vehicleCode"];
+                        return h("div", vehicleName+"["+vehicleCode+"]");
+                    }
+                },
+                {
+                    "title": { "CN": "状态", "EN": "State", "TW": "狀態" }[language["language"]],
+                    "key": "crossTypeName",
+                    "width": 100
+                },
+                {
+                    "title": { "CN": "位置", "EN": "Position", "TW": "位置" }[language["language"]],
+                    "key": "areaName",
+                    "width": 110
+                },
+                {
+                    "title": { "CN": "时间", "EN": "Time", "TW": "時間" }[language["language"]],
+                    "key": "crossTime",
+                    "fixed": "right",
+                    "width": 140
+                }
+            ],
+            "msgTableList": [],
+            "msgColumList": [
+                {
+                    "title": { "CN": "车辆", "EN": "Vehicle Name", "TW": "車輛" }[language["language"]],
+                    "key": "vehicleName",
+                    "render": function (h, params) {
+                        var vehicleName = pageVue.timeDefensTableList[params.index]["vehicleName"];
+                        var vehicleCode = pageVue.timeDefensTableList[params.index]["vehicleCode"];
+                        return h("div", vehicleName+"["+vehicleCode+"]");
+                    }
+                },
+                {
+                    "title": { "CN": "状态", "EN": "State", "TW": "狀態" }[language["language"]],
+                    "key": "crossTypeName"
+                },
+                {
+                    "title": { "CN": "时间", "EN": "Time", "TW": "時間" }[language["language"]],
+                    "key": "crossTime",
+                    "width": 150
+                }
+            ]
         },
         "methods": {
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
@@ -80,38 +92,24 @@
                 var myChart = echarts.init(document.getElementById('totalEchart'));
                 // Generate data
                 var category = [];
+                var dottedBase = +new Date();
                 var lineData = [];
                 var recLineData = [];
                 var allData = [];
 
-                for (var i = 0, len = self.totalChartData.length; i < len; i++) {
-                    category.push(self.totalChartData[i]["day"]);
-                    allData.push(self.totalChartData[i]["totalUsedNum"]);
-                    for (var s = 0, slen = self.totalChartData[i]["useStat"].length; s < slen; s++) {
-                        if(slen == 0) {
-                            lineData.push(0);
-                            recLineData.push(0);
-                        } else if(slen == 1) {
-                            if (self.totalChartData[i]["useStat"][s]["vehicleTypeId"] == 301) {
-                                recLineData.push(0);
-                                lineData.push(self.totalChartData[i]["useStat"][s]["totalVehicleNum"]);
-                            } else if (self.totalChartData[i]["useStat"][s]["vehicleTypeId"] == 302) {
-                                lineData.push(0);
-                                recLineData.push(self.totalChartData[i]["useStat"][s]["totalVehicleNum"]);
-                            } 
-                        } else if(slen == 2) {
-                            if (self.totalChartData[i]["useStat"][s]["vehicleTypeId"] == 301) {
-                                lineData.push(self.totalChartData[i]["useStat"][s]["totalVehicleNum"]);
-                            } else if (self.totalChartData[i]["useStat"][s]["vehicleTypeId"] == 302) {
-                                recLineData.push(self.totalChartData[i]["useStat"][s]["totalVehicleNum"]);
-                            }
-                        }
-                    }
+                for (var i = 0; i < 20; i++) {
+                    var date = new Date(dottedBase -= 3600 * 24 * 1000);
+                    category.push([
+                        date.getFullYear(),
+                        date.getMonth() + 1,
+                        date.getDate()
+                    ].join('-'));
+                    var b = parseInt(Math.random() * 1000);
+                    var d = parseInt(Math.random() * 1000);
+                    allData.push(d + b);
+                    lineData.push(b);
+                    recLineData.push(d);
                 }
-                category = category.reverse();
-                allData = allData.reverse();
-                lineData = lineData.reverse();
-                recLineData = recLineData.reverse();
 
                 // option
                 option = {
@@ -124,7 +122,7 @@
                     },
                     legend: {
                         top: 20,
-                        data: ['牵引车使用频率', '拖挂车使用频率', '所有车辆统计'],
+                        data: ['挂车使用频率', '拖头使用频率', '所有车辆统计'],
                         textStyle: {
                             color: '#ccc'
                         }
@@ -154,7 +152,7 @@
                         symbolSize: 15,
                         data: allData
                     }, {
-                        name: '牵引车使用频率',
+                        name: '挂车使用频率',
                         type: 'bar',
                         barWidth: 10,
                         itemStyle: {
@@ -171,7 +169,7 @@
                         },
                         data: lineData
                     }, {
-                        name: '拖挂车使用频率',
+                        name: '拖头使用频率',
                         type: 'bar',
                         barWidth: 10,
                         itemStyle: {
@@ -197,36 +195,18 @@
             "setVehicleEchart": function () {
                 var self = this;
                 var myChart = echarts.init(document.getElementById('vehicleEchart'));
-                var typeList = (function () {
-                    var list = [];
-                    for (var key in self.vehicleTypeInfo) {
-                        if (self.vehicleTypeInfo.hasOwnProperty(key)) {
-                            list.push(self.vehicleTypeInfo[key]);
-                        }
-                    }
-                    return list;
-                })();
-                var passList = (function () {
-                    var list = [];
-                    for (var key in self.vehiclePassType) {
-                        if (self.vehiclePassType.hasOwnProperty(key)) {
-                            list.push(self.vehiclePassType[key]);
-                        }
-                    }
-                    return list;
-                })();
 
                 option = {
                     tooltip: {
                         trigger: 'item',
-                        formatter: "{b}:{c} ({d}%)"
+                        formatter: "{b}:{c}({d}%)"
                     },
                     legend: {
                         show: false
                     },
                     series: [
                         {
-                            name: '车辆',
+                            name: '访问来源',
                             type: 'pie',
                             selectedMode: 'single',
                             radius: [0, '30%'],
@@ -241,15 +221,19 @@
                                     show: false
                                 }
                             },
-                            data: typeList
+                            data: [
+                                { value: 335, name: '牵引车', selected: true },
+                                { value: 679, name: '拖挂车' },
+                                { value: 1548, name: '三面卡' }
+                            ]
                         },
                         {
-                            name: '状态',
+                            name: '',
                             type: 'pie',
                             radius: ['40%', '55%'],
                             label: {
                                 normal: {
-                                    formatter: '{b|{b}:}{c}次{per|{d}%}',
+                                    formatter: '{b|{b}:}{c}{per|{d}%}  ',
                                     backgroundColor: '#eee',
                                     borderColor: '#aaa',
                                     borderWidth: 1,
@@ -279,7 +263,12 @@
                                     }
                                 }
                             },
-                            data: passList
+                            data: [
+                                { value: 35, name: '驶入' },
+                                { value: 10, name: '驶出' },
+                                { value: 24, name: '静止' },
+                                { value: 13, name: '防区内行驶' }
+                            ]
                         }
                     ]
                 };
@@ -391,7 +380,7 @@
                     actionUrl: CONFIG.SERVICE.vehicleService,
                     dataObj: {
                         "pageNum": 1,
-                        "pageSize": 100000,
+                        "pageSize": 50,
                     },
                     beforeSendCallback: function () {
                         self.isloadDefen = true;
@@ -401,60 +390,33 @@
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
-                            self.vehiclePassType["_501"]["value"] = 0;
-                            self.vehiclePassType["_502"]["value"] = 0;
-                            self.vehiclePassType["_503"]["value"] = 0;
-                            self.vehiclePassType["_504"]["value"] = 0;
-                            self.vehiclePassType["_505"]["value"] = 0;
-
-                            for (var i = 0, len = data.data.length; i < len; i++) {
-                                if (data.data[i]["crossTypeId"] == 501) {
-                                    self.vehiclePassType["_501"]["value"] = self.vehiclePassType["_501"]["value"] + 1;
-                                } else if (data.data[i]["crossTypeId"] == 502) {
-                                    self.vehiclePassType["_502"]["value"] = self.vehiclePassType["_502"]["value"] + 1;
-                                } else if (data.data[i]["crossTypeId"] == 503) {
-                                    self.vehiclePassType["_503"]["value"] = self.vehiclePassType["_503"]["value"] + 1;
-                                } else if (data.data[i]["crossTypeId"] == 504) {
-                                    self.vehiclePassType["_504"]["value"] = self.vehiclePassType["_504"]["value"] + 1;
-                                } else if (data.data[i]["crossTypeId"] == 505) {
-                                    self.vehiclePassType["_505"]["value"] = self.vehiclePassType["_505"]["value"] + 1;
-                                }
-                            }
-
-                            self.setVehicleEchart();
+                            self.timeDefensTableList = data.data;
+                            self.msgTableList = data.data;
                         }
                     }
                 });
             },
             // 格式化车辆数据
-            "formatVehicle": function () {
+            "formatVehicle": function() {
                 var self = this;
 
-                for (var i = 0, len = self.vehicleInfo.list.length; i < len; i++) {
-                    if (self.vehicleInfo.list[i]["vehicleStatus"] == 401) {
+                for(var i = 0, len = self.vehicleInfo.list.length; i < len; i++) {
+                    if(self.vehicleInfo.list[i]["vehicleStatus"] == 401) {
                         self.vehicleInfo["_401"] = self.vehicleInfo["_401"] + 1;
-                    } else if (self.vehicleInfo.list[i]["vehicleStatus"] == 402) {
+                    } else if(self.vehicleInfo.list[i]["vehicleStatus"] == 402) {
                         self.vehicleInfo["_402"] = self.vehicleInfo["_402"] + 1;
-                    } else if (self.vehicleInfo.list[i]["vehicleStatus"] == 403) {
+                    } else if(self.vehicleInfo.list[i]["vehicleStatus"] == 403) {
                         self.vehicleInfo["_403"] = self.vehicleInfo["_403"] + 1;
-                    } else if (self.vehicleInfo.list[i]["vehicleStatus"] == 404) {
+                    } else if(self.vehicleInfo.list[i]["vehicleStatus"] == 404) {
                         self.vehicleInfo["_404"] = self.vehicleInfo["_404"] + 1;
-                    } else if (self.vehicleInfo.list[i]["vehicleStatus"] == 405) {
+                    } else if(self.vehicleInfo.list[i]["vehicleStatus"] == 405) {
                         self.vehicleInfo["_405"] = self.vehicleInfo["_405"] + 1;
-                    } else if (self.vehicleInfo.list[i]["vehicleStatus"] == 406) {
+                    } else if(self.vehicleInfo.list[i]["vehicleStatus"] == 406) {
                         self.vehicleInfo["_406"] = self.vehicleInfo["_406"] + 1;
-                    } else if (self.vehicleInfo.list[i]["vehicleStatus"] == 407) {
+                    } else if(self.vehicleInfo.list[i]["vehicleStatus"] == 407) {
                         self.vehicleInfo["_407"] = self.vehicleInfo["_407"] + 1;
-                    } else if (self.vehicleInfo.list[i]["vehicleStatus"] == 408) {
+                    } else if(self.vehicleInfo.list[i]["vehicleStatus"] == 408) {
                         self.vehicleInfo["_408"] = self.vehicleInfo["_408"] + 1;
-                    }
-
-                    if (self.vehicleInfo.list[i]["vehicleTypeId"] == 301) {
-                        self.vehicleTypeInfo["_301"]["value"] = self.vehicleTypeInfo["_301"]["value"] + 1;
-                    } else if (self.vehicleInfo.list[i]["vehicleTypeId"] == 302) {
-                        self.vehicleTypeInfo["_302"]["value"] = self.vehicleTypeInfo["_302"]["value"] + 1;
-                    } else if (self.vehicleInfo.list[i]["vehicleTypeId"] == 303) {
-                        self.vehicleTypeInfo["_303"]["value"] = self.vehicleTypeInfo["_303"]["value"] + 1;
                     }
                 }
             },
@@ -466,7 +428,7 @@
                     actionUrl: CONFIG.SERVICE.vehicleService,
                     dataObj: {
                         id: "",
-                        pageSize: 10000,
+                        pageSize: 10000, 
                     },
                     beforeSendCallback: function () {
                         self.isTableLoading = true;
@@ -476,76 +438,34 @@
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
-                            self.vehicleInfo["_401"] = 0;
-                            self.vehicleInfo["_402"] = 0;
-                            self.vehicleInfo["_403"] = 0;
-                            self.vehicleInfo["_404"] = 0;
-                            self.vehicleInfo["_405"] = 0;
-                            self.vehicleInfo["_406"] = 0;
-                            self.vehicleInfo["_407"] = 0;
-                            self.vehicleInfo["_408"] = 0;
-                            self.vehicleTypeInfo["_301"]["value"] = 0;
-                            self.vehicleTypeInfo["_302"]["value"] = 0;
-                            self.vehicleTypeInfo["_303"]["value"] = 0;
-                            self.vehicleInfo.count = data.count;
+                            self.vehicleInfo["_401"] = 130;
+                            self.vehicleInfo["_402"] = 640;
+                            self.vehicleInfo["_403"] = 200;
+                            self.vehicleInfo["_404"] = 100;
+                            self.vehicleInfo["_405"] = 120;
+                            self.vehicleInfo["_406"] = 110;
+                            self.vehicleInfo["_407"] = 140;
+                            self.vehicleInfo["_408"] = 190;
+                            self.vehicleInfo.count = 1530;
+                            // self.vehicleInfo.count = data.count;
                             self.vehicleInfo.list = data.data;
-                            self.formatVehicle();
+                            // self.formatVehicle();
                         }
                     }
                 });
             },
             // 跳转到地图页面
-            "toMapPage": function (vehicleStatus) {
+            "toMapPage": function(vehicleStatus) {
                 var self = this;
                 utility.setSessionStorage("fromInfo", {
                     type: "isSearch",
                     vehicleStatus: vehicleStatus
                 });
-                setTimeout(function () {
+                setTimeout(function() {
                     $(window.parent.document).find("#nav_Maps").bind("click");
                     $(window.parent.document).find("#nav_Maps").trigger("click");
                 }, 200);
-            },
-            // 获取按运行状态的车辆分类占比统计数据
-            "getVehicleStatusReport": function () {
-                var self = this;
-                utility.interactWithServer({
-                    url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getVehicleStatusReport,
-                    actionUrl: CONFIG.SERVICE.getVehicleStatusReport,
-                    successCallback: function (data) {
-                        if (data.code == 200) {
-                            console.log(data);
-                        }
-                    }
-                });
-            },
-            // 获取按车辆类型的车辆使用情况统计数据接口
-            "getVehicleRunReport": function () {
-                var self = this;
-                utility.interactWithServer({
-                    url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getVehicleRunReport,
-                    actionUrl: CONFIG.SERVICE.getVehicleRunReport,
-                    successCallback: function (data) {
-                        if (data.code == 200) {
-                            self.totalChartData = data.data;
-                            self.setTotalEchart(); // 数据汇总
-                        }
-                    }
-                });
-            },
-            // 获取按车辆类型的车辆分类占比统计数据接口
-            "getVehicleCateReport": function () {
-                var self = this;
-                utility.interactWithServer({
-                    url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getVehicleCateReport,
-                    actionUrl: CONFIG.SERVICE.getVehicleCateReport,
-                    successCallback: function (data) {
-                        if (data.code == 200) {
-                            console.log(data);
-                        }
-                    }
-                });
-            },
+            }
         },
         "created": function () {
             var self = this;
@@ -553,19 +473,25 @@
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
             utility.isLogin(false);
 
+            // 实时防区信息
+            self.getCrossAreaList();
+
             // 车辆数据
             self.getVehicleList();
 
-            // 防区数据
-            self.getCrossAreaList();
-
-            // 获取按车辆类型的车辆使用情况统计数据接口
-            self.getVehicleRunReport();
-
+            setInterval(function() {
+                self.msgTableList = [];
+                self.timeDefensTableList = [];
+                setTimeout(function() {
+                    self.getCrossAreaList();
+                    self.getVehicleList();
+                }, 500);
+            }, 15000);
+            
             // 当窗口变化时，重新调整高度
-            $(window).resize(function () {
+            $(window).resize(function() {
                 clearTimeout(self.resizeTime);
-                self.resizeTime = setTimeout(function () {
+                self.resizeTime = setTimeout(function(){
                     window.location.href = window.location.href;
                 }, 500);
             });
@@ -573,9 +499,10 @@
         "mounted": function () {
             var self = this;
             setTimeout(function () {
-                self.isLoading = false;
+                self.setTotalEchart(); // 数据汇总
                 self.setVehicleEchart(); // 车辆统计
-            }, 5000);
+                self.setTerminateState(); // 车辆终端
+            }, 500);
         }
     });
 

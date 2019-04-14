@@ -483,7 +483,7 @@
             "showLiveVideo": function (vehicleNo) {
                 var self = this;
                 window.open(
-                    "http://43.247.68.26:9090/airport/www/module/liveVideo/liveVideo.html?vehicleNo=" + vehicleNo,
+                    "http://43.247.68.26:9090/airport/www/module/liveVideo/liveVideo.html?vehicleNo=" + encodeURI(vehicleNo),
                     "liveVideo",
                     "toolbar=yes, location=0, directories=no, status=0, menubar=0, scrollbars=1, resizable=1, copyhistory=1, width=" + window.outerWidth + ", height=" + window.outerHeight
                 );

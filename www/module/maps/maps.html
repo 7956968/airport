@@ -155,12 +155,14 @@
                             <span class="label" v-text="{'CN':'历史轨迹','EN':'Historical Track','TW':'歷史軌跡'}[language]"></span>
                         </div>
                     </menu-item>
-                    <menu-item name="4">
-                        <div @click="showModal('isDefense')">
-                            <span class="icon"><Icon type="ios-qr-scanner" /></span>
-                            <span class="label" v-text="{'CN':'防区管理','EN':'Defense Area Management','TW':'防區管理'}[language]"></span>
-                        </div>
-                    </menu-item>
+                    <template v-if="isShenZhen==true">
+                        <menu-item name="4">
+                            <div @click="showModal('isDefense')">
+                                <span class="icon"><Icon type="ios-qr-scanner" /></span>
+                                <span class="label" v-text="{'CN':'防区管理','EN':'Defense Area Management','TW':'防區管理'}[language]"></span>
+                            </div>
+                        </menu-item>
+                    </template>
                     <menu-item name="5">
                         <div @click="showModal('isCamera')">
                             <span class="icon"> <Icon type="ios-videocam-outline" /></span>
@@ -932,16 +934,16 @@
                             </tr>
                             <tr>
                                 <td>
+                                    <span class="label" v-text="{'CN':'车牌号','EN':'Plate No.','TW':'車牌號'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input v-model="vehiclePositonPageInfo.licenseNumber" :placeholder="{'CN':'请输入车牌号','EN':'Plate No.','TW':'請輸入車牌號'}[language]"></i-input>
+                                </td>
+                                <td>
                                     <span class="label" v-text="{'CN':'车辆编号','EN':'Vehicle Number','TW':'車輛編號'}[language]"></span>
                                 </td>
                                 <td>
                                     <i-input v-model="vehiclePositonPageInfo.vehicleCode" :placeholder="{'CN':'请输入车辆编号','EN':'Vehicle Number','TW':'請輸入車輛編號'}[language]"></i-input>
-                                </td>
-                                <td>
-                                    <span class="label" v-text="{'CN':'车辆名称','EN':'Vehicle Name','TW':'車輛名稱'}[language]"></span>
-                                </td>
-                                <td>
-                                    <i-input v-model="vehiclePositonPageInfo.vehicleName" :placeholder="{'CN':'请输入车辆名称','EN':'Vehicle Name','TW':'請輸入車輛名稱'}[language]"></i-input>
                                 </td>
                             </tr>
                             <tr>
@@ -1017,8 +1019,8 @@
         <script src="/airport/assets/vender/openLayer/ol.min.js"></script>
         <script src="/airport/assets/vender/radar/radar.min.js"></script>
         <script src="/airport/assets/js/config.min.js?v=57565096372"></script>
-        <script src="/airport/assets/js/utility.min.js?v=575609462"></script>
-        <script src="/airport/www/module/maps/maps.min.js?v=23423422345234"></script>
+        <script src="/airport/assets/js/utility.min.js?v=347283412839"></script>
+        <script src="/airport/www/module/maps/maps.min.js?v=41283412374"></script>
     </div>
 </body>
 

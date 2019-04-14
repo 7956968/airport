@@ -4,7 +4,7 @@
 var CONFIG = (function (CONFIG) {
     // 服务器信息配置
     // CONFIG.HOST = LOCATION;
-    CONFIG.HOST = "https://test2.cityeasyplay.com";
+    CONFIG.HOST = "https://www.minguicloud.com";
     
     // 接口服务
     CONFIG.SERVICE = {
@@ -90,9 +90,12 @@ var CONFIG = (function (CONFIG) {
         "saveVehicle": "saveVehicle", // 删除系统角色可用功能接口
         "getVehicleList": "getVehicleList", // 获取车辆列表数据接口
         "getCrossAreaList": "getCrossAreaList", // 获取车辆进出防区数据接口
+        "getVehicleRunReport": "getVehicleRunReport", // 获取按车辆类型的车辆使用情况统计数据接口
+        "getVehicleCateReport": "getVehicleCateReport", // 获取按车辆类型的车辆分类占比统计数据接口
         "getSingleVehicleTrack": "getSingleVehicleTrack", //获取指定车辆的运动轨迹数据
         "updateVehiclePosition": "updateVehiclePosition", // 修改车辆位置接口
         "getVehicleMilesReport": "getVehicleMilesReport", // 获取车辆里程数统计数据接口
+        "getVehicleStatusReport": "getVehicleStatusReport", // 获取按运行状态的车辆分类占比统计数据接口
         "getVehicleMileRateReport": "getVehicleMileRateReport", // 车辆运行情况
         "getAllVehiclePositonList": "getAllVehiclePositonList", // 查询车辆最新位置数据接口
 

@@ -230,9 +230,17 @@ window.utility = (function (utility) {
                 if(data.code==9003) {
                     alert("登录令牌失效,请先登录!");
                     if(!!isParent) {
-                        window.parent.window.location.href = "/airport/www/login.html";
+                        if(window.parent.window.location.href.indexOf("indexMg")!=-1) {
+                            window.parent.window.location.href = "/airport/www/indexMg.html";
+                        } else {
+                            window.parent.window.location.href = "/airport/www/login.html";
+                        }
                     } else  {
-                        window.location.href = "/airport/www/login.html";
+                        if(window.location.href.indexOf("indexMg")!=-1) {
+                            window.location.href = "/airport/www/indexMg.html";
+                        } else {
+                            window.location.href = "/airport/www/login.html";
+                        }
                     }
                 }
                 options.successCallback && options.successCallback(data);

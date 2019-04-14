@@ -8,7 +8,7 @@
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
-  background-color: #F5F5F5;
+  background-color: #F5F5F5;  
 }
 /*定义滚动条轨道 内阴影+圆角*/
 ::-webkit-scrollbar-track {
@@ -16,7 +16,7 @@
   border-radius: 10px;
   background-color: #F5F5F5;
 }
-/*定义滑块 内阴影+圆角*/ 
+/*定义滑块 内阴影+圆角*/
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
   box-shadow: inset 0 0 6px rgba(208, 219, 245, 0.3);
@@ -52,7 +52,7 @@ table {
   bottom: 0;
   width: 100%;
   height: 100%;
-  background: url(../img/login.jpg) no-repeat left center;
+  background: url("/airport/www/img/login.jpg") no-repeat left center;
   background-size: 100%;
 }
 .loginPage .login .wrap {
@@ -64,12 +64,25 @@ table {
   bottom: 0;
   width: 100%;
   height: 100%;
-  background: url(../img/bg.png) no-repeat left center;
+  background: url("/airport/www/img/bg.png") no-repeat left center;
   background-size: 100%;
 }
 .loginPage .login .header {
   text-align: center;
   padding-top: 10%;
+}
+.loginPage .login .header img {
+  width: 62px;
+  height: 62px;
+}
+.loginPage .login .header .label {
+  font-size: 36px;
+  color: #005ddc;
+  font-weight: bold;
+  position: relative;
+  z-index: 0;
+  top: -15px;
+  left: 10px;
 }
 .loginPage .login .inputInfo {
   position: absolute;
@@ -142,6 +155,9 @@ table {
 .graphPage .welcomPage .layout .ivu-card .ivu-card-head {
   padding: 10px 16px;
   border-bottom: 1px solid rgba(109, 106, 106, 0.5);
+}
+.graphPage .welcomPage .layout .ivu-spin-fix {
+  background-color: transparent;
 }
 .graphPage .welcomPage .layout .tile {
   font-size: 18px;
@@ -247,8 +263,8 @@ table {
   background-color: #0f375f;
 }
 .index .header .logo img {
-  width: 58px;
-  height: 50px;
+  width: 62px;
+  height: 62px;
 }
 .index .header .logo p {
   color: #fff;

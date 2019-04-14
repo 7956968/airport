@@ -45,259 +45,254 @@
     <!-- QQ应用模式 -->
     <meta name="x5-page-mode" content="app">
     <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
-    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css" />
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=3030399" />
 </head>
 
 <body class="graphPage">
     <div id="js-vue" class="welcomPage">
         <div class="layout">
             <template>
-                <Row type="flex" justify="start" gutter="10">
-                    <i-col span="16" class-name="item">
-                        <template>
-                            <Row type="flex" justify="start" gutter="10" class-name="infoList">
+
+                <Row style="padding-top: 20px;" type="flex" justify="start" class-name="infoList">
+                    <Card bordered="false" style="width: 100%;" padding="0">
+                        <p slot="title" class="tile">
+                            <span>车辆状态</span>
+                        </p>
+                        <div style="padding: 10px;">
+                            <Row type="flex" justify="start" gutter="10">
+                                <i-col span="3" class-name="infoItem">
+                                    <template>
+                                        <Card bordered="false" style="width: 100%;" padding="0">
+                                            <div @click="toMapPage(401)" class="info"
+                                                :style="{height: (innerHeight*1.45)+'px'}"
+                                                style="background-color: #795548;">
+                                                <Row>
+                                                    <i-col span="24">
+                                                        <p class="label" style="font-size: 16px;">
+                                                            {{{"CN":"正在静止","EN":"At Rest","TW":"正在靜止"}[language]}}
+                                                        </p>
+                                                        <p class="detail" style="font-size: 64px;"
+                                                            v-text="vehicleInfo['_401']"></p>
+                                                    </i-col>
+                                                </Row>
+                                                <Row>
+                                                    <i-col span="24">
+                                                        <Icon style="position: relative; z-index: 0; top: -20px;"
+                                                            type="logo-angular" color="rgba(162, 125, 112, .5)"
+                                                            size="120" />
+                                                    </i-col>
+                                                </Row>
+                                            </div>
+                                        </Card>
+                                    </template>
+                                </i-col>
+                                <i-col span="3" class-name="infoItem">
+                                    <template>
+                                        <Card bordered="false" style="width: 100%;" padding="0">
+                                            <div @click="toMapPage(402)" class="info"
+                                                :style="{height: (innerHeight*1.45)+'px'}"
+                                                style="background-color: #4CAF50;">
+                                                <Row>
+                                                    <i-col span="24">
+                                                        <p class="label" style="font-size: 16px;">
+                                                            {{{"CN":"活动","EN":"Running","TW":"活動"}[language]}}
+                                                        </p>
+                                                        <p class="detail" style="font-size: 64px;"
+                                                            v-text="vehicleInfo['_402']"></p>
+                                                    </i-col>
+                                                </Row>
+                                                <Row>
+                                                    <i-col span=24>
+                                                        <Icon style="position: relative; z-index: 0; top: -20px;"
+                                                            type="md-bulb" color="rgb(106, 206, 110)" size="120" />
+                                                    </i-col>
+                                                </Row>
+                                            </div>
+                                        </Card>
+                                    </template>
+                                </i-col>
+                                <i-col span="3" class-name="infoItem">
+                                    <template>
+                                        <Card bordered="false" style="width: 100%;" padding="0">
+                                            <div @click="toMapPage(403)" class="info"
+                                                :style="{height: (innerHeight*1.45)+'px'}"
+                                                style="background-color: #607D8B">
+                                                <Row>
+                                                    <i-col span="24">
+                                                        <p class="label" style="font-size: 16px;">
+                                                            {{{"CN":"开始进入休眠","EN":"Sleep","TW":"開始進入休眠"}[language]}}
+                                                        </p>
+                                                        <p class="detail" style="font-size: 64px;"
+                                                            v-text="vehicleInfo['_403']"></p>
+                                                    </i-col>
+                                                </Row>
+                                                <Row>
+                                                    <i-col span="24">
+                                                        <Icon style="position: relative; z-index: 0; top: -20px;"
+                                                            type="ios-cloudy-night-outline" color="rgb(121, 163, 183)"
+                                                            size="120" />
+                                                    </i-col>
+                                                </Row>
+                                            </div>
+                                        </Card>
+                                    </template>
+                                </i-col>
+                                <i-col span="3" class-name="infoItem">
+                                    <template>
+                                        <Card bordered="false" style="width: 100%;" padding="0">
+                                            <div @click="toMapPage(405)" class="info"
+                                                :style="{height: (innerHeight*1.45)+'px'}"
+                                                style="background-color: #9E9E9E;">
+                                                <Row>
+                                                    <i-col span="24">
+                                                        <p class="label" style="font-size: 16px;">
+                                                            {{{"CN":"侧翻","EN":"Rollover","TW":"側翻"}[language]}}
+                                                        </p>
+                                                        <p class="detail" style="font-size: 64px;"
+                                                            v-text="vehicleInfo['_405']"></p>
+                                                    </i-col>
+                                                </Row>
+                                                <Row>
+                                                    <i-col span="24">
+                                                        <Icon style="position: relative; z-index: 0; top: -20px;"
+                                                            type="md-trending-down" color="rgb(195, 185, 185)"
+                                                            size="120" />
+                                                    </i-col>
+                                                </Row>
+                                            </div>
+                                        </Card>
+                                    </template>
+                                </i-col>
+                                <i-col span="3" class-name="infoItem">
+                                    <template>
+                                        <Card bordered="false" style="width: 100%;" padding="0">
+                                            <div @click="toMapPage(406)" class="info"
+                                                :style="{height: (innerHeight*1.45)+'px'}"
+                                                style="background-color: #f90;">
+                                                <Row>
+                                                    <i-col span="24">
+                                                        <p class="label" style="font-size: 16px;">
+                                                            {{{"CN":"离线","EN":"Offline","TW":"離綫"}[language]}}
+                                                        </p>
+                                                        <p class="detail" style="font-size: 64px;"
+                                                            v-text="vehicleInfo['_406']"></p>
+                                                    </i-col>
+                                                </Row>
+                                                <Row>
+                                                    <i-col span="24">
+                                                        <Icon style="position: relative; z-index: 0; top: -20px;"
+                                                            type="ios-pulse-outline" color="rgb(204, 137, 36)"
+                                                            size="120" />
+                                                    </i-col>
+                                                </Row>
+                                            </div>
+                                        </Card>
+                                    </template>
+                                </i-col>
+                                <i-col span="3" class-name="infoItem">
+                                    <template>
+                                        <Card bordered="false" style="width: 100%;" padding="0">
+                                            <div @click="toMapPage(407)" class="info"
+                                                :style="{height: (innerHeight*1.45)+'px'}"
+                                                style="background-color: #c5c8ce;">
+                                                <Row>
+                                                    <i-col span="24">
+                                                        <p class="label" style="font-size: 16px;">
+                                                            {{{"CN":"GPS未定位","EN":"Unlocated","TW":"GPS未定位"}[language]}}
+                                                        </p>
+                                                        <p class="detail" style="font-size: 64px;"
+                                                            v-text="vehicleInfo['_407']"></p>
+                                                    </i-col>
+                                                </Row>
+                                                <Row>
+                                                    <i-col span="24">
+                                                        <Icon style="position: relative; z-index: 0; top: -20px;"
+                                                            type="md-pin" color="rgb(180, 184, 191)" size="120" />
+                                                    </i-col>
+                                                </Row>
+                                            </div>
+                                        </Card>
+                                    </template>
+                                </i-col>
+                                <i-col span="6" class-name="infoItem">
+                                    <template>
+                                        <Card bordered="false" style="width: 100%;" padding="0">
+                                            <div @click="toMapPage('')" class="info totalNum"
+                                                :style="{height: (innerHeight*1.45)+'px'}"
+                                                style="background-color: #0f375f; height: 180px;">
+                                                <Row class-name="totalRow">
+                                                    <i-col span="24">
+                                                        <p class="label">
+                                                            {{{"CN":"总数","EN":"Sum","TW":"總數"}[language]}}</p>
+                                                        <p class="detail" style="font-size: 106px;"
+                                                            v-text="vehicleInfo.count"></p>
+                                                    </i-col>
+                                                </Row>
+                                                <Icon class="totalIcon" style="left: 60px;" type="ios-car-outline" color="rgba(34, 91, 148, .5)" size="180" />
+                                            </div>
+                                        </Card>
+                                    </template>
+                                </i-col>
+                            </Row>
+                        </div>
+
+                    </Card>
+                </Row>
+
+                <div style="padding-top: 20px; margin-top: 10px; border-top: 2px solid rgb(81, 90, 102);">
+                    <Row type="flex" justify="start" gutter="10">
+                        <i-col span="14" class-name="item">
+                            <template>
+                                <Row type="flex" justify="start" class-name="infoList">
+                                    <Card bordered="false" style="width: 100%;" padding="0">
+                                        <p slot="title" class="tile">
+                                            <span>{{{"CN":"数据总汇","EN":"Data Confluence","TW":"数据总汇"}[language]}}</span>
+                                        </p>
+                                        <div class="chart" style="position: relative;" :style="{height: (innerHeight*2.55)+'px'}">
+                                            <div id="totalEchart" :style="{height: (innerHeight*2.55)+'px'}"></div>
+                                            <template v-if="isLoading">
+                                                <div style="position: absolute; width: 100%; left: 0; top: 0;" :style="{height: (innerHeight*2.5)+'px'}">
+                                                    <Spin fix size="large"></Spin>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </Card>
+                                </Row>
+                            </template>
+                        </i-col>
+                        <i-col span="10" class-name="infoItem">
+                            <template>
                                 <Card bordered="false" style="width: 100%;" padding="0">
                                     <p slot="title" class="tile">
-                                        <span>{{{"CN":"数据总汇","EN":"Data Confluence","TW":"数据总汇"}[language]}}</span>
+                                        <span>{{{"CN":"车辆统计","EN":"Vehicle Statistics","TW":"車輛統計"}[language]}}</span>
                                     </p>
-                                    <div class="chart" :style="{height: (innerHeight*1.5)+'px'}">
-                                        <div id="totalEchart" :style="{height: (innerHeight*1.5)+'px'}"></div>
+                                    <div class="chart" style="position: relative;" :style="{height: (innerHeight*2.55)+'px'}">
+                                        <div id="vehicleEchart" :style="{height: (innerHeight*2.55)+'px'}"></div>
+                                        <template v-if="isLoading">
+                                            <div style="position: absolute; width: 100%; left: 0; top: 0;" :style="{height: (innerHeight*2.5)+'px'}">
+                                                <Spin fix size="large"></Spin>
+                                            </div>
+                                        </template>
                                     </div>
                                 </Card>
-                            </Row>
-                        </template>
-                        <Row type="flex" justify="start" gutter="10" class-name="infoList">
-                            <i-col span="18" class-name="infoItem">
-                                <Row type="flex" justify="start" gutter="10">
-                                    <i-col span="6" class-name="infoItem">
-                                        <template>
-                                            <Card bordered="false" style="width: 100%;" padding="0">
-                                                <div @click="toMapPage(401)" class="info" :style="{height: (innerHeight*0.75)+'px'}" style="background-color: #795548;">
-                                                    <Row>
-                                                        <i-col span="16">
-                                                            <p class="label">{{{"CN":"正在静止","EN":"At Rest","TW":"正在靜止"}[language]}}</p>
-                                                            <p class="detail" v-text="vehicleInfo['_401']"></p>
-                                                        </i-col>
-                                                        <i-col span="7">
-                                                            <Icon type="logo-angular" color="rgba(162, 125, 112, .5)" size="60" />
-                                                        </i-col>
-                                                    </Row>
-                                                </div>
-                                            </Card>
-                                        </template>
-                                    </i-col>
-                                    <i-col span="6" class-name="infoItem">
-                                        <template>
-                                            <Card bordered="false" style="width: 100%;" padding="0">
-                                                <div @click="toMapPage(402)" class="info" :style="{height: (innerHeight*0.75)+'px'}" style="background-color: #4CAF50;">
-                                                    <Row>
-                                                        <i-col span="16">
-                                                            <p class="label">{{{"CN":"活动","EN":"Running","TW":"活動"}[language]}}</p>
-                                                            <p class="detail" v-text="vehicleInfo['_402']"></p>
-                                                        </i-col>
-                                                        <i-col span="7">
-                                                            <Icon type="md-bulb" color="rgb(106, 206, 110)" size="60"  />
-                                                        </i-col>
-                                                    </Row>
-                                                </div>
-                                            </Card>
-                                        </template>
-                                    </i-col>
-                                    <i-col span="6" class-name="infoItem">
-                                        <template>
-                                            <Card bordered="false" style="width: 100%;" padding="0">
-                                                <div @click="toMapPage(403)" class="info" :style="{height: (innerHeight*0.75)+'px'}" style="background-color: #607D8B">
-                                                    <Row>
-                                                        <i-col span="16">
-                                                            <p class="label">{{{"CN":"开始进入休眠","EN":"Sleep","TW":"開始進入休眠"}[language]}}</p>
-                                                            <p class="detail" v-text="vehicleInfo['_403']"></p>
-                                                        </i-col>
-                                                        <i-col span="7">
-                                                            <Icon type="ios-cloudy-night-outline" color="rgb(121, 163, 183)" size="60" />
-                                                        </i-col>
-                                                    </Row>
-                                                </div>
-                                            </Card>
-                                        </template>
-                                    </i-col>
-                                    <i-col span="6" class-name="infoItem">
-                                        <template>
-                                            <Card bordered="false" style="width: 100%;" padding="0">
-                                                <div @click="toMapPage(404)" class="info" :style="{height: (innerHeight*0.75)+'px'}" style="background-color: #9E9E9E;">
-                                                    <Row>
-                                                        <i-col span="16">
-                                                            <p class="label">{{{"CN":"运动传感器故障","EN":"Sensor Failure","TW":"運動傳感器故障"}[language]}}</p>
-                                                            <p class="detail" v-text="vehicleInfo['_404']"></p>
-                                                        </i-col>
-                                                        <i-col span="7">
-                                                            <Icon type="ios-warning" color="rgba(195, 185, 185, .5)" size="60" />
-                                                        </i-col>
-                                                    </Row>
-                                                </div>
-                                            </Card>
-                                        </template>
-                                    </i-col>
-                                </Row>
-                                <Row type="flex" justify="start" gutter="10">
-                                    <i-col span="6" class-name="infoItem">
-                                        <template>
-                                            <Card bordered="false" style="width: 100%;" padding="0">
-                                                <div @click="toMapPage(405)" class="info" :style="{height: (innerHeight*0.75)+'px'}" style="background-color: #9E9E9E;">
-                                                    <Row>
-                                                        <i-col span="16">
-                                                            <p class="label">{{{"CN":"侧翻","EN":"Rollover","TW":"側翻"}[language]}}</p>
-                                                            <p class="detail" v-text="vehicleInfo['_405']"></p>
-                                                        </i-col>
-                                                        <i-col span="7">
-                                                            <Icon type="md-trending-down" color="rgb(195, 185, 185)" size="60" />
-                                                        </i-col>
-                                                    </Row>
-                                                </div>
-                                            </Card>
-                                        </template>
-                                    </i-col>
-                                    <i-col span="6" class-name="infoItem">
-                                        <template>
-                                            <Card bordered="false" style="width: 100%;" padding="0">
-                                                <div @click="toMapPage(406)" class="info" :style="{height: (innerHeight*0.75)+'px'}" style="background-color: #f90;">
-                                                    <Row>
-                                                        <i-col span="16">
-                                                            <p class="label">{{{"CN":"离线","EN":"Offline","TW":"離綫"}[language]}}</p>
-                                                            <p class="detail" v-text="vehicleInfo['_406']"></p>
-                                                        </i-col>
-                                                        <i-col span="7">
-                                                            <Icon type="ios-pulse-outline" color="rgb(204, 137, 36)" size="60"  />
-                                                        </i-col>
-                                                    </Row>
-                                                </div>
-                                            </Card>
-                                        </template>
-                                    </i-col>
-                                    <i-col span="6" class-name="infoItem">
-                                        <template>
-                                            <Card bordered="false" style="width: 100%;" padding="0">
-                                                <div @click="toMapPage(407)" class="info" :style="{height: (innerHeight*0.75)+'px'}" style="background-color: #c5c8ce;">
-                                                    <Row>
-                                                        <i-col span="16">
-                                                            <p class="label">{{{"CN":"GPS未定位","EN":"Unlocated","TW":"GPS未定位"}[language]}}</p>
-                                                            <p class="detail" v-text="vehicleInfo['_407']"></p>
-                                                        </i-col>
-                                                        <i-col span="7">
-                                                            <Icon type="md-pin" color="rgb(180, 184, 191)" size="60" />
-                                                        </i-col>
-                                                    </Row>
-                                                </div>
-                                            </Card>
-                                        </template>
-                                    </i-col>
-                                    <i-col span="6" class-name="infoItem">
-                                        <template>
-                                            <Card bordered="false" style="width: 100%;" padding="0">
-                                                <div @click="toMapPage(408)" class="info" :style="{height: (innerHeight*0.75)+'px'}" style="background-color: #ed4014;">
-                                                    <Row>
-                                                        <i-col span="16">
-                                                            <p class="label">{{{"CN":"电压采集失败","EN":"Voltage Acquisition Failure","TW":"電壓採集失敗"}[language]}}</p>
-                                                            <p class="detail" v-text="vehicleInfo['_408']"></p>
-                                                        </i-col>
-                                                        <i-col span="7">
-                                                            <Icon type="md-thunderstorm" color="rgba(228, 106, 74, .5)" size="60" />
-                                                        </i-col>
-                                                    </Row>
-                                                </div>
-                                            </Card>
-                                        </template>
-                                    </i-col>
-                                </Row>
-                            </i-col>
-                            <i-col span="6" class-name="infoItem">
-                                <template>
-                                    <Card bordered="false" style="width: 100%;" padding="0">
-                                        <div @click="toMapPage('')" class="info totalNum" :style="{height: (innerHeight*1.5)+'px'}" style="background-color: #0f375f; height: 180px;">
-                                            <Row class-name="totalRow">
-                                                <i-col span="24">
-                                                    <p class="label">{{{"CN":"总数","EN":"Sum","TW":"總數"}[language]}}</p>
-                                                    <p class="detail" v-text="vehicleInfo.count"></p>
-                                                </i-col>
-                                            </Row>
-                                            <Icon class="totalIcon" type="ios-car-outline" color="rgba(34, 91, 148, .5)" size="180" />
-                                        </div>
-                                    </Card>
-                                </template>
-                            </i-col>
-                        </Row>
-                        <Row type="flex" justify="start" gutter="10" class-name="infoList">
-                            <i-col span="12" class-name="">
-                                <template>
-                                    <Card bordered="false" style="width: 100%;" padding="0">
-                                        <p slot="title" class="tile">
-                                            <span>{{{"CN":"车载终端信息","EN":"Vehicle Terminal Information","TW":"車載終端信息"}[language]}}</span>
-                                        </p>
-                                        <div class="chart" :style="{height: (innerHeight*1.5)+'px'}">
-                                            <div id="terminateEchart" :style="{height: (innerHeight*1.5)+'px'}"></div>
-                                        </div>
-                                    </Card>
-                                </template>
-                            </i-col>
-                            <i-col span="12" class-name="msWrap">
-                                <template>
-                                    <Card bordered="false" style="width: 100%;" padding="0">
-                                        <p slot="title" class="tile">
-                                            <span>{{{"CN":"消息提醒","EN":"Message Reminding","TW":"消息提醒"}[language]}}</span>
-                                        </p>
-                                        <div class="msList welcomTable" :style="{minHeight: (innerHeight*1.5)+'px'}">
-                                            <template>
-                                                <i-table :height="innerHeight*1.5" :loading="isTableLoading" :show-header="false" no-data-text="......" highlight-row :columns="msgColumList" :data="msgTableList" stripe="true"size="small"></i-table>
-                                            </template>
-                                        </div>
-                                    </Card>
-                                </template>
-                            </i-col>
-                        </Row>
-                    </i-col>
-                    <i-col span="8" class-name="item">
-                        <Row type="flex" justify="start" gutter="10" class-name="infoList">
-                            <i-col span="24">
-                                <template>
-                                    <Card bordered="false" style="width: 100%;" padding="0">
-                                        <p slot="title" class="tile">
-                                            <span>{{{"CN":"车辆统计","EN":"Vehicle Statistics","TW":"車輛統計"}[language]}}</span>
-                                        </p>
-                                        <div class="chart" :style="{height: (innerHeight*1.5)+'px'}">
-                                            <div id="vehicleEchart" :style="{height: (innerHeight*1.5)+'px'}"></div>
-                                        </div>
-                                    </Card>
-                                </template>
-                            </i-col>
-                        </Row>
-                        <Row type="flex" justify="start" gutter="10">
-                            <i-col span="24" class-name="msWrap">
-                                <template>
-                                    <Card bordered="false" style="width: 100%;" padding="0">
-                                        <p slot="title" class="tile">
-                                            <span>{{{"CN":"实时防区信息","EN":"Real Time Defense Area Information","TW":"實時防區信息"}[language]}}</span>
-                                        </p>
-                                        <div class="msList welcomTable" :style="{minHeight: (innerHeight*3+15)+'px'}">
-                                            <template>
-                                                <i-table :height="innerHeight*3+15" :loading="isloadDefen" :show-header="false" no-data-text="......" highlight-row :columns="defenColumList" :data="timeDefensTableList" stripe="true" size="small"></i-table>
-                                            </template>
-                                        </div>
-                                    </Card>
-                                </template>
-                            </i-col>
-                        </Row>
-                    </i-col>
-                </Row>
+                            </template>
+                        </i-col>
+                    </Row>
+                </div>
+
             </template>
         </div>
-        <template><div class="copyRight">{{copyRight}}</div></template>
+        <template>
+            <div class="copyRight">{{copyRight}}</div>
+        </template>
         <script src="/airport/assets/js/vue.min.js"></script>
         <script src="/airport/assets/vender/iView/iview.min.js"></script>
         <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
         <script src="/airport/assets/js/md5.min.js"></script>
-        <script src="/airport/assets/js/config.min.js?v=5756574646372"></script>
-        <script src="/airport/assets/js/utility.min.js?v=5756646372"></script>
-        <script src="/airport/assets/js/echarts.min.js?v=5756574646372"></script>
-        <script src="/airport/www/module/welcom/welcom.min.js?v=5756574646372"></script>
+        <script src="/airport/assets/js/config.min.js?v=4287415618341239"></script>
+        <script src="/airport/assets/js/utility.min.js?v=34123"></script>
+        <script src="/airport/assets/js/echarts.min.js?v=4738938"></script>
+        <script src="/airport/www/module/welcom/welcom.min.js?v=34234858342834"></script>
     </div>
 </body>
 
