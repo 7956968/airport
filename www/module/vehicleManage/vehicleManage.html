@@ -80,13 +80,17 @@
                                             </i-select>
                                         </template>
                                         <template>
-                                            &nbsp;&nbsp;{{{'CN':'类型','EN':'Vehicle Type','TW':'類型'}[language]}}:
+                                            &nbsp;&nbsp;{{{'CN':'车辆类型','EN':'Vehicle Type','TW':'車輛類型'}[language]}}:
                                             <i-select v-model="pageInfo.vehicleTypeId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:80px;">
                                                 <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
                                                 <i-option v-for="item in vehicleTypeList" :value="item.type">{{item.name}}</i-option>
                                             </i-select>
                                         </template>
                                         <template>
+                                            &nbsp;&nbsp;{{{'CN':'车牌号','EN':'Plate No.','TW':'車牌號'}[language]}}:
+                                            <i-input v-model="pageInfo.licenseNumber" :placeholder="{'CN':'请输入车牌号','EN':'Plate No.','TW':'請輸入車牌號'}[language]" style="width: 100px"></i-input>
+                                        </template>
+                                        <!-- <template>
                                             &nbsp;&nbsp;{{{'CN':'颜色','EN':'Vehicle Type','TW':'顔色'}[language]}}:
                                             <i-select v-model="pageInfo.vehicleColorId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:80px;">
                                                 <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
@@ -99,8 +103,7 @@
                                                 <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
                                                 <i-option v-for="item in vehicleBrandList" :value="item.type">{{item.name}}</i-option>
                                             </i-select>
-                                        </template>
-                                        
+                                        </template> -->
                                         <template>
                                             <i-button @click="getVehicleList(true)" size="small" type="primary" icon="ios-search-outline">{{{'CN':'查询','EN':'Search','TW':'查詢'}[language]}}</i-button>
                                         </template>
@@ -306,9 +309,9 @@
         <script src="/airport/assets/vender/iView/iview.min.js"></script>
         <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
         <script src="/airport/assets/js/md5.min.js"></script>
-        <script src="/airport/assets/js/config.min.js?v=5756574646372"></script>
-        <script src="/airport/assets/js/utility.min.js?v=5756574646372"></script>
-        <script src="/airport/www/module/vehicleManage/vehicleManage.min.js?v=2312374"></script>
+        <script src="/airport/assets/js/config.min.js?v=234183412"></script>
+        <script src="/airport/assets/js/utility.min.js?v=4347389"></script>
+        <script src="/airport/www/module/vehicleManage/vehicleManage.min.js?v=74843471283"></script>
     </div>
 </body>
 

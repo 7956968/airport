@@ -1601,6 +1601,7 @@
 
                 iconSrc = "/airport/assets/img/" + vehicleIcon + ".gif";
 
+                console.log("coordinate:"+coordinate);
 
                 if (zoom < 8) {
                     scale = 0.01;
@@ -1763,9 +1764,18 @@
                 self.vehicleItem = self.vehicleList[index];
                 self.vehicleItemPop = self.vehicleItem;
 
-                self.createVehicleFeature(self.vehicleItem, index, function (coordinate) {
-                    self.showVehicleOverLayer(coordinate);
-                });
+                // self.createVehicleFeature(self.vehicleItem, index, function (coordinate) {
+                //     self.showVehicleOverLayer(coordinate);
+                // });
+
+                if(!!self.vehicleItemPop.lastPosition) {
+                    self.createVehicleFeature(self.vehiclePositionItem, index, function (coordinate) {
+                        self.showVehicleOverLayer(coordinate);
+                    });
+                } else {
+                    self.$Message.error("没有车辆定位数据");
+                    self.mapContainer.overlayInfo["trajectory"].setPosition(undefined);
+                }
             },
             // 点击行时显示详细车辆位置
             "showRowDataPosition": function (item, index) {
@@ -1774,9 +1784,14 @@
                 self.vehiclePositionItem = self.vehiclePositionList[index];
                 self.vehicleItemPop = self.vehiclePositionItem;
 
-                self.createVehicleFeature(self.vehiclePositionItem, index, function (coordinate) {
-                    self.showVehicleOverLayer(coordinate);
-                });
+                if(!!self.vehicleItemPop.lastPosition) {
+                    self.createVehicleFeature(self.vehiclePositionItem, index, function (coordinate) {
+                        self.showVehicleOverLayer(coordinate);
+                    });
+                } else {
+                    self.$Message.error("没有车辆定位数据");
+                    self.mapContainer.overlayInfo["trajectory"].setPosition(undefined);
+                }
             },
             // 画所有实时车辆
             "drawAlVehicle": function () {
@@ -1807,11 +1822,17 @@
                     }
                     return item;
                 }());
+
                 if (self.vehicleItemPop) {
-                    coordinate = JSON.parse(self.vehicleItemPop["lastPosition"])["coordinates"];
-                    self.createVehicleFeature(self.vehicleItemPop, index, function () {
-                        self.showVehicleOverLayer(coordinate);
-                    });
+                    if(!!self.vehicleItemPop.lastPosition) {
+                        coordinate = JSON.parse(self.vehicleItemPop["lastPosition"])["coordinates"];
+                        self.createVehicleFeature(self.vehicleItemPop, index, function () {
+                            self.showVehicleOverLayer(coordinate);
+                        });
+                    } else {
+                        self.$Message.error("没有车辆定位数据");
+                        self.mapContainer.overlayInfo["trajectory"].setPosition(undefined);
+                    }
                 } else {
                     self.$Message.error("没有车辆信息");
                     self.mapContainer.overlayInfo["trajectory"].setPosition(undefined);
@@ -1834,7 +1855,7 @@
                         "vehicleName": self.vehiclePositionList[i]["vehicleName"], //"",
                         "vehicleCode": self.vehiclePositionList[i]["vehicleCode"], //"",
                         "licenseNumber": self.vehiclePositionList[i]["licenseNumber"], //"",
-                        "lastPosition": JSON.parse(self.vehiclePositionList[i]["lastPosition"])["coordinates"], //"",
+                        "lastPosition": !!self.vehiclePositionList[i]["lastPosition"]?JSON.parse(self.vehiclePositionList[i]["lastPosition"])["coordinates"]:null, //"",
                         "vehicleTypeId": self.vehiclePositionList[i]["vehicleTypeName"], //"",
                         "gpsDeviceCode": self.vehiclePositionList[i]["gpsDeviceCode"], //"",
                         "vehicleStatus": (function () {
@@ -1952,10 +1973,6 @@
             "getSingleVehicleTrack": function (bool) {
                 var self = this;
 
-                self.$Message.config({
-                    top: 180,
-                    duration: 3
-                });
                 // 先清空原有轨迹
                 self.clearTrack();
                 self.$Message.destroy();
@@ -2004,11 +2021,18 @@
                                     }
                                 }, 3000);
                             } else {
-                                self.$Message.error("查询不到轨迹数据");
                                 self.$Message.destroy();
+                                self.$Message.error("查询不到轨迹数据");
+                                setTimeout(function () {
+                                    self.$Message.destroy();
+                                }, 3000);
                             }
                         } else {
                             self.$Message.destroy();
+                            self.$Message.error(data.message);
+                            setTimeout(function () {
+                                self.$Message.destroy();
+                            }, 3000);
                         }
 
                     },
@@ -2348,6 +2372,11 @@
 
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
             utility.isLogin(false);
+
+            self.$Message.config({
+                top: 180,
+                duration: 3
+            });
 
             // 初始化地图数据
             setTimeout(function () {

@@ -394,14 +394,14 @@
                         "pageNum": self.pageInfo.pageNum,
                         "pageSize": self.pageInfo.pageSize,
                         "companyId": self.pageInfo.companyId, // 所属公司ID，手动从公司列表选择
-                        "vehicleName": self.pageInfo.vehicleName, // 车辆名称
-                        "vehicleCode": self.pageInfo.vehicleCode, // 车辆编码
-                        "licenseNumber": self.pageInfo.licenseNumber, // 车牌号
-                        "gpsDeviceId": self.pageInfo.gpsDeviceId, // 
                         "vehicleTypeId": self.pageInfo.vehicleTypeId, // 
                         "bindDeviceFlag": self.pageInfo.bindDeviceFlag, // 是否绑定定位设备
                         "vehicleColorId": self.pageInfo.vehicleColorId, // 
                         "vehicleBrandId": self.pageInfo.vehicleBrandId, // 
+                        "vehicleName": encodeURI(self.pageInfo.vehicleName), // 车辆名称
+                        "vehicleCode": encodeURI(self.pageInfo.vehicleCode), // 车辆编码
+                        "gpsDeviceId": encodeURI(self.pageInfo.gpsDeviceId), // 
+                        "licenseNumber": encodeURI(self.pageInfo.licenseNumber), // 车牌号
                         "deptId": self.pageInfo.deptId[self.pageInfo.deptId.length - 1], // 部门ID，可选
                     },
                     beforeSendCallback: function () {

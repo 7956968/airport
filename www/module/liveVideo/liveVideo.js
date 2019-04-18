@@ -10,6 +10,9 @@
             "mVideoCount": 9, // 分屏数
             "maxVideoNum": 10, // 最大视频数
             "isStop": true, // 是否开始了
+            "netnSignal": "",
+            "msgType": "primary",
+            "msgInfo": "",
             "isFullScream": false,
             "channelIndex": 1,
             "fullScreamIndex": "",
@@ -224,23 +227,21 @@
                 self.mVehicleNo = options.vehicleNo;
 
                 if (self.mVideoCount > self.maxVideoNum || self.mVideoCount < 0) {
-                    self.$Message.destroy()
-                    self.$Message.error({
-                        "content": "视频窗口数量有误",
-                        "closable": true
-                    });
+                    self.$Message.destroy();
+                        self.msgType = "error";
+                        self.msgInfo = "视频窗口数量有误";
                     return;
                 }
 
                 self.updateVideoWin(4);
                 self.connectNet();
-                
+
             },
             // 设置当前选中视频样式
-            "setCurrentStyle": function(id) {
+            "setCurrentStyle": function (id) {
                 var self = this;
                 $("body").find(".videoItem").removeClass("active");
-                $("body").find("#"+ id).addClass("active");
+                $("body").find("#" + id).addClass("active");
             },
 
             // 链接 socket 服务器
@@ -248,28 +249,23 @@
                 var self = this;
                 var callback = {
                     onLoginFailed: function () {
-                        self.$Message.destroy()
-                        self.$Message.error({
-                            "content": "登录失败",
-                            "closable": true
-                        });
+                        self.$Message.destroy();
+                        self.msgType = "error";
+                        self.msgInfo = "车辆 【" + self.mVehicleNo + "】登录失败";
                         setTimeout(function () {
                             vsclientSession.login(self.mUserName, self.mPwd, self.mIP, self.mPort);
                         }, 5000);
                     },
                     onlogon: function (info) {
-                        self.$Message.destroy();
-                        self.$Message.success({
-                            "content": "登录成功",
-                            "closable": true
-                        });
                         var front = vsclientSession.findFrontByName(self.mVehicleNo);
+
+                        self.$Message.destroy();
+                        self.msgType = "success";
+                        self.msgInfo = "车辆 【" + self.mVehicleNo + "】登录成功";
+                        
                         if (front == null) {
-                            self.$Message.destroy()
-                            self.$Message.error({
-                                "content": "不存在该车辆[" + self.mVehicleNo +"]",
-                                "closable": true
-                            });
+                            self.msgType = "error";
+                            self.msgInfo = "车辆【 " + self.mVehicleNo + " 】不存在";
                             return;
                         }
                         self.isStop = true;
@@ -278,11 +274,9 @@
                         self.startVideo();
                     },
                     onServerConnectionLost: function () {
-                        self.$Message.destroy()
-                        self.$Message.error({
-                            "content": "连接失败",
-                            "closable": true
-                        });
+                        self.$Message.destroy();
+                        self.msgType = "error";
+                        self.msgInfo = "车辆【 " + self.mVehicleNo + " 】连接失败";
                         for (var idx = 0; idx < self.mVideoCount; idx++) {
                             vsclientSession.stopPlay($("#video" + idx)[0]);
                         }
@@ -291,52 +285,51 @@
                     onStreamPlayStatus: function (status) {
                         switch (status) {
                             case STREAM_PLAY_STATE_REQUESTTING:
+                                self.msgInfo = "";
                                 self.$Message.destroy();
                                 self.$Message.loading({
-                                    "content": "正在请求视频..."
+                                    "content": "正在请求视频......"
                                 });
                                 break;
                             case STREAM_PLAY_STATE_REQ_STREAM_SUCCESS:
+                                self.msgInfo = "";
                                 self.$Message.destroy();
                                 self.$Message.loading({
-                                    "content": "请求完成,等待播放..."
+                                    "content": "请求完成,等待播放......"
                                 });
                                 break;
                             case STREAM_PLAY_STATE_PLAY_STRAM_SUCCESS:
                                 self.$Message.destroy();
-                                self.$Message.success({
-                                    "content": "视频播放成功",
-                                    "closable": true
-                                });
+                                self.msgType = "success";
+                                self.msgInfo = "视频播放成功";
                                 self.isStop = false;
                                 break;
                             case STREAM_PLAY_STATE_PLAY_STRAM_FAILED:
                                 self.$Message.destroy();
-                                self.$Message.error({
-                                    "content": "视频播放失败",
-                                    "closable": true
-                                });
+                                self.msgType = "error";
+                                self.msgInfo = "视频播放失败";
                                 break;
                             default:
                                 self.$Message.destroy();
-                                self.$Message.error({
-                                    "content": "播放状态异常",
-                                    "closable": true
-                                });
+                                self.msgType = "error";
+                                self.msgInfo = "播放状态异常";
                                 break;
 
                         }
                     },
                     onGpsData: function (frontGpsData) {//车辆信息+GPS信息
-                        // console.log("frontGpsData:" + JSON.stringify(frontGpsData));
+                        // console.log(JSON.stringify(frontGpsData));
+                        self.netnSignal = frontGpsData.gps.net_signal;
+                        console.log(self.netnSignal);
                     }
                 };
                 window.vsclientSession = new VSClientSession(callback);
                 vsclientSession.login(self.mUserName, self.mPwd, self.mIP, self.mPort);
 
-                self.$Message.destroy()
+                self.msgInfo = "";
+                self.$Message.destroy();
                 self.$Message.loading({
-                    "content": "登录中...",
+                    "content": "车辆【 " + self.mVehicleNo + " 】登录中......",
                 });
             },
 
@@ -354,10 +347,8 @@
 
                 if (param == null) {
                     self.$Message.destroy();
-                    self.$Message.error({
-                        "content": "分屏数据定义有误",
-                        "closable": true
-                    });
+                    self.msgType = "error";
+                    self.msgInfo = "分屏数据定义有误";
                     return;
                 }
 
@@ -366,15 +357,13 @@
                     var curVideoWin = $("body").find("#liveVideo" + idx);
                     if (curVideoWin == null) {
                         self.$Message.destroy();
-                        self.$Message.error({
-                            "content": "当前视频窗口定义不存在",
-                            "closable": true
-                        });
+                        self.msgType = "error";
+                        self.msgInfo = "当前视频窗口定义不存在";
                         return;
                     }
                     curVideoWin.css({ "top": param[idx].top, "left": param[idx].left, "width": param[idx].width, "height": param[idx].height, "display": "block" });
                 }
-                
+
                 self.splitNum = splitNum;
                 $("body").find("#liveVideo0").addClass("active");
             },
@@ -399,39 +388,36 @@
                 var self = this;
                 if (!front.online) {
                     self.$Message.destroy();
-                    self.$Message.error({
-                        "content": "当前车牌号:[" + self.mVehicleNo + "],车辆不在线",
-                        "closable": true
-                    });
+                    self.msgType = "error";
+                    self.msgInfo = "车辆 【 " + self.mVehicleNo + " 】不在线";
                     return;
                 }
                 var channelNum = front.channel_num;
                 var ret = false;
                 var splitcn = self.getSplitNumFromChNum(channelNum);
+
                 self.$Message.destroy();
-                self.$Message.info({
-                    "content": "当前车牌号:[" + self.mVehicleNo + "],共[" + channelNum + "]个通道",
-                    "closable": true
-                });
+                self.msgType = "blue";
+                self.msgInfo = "车辆【" + self.mVehicleNo + "】，共【 " + channelNum + " 】个通道";
                 self.updateVideoWin(splitcn);
                 for (var idx = 0; idx < channelNum; idx++) {
                     ret = vsclientSession.startPlay(self.mVehicleNo, idx, $("#video" + idx)[0]);
-                    if(idx == 0) {
-                        self.playAudio(idx+1);
+                    if (idx == 0) {
+
+                        self.playAudio(idx + 1);
                     }
                 }
                 if (ret) {
                     self.isStop = true;
+                    self.msgInfo = "";
                     self.$Message.destroy()
                     self.$Message.loading({
-                        "content": "正在请求视频..."
+                        "content": "正在请求视频......"
                     });
                 } else {
-                    self.$Message.destroy()
-                    self.$Message.warning({
-                        "content": "请求视频失败",
-                        "closable": true
-                    });
+                    self.$Message.destroy();
+                    self.msgType = "error";
+                    self.msgInfo = "请求视频失败";
                 }
             },
 
@@ -440,11 +426,9 @@
                 var self = this;
                 var front = vsclientSession.findFrontByName(self.mVehicleNo);
                 if (front == null) {
-                    self.$Message.destroy()
-                    self.$Message.warning({
-                        "content": "不存在该车辆" + self.mVehicleNo,
-                        "closable": true
-                    });
+                    self.$Message.destroy();
+                    self.msgType = "error";
+                    self.msgInfo = "车辆【 " + self.mVehicleNo + " 】不存在";
                     return;
                 }
                 self.playVideo(front);
@@ -457,27 +441,27 @@
                     vsclientSession.stopPlay($("body").find("#video" + idx)[0]);
                 }
                 self.isStop = true;
-                self.$Message.destroy()
-                self.$Message.success({
-                    "content": "视频全部关闭完成",
-                    "closable": true
-                });
+                self.$Message.destroy();
+                self.msgType = "success";
+                self.msgInfo = "视频全部关闭完成";
             },
             // 全屏
-            "setFullScream": function(id) {
+            "setFullScream": function (id) {
                 var self = this;
                 self.isFullScream = true;
                 $("body").find("#" + id).parents(".videoWrap").addClass("fullScream");
+                self.runPrefixMethod($("body").find("#" + id).parents(".videoWrap")[0], "RequestFullScreen")
             },
             // 关闭全屏
-            "closeFullScream": function(id) {
+            "closeFullScream": function (id) {
                 var self = this;
                 self.isFullScream = false;
                 $("body").find("#" + id).parents(".videoWrap").removeClass("fullScream");
+                self.runPrefixMethod(document, "CancelFullScreen");
             },
 
             // 播放声音
-            "playAudio": function(channel) {
+            "playAudio": function (channel) {
                 var self = this;
 
                 self.channelIndex = channel;
@@ -485,10 +469,34 @@
                 vsclientSession.startListening(self.mVehicleNo, channel);
             },
             // 停止播放声音
-            "stopAudio": function() {
+            "stopAudio": function () {
                 var self = this;
                 self.channelIndex = 0;
                 vsclientSession.stopListening();
+            },
+            // 
+            "runPrefixMethod": function (element, method) {
+                var usablePrefixMethod;
+                ["webkit", "moz", "ms", "o", ""].forEach(function (prefix) {
+                    if (usablePrefixMethod) return;
+                    if (prefix === "") {
+                        // 无前缀，方法首字母小写
+                        method = method.slice(0, 1).toLowerCase() + method.slice(1);
+
+                    }
+
+                    var typePrefixMethod = typeof element[prefix + method];
+
+                    if (typePrefixMethod + "" !== "undefined") {
+                        if (typePrefixMethod === "function") {
+                            usablePrefixMethod = element[prefix + method]();
+                        } else {
+                            usablePrefixMethod = element[prefix + method];
+                        }
+                    }
+                });
+
+                return usablePrefixMethod;
             },
         },
         "mounted": function () {
@@ -496,6 +504,12 @@
             var queryInfo = utility.getQueryParams();
 
             self.$Message.config({
+                "top": 5,
+                "duration": 0,
+                "closable": true
+            });
+
+            self.$Notice.config({
                 "top": 5,
                 "duration": 0,
                 "closable": true

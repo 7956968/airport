@@ -8,7 +8,7 @@
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
-  background-color: #F5F5F5;  
+  background-color: #F5F5F5;
 }
 /*定义滚动条轨道 内阴影+圆角*/
 ::-webkit-scrollbar-track {
@@ -144,11 +144,11 @@ table {
 .graphPage .welcomPage .layout .ivu-card {
   border-radius: 2px;
   transition: none;
-  background-color: #0f375f;
+  background-color: #0f375f; 
 }
 .graphPage .welcomPage .layout .ivu-card:hover {
   box-shadow: none;
-}
+} 
 .graphPage .welcomPage .layout .ivu-card.ivu-card-bordered {
   border-color: rgba(109, 106, 106, 0.7);
 }
@@ -809,7 +809,7 @@ table {
 }
 .mapContainer .ol-popup.ol-vehicle {
   bottom: 50px;
-  min-width: 250px;
+  min-width: 280px;
 }
 .mapContainer .ol-popup.ol-vehicle .trajectoryAction {
   padding: 5px 0;

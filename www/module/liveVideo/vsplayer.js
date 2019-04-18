@@ -14,16 +14,13 @@ function VSClientSession(callback) {
     this.audioPlayer = null;
 }
 
-
 VSClientSession.prototype.webSocketHost = function () {
     return 'ws://' + this.serverIP + ':' + this.serverPort;
-}
-
+};
 
 VSClientSession.prototype.getWSURL = function () {
     return this.webSocketHost() + "/session?user=" + this.username + "&password=" + this.password;
-}
-
+};
 
 VSClientSession.prototype.connectToServer = function () {
     console.log("url:" + this.wsURL);
@@ -34,8 +31,7 @@ VSClientSession.prototype.connectToServer = function () {
     this.connection.onerror = this.onFailedToConnectToServer.bind(this);
     this.connection.onclose = this.onServerConnectionLost.bind(this);
     this.connection.onmessage = this.onRecvServerMessage.bind(this);
-}
-
+};
 
 VSClientSession.prototype.login = function (username, password, serverIP, serverPort) {
     this.username = username;
@@ -47,24 +43,19 @@ VSClientSession.prototype.login = function (username, password, serverIP, server
 
     this.wsURL = this.getWSURL();
     this.connectToServer();
-}
+};
 
-
-VSClientSession.prototype.onConnectedToServer = function () {
-}
-
+VSClientSession.prototype.onConnectedToServer = function () { };
 
 VSClientSession.prototype.onFailedToConnectToServer = function () {
     this.hasLogon = false;
     this.onLoginFailed();
-}
-
+};
 
 VSClientSession.prototype.onServerConnectionLost = function () {
     this.hasLogon = false;
     this.callback.onServerConnectionLost();
-}
-
+};
 
 VSClientSession.prototype.onRecvServerMessage = function (msg) {
     if (event.data instanceof ArrayBuffer) {
@@ -74,8 +65,7 @@ VSClientSession.prototype.onRecvServerMessage = function (msg) {
         var msg = JSON.parse(event.data);
         this.handleMessage(msg);
     }
-}
-
+};
 
 VSClientSession.prototype.handleMessage = function (msg) {
     const msgType = msg.msg_type;
@@ -117,8 +107,7 @@ VSClientSession.prototype.handleMessage = function (msg) {
             this.onlogon(msg.info);
         }
     }
-}
-
+};
 
 VSClientSession.prototype.onlogon = function (info) {
     this.context = $.extend(this.context, info);
@@ -128,13 +117,11 @@ VSClientSession.prototype.onlogon = function (info) {
     }
     this.hasLogon = true;
     this.callback.onlogon();
-}
-
+};
 
 VSClientSession.prototype.onLoginFailed = function (reason) {
     this.callback.onLoginFailed(reason);
-}
-
+};
 
 VSClientSession.prototype.onFrontOnOfflineEvent = function (event) {
     console.log("front" + event.front + " " + (event.online ? "online" : "offline"));
@@ -146,7 +133,8 @@ VSClientSession.prototype.onFrontOnOfflineEvent = function (event) {
     }
 
     front.online = event.online;
-}
+};
+
 VSClientSession.prototype.onFrontGPSEvent = function (event) {
     if (!this.hasLogon) {
         return;
@@ -163,8 +151,7 @@ VSClientSession.prototype.onFrontGPSEvent = function (event) {
         return;
     }
     this.callback.onGpsData(front);
-}
-
+};
 
 VSClientSession.prototype.findFrontByID = function (frontID) {
     var front = jQuery.grep(this.context.front, function (element) {
@@ -175,7 +162,8 @@ VSClientSession.prototype.findFrontByID = function (frontID) {
     }
 
     return front[0];
-}
+};
+
 VSClientSession.prototype.findFrontByName = function (frontName) {
     var front = jQuery.grep(this.context.front, function (element) {
         return element.name == frontName;
@@ -185,8 +173,7 @@ VSClientSession.prototype.findFrontByName = function (frontName) {
     }
 
     return front[0];
-}
-
+};
 
 VSClientSession.prototype.startPlay = function (name, channel, videoCtrl) {
     var front = jQuery.grep(this.context.front, function (element) {
@@ -211,8 +198,7 @@ VSClientSession.prototype.startPlay = function (name, channel, videoCtrl) {
     videoCtx.player.start();
     videoCtx.player.setStreamPlayStatus(this.callback.onStreamPlayStatus);
     return true;
-}
-
+};
 
 VSClientSession.prototype.stopPlay = function (videoCtrl) {
     var videoCnt = this.videos.length;
@@ -223,7 +209,8 @@ VSClientSession.prototype.stopPlay = function (videoCtrl) {
             return;
         }
     }
-}
+};
+
 //开始监听
 VSClientSession.prototype.startListening = function (name, channel) {
     if (this.isListening) {
@@ -249,7 +236,8 @@ VSClientSession.prototype.startListening = function (name, channel) {
     this.audioPlayer.start();
 
     this.isListening = true;
-}
+};
+
 //停止监听
 VSClientSession.prototype.stopListening = function () {
     if (!this.isListening) {
@@ -261,9 +249,7 @@ VSClientSession.prototype.stopListening = function () {
     document.body.removeChild(this.audioElement);
     this.audioElement = null;
     this.isListening = false;
-}
-
-
+};
 
 window.MediaSource = window.MediaSource || window.WebKitMediaSource;
 
@@ -293,7 +279,8 @@ function Player(video, frontId, channel, isPreview, isAudio) {
 var writeToFile = 0;
 Player.prototype.setStreamPlayStatus = function (stateFunc) {
     this.onStreamPlayState = stateFunc;
-}
+};
+
 Player.prototype.start = function () {
     if (!window.MediaSource)
         return;
@@ -548,13 +535,13 @@ Player.prototype.start = function () {
 
     this.stream = getStream(this.frontId, this.channel, this.isPreview, this.isAudio)
     this.stream.addStreamSink(this)
-}
+};
 
 Player.prototype.onGettingStream = function () {
 
     // if(this.onStreamPlayState)
     //     this.onStreamPlayState(STREAM_PLAY_STATE_REQUESTTING);
-}
+};
 
 Player.prototype.reset = function () {
     if (this.stream) {
@@ -564,8 +551,7 @@ Player.prototype.reset = function () {
     this.startPlay();
     this.stream = getStream(this.frontId, this.channel, this.isPreview, this.isAudio)
     this.stream.addStreamSink(this)
-}
-
+};
 
 Player.prototype.onStreamError = function () {
     this.onStreamEnd()
@@ -579,8 +565,7 @@ Player.prototype.onStreamError = function () {
     if (this.onStreamError) {
         this.onStreamError()
     }
-}
-
+};
 
 Player.prototype.onStreamEnd = function () {
     if (this.afterVideoDisplaying) {
@@ -607,11 +592,11 @@ Player.prototype.onStreamEnd = function () {
             this.video.src = null;
         } catch (e) { }
     }
-}
+};
 
 Player.prototype.isPlaying = function () {
     return this.gotInitSeg
-}
+};
 
 Player.prototype.onNewSegment = function (newSeg) {
     if (!this.mediaSource) {
@@ -626,7 +611,7 @@ Player.prototype.onNewSegment = function (newSeg) {
     this.frameCnt += 1;
     this.frames.push(newSeg);
     this.processNewFrame();
-}
+};
 
 Player.prototype.stop = function () {
     if (this.stream) {
@@ -651,7 +636,7 @@ Player.prototype.stop = function () {
     this.segments = [];
     this.frames = [];
     this.frameCnt = 0;
-}
+};
 
 Player.prototype.playNextSegment = function () {
     if (!this.mediaSource) {
@@ -691,7 +676,7 @@ Player.prototype.playNextSegment = function () {
         console.log(e);
         this.reset()
     }
-}
+};
 
 Player.prototype.startPlay = function () {
     this.mediaSource = new window.MediaSource();
@@ -718,10 +703,9 @@ Player.prototype.startPlay = function () {
                 player.playNextSegment();
         });
     });
-}
+};
 
-
-var sAllStreams = {}
+var sAllStreams = {};
 
 function streamId(frontId, channel, isPreview, isAudio) {
     return "" + frontId + ":" + channel + ":" + isPreview + ":" + isAudio
@@ -744,7 +728,6 @@ function getStream(frontId, channel, isPreview, isAudio) {
 
     return stream
 }
-
 
 function VideoStream(url, streamId, callback) {
     this.streamId = streamId
@@ -821,7 +804,7 @@ VideoStream.prototype.start = function () {
             }
         })
     };
-}
+};
 
 VideoStream.prototype.stop = function () {
     this.stopped = true
@@ -830,7 +813,7 @@ VideoStream.prototype.stop = function () {
         this.websockt.close();
         delete this.websockt;
     }
-}
+};
 
 VideoStream.prototype.addStreamSink = function (sink) {
     if (this.sinks.indexOf(sink) === -1) {
@@ -846,7 +829,7 @@ VideoStream.prototype.addStreamSink = function (sink) {
             }
         }
     }
-}
+};
 
 VideoStream.prototype.removeStreamSink = function (sink) {
     var index = this.sinks.indexOf(sink)
@@ -859,4 +842,4 @@ VideoStream.prototype.removeStreamSink = function (sink) {
         this.stop()
         delete sAllStreams[this.streamId]
     }
-}
+};

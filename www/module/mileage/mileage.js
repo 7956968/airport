@@ -32,6 +32,7 @@
                 "endMiles": "",// 最大里程数
                 "beginTime": "", // 开始时间
                 "endTime": "", // 结束时间
+                "orderType": 1
             },
             "columnsList": [
                 {
@@ -236,6 +237,7 @@
                         "endMiles": self.pageInfo.endMiles,// 最大里程数
                         "beginTime": self.pageInfo.beginTime, // 开始时间
                         "endTime": self.pageInfo.endTime, // 结束时间
+                        "orderType": 1, // 排列顺序
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
