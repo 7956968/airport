@@ -86,6 +86,7 @@ VSClientSession.prototype.handleMessage = function (msg) {
                     break;
                 case 3:
                     this.onFrontOnOfflineEvent(msg.info.data);
+                    this.callback.onOnOffline(msg.info.data);
                     break;
                 case 4: //gps
                     this.onFrontGPSEvent(msg.info.data);
@@ -116,7 +117,7 @@ VSClientSession.prototype.onlogon = function (info) {
         this.username = info.username;
     }
     this.hasLogon = true;
-    this.callback.onlogon();
+    this.callback.onlogon(info);
 };
 
 VSClientSession.prototype.onLoginFailed = function (reason) {
@@ -424,13 +425,6 @@ Player.prototype.start = function () {
     var fileCnt = 0;
 
     this.processNewFrame = function () {
-        //var keyframe = this.parseFrame(this.frames[this.frames.length - 1]);
-
-        //if (!this.track) {
-        //    this.frames = [];
-        //    return;
-        //}
-
         this.segments.push(this.frames[0]);
         if (this.isRecording && this.gotInitSeg) {
             this.recordBuffers.push(this.frames[0]);
@@ -460,7 +454,6 @@ Player.prototype.start = function () {
             }
             if (this.segments.length > 1) {
                 //this may drop the init segment
-                console.log('drop a segment');
                 this.segments.pop();
             }
         }
@@ -539,8 +532,6 @@ Player.prototype.start = function () {
 
 Player.prototype.onGettingStream = function () {
 
-    // if(this.onStreamPlayState)
-    //     this.onStreamPlayState(STREAM_PLAY_STATE_REQUESTTING);
 };
 
 Player.prototype.reset = function () {
@@ -555,8 +546,6 @@ Player.prototype.reset = function () {
 
 Player.prototype.onStreamError = function () {
     this.onStreamEnd()
-    // if(onStreamPlayState)
-    //     onStreamPlayState(STREAM_PLAY_STATE_PLAY_STRAM_FAILED);
     if (this.stream) {
         this.stream.removeStreamSink(this)
         this.stream = null
@@ -576,7 +565,7 @@ Player.prototype.onStreamEnd = function () {
         this.flushRecordFile();
     }
 
-    this.gotInitSeg = false
+    this.gotInitSeg = false;
     this.track = null;
     this.seq = 0;
     this.segments = [];
@@ -684,6 +673,8 @@ Player.prototype.startPlay = function () {
     this.video.autoplay = true;
     this.video.play();
 
+    console.log(window.URL.createObjectURL(this.mediaSource));
+
     var player = this;
 
     this.mediaSource.addEventListener('sourceopen', function (event) {
@@ -708,7 +699,7 @@ Player.prototype.startPlay = function () {
 var sAllStreams = {};
 
 function streamId(frontId, channel, isPreview, isAudio) {
-    return "" + frontId + ":" + channel + ":" + isPreview + ":" + isAudio
+    return "" + frontId + ":" + channel + ":" + isPreview + ":" + isAudio;
 }
 
 function getStream(frontId, channel, isPreview, isAudio) {
@@ -717,16 +708,16 @@ function getStream(frontId, channel, isPreview, isAudio) {
     if (!stream) {
         var url = null
         if (isAudio) {
-            url = vsclientSession.webSocketHost() + '/audio?session=' + vsclientSession.context.session + '&front=' + frontId + '&channel=' + channel
+            url = vsclientSession.webSocketHost() + '/audio?session=' + vsclientSession.context.session + '&front=' + frontId + '&channel=' + channel;
         } else {
-            url = vsclientSession.webSocketHost() + '/video?session=' + vsclientSession.context.session + '&front=' + frontId + '&channel=' + channel + '&is_preview=' + isPreview
+            url = vsclientSession.webSocketHost() + '/video?session=' + vsclientSession.context.session + '&front=' + frontId + '&channel=' + channel + '&is_preview=' + isPreview;
         }
-        stream = new VideoStream(url, id, vsclientSession.callback.onStreamPlayStatus)
-        sAllStreams[id] = stream
-        stream.start()
+        stream = new VideoStream(url, id, vsclientSession.callback);
+        sAllStreams[id] = stream;
+        stream.start();
     }
 
-    return stream
+    return stream;
 }
 
 function VideoStream(url, streamId, callback) {
@@ -740,54 +731,58 @@ function VideoStream(url, streamId, callback) {
 }
 
 VideoStream.prototype.start = function () {
-    this.stopped = false
-    this.initSeg = null
-    this.currSeg = null
-    this.segCnt = 0
-    this.error = false
+    this.stopped = false;
+    this.initSeg = null;
+    this.currSeg = null;
+    this.segCnt = 0;
+    this.error = false;
     this.websockt = new WebSocket(this.url);
     this.websockt.binaryType = "arraybuffer";
 
-    var self = this
+    var self = this;
     this.sinks.forEach(function () {
-        this.onGettingStream()
+        this.onGettingStream();
     })
 
     this.websockt.onopen = function () {
-        if (self.callback)
-            self.callback(STREAM_PLAY_STATE_REQ_STREAM_SUCCESS);
+        if (self.callback.onStreamPlayStatus) {
+            self.callback.onStreamPlayStatus(STREAM_PLAY_STATE_REQ_STREAM_SUCCESS);
+        }
     };
 
     this.websockt.onclose = function () {
         self.sinks.forEach(function (sink) {
             if (this.error) {
-                sink.onStreamError()
+                sink.onStreamError();
             } else {
-                sink.onStreamEnd()
+                sink.onStreamEnd();
             }
         })
 
-        self.initSeg = null
-        self.currSeg = null
-        self.websockt = null
+        self.initSeg = null;
+        self.currSeg = null;
+        self.websockt = null;
 
         console.log("websocket closed ");
+        if (self.callback.onSocketClose) {
+            self.callback.onSocketClose();
+        }
     };
 
     this.websockt.onerror = function () {
         console.log("websocket error " + this.readyState);
 
-        this.error = true
+        this.error = true;
     }
 
     this.websockt.onmessage = function (event) {
         if (!(event.data instanceof ArrayBuffer)) {
-            return
+            return;
         }
 
         if (!self.initSeg) {
-            if (self.callback)
-                self.callback(STREAM_PLAY_STATE_PLAY_STRAM_SUCCESS);
+            if (self.callback.onStreamPlayStatus)
+                self.callback.onStreamPlayStatus(STREAM_PLAY_STATE_PLAY_STRAM_SUCCESS);
 
             self.initSeg = event.data
         } else {

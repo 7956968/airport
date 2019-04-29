@@ -52,7 +52,7 @@
     <div id="js-vue" class="tableContainer">
         <div class="top">
             <Row type="flex" justify="start" gutter="10">
-                <i-col span="18">
+                <i-col span="20">
                     <div class="searchWrap">
                         <table>
                             <tbody>
@@ -60,7 +60,7 @@
                                     <td>
                                         <template>
                                             &nbsp;&nbsp;{{{'CN':'公司','EN':'Company','TW':'公司'}[language]}}:
-                                            <i-select @on-change="getDepartmentList('pageInfo')" v-model="pageInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:120px;">
+                                            <i-select @on-change="getDepartmentList('pageInfo')" v-model="pageInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:180px;">
                                                 <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
                                                 <i-option v-for="item in companyList" :value="item.id">{{item.companyName}}</i-option>
                                             </i-select>
@@ -68,11 +68,11 @@
                                         <template>
                                             &nbsp;&nbsp;{{{'CN':'部门','EN':'Superior Department','TW':'部門'}[language]}}:
                                             <template>
-                                                <Cascader :data="departmentList" v-model="pageInfo.deptId" style="width:100px; display: inline-block;" trigger="hover" change-on-select></Cascader>
+                                                <Cascader :data="departmentList" v-model="pageInfo.deptId" style="width:180px; display: inline-block;" trigger="hover" change-on-select></Cascader>
                                             </template>
                                         </template>
                                         <template>
-                                            &nbsp;&nbsp;{{{'CN':'绑定终端','EN':'Binding Terminal','TW':'綁定終端'}[language]}}:
+                                            &nbsp;&nbsp;{{{'CN':'是否绑定终端','EN':'Binding Terminal','TW':'是否綁定終端'}[language]}}:
                                             <i-select v-model="pageInfo.bindDeviceFlag" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100px;">
                                                 <i-option value="">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
                                                 <i-option value="0">{{{'CN':'否','EN':'No','TW':'否'}[language]}}</i-option>
@@ -113,7 +113,7 @@
                         </table>
                     </div>
                 </i-col>
-                <i-col span="6">
+                <i-col span="4">
                     <div class="actionWrap">
                         <template>
                             <i-buttonGroup>
@@ -309,9 +309,9 @@
         <script src="/airport/assets/vender/iView/iview.min.js"></script>
         <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
         <script src="/airport/assets/js/md5.min.js"></script>
-        <script src="/airport/assets/js/config.min.js?v=234183412"></script>
-        <script src="/airport/assets/js/utility.min.js?v=4347389"></script>
-        <script src="/airport/www/module/vehicleManage/vehicleManage.min.js?v=74843471283"></script>
+        <script src="/airport/assets/js/config.min.js?v=12834324237498"></script>
+        <script src="/airport/assets/js/utility.min.js?v=12834324237498"></script>
+        <script src="/airport/www/module/vehicleManage/vehicleManage.min.js?v=12834324237498"></script>
     </div>
 </body>
 

@@ -57,12 +57,12 @@
                     <template>
                         <i-menu theme="light" active-name="1" mode="vertical" width="auto" @on-select="getLogByCode">
                             <menu-item name="1">
-                                <span class="icon"><Icon type="ios-key" /></span>
-                                <span class="label">修改密码</span>
-                            </menu-item>
-                            <menu-item name="2">
                                 <span class="icon"><Icon type="md-person" /></span>
                                 <span class="label">修改信息</span>
+                            </menu-item>
+                            <menu-item name="2">
+                                <span class="icon"><Icon type="ios-key" /></span>
+                                <span class="label">修改密码</span>
                             </menu-item>
                         </i-menu>
                     </template>
@@ -70,60 +70,9 @@
                 <i-col span="20" class-name="logWrap">
                     <div :style="{height: (tableHeight+100)+'px'}">
                         <template v-if="type==1">
-                            <div class="modifiedWrap modifyPassPop" style="padding-top: 50px;">
-                                <table>
-                                    <tbody>
-                                        <tr>
-                                            <td class="label" style="width: 80px;">
-                                                <span class="request">＊</span>
-                                                <span v-text="{'CN':'旧密码：','EN':'Old Password：','TW':'舊密碼：'}[language]"></span>
-                                            </td>
-                                            <td>
-                                                <i-input v-model="oldPass" />
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="label">
-                                                <span class="request">＊</span>
-                                                <span v-text="{'CN':'新密码：','EN':'New Password：','TW':'新密碼：'}[language]"></span>
-                                            </td>
-                                            <td>
-                                                <i-input v-model="newPass" />
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="label"></td>
-                                            <td>
-                                                <i-button @click="modifyPassAction" :loading="loading" type="primary" long>保存修改</i-button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </template>
-
-                        <template v-if="type==2">
                             <div class="modifiedWrap modifyPassPop">
                                 <table>
                                     <tbody>
-                                        <!-- <tr>
-                                            <td class="label" style="width: 120px;">
-                                                <span class="request">＊</span>
-                                                <span>账号：</span>
-                                            </td>
-                                            <td>
-                                                <i-input disabled="true" v-model="userInfo.userCode" />
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="label">
-                                                <span class="request">＊</span>
-                                                <span>姓名：</span>
-                                            </td>
-                                            <td>
-                                                <i-input disabled="true" v-model="userInfo.userName" />
-                                            </td>
-                                        </tr> -->
                                         <tr>
                                             <td class="label">
                                                 <span>工号：</span>
@@ -144,19 +93,6 @@
                                                 </template>
                                             </td>
                                         </tr>
-                                        <!-- <tr>
-                                            <td class="label">
-                                                <span class="request">＊</span>
-                                                <span>公司</span>
-                                            </td>
-                                            <td>
-                                                <template>
-                                                    <i-select disabled="true" v-model="userInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
-                                                        <i-option v-for="item in companyList" :value="item.id">{{item.companyName}}</i-option>
-                                                    </i-select>
-                                                </template>
-                                            </td>
-                                        </tr> -->
                                         <tr>
                                             <td class="label">
                                                 <span>身份证号：</span>
@@ -207,6 +143,39 @@
                                 </table>
                             </div>
                         </template>
+
+                        <template v-if="type==2">
+                            <div class="modifiedWrap modifyPassPop" style="padding-top: 50px;">
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td class="label" style="width: 80px;">
+                                                <span class="request">＊</span>
+                                                <span v-text="{'CN':'旧密码：','EN':'Old Password：','TW':'舊密碼：'}[language]"></span>
+                                            </td>
+                                            <td>
+                                                <i-input v-model="oldPass" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">
+                                                <span class="request">＊</span>
+                                                <span v-text="{'CN':'新密码：','EN':'New Password：','TW':'新密碼：'}[language]"></span>
+                                            </td>
+                                            <td>
+                                                <i-input v-model="newPass" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label"></td>
+                                            <td>
+                                                <i-button @click="modifyPassAction" :loading="loading" type="primary" long>保存修改</i-button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </template>
                     </div>
                 </i-col>
             </Row>
@@ -217,9 +186,9 @@
     <script src="/airport/assets/vender/iView/iview.min.js"></script>
     <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
     <script src="/airport/assets/js/md5.min.js"></script>
-    <script src="/airport/assets/js/config.min.js"></script>
-    <script src="/airport/assets/js/utility.min.js"></script>
-    <script src="/airport/www/module/terminalParame/terminalParame.min.js?v=09efefe3939"></script>
+    <script src="/airport/assets/js/config.min.js?v=1723401723947"></script>
+    <script src="/airport/assets/js/utility.min.js?v=1723401723947"></script>
+    <script src="/airport/www/module/terminalParame/terminalParame.min.js?v=1723401723947"></script>
 </body>
 
 </html>

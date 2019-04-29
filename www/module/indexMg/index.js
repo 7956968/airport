@@ -7,7 +7,7 @@
         "data": {
             "userInfo": userInfo,
             "language": !!language ? language["language"] : "CN",
-            "title": { "CN": "民贵车辆管理系统", 'EN': "Mingui Non-Powered Euipment Management System", 'TW': "民貴無動力管理系統" },
+            "title": { "CN": "深圳市民贵科技有限公司", 'EN': "Mingui Non-Powered Euipment Management System", 'TW': "民貴無動力管理系統" },
             "tabList": [],
             "iframeList": [],
             "userFuncList": userFuncList,

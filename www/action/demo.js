@@ -184,8 +184,6 @@
 
             document.title = self.title[self.language];
 
-            console.log(document.title);
-
             // 获取枚举值
             self.getBizParam();
 

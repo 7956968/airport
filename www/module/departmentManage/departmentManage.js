@@ -30,7 +30,7 @@
                 "id": "", // 部门ID，修改部门信息时必传 
                 "deptName": "", // 部门名称
                 "companyId": "", // 所属公司ID，手动从公司列表选择
-                "paraDeptId": "", // 上级部门ID
+                "paraDeptId": [], // 上级部门ID
                 "paraDeptName": "", // 上级部门名称
                 "deptLevel": "", // 部门层级，从小到大
                 "orderNum": "", // 部门排序号
@@ -173,7 +173,7 @@
                     "id": "", // 部门ID，修改部门信息时必传 
                     "deptName": "", // 部门名称
                     "companyId": "", // 所属公司ID，手动从公司列表选择
-                    "paraDeptId": "", // 上级部门ID
+                    "paraDeptId": [], // 上级部门ID
                     "paraDeptName": "", // 上级部门名称
                     "deptLevel": "", // 部门层级，从小到大
                     "orderNum": "", // 部门排序号
@@ -194,9 +194,10 @@
             // 修改
             "editItem": function () {
                 var self = this;
+                
                 utility.showMessageTip(self, function () {
                     self.itemInfo = self.departmentList[self.index];
-                    self.itemInfo.paraDeptId = [self.itemInfo["paraDeptId"]];
+                    self.itemInfo.paraDeptId = [];
                     self.itemInfo.deptName = decodeURI(self.itemInfo.deptName);
                     self.itemInfo.deptShortName = decodeURI(self.itemInfo.deptShortName);
                     self.itemInfo.leaderUserName = decodeURI(self.itemInfo.leaderUserName);
@@ -205,8 +206,9 @@
                     self.itemInfo.deptRemark = decodeURI(self.itemInfo.deptRemark);
                     self.isShowModal = true;
                     self.modalTitle = { "CN": "修改", "EN": "Edit", "TW": "修改" }[self.language];
+
+                    self.getSuperiorDepartmentList();
                 });
-                self.getSuperiorDepartmentList();
             },
             // 查看详情
             "showDetail": function () {
@@ -384,6 +386,20 @@
                     }
                 });
             },
+            "getSuper": function(list, value, arr){
+                var self = this;
+                for(var i = 0, len = list.length; i < len; i++) {
+                    if(list[i].value == value) {
+                        arr.push(value);
+                        if(list[i].paraDeptId == 0) {
+                            return;
+                        }
+                        self.getSuper(self.superiorDepartmentList, list[i].paraDeptId, arr);
+                    } else {
+                        self.getSuper(list[i]["children"], value, arr);
+                    }
+                }
+            },
             // 格式化上级部门
             "formatSuperiorDeprt": function(list) {
                 var self = this;
@@ -408,9 +424,13 @@
                         self.isTableLoading = false;
                     },
                     successCallback: function (data) {
+                        var arr = [];
                         if (data.code == 200) {
                             self.superiorDepartmentList = [];
+                            self.itemInfo.paraDeptId = [];
                             self.formatSuperiorDeprt(data.data);
+                            self.getSuper(self.superiorDepartmentList, self.itemInfo.id, arr);
+                            self.itemInfo.paraDeptId = arr.reverse();
                         }
                     }
                 });

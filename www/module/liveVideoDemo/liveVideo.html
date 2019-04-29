@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>特种车辆音视频可视化系统</title>
+
+    <!-- 页面字符编码 -->
+    <meta charset="utf-8">
+
+    <!-- 避免IE使用兼容模式 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!-- 启用360浏览器的极速模式(webkit) -->
+    <meta name="renderer" content="webkit">
+    <!-- 微软的老式浏览器 -->
+    <meta name="MobileOptimized" content="320">
+
+    <!-- 关键字描述 -->
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <!-- 设置移动端视图 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+    <meta name="HandheldFriendly" content="true">
+
+    <!-- 删除苹果默认的工具栏和菜单栏 -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <!-- 设置苹果工具栏颜色 -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+    <!-- 忽略页面中的数字识别为电话，忽略email识别 -->
+    <meta name="format-detection" content="telphone=no, email=no" />
+
+    <!-- uc强制竖屏 -->
+    <meta name="screen-orientation" content="portrait">
+    <!-- QQ强制竖屏 -->
+    <meta name="x5-orientation" content="portrait">
+    <!-- UC强制全屏 -->
+    <meta name="full-screen" content="yes">
+    <!-- QQ强制全屏 -->
+    <meta name="x5-fullscreen" content="true">
+    <!-- UC应用模式 -->
+    <meta name="browsermode" content="application">
+    <!-- QQ应用模式 -->
+    <meta name="x5-page-mode" content="app">
+    <link rel="icon" href="/airport/www/img/logo.png">
+    <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=73483418234172" />
+    <style type="text/css">
+        .video_main {
+            position: absolute;
+            border: 0px;
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            height: 100%;
+            background-color: #464545;
+        }
+        
+        .info_status {
+            width: 250px !important;
+            line-height: 50px;
+            margin: 0px;
+            padding: 0px;
+            border: 0px;
+            text-align: center;
+        }
+
+        .video_ctrl_area {
+            position: relative;
+            width: 100%;
+            height: 45px;
+            line-height: 45px;
+            overflow: hidden;
+            background: rgba(15,55,95,.4);
+            box-shadow: 0 1px 5px rgba(62,84,130,.2);
+        }
+        .video_ctrl_area .logoIcon {
+            position: absolute;
+            z-index: 0;
+            top: 5px;
+            left: 10px;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            background-color: #fff;
+        }
+        .video_ctrl_area .logoIcon img {
+            position: relative;
+            z-index: 0;
+            top: 1px;
+            width: 100%;
+            height: 95%;
+        }
+        .video_ctrl_area .title {
+            float: left;
+            padding-left: 60px;
+            font-size: 16px;
+            color: #FFF;
+        }
+        .video_ctrl_area .playWrap {
+            padding-left: 30px;
+            float: left;
+        }
+        .video_ctrl_area .splitWrap {
+            display: inline-block;
+            padding-right: 20px;
+        }
+
+        .video_player_area {
+            position: relative;
+            width: 100%;
+            height: calc(100% - 50px);
+            white-space: nowrap;
+        }
+
+        .videoItem{
+            position: absolute;
+            border: 2px solid rgb(212, 212, 212);
+            background-color: rgba(15,55,95);
+            overflow: hidden;
+        }
+        .videoItem:hover {
+            border-color: red;
+        }
+        
+        .videoWrap {
+            width: 100%;
+            height: 100%;
+        }
+        .videoItem.active {
+            border-color: #f90;
+        }
+        .videoItem video {
+            display: block;
+            width: calc(100%);
+            height: calc(100%);
+            /* object-fit: cover; */
+            transform: scaleX(2);
+        }
+        .dealWrap {
+            position: absolute;
+            z-index: 10;
+            top: 1px;
+            right: 10px;
+        }
+
+        .fullScream {
+            position: fixed;
+            z-index: 1000000;
+            top: 45px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #464545;
+        }
+        
+        .netnSignal {
+            position: relative;
+            z-index: 0;
+            top: -10px;
+            float: right;
+            display: none;
+        }
+        .msgTip {
+            float: left;
+            padding-left: 80px;
+        }
+        .msgTip span {
+            font-size: 14px;
+        }
+        .msgTip .ivu-tag {
+            height: 32px;
+            line-height: 32px;
+            padding: 0 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="js-vue" class="videoPage">
+        <div class="video_main">
+
+            <!-- 顶部操作栏 -->
+            <div class="video_ctrl_area">
+                
+                <!-- logo -->
+                <div class="logoIcon">
+                    <img src="/airport/www/img/logo.png"/>
+                </div>
+                <div class="title">特种车辆音视频可视化系统</div>
+                
+                <!-- 操作 -->
+                <div class="playWrap">
+                    <div class="splitWrap">
+                        <template>
+                            <ButtonGroup shape="circle">
+                                <!-- <i-button :type="splitNum==1?'warning':'default'" icon="ios-square" @click="updateVideoWin(1)">1屏</i-button> -->
+                                <i-button :type="splitNum==4?'warning':'default'" icon="logo-windows" @click="updateVideoWin(4)">4屏</i-button>
+                                <!-- <i-button :type="splitNum==6?'warning':'default'" icon="ios-grid-outline" @click="updateVideoWin(6)">6屏</i-button> -->
+                                <i-button :type="splitNum==8?'warning':'default'" icon="ios-grid" @click="updateVideoWin(8)">8屏</i-button>
+                                <!-- <i-button :type="splitNum==9?'warning':'default'" icon="md-apps" @click="updateVideoWin(9)">9屏</i-button> -->
+                            </ButtonGroup>
+                        </template>
+                    </div>
+                    <template v-if="isStop==true">
+                        <i-button type="success" :disabled="!isStop" icon="md-play" @click="startVideo">播放</i-button>
+                    </template>
+                    <template v-else>
+                        <i-button type="error" :disabled="isStop" icon="md-pause" @click="stopVideo">停止</i-button>
+                    </template>
+                </div>
+                
+                <!-- 状态 -->
+                <template v-if="msgInfo">
+                    <div class="msgTip">
+                        <Tag type="border" :color="msgType">{{msgInfo}}</Tag>
+                    </div>
+                </template>
+                
+                <!-- 网络信号 -->
+                <div class="netnSignal">
+                    <template>
+                        <i-select v-model="time" style="width:200px">
+                            <i-option value="5">5秒</i-option>
+                            <i-option value="15">15秒</i-option>
+                            <i-option value="30">30秒</i-option>
+                            <i-option value="60">60秒</i-option>
+                            <i-option value="120">120秒</i-option>
+                            <i-option value="240">240秒</i-option>
+                            <i-option value="300">300秒</i-option>
+                        </i-select>
+                    </template>
+                </div>
+                
+            </div>
+
+            <!-- 视频 -->
+            <div class="video_player_area" id="videoContainer">
+                <template v-for="index in mVideoCount">
+                    <div class="videoItem" :id="'liveVideo'+(index-1)" @click="setCurrentStyle('liveVideo'+(index-1))">
+                        <div class="videoWrap">
+                            <video @dblclick="setFullScream('video'+(index-1))" :id="'video'+(index-1)" width="100%" height="100%">无视频</video>
+                            <div class="dealWrap">
+                                <template v-if="isFullScream==true">
+                                    <i-button @click="closeFullScream('video'+(index-1))"><Icon color="#78b1ef" size="24" type="md-close" /></i-button>
+                                </template>
+                                <template v-else>
+                                    <i-button @click="setFullScream('video'+(index-1))" type="text"><Icon color="#78b1ef" size="24" type="md-qr-scanner" /></i-button>
+                                </template>
+
+                                <template v-if="channelIndex == index">
+                                    <i-button @click="stopAudio" type="text"><Icon color="#78b1ef" type="md-volume-up" size="24"/></i-button>
+                                </template>
+                                <template v-else>
+                                    <i-button @click="playAudio(index)" type="text"><Icon color="#78b1ef" type="md-volume-off" size="24" /></i-button>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+        </div>
+    </div>
+    <script src="/airport/assets/js/vue.min.js"></script>
+    <script src="/airport/assets/vender/iView/iview.min.js"></script>
+    <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
+    <script src="/airport/assets/js/utility.min.js?v=37423742573457"></script>
+    <script src="/airport/www/module/liveVideo/vsplayer.min.js?v=37423742573457"></script>
+    <script src="/airport/www/module/liveVideo/liveVideo.js?v=37423742573457"></script>
+</body>
+
+</html>

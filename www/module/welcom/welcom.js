@@ -10,58 +10,21 @@
             "isLoading": true,
             "innerHeight": window.innerHeight / 6,
             "resizeTime": null,
-            "copyRight": { "CN": "@copyRight 民贵无动力设备管理系统", 'EN': "@copyRight Mingui Non-Powered Euipment Management System", 'TW': "@copyRight 民貴無動力管理系統" }[language["language"]],
+            "copyRight": { "CN": "@copyRight 深圳市民贵科技有限公司", 'EN': "@copyRight Mingui Non-Powered Euipment Management System", 'TW': "@copyRight 民貴無動力管理系統" }[language["language"]],
             // 车辆信息
             "vehicleInfo": {
                 "list": [],
-                "_401": 0,
-                "_402": 0,
-                "_403": 0,
-                "_404": 0,
-                "_405": 0,
-                "_406": 0,
-                "_407": 0,
-                "_408": 0,
                 "count": 0
             },
-            "vehicleTypeInfo": {
-                "_301": {
-                    value: 0,
-                    name: "牵引车"
-                },
-                "_302": {
-                    value: 0,
-                    name: "拖挂车"
-                },
-                "_303": {
-                    value: 0,
-                    name: "三面卡"
-                },
-            },
-            "vehiclePassType": {
-                "_501": {
-                    value: 0,
-                    name: "驶入"
-                },
-                "_502": {
-                    value: 0,
-                    name: "驶出"
-                },
-                "_503": {
-                    value: 0,
-                    name: "停留"
-                },
-                "_504": {
-                    value: 0,
-                    name: "防区内行驶"
-                },
-                "_505": {
-                    value: 0,
-                    name: "超速"
-                },
-            },
+            "terminalStatusList": bizParam["terminalStatus"],
+            "vehicleTypeList": bizParam["vehicleType"],
+            "vehiclePassTypeList": bizParam["vehiclePassType"],
+            "vehicleTypeInfo": {},
+
+            "vehiclePassType": {},
             "isloadDefen": false,
             "totalChartData": null,
+            "colorList": ["#66CCCC","#CCFF66","#FF99CC","#A0522D","#FFFF00", "#336699","#CC9933", "#339999"],
         },
         "methods": {
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
@@ -78,40 +41,35 @@
             "setTotalEchart": function () {
                 var self = this;
                 var myChart = echarts.init(document.getElementById('totalEchart'));
-                // Generate data
                 var category = [];
-                var lineData = [];
-                var recLineData = [];
-                var allData = [];
+                var seriesList = [];
+                var legendLabel = [];
+                var totalChartDataList = self.totalChartData.reverse();
 
-                for (var i = 0, len = self.totalChartData.length; i < len; i++) {
-                    category.push(self.totalChartData[i]["day"]);
-                    allData.push(self.totalChartData[i]["totalUsedNum"]);
-                    for (var s = 0, slen = self.totalChartData[i]["useStat"].length; s < slen; s++) {
-                        if(slen == 0) {
-                            lineData.push(0);
-                            recLineData.push(0);
-                        } else if(slen == 1) {
-                            if (self.totalChartData[i]["useStat"][s]["vehicleTypeId"] == 301) {
-                                recLineData.push(0);
-                                lineData.push(self.totalChartData[i]["useStat"][s]["totalVehicleNum"]);
-                            } else if (self.totalChartData[i]["useStat"][s]["vehicleTypeId"] == 302) {
-                                lineData.push(0);
-                                recLineData.push(self.totalChartData[i]["useStat"][s]["totalVehicleNum"]);
-                            } 
-                        } else if(slen == 2) {
-                            if (self.totalChartData[i]["useStat"][s]["vehicleTypeId"] == 301) {
-                                lineData.push(self.totalChartData[i]["useStat"][s]["totalVehicleNum"]);
-                            } else if (self.totalChartData[i]["useStat"][s]["vehicleTypeId"] == 302) {
-                                recLineData.push(self.totalChartData[i]["useStat"][s]["totalVehicleNum"]);
-                            }
-                        }
+                for (var i = 0, len = totalChartDataList.length; i < len; i++) {
+                    category.push(totalChartDataList[i]["day"]);
+                    for (var s = 0, slen = totalChartDataList[i]["useStat"].length; s < slen; s++) {
+                        self.vehicleTypeInfo["_"+totalChartDataList[i]["useStat"][s]["vehicleTypeId"]]["list"].push(totalChartDataList[i]["useStat"][s]["totalVehicleNum"]);
                     }
                 }
-                category = category.reverse();
-                allData = allData.reverse();
-                lineData = lineData.reverse();
-                recLineData = recLineData.reverse();
+
+                for(var key in self.vehicleTypeInfo) {
+                    legendLabel.push(self.vehicleTypeInfo[key]["name"]);
+                    if(self.vehicleTypeInfo.hasOwnProperty(key)) {
+                        seriesList.push({
+                            name: self.vehicleTypeInfo[key]["name"],
+                            type: 'bar',
+                            barWidth: 4,
+                            itemStyle: {
+                                normal: {
+                                    barBorderRadius: 2,
+                                    color: self.vehicleTypeInfo[key]["color"]
+                                }
+                            },
+                            data: self.vehicleTypeInfo[key]["list"]
+                        });
+                    }
+                }
 
                 // option
                 option = {
@@ -124,7 +82,7 @@
                     },
                     legend: {
                         top: 20,
-                        data: ['牵引车使用频率', '拖挂车使用频率', '所有车辆统计'],
+                        data: legendLabel,
                         textStyle: {
                             color: '#ccc'
                         }
@@ -145,53 +103,10 @@
                             }
                         }
                     },
-                    series: [{
-                        name: '所有车辆统计',
-                        type: 'line',
-                        smooth: true,
-                        showAllSymbol: true,
-                        symbol: 'emptyCircle',
-                        symbolSize: 15,
-                        data: allData
-                    }, {
-                        name: '牵引车使用频率',
-                        type: 'bar',
-                        barWidth: 10,
-                        itemStyle: {
-                            normal: {
-                                barBorderRadius: 5,
-                                color: new echarts.graphic.LinearGradient(
-                                    0, 0, 0, 1,
-                                    [
-                                        { offset: 0, color: '#14c8d4' },
-                                        { offset: 1, color: '#43eec6' }
-                                    ]
-                                )
-                            }
-                        },
-                        data: lineData
-                    }, {
-                        name: '拖挂车使用频率',
-                        type: 'bar',
-                        barWidth: 10,
-                        itemStyle: {
-                            normal: {
-                                barBorderRadius: 5,
-                                color: new echarts.graphic.LinearGradient(
-                                    0, 0, 0, 1,
-                                    [
-                                        { offset: 0, color: 'rgba(20,200,212,0.5)' },
-                                        { offset: 0.2, color: 'rgba(20,200,212,0.2)' },
-                                        { offset: 1, color: 'rgba(20,200,212,0)' }
-                                    ]
-                                )
-                            }
-                        },
-                        z: -12,
-                        data: recLineData
-                    }]
+                    series: seriesList.reverse()
                 };
                 myChart.setOption(option);
+
             },
             // 车辆统计
             "setVehicleEchart": function () {
@@ -201,7 +116,9 @@
                     var list = [];
                     for (var key in self.vehicleTypeInfo) {
                         if (self.vehicleTypeInfo.hasOwnProperty(key)) {
-                            list.push(self.vehicleTypeInfo[key]);
+                            if(self.vehicleTypeInfo[key]["value"] != 0) {
+                                list.push(self.vehicleTypeInfo[key]);
+                            }
                         }
                     }
                     return list;
@@ -230,15 +147,19 @@
                             type: 'pie',
                             selectedMode: 'single',
                             radius: [0, '30%'],
-
                             label: {
                                 normal: {
-                                    position: 'inner'
+                                    formatter: '{b}',
+                                    backgroundColor: '#334455',
+                                    color: "#fff"
                                 }
                             },
                             labelLine: {
                                 normal: {
-                                    show: false
+                                    length: 5,
+                                    length2: 5,
+                                    smooth: true,
+                                    show: true
                                 }
                             },
                             data: typeList
@@ -247,6 +168,11 @@
                             name: '状态',
                             type: 'pie',
                             radius: ['40%', '55%'],
+                            labelLine: {
+                                normal: {
+                                    smooth: true
+                                }
+                            },
                             label: {
                                 normal: {
                                     formatter: '{b|{b}:}{c}次{per|{d}%}',
@@ -426,36 +352,38 @@
                     }
                 });
             },
+            // 重置
+            "resetVehicleBizParamInfo": function() {
+                var self = this;
+                for(var i = 0, len = self.vehicleTypeList.length; i < len; i++) {
+                    self.vehicleTypeInfo["_"+self.vehicleTypeList[i]["type"]] = {
+                        "value": 0,
+                        "name": self.vehicleTypeList[i]["name"],
+                        "list": [],
+                        "color": self.colorList[i]
+                    }
+                }
+
+                for(var j = 0, jlen = self.terminalStatusList.length; j < jlen; j++) {
+                    self.vehicleInfo["_"+self.terminalStatusList[j]["type"]] = 0
+                }
+
+                for(var k = 0, klen = self.vehiclePassTypeList.length; k < klen; k++) {
+                    self.vehiclePassType["_"+self.vehiclePassTypeList[k]["type"]] = {
+                        "value": 0,
+                        "name": self.vehiclePassTypeList[k]["name"],
+                        "list": [],
+                        "color": self.colorList[k]
+                    }
+                }
+            },
             // 格式化车辆数据
             "formatVehicle": function () {
                 var self = this;
 
                 for (var i = 0, len = self.vehicleInfo.list.length; i < len; i++) {
-                    if (self.vehicleInfo.list[i]["vehicleStatus"] == 401) {
-                        self.vehicleInfo["_401"] = self.vehicleInfo["_401"] + 1;
-                    } else if (self.vehicleInfo.list[i]["vehicleStatus"] == 402) {
-                        self.vehicleInfo["_402"] = self.vehicleInfo["_402"] + 1;
-                    } else if (self.vehicleInfo.list[i]["vehicleStatus"] == 403) {
-                        self.vehicleInfo["_403"] = self.vehicleInfo["_403"] + 1;
-                    } else if (self.vehicleInfo.list[i]["vehicleStatus"] == 404) {
-                        self.vehicleInfo["_404"] = self.vehicleInfo["_404"] + 1;
-                    } else if (self.vehicleInfo.list[i]["vehicleStatus"] == 405) {
-                        self.vehicleInfo["_405"] = self.vehicleInfo["_405"] + 1;
-                    } else if (self.vehicleInfo.list[i]["vehicleStatus"] == 406) {
-                        self.vehicleInfo["_406"] = self.vehicleInfo["_406"] + 1;
-                    } else if (self.vehicleInfo.list[i]["vehicleStatus"] == 407) {
-                        self.vehicleInfo["_407"] = self.vehicleInfo["_407"] + 1;
-                    } else if (self.vehicleInfo.list[i]["vehicleStatus"] == 408) {
-                        self.vehicleInfo["_408"] = self.vehicleInfo["_408"] + 1;
-                    }
-
-                    if (self.vehicleInfo.list[i]["vehicleTypeId"] == 301) {
-                        self.vehicleTypeInfo["_301"]["value"] = self.vehicleTypeInfo["_301"]["value"] + 1;
-                    } else if (self.vehicleInfo.list[i]["vehicleTypeId"] == 302) {
-                        self.vehicleTypeInfo["_302"]["value"] = self.vehicleTypeInfo["_302"]["value"] + 1;
-                    } else if (self.vehicleInfo.list[i]["vehicleTypeId"] == 303) {
-                        self.vehicleTypeInfo["_303"]["value"] = self.vehicleTypeInfo["_303"]["value"] + 1;
-                    }
+                    self.vehicleInfo["_"+self.vehicleInfo.list[i]["vehicleStatus"]] = self.vehicleInfo["_"+self.vehicleInfo.list[i]["vehicleStatus"]] + 1;
+                    self.vehicleTypeInfo["_"+self.vehicleInfo.list[i]["vehicleTypeId"]]["value"] = self.vehicleTypeInfo["_"+self.vehicleInfo.list[i]["vehicleTypeId"]]["value"] + 1;
                 }
             },
             // 获取车辆信息
@@ -552,6 +480,9 @@
 
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
             utility.isLogin(false);
+
+            // 重置常量数据
+            self.resetVehicleBizParamInfo();
 
             // 车辆数据
             self.getVehicleList();

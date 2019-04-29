@@ -144,11 +144,11 @@ table {
 .graphPage .welcomPage .layout .ivu-card {
   border-radius: 2px;
   transition: none;
-  background-color: #0f375f; 
+  background-color: #0f375f;
 }
 .graphPage .welcomPage .layout .ivu-card:hover {
   box-shadow: none;
-} 
+}
 .graphPage .welcomPage .layout .ivu-card.ivu-card-bordered {
   border-color: rgba(109, 106, 106, 0.7);
 }
@@ -490,6 +490,10 @@ table {
   right: 0;
   width: 100%;
   height: 100%;
+  display: none;
+}
+.index .mainWrap iframe.active {
+  display: block;
 }
 .top {
   padding: 5px;

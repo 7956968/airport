@@ -118,19 +118,21 @@
 
         <!-- 搜索 -->
         <div class="searchWrap">
-            <Row type="flex" justify="start" gutter="5">
-                <i-col span="14">
-                    <template>
-                        <i-input v-model="searchCode" @on-search="searchMap" size="large" search enter-button :placeholder="{'CN':'车辆编码','EN':'Vehicle Code','TW':'車輛編碼'}[language]" />
-                    </template>
-                </i-col>
-                <i-col span="10">
-                    <template>
-                        <i-button @click="refresh" size="large" type="info"><template><Icon size="20" type="ios-refresh-circle" /></template>{{{'CN':'刷新页面','EN':'Refresh Page','TW':'刷新頁面'}[language]}}</i-button>
-                        <i-button @click="resetView" size="large" type="warning"><template><Icon size="20" type="ios-refresh-circle-outline" /></template>{{{'CN':'重置视图','EN':'Reset View','TW':'重置視圖'}[language]}}</i-button>
-                    </template>
-                </i-col>
-            </Row>
+            <template>
+                <Row type="flex" justify="start" gutter="5">
+                    <i-col span="14">
+                        <template>
+                            <i-input v-model="searchCode" @on-search="searchMap" size="large" search enter-button :placeholder="{'CN':'车辆编码','EN':'Vehicle Code','TW':'車輛編碼'}[language]" />
+                        </template>
+                    </i-col>
+                    <i-col span="10">
+                        <template>
+                            <i-button @click="refresh" size="large" type="info"><template><Icon size="20" type="ios-refresh-circle" /></template>{{{'CN':'刷新页面','EN':'Refresh Page','TW':'刷新頁面'}[language]}}</i-button>
+                            <i-button @click="resetView" size="large" type="warning"><template><Icon size="20" type="ios-refresh-circle-outline" /></template>{{{'CN':'重置视图','EN':'Reset View','TW':'重置視圖'}[language]}}</i-button>
+                        </template>
+                    </i-col>
+                </Row>
+            </template>
         </div>
 
         <!-- 菜单 -->
@@ -163,12 +165,14 @@
                             </div>
                         </menu-item>
                     </template>
-                    <menu-item name="5">
-                        <div @click="showModal('isCamera')">
-                            <span class="icon"> <Icon type="ios-videocam-outline" /></span>
-                            <span class="label" v-text="{'CN':'摄像机管理','EN':'Camera Management','TW':'攝像機管理'}[language]"></span>
-                        </div>
-                    </menu-item>
+                    <template v-if="isShenZhen==true">
+                        <menu-item name="5">
+                            <div @click="showModal('isCamera')">
+                                <span class="icon"> <Icon type="ios-videocam-outline" /></span>
+                                <span class="label" v-text="{'CN':'摄像机管理','EN':'Camera Management','TW':'攝像機管理'}[language]"></span>
+                            </div>
+                        </menu-item>
+                    </template>
                     <menu-item name="6">
                         <div @click="showModal('isLayer')">
                             <span class="icon"><Icon type="ios-albums-outline" /></span>
@@ -263,15 +267,15 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <span class="label" v-text="{'CN':'开始时间','EN':'Start Time','TW':'開始時間'}[language]"></span>
+                                    <span class="label" v-text="{'CN':'查询日期','EN':'Start Date','TW':'開始時間'}[language]"></span>
                                 </td>
                                 <td>
                                     <template>
-                                        <date-picker @on-change="getBeginTime" style="width: 100%;" type="datetime" format="yyyy-MM-dd HH:mm:ss" :confirm="false" :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"></date-picker>
+                                        <date-picker @on-change="getBeginTime" style="width: 100%;" type="date" format="yyyy-MM-dd" :confirm="false" :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"></date-picker>
                                     </template>
                                 </td>
                             </tr>
-                            <tr>
+                            <!-- <tr>
                                 <td>
                                     <span class="label" v-text="{'CN':'结束时间','EN':'Start Time','TW':'結束時間'}[language]"></span>
                                 </td>
@@ -279,14 +283,14 @@
                                     <template>
                                         <date-picker @on-change="getEndTime" style="width: 100%;" type="datetime" format="yyyy-MM-dd HH:mm:ss" :confirm="false" :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"></date-picker>
                                     </template>
-                                </td>
+                                </td> -->
                             </tr>
                             <tr>
                                 <td>
                                     <span class="label" v-text="{'CN':'回放速度','EN':'Speed','TW':'回放速度'}[language]"></span>
                                 </td>
                                 <td>
-                                    <Slider v-model="mapContainer.animationInfo.speed" :min="10" :max="120" :show-input="true" input-size="small"></Slider>
+                                    <Slider v-model="mapContainer.animationInfo.speed" :min="60" :max="200" :show-input="true" input-size="small"></Slider>
                                 </td>
                             </tr>
                             <tr>
@@ -905,7 +909,7 @@
         <template>
             <Modal v-model="modal.isSearch" 
                 :styles="{top: '120px', left: '50px', position: 'absolute'}" 
-                width="35"
+                width="450"
                 footer-hide="true"
                 :mask="false"
                 class-name="mapModal">
@@ -918,50 +922,18 @@
                 <div class="mapSearch">
                     <table>
                         <tbody>
+
                             <tr>
-                                <td>
-                                    <span class="label" v-text="{'CN':'半径范围','EN':'Radius','TW':'半徑範圍'}[language]"></span>
-                                </td>
-                                <td>
-                                    <i-input v-model="vehiclePositonPageInfo.span" :placeholder="{'CN':'请输入半径(单位/米)','EN':'Radius(unit/m)','TW':'請輸入半徑(單位/米)'}[language]"></i-input>
-                                </td>
-                                <td>
-                                    <span class="label" v-text="{'CN':'坐标原点','EN':'Coordinate','TW':'座標原點'}[language]"></span>
-                                </td>
-                                <td>
-                                    <i-input v-model="vehiclePositonPageInfo.centerPosition" :placeholder="{'CN':'格式:113.8077, 22.6286','EN':'Format:113.8077, 22.6286','TW':'格式:113.8077, 22.6286'}[language]"></i-input>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
+                                <td style="width: 80px; text-align: right;">
                                     <span class="label" v-text="{'CN':'车牌号','EN':'Plate No.','TW':'車牌號'}[language]"></span>
                                 </td>
                                 <td>
                                     <i-input v-model="vehiclePositonPageInfo.licenseNumber" :placeholder="{'CN':'请输入车牌号','EN':'Plate No.','TW':'請輸入車牌號'}[language]"></i-input>
                                 </td>
-                                <td>
-                                    <span class="label" v-text="{'CN':'车辆编号','EN':'Vehicle Number','TW':'車輛編號'}[language]"></span>
-                                </td>
-                                <td>
-                                    <i-input v-model="vehiclePositonPageInfo.vehicleCode" :placeholder="{'CN':'请输入车辆编号','EN':'Vehicle Number','TW':'請輸入車輛編號'}[language]"></i-input>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="width: 15%;">
-                                    <span class="label" v-text="{'CN':'车辆状态','EN':'Vehicle Statu','TW':'車輛狀態'}[language]"></span>
-                                </td>
-                                <td style="width: 35%;">
-                                    <template>
-                                        <i-select v-model="vehiclePositonPageInfo.vehicleStatus" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
-                                            <i-option v-text="{'CN':'全部','EN':'All','TW':'全部'}[language]"></i-option>
-                                            <i-option v-for="item in terminalStatusList" :value="item.type">{{item.name}}</i-option>
-                                        </i-select>
-                                    </template>
-                                </td>
-                                <td style="width: 15%;">
+                                <td style="width: 80px; text-align: right;">
                                     <span class="label" v-text="{'CN':'车辆类型','EN':'Vehicle Type','TW':'車輛類型'}[language]"></span>
                                 </td>
-                                <td style="width: 35%;">
+                                <td>
                                     <template>
                                         <i-select v-model="vehiclePositonPageInfo.vehicleTypeId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
                                             <i-option v-text="{'CN':'全部','EN':'All','TW':'全部'}[language]"></i-option>
@@ -969,9 +941,51 @@
                                         </i-select>
                                     </template>
                                 </td>
+                                
                             </tr>
+
                             <tr>
+                                <td style="text-align: right;">
+                                    <span class="label" v-text="{'CN':'车辆编号','EN':'Vehicle Number','TW':'車輛編號'}[language]"></span>
+                                </td>
                                 <td>
+                                    <i-input v-model="vehiclePositonPageInfo.vehicleCode" :placeholder="{'CN':'请输入车辆编号','EN':'Vehicle Number','TW':'請輸入車輛編號'}[language]"></i-input>
+                                </td>
+                                <td style="text-align: right;">
+                                    <span class="label" v-text="{'CN':'车辆状态','EN':'Vehicle Statu','TW':'車輛狀態'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <i-select v-model="vehiclePositonPageInfo.vehicleStatus" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <i-option v-text="{'CN':'全部','EN':'All','TW':'全部'}[language]"></i-option>
+                                            <template v-for="item in terminalStatusList">
+                                                <!-- 401、402、406 -->
+                                                <template v-if="!isShenZhen && (item.type==401 ||item.type==402||item.type==406)">
+                                                    <i-option :value="item.type">{{item.name}}</i-option>
+                                                </template>
+                                            </template>
+                                        </i-select>
+                                    </template>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="text-align: right;">
+                                    <span class="label" v-text="{'CN':'半径范围','EN':'Radius','TW':'半徑範圍'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input v-model="vehiclePositonPageInfo.span" :placeholder="{'CN':'请输入半径(单位/米)','EN':'Radius(unit/m)','TW':'請輸入半徑(單位/米)'}[language]"></i-input>
+                                </td>
+                                <td style="text-align: right;">
+                                    <span class="label" v-text="{'CN':'坐标原点','EN':'Coordinate','TW':'座標原點'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input v-model="vehiclePositonPageInfo.centerPosition" :placeholder="{'CN':'格式:113.8077, 22.6286','EN':'Format:113.8077, 22.6286','TW':'格式:113.8077, 22.6286'}[language]"></i-input>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td style="text-align: right;">
                                     <span class="label" v-text="{'CN':'车辆颜色','EN':'Vehicle Color','TW':'車輛顔色'}[language]"></span>
                                 </td>
                                 <td>
@@ -982,7 +996,7 @@
                                         </i-select>
                                     </template>
                                 </td>
-                                <td>
+                                <td style="text-align: right;">
                                     <span class="label" v-text="{'CN':'车辆品牌','EN':'Brand','TW':'車輛品牌'}[language]"></span>
                                 </td>
                                 <td>
@@ -1018,9 +1032,9 @@
         <script src="/airport/assets/js/md5.min.js"></script>
         <script src="/airport/assets/vender/openLayer/ol.min.js"></script>
         <script src="/airport/assets/vender/radar/radar.min.js"></script>
-        <script src="/airport/assets/js/config.min.js?v=57565096372"></script>
-        <script src="/airport/assets/js/utility.min.js?v=347283412839"></script>
-        <script src="/airport/www/module/maps/maps.min.js?v=4734934344234"></script>
+        <script src="/airport/assets/js/config.min.js?v=83478723412394"></script>
+        <script src="/airport/assets/js/utility.min.js?v=83478723412394"></script>
+        <script src="/airport/www/module/maps/maps.min.js?v=83478723412394"></script>
     </div>
 </body>
 

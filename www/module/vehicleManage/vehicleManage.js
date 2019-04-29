@@ -32,7 +32,8 @@
                 "vehicleColorId": "", // 车辆颜色ID
                 "vehicleTypeId": "", // 车辆类型ID
                 "vehicleBrandId": "", // 车辆品牌ID
-                "deptId": [], // 部门ID
+                "deptId": "", // 部门ID
+                "deptIds": [], // 部门ID
                 "deptName": "", // 部门名称
                 "gpsDeviceId": "", // 定位终端ID
                 "gpsDeviceCode": "", // 定位终端编号
@@ -43,7 +44,8 @@
                 "pageSize": 20,
                 "pageNum": 0,
                 "companyId": "", // 所属公司ID，手动从公司列表选择
-                "deptId": [], // 部门ID，可选
+                "deptId": "", // 部门ID，可选
+                "deptIds": [], // 部门ID，可选
                 "bindDeviceFlag": "", // 是否绑定定位设备
                 "vehicleName": "", // 车辆名称
                 "vehicleCode": "", // 车辆编码
@@ -58,53 +60,60 @@
             "vehicleList": [],
             "columnsList": [
                 {
-                    "type": "index",
-                    "width": 60,
-                    "align": "center"
-                },
-                {
                     "title": { "CN": "公司", "EN": "Company", "TW": "公司" }[language["language"]],
-                    "key": "companyId"
+                    "key": "companyId",
+                    "fixed": "left",
+                    "width": 150
                 },
                 {
                     "title": { "CN": "部门", "EN": "Department", "TW": "部門" }[language["language"]],
-                    "key": "deptId"
-                },
-                {
-                    "title": { "CN": "车辆名称", "EN": "Vehicle Name", "TW": "車輛名稱" }[language["language"]],
-                    "key": "vehicleName"
-                },
-                {
-                    "title": { "CN": "车辆编码", "EN": "Vehicle Code", "TW": "車輛編碼" }[language["language"]],
-                    "key": "vehicleCode"
+                    "key": "deptId",
+                    "width": 200
                 },
                 {
                     "title": { "CN": "车牌号", "EN": "Plate No.", "TW": "車牌號" }[language["language"]],
-                    "key": "licenseNumber"
+                    "key": "licenseNumber",
+                    "width": 150
+                },
+                {
+                    "title": { "CN": "车辆名称", "EN": "Vehicle Name", "TW": "車輛名稱" }[language["language"]],
+                    "key": "vehicleName",
+                    "width": 150
+                },
+                {
+                    "title": { "CN": "车辆编码", "EN": "Vehicle Code", "TW": "車輛編碼" }[language["language"]],
+                    "key": "vehicleCode",
+                    "width": 150
                 },
                 {
                     "title": { "CN": "状态", "EN": "State", "TW": "狀態" }[language["language"]],
-                    "key": "vehicleStatus"
+                    "key": "vehicleStatus",
+                    "width": 120
                 },
                 {
                     "title": { "CN": "绑定终端", "EN": "Terminal", "TW": "綁定終端" }[language["language"]],
-                    "key": "gpsDeviceId"
+                    "key": "gpsDeviceId",
+                    "width": 250
                 },
                 {
                     "title": { "CN": "车辆类型", "EN": "Vehicle Type", "TW": "車輛類型" }[language["language"]],
-                    "key": "vehicleTypeId"
+                    "key": "vehicleTypeId",
+                    "width": 120
                 },
                 {
                     "title": { "CN": "车辆颜色", "EN": "Vehicle Color", "TW": "車輛顔色" }[language["language"]],
-                    "key": "vehicleColorId"
+                    "key": "vehicleColorId",
+                    "width": 120
                 },
                 {
                     "title": { "CN": "品牌", "EN": "Brand", "TW": "品牌" }[language["language"]],
-                    "key": "vehicleBrandId"
+                    "key": "vehicleBrandId",
+                    "width": 120
                 },
                 {
                     "title": { "CN": "操作", "EN": "Operation", "TW": "操作" }[language["language"]],
                     "key": "operation",
+                    "fixed": "right",
                     "width": 220,
                     "render": function (h, params) {
                         var liveVideoBtn = null;
@@ -223,9 +232,9 @@
                 var self = this;
                 utility.showMessageTip(self, function () {
                     self.itemInfo = self.vehicleList[self.index];
-                    self.itemInfo.deptId = [self.vehicleList[self.index]["deptId"]];
                     self.isShowModal = true;
                     self.modalTitle = { "CN": "修改", "EN": "Edit", "TW": "修改" }[self.language];
+                    self.getDepartmentList("itemInfo");
                 });
             },
             // 查看详情
@@ -402,7 +411,7 @@
                         "vehicleCode": encodeURI(self.pageInfo.vehicleCode), // 车辆编码
                         "gpsDeviceId": encodeURI(self.pageInfo.gpsDeviceId), // 
                         "licenseNumber": encodeURI(self.pageInfo.licenseNumber), // 车牌号
-                        "deptId": self.pageInfo.deptId[self.pageInfo.deptId.length - 1], // 部门ID，可选
+                        "deptId": self.pageInfo.deptIds[self.pageInfo.deptIds.length - 1] || 0, // 部门ID，可选
                     },
                     beforeSendCallback: function () {
                         self.isTableLoading = true;
@@ -453,6 +462,20 @@
                     }
                 });
             },
+            "getSuper": function(list, value, arr){
+                var self = this;
+                for(var i = 0, len = list.length; i < len; i++) {
+                    if(list[i].value == value) {
+                        arr.push(value);
+                        if(list[i].paraDeptId == 0) {
+                            return;
+                        }
+                        self.getSuper(self.departmentList, list[i].paraDeptId, arr);
+                    } else {
+                        self.getSuper(list[i]["children"], value, arr);
+                    }
+                }
+            },
             // 格式化上级部门
             "formatSuperiorDeprt": function (list) {
                 var self = this;
@@ -463,7 +486,6 @@
             "getDepartmentList": function (type) {
                 var self = this;
                 self.departmentList = [];
-                self[type]["deptId"] = [];
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.deptService + "?action=" + CONFIG.ACTION.getDeptTreeList,
                     actionUrl: CONFIG.SERVICE.deptService,
@@ -474,7 +496,13 @@
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
+                            var arr = [];
+                            self[type]["deptIds"] = [];
                             self.formatSuperiorDeprt(data.data);
+
+                            self.getSuper(self.departmentList, self[type]["deptId"], arr);
+
+                            self[type]["deptIds"] = arr.reverse();
                         }
                     }
                 });
@@ -500,6 +528,10 @@
                 self.getCompanyList();
                 self.getTerminalList();
                 self.getDepartmentList("pageInfo");
+
+                setInterval(function() {
+                    self.getVehicleList(false);
+                }, 10000);
             }, 500);
         }
     });

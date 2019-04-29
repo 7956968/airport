@@ -89,7 +89,7 @@
                 },
                 // 动画信息
                 "animationInfo": {
-                    "speed": 50,
+                    "speed": 120,
                     "index": 0,
                     "time": null,
                     "point": null,
@@ -217,8 +217,12 @@
             "singleVehiclePageInfo": {
                 "endTime": "", // 查询结束时间
                 "vihecleId": "", // 车辆ID
-                "beginTime": "", // 查询开始时间
+                "beginTime": (function(){
+                    var dateInfo = utility.getDateDetailInfo();
+                    return dateInfo.year + "-" + dateInfo.month + "-" + dateInfo.date
+                }()), // 查询开始时间
                 "vehicleCode": "", // 车辆编码
+                "licenseNumber": "", // 车牌号
                 "gpsDeviceCode": "", // 定位终端编号
             },
             "singleVehicleItem": {},
@@ -257,7 +261,8 @@
                 "featureId": "",
                 "opType": 1, // 操作状态：1:新增防区 2:修改防区基本信息 3:修改防区地理坐标信息 4:修改防区状态
                 "companyId": "",
-                "deptId": [], // 部门ID，可选
+                "deptId": "", // 部门ID，可选
+                "deptIds": [], // 部门ID，可选
                 "areaName": "", // 防区名称
                 "areaCode": "", // 防区编码
                 "secureStatus": "", // 防区状态：701：草稿 702：布防 703：撤防 704：无效
@@ -396,7 +401,8 @@
                 "id": "", // 摄像机ID
                 "companyId": "", // 所属公司ID 
                 "companyName": "", // 公司名称
-                "deptId": [], // 部门ID，可选
+                "deptId": "", // 部门ID，可选
+                "deptIds": [], // 部门ID，可选
                 "deptName": "", // 部门名称
                 "cameraName": "", // 摄像机名称
                 "cameraCode": "", // 摄像机编码
@@ -506,66 +512,31 @@
             "isSearchLoading": false,
             "searchColumns": [
                 {
-                    "title": { "CN": "车辆编号", "EN": "Vehicle Number", "TW": "車輛編號" }[language["language"]],
-                    "key": "vehicleCode",
-                    // "fixed": "left",
-                    // "width": 90
+                    "title": { "CN": "车牌号", "EN": "Plate No.", "TW": "車牌號" }[language["language"]],
+                    "key": "licenseNumber",
+                    "fixed": "left",
+                    "width": 120
                 },
                 {
                     "title": { "CN": "车辆状态", "EN": "Vehicle State", "TW": "車輛狀態" }[language["language"]],
                     "key": "vehicleStatus",
-                    // "width": 90,
-                    // "fixed": "left",
+                    "width": 100
                 },
                 {
-                    "title": { "CN": "车牌号", "EN": "Plate No.", "TW": "車牌號" }[language["language"]],
-                    "key": "licenseNumber"
+                    "title": { "CN": "车辆编号", "EN": "Vehicle Number", "TW": "車輛編號" }[language["language"]],
+                    "key": "vehicleCode",
+                    "width": 130
                 },
                 {
                     "title": { "CN": "车辆名称", "EN": "Vehicle Name", "TW": "車輛名稱" }[language["language"]],
                     "key": "vehicleName",
-                    // "width": 130
+                    "width": 130
                 },
-                // {
-                //     "title": { "CN": "车辆类型", "EN": "Vehicle Type", "TW": "車輛類型" }[language["language"]],
-                //     "key": "vehicleTypeId",
-                //     "width": 100
-                // },
-                // {
-                //     "title": { "CN": "归属公司", "EN": "Ownership Company", "TW": "歸屬公司" }[language["language"]],
-                //     "key": "companyName",
-                //     "width": 150
-                // },
-                // {
-                //     "title": { "CN": "车辆颜色", "EN": "Vehicle Color", "TW": "車輛顔色" }[language["language"]],
-                //     "key": "vehicleColorId",
-                //     "width": 100
-                // },
-                // {
-                //     "title": { "CN": "车辆品牌", "EN": "Vehicle Brand", "TW": "車輛品牌" }[language["language"]],
-                //     "key": "vehicleBrandId",
-                //     "width": 100
-                // },
-                // {
-                //     "title": { "CN": "当前速度", "EN": "Speed", "TW": "當前速度" }[language["language"]],
-                //     "key": "speed",
-                //     "width": 100
-                // },
-                // {
-                //     "title": { "CN": "电量", "EN": "Power", "TW": "電量" }[language["language"]],
-                //     "key": "power",
-                //     "width": 100
-                // },
-                // {
-                //     "title": { "CN": "经纬度", "EN": "Long And Lat", "TW": "經緯度" }[language["language"]],
-                //     "key": "lastPosition",
-                //     "width": 280
-                // },
                 {
                     "title": { "CN": "操作", "EN": "Operation", "TW": "操作" }[language["language"]],
                     "key": "operation",
-                    "width": 80,
-                    // "fixed": "right",
+                    "width": 100,
+                    "fixed": "right",
                     "render": function (h, params) {
                         var liveVideoBtn = h("Button", {
                             "props": {
@@ -664,9 +635,11 @@
                 // 创建地图容器，设置背景地图
                 self.createdMap();
 
-                // 创建机场图层
-                self.createAirportLayer();
-
+                if(self.isShenZhen==true) {
+                    // 创建机场图层
+                    self.createAirportLayer();
+                }
+        
                 // 创建各主要要素图层,如：机位，告警，车辆，摄像机，防区
                 self.createFeatureLayer();
 
@@ -691,12 +664,6 @@
                 self.mapContainer.layersInfo.OSM = new ol.layer.Tile({
                     "source": new ol.source.OSM()
                 });
-
-                // self.mapContainer.layersInfo.satellite = new ol.layer.Image({
-                //     "source": new ol.source.ImageStatic({
-                //         "url": "https://test2.cityeasyplay.com/geoserver/gwc/demo/sz:sz_satellite_baidu?gridSet=EPSG:4326&format=image/png"
-                //     })
-                // });
 
                 self.mapContainer.map = new ol.Map({
                     "target": "map", // 地图容器div的id
@@ -779,19 +746,19 @@
                 self.mapContainer.layersInfo.airportPoint = new ol.layer.Tile({
                     "visible": false,
                     "source": new ol.source.TileWMS({
-                        "url": "https://test2.cityeasyplay.com/geoserver/sz/wms?service=WMS&version=1.1.0&request=GetMap&layers=sz:surface_region&styles=&bbox=113.76931608,22.60251774,113.84250732,22.67499654&width=768&height=760&srs=EPSG:4326&format=application/openlayers"
+                        "url": "https://www.minguicloud.com/geoserver/sz/wms?service=WMS&version=1.1.0&request=GetMap&layers=sz:surface_region&styles=&bbox=113.76931608,22.60251774,113.84250732,22.67499654&width=768&height=760&srs=EPSG:4326&format=application/openlayers"
                     })
                 });
                 self.mapContainer.layersInfo.airportLine = new ol.layer.Tile({
                     "visible": false,
                     "source": new ol.source.TileWMS({
-                        "url": "https://test2.cityeasyplay.com/geoserver/sz/wms?service=WMS&version=1.1.0&request=GetMap&layers=sz:line_polyline&styles=&bbox=113.76640439999998,22.59093897,113.84873603999999,22.696465319999998&width=599&height=768&srs=EPSG:4326&format=application/openlayers"
+                        "url": "https://www.minguicloud.com/geoserver/sz/wms?service=WMS&version=1.1.0&request=GetMap&layers=sz:line_polyline&styles=&bbox=113.76640439999998,22.59093897,113.84873603999999,22.696465319999998&width=599&height=768&srs=EPSG:4326&format=application/openlayers"
                     })
                 });
                 self.mapContainer.layersInfo.airportPolygo = new ol.layer.Tile({
                     "visible": false,
                     "source": new ol.source.TileWMS({
-                        "url": "https://test2.cityeasyplay.com/geoserver/sz/wms?service=WMS&version=1.1.0&request=GetMap&layers=sz:point_position_point&styles=&bbox=113.786041,22.616661,113.824471,22.655542&width=759&height=768&srs=EPSG:4326&format=application/openlayers"
+                        "url": "https://www.minguicloud.com/geoserver/sz/wms?service=WMS&version=1.1.0&request=GetMap&layers=sz:point_position_point&styles=&bbox=113.786041,22.616661,113.824471,22.655542&width=759&height=768&srs=EPSG:4326&format=application/openlayers"
                     })
                 });
 
@@ -841,8 +808,10 @@
                 // 创建车辆图层
                 createLayer("vehicle", false);
 
-                // 创建摄像机图层
-                createLayer("camera", false);
+                if(self.isShenZhen==true) {
+                    // 创建摄像机图层
+                    createLayer("camera", false);
+                }
 
                 // 创建GPS图层
                 createLayer("GPS", false);
@@ -885,7 +854,6 @@
 
                 // 鹰眼控件
                 if (!self.mapContainer.controlsInfo.overviewMap) {
-                    console.log(self.airPort);
                     self.mapContainer.controlsInfo.overviewMap = new ol.control.OverviewMap({
                         "className": "overViewMap",
                         "layers": [
@@ -924,8 +892,14 @@
             "createDefensFeature": function (item, callback) {
                 var self = this;
                 var defensFeature = null;
-                var currentFeature = self.mapContainer.sourceInfo.defens.getFeatureById("defens_" + item.id);
+                var currentFeature = null;
                 var coordinate = JSON.parse(item.areaRange)["coordinates"];
+
+                if(!!self.mapContainer.sourceInfo.defens) {
+                    currentFeature = self.mapContainer.sourceInfo.defens.getFeatureById("defens_" + item.id);
+                } else {
+                    return;
+                }
 
                 if (currentFeature) {
                     currentFeature.setStyle(new ol.style.Style(self.defensColor[item.secureStatus]));
@@ -1012,7 +986,8 @@
                         "featureId": featureId,
                         "opType": 1, // 操作状态：1:新增防区 2:修改防区基本信息 3:修改防区地理坐标信息 4:修改防区状态
                         "companyId": "",
-                        "deptId": [], // 部门ID，可选
+                        "deptId": "", // 部门ID，可选
+                        "deptIds": [], // 部门ID，可选
                         "areaName": "", // 防区名称
                         "areaCode": "", // 防区编码
                         "secureStatus": "", // 防区状态：701：草稿 702：布防 703：撤防 704：无效
@@ -1187,6 +1162,7 @@
                                         "opType": 1, // 操作状态：1:新增防区 2:修改防区基本信息 3:修改防区地理坐标信息 4:修改防区状态
                                         "companyId": "",
                                         "deptId": "", // 部门ID，可选
+                                        "deptIds": [], // 部门ID，可选
                                         "areaName": "", // 防区名称
                                         "areaCode": "", // 防区编码
                                         "secureStatus": "", // 防区状态：701：草稿 702：布防 703：撤防 704：无效
@@ -1215,7 +1191,7 @@
                         "id": self.defensAreaDetailInfo.id,
                         "opType": self.defensAreaDetailInfo.opType, // 操作状态：1:新增防区 2:修改防区基本信息 3:修改防区地理坐标信息 4:修改防区状态
                         "companyId": self.defensAreaDetailInfo.companyId,
-                        "deptId": self.defensAreaDetailInfo.deptId[self.defensAreaDetailInfo.deptId.length - 1], // 部门ID，可选
+                        "deptId": self.defensAreaDetailInfo.deptIds[self.defensAreaDetailInfo.deptIds.length - 1] || 0, // 部门ID，可选
                         "areaName": encodeURI(self.defensAreaDetailInfo.areaName), // 防区名称
                         "areaCode": encodeURI(self.defensAreaDetailInfo.areaCode), // 防区编码
                         "secureStatus": self.defensAreaDetailInfo.secureStatus, // 防区状态：701：草稿 702：布防 703：撤防 704：无效
@@ -1294,7 +1270,8 @@
                             "id": "", // 摄像机ID
                             "companyId": "", // 所属公司ID 
                             "companyName": "", // 公司名称
-                            "deptId": [], // 部门ID，可选
+                            "deptId": "", // 部门ID，可选
+                            "deptIds": [], // 部门ID，可选
                             "deptName": "", // 部门名称
                             "cameraName": "", // 摄像机名称
                             "cameraCode": "", // 摄像机编码
@@ -1315,6 +1292,8 @@
                 !!callback && callback(id, coordinate);
                 self.isAddCameraAction = false;
             },
+
+            // 画摄像机
             "drawAllCamera": function () {
                 var self = this;
                 for (var i = 0, len = self.cameraList.length; i < len; i++) {
@@ -1323,6 +1302,7 @@
                     self.isAddCameraAction = false;
                 }
             },
+
             "setCameraRowData": function (item, index) {
                 var self = this;
                 self.cameraDetailInfo = self.cameraList[index];
@@ -1468,6 +1448,7 @@
                                         "companyId": "", // 所属公司ID 
                                         "companyName": "", // 公司名称
                                         "deptId": "", // 部门ID，可选
+                                        "deptIds": [], // 部门ID，可选
                                         "deptName": "", // 部门名称
                                         "cameraName": "", // 摄像机名称
                                         "cameraCode": "", // 摄像机编码
@@ -1499,7 +1480,7 @@
                     dataObj: {
                         "id": self.cameraDetailInfo.id, // 摄像机ID
                         "companyId": self.cameraDetailInfo.companyId, // 所属公司ID 
-                        "deptId": self.cameraDetailInfo.deptId[self.cameraDetailInfo.deptId.length - 1], // 部门ID，可选
+                        "deptId": self.cameraDetailInfo.deptIds[self.cameraDetailInfo.deptIds.length - 1] || 0, // 部门ID，可选
                         "cameraName": encodeURI(self.cameraDetailInfo.cameraName), // 摄像机名称
                         "cameraCode": encodeURI(self.cameraDetailInfo.cameraCode), // 摄像机编码
                         "cameraDesc": encodeURI(self.cameraDetailInfo.cameraDesc), // 摄像机描述
@@ -1581,6 +1562,7 @@
                     self.getVehicleList(false);
                 }, 200);
             },
+
             // 添加车辆要素
             "createVehicleFeature": function (item, index, callback) {
                 var self = this;
@@ -1588,11 +1570,13 @@
                 var coordinate = JSON.parse(item["lastPosition"])["coordinates"];
                 var iconSrc = "/airport/assets/img/success.gif";
                 var circleColor = "rgb(32, 121, 109)";
-                var vehicleType = {
-                    "牵引车": "301",
-                    "拖挂车": "302",
-                    "三面卡": "303",
-                };
+                var vehicleType = (function() {
+                    var type = {};
+                    for(var i = 0, len = bizParam["vehicleType"].length; i < len; i++) {
+                        type[bizParam["vehicleType"][i]["name"]] = bizParam["vehicleType"][i]["type"]+"";
+                    }
+                    return type;
+                }());
                 var vehicleIcon = (vehicleType[item.vehicleTypeName] + item.vehicleStatus) || "warning";
                 var scale = 0.2;
                 var radius = 4;
@@ -1600,8 +1584,6 @@
                 var zoom = self.mapContainer.viewInfo.view.getZoom();
 
                 iconSrc = "/airport/assets/img/" + vehicleIcon + ".gif";
-
-                console.log("coordinate:"+coordinate);
 
                 if (zoom < 8) {
                     scale = 0.01;
@@ -1735,7 +1717,8 @@
                 var view = self.mapContainer.map.getView().getZoom();
                 // 设置轨迹查询数据
                 self.singleVehiclePageInfo.vehicleId = self.vehicleItemPop.vihecleId;// 车辆ID
-                self.singleVehiclePageInfo.vehicleCode = encodeURI(self.vehicleItemPop.vehicleCode);// 车辆编码
+                self.singleVehiclePageInfo.vehicleCode = self.vehicleItemPop.vehicleCode;// 车辆编码
+                self.singleVehiclePageInfo.licenseNumber = self.vehicleItemPop.licenseNumber;// 车牌号
                 $("body").find("#ol-vehicle").show();
                 if (!!!self.mapContainer.overlayInfo["vehicle"]) {
                     self.mapContainer.overlayInfo["vehicle"] = new ol.Overlay({
@@ -1931,7 +1914,17 @@
             // 获取开始时间
             "getBeginTime": function (value, data) {
                 var self = this;
-                self.singleVehiclePageInfo.beginTime = value;
+
+                if(!!value) {
+                    self.singleVehiclePageInfo.beginTime = value;
+                    self.singleVehiclePageInfo.endTime = value;
+                } else {
+                    (function(){
+                        var dateInfo = utility.getDateDetailInfo();
+                        self.singleVehiclePageInfo.beginTime =  dateInfo.year + "-" + dateInfo.month + "-" + dateInfo.date;
+                        self.singleVehiclePageInfo.endTime = dateInfo.year + "-" + dateInfo.month + "-" + dateInfo.date;
+                    }())
+                }
             },
             // 获取结束时间
             "getEndTime": function (value, data) {
@@ -1979,6 +1972,7 @@
                 self.$Message.loading({
                     "content": "正在加载轨迹..."
                 });
+                self.showModal("isHistory");
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getSingleVehicleTrack,
                     actionUrl: CONFIG.SERVICE.vehicleService,
@@ -1986,6 +1980,7 @@
                         "vehicleId": self.singleVehiclePageInfo.vihecleId, // 车辆ID
                         "gpsDeviceCode": self.singleVehiclePageInfo.gpsDeviceCode, // 车辆ID
                         "vehicleCode": encodeURI(self.singleVehiclePageInfo.vehicleCode), // 车辆编码
+                        "licenseNumber": encodeURI(self.singleVehiclePageInfo.licenseNumber), // 车辆编码
                         "beginTime": self.singleVehiclePageInfo.beginTime, // 车辆编码
                         "endTime": self.singleVehiclePageInfo.endTime, // 车辆编码
                     }, //self.vehiclePositonPageInfo,
@@ -2013,6 +2008,7 @@
                                 if (view < 16) {
                                     view = 16;
                                 }
+
                                 self.setAnimation(self.mapContainer.animationInfo.coordinates[Math.ceil(Math.random() * self.mapContainer.animationInfo.coordinates.length)], view);
                                 setTimeout(function () {
                                     self.$Message.destroy();
@@ -2045,6 +2041,12 @@
             "drawTrajectory": function () {
                 var self = this;
                 var coordinates = self.mapContainer.animationInfo.coordinates;
+
+                self.$Message.destroy();
+                self.$Message.loading({
+                    "content": "正在绘制轨迹..."
+                });
+
                 for (var i = 0, len = coordinates.length; i < len; i++) {
                     if (i < len - 1) {
                         var LineString = new ol.geom.LineString(coordinates.slice(i, i + 2));
@@ -2066,15 +2068,19 @@
                         self.mapContainer.sourceInfo.trajectory.addFeature(lineFeature);
                     }
                 }
+
+                self.$Message.destroy();
             },
             // 创建轨迹上的车辆
             "drawTrajectoryVehicle": function () {
                 var self = this;
-                var vehicleType = {
-                    "牵引车": "301",
-                    "拖挂车": "302",
-                    "三面卡": "303",
-                };
+                var vehicleType = (function() {
+                    var type = {};
+                    for(var i = 0, len = bizParam["vehicleType"].length; i < len; i++) {
+                        type[bizParam["vehicleType"][i]["name"]] = bizParam["vehicleType"][i]["type"]+"";
+                    }
+                    return type;
+                }());
                 var vehicleIcon = vehicleType[self.vehicleItemPop.vehicleTypeName] + self.vehicleItemPop.vehicleStatus;
 
                 iconSrc = "/airport/assets/img/" + vehicleIcon + ".gif";
@@ -2133,8 +2139,6 @@
                 var self = this;
                 var coordinates = self.mapContainer.animationInfo.coordinates;
 
-                // self.mapContainer.overlayInfo["vehicle"].setPosition(undefined); // 先关闭弹出层
-
                 if (!!!self.singleVehicleItem.track || self.singleVehicleItem.track.length == 0) {
                     self.getSingleVehicleTrack(true);
                     return;
@@ -2146,6 +2150,7 @@
                 if (self.mapContainer.animationInfo.isMoved == true) {
                     self.stopVehicleAnimation(false);
                 } else {
+                    // self.setAnimation(coordinates[0], 17);
                     self.drawTrajectoryVehicle();
                     self.mapContainer.animationInfo.isMoved = true;
                     clearInterval(self.mapContainer.animationInfo.time);
@@ -2280,7 +2285,6 @@
 
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(function (position) {
-                        console.log(position);
                         self.setAnimation([position.coords.longitude, position.coords.latitude]);
                     }, function (error) {
                         switch (error.code) {
@@ -2321,6 +2325,20 @@
                     }
                 });
             },
+            "getSuper": function(list, value, arr){
+                var self = this;
+                for(var i = 0, len = list.length; i < len; i++) {
+                    if(list[i].value == value) {
+                        arr.push(value);
+                        if(list[i].paraDeptId == 0) {
+                            return;
+                        }
+                        self.getSuper(self.departmentList, list[i].paraDeptId, arr);
+                    } else {
+                        self.getSuper(list[i]["children"], value, arr);
+                    }
+                }
+            },
             // 格式化上级部门
             "formatSuperiorDeprt": function (list) {
                 var self = this;
@@ -2341,7 +2359,11 @@
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
+                            var arr = [];
+                            self[type]["deptIds"] = [];
                             self.formatSuperiorDeprt(data.data);
+                            self.getSuper(self.departmentList, self[type]["deptId"], arr);
+                            self[type]["deptIds"] = arr.reverse();
                         }
                     }
                 });
@@ -2382,7 +2404,9 @@
             setTimeout(function () {
                 self.init();
                 self.getVehicleList(true);
-                self.getCameraList(true); // 获取摄像机列表数据
+                if(self.isShenZhen) {
+                    self.getCameraList(true); // 获取摄像机列表数据
+                }
                 self.getDefensAreaList(true); // 获取防区
                 self.getCompanyList();// 获取公司
                 self.getAllVehiclePositonList(); // 获取所有实时车辆
@@ -2402,7 +2426,7 @@
                         self.vehiclePositonPageInfo.vehicleStatus = fromInfo.vehicleStatus;
                         setTimeout(function () {
                             utility.cleanSessionStorage();
-                        }, 500);
+                        }, 2000);
                     }
                 }, 100);
 

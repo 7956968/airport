@@ -74,6 +74,10 @@
                     "key": "providerId"
                 },
                 {
+                    "title": { "CN": "终端编号", "EN": "No.", "TW": "終端編號" }[language["language"]],
+                    "key": "deviceCode"
+                },
+                {
                     "title": { "CN": "上报周期", "EN": "Reporting Cycle", "TW": "上報周期" }[language["language"]],
                     "key": "dataPeriod"
                 },
@@ -304,6 +308,7 @@
                         "dataPeriod": self.terminalList[i]["dataPeriod"], // 数据上报周期(单位秒)
                         "versionName": decodeURI(self.terminalList[i]["versionName"]), // 系统软件版本名
                         "versionNum": self.terminalList[i]["versionNum"], // 系统软件版本号，如100
+                        "deviceCode": decodeURI(self.terminalList[i]["deviceCode"]), // 终端编号
                         "speed": self.terminalList[i]["speed"], // 当前速度（米/秒）
                         "power": self.terminalList[i]["power"], //  终端电量（百分比）
                         "lastPosition": self.terminalList[i]["lastPosition"], // 当前经纬度坐标

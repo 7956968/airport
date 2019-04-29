@@ -46,7 +46,7 @@
     <meta name="x5-page-mode" content="app">
     <link rel="icon" href="/airport/www/img/logo.png">
     <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
-    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=34728348" />
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=7412734923489247" />
 </head>
 
 <body>
@@ -66,6 +66,10 @@
                                 <span class="arrow"><Icon type="md-arrow-dropright" /></span>
                             </div>
                             <div class="subNav">
+                                <p style="display: none;" id="nav_Welcom">
+                                    <span><Icon type="ios-home-outline" /></span>
+                                    <span v-text="{'CN':'欢迎首页','EN':'WelcomePage','TW':'歡迎首頁'}[language]"></span>
+                                </p>
                                 <p @click="setTabItem('/airport/www/module/maps/maps.html', 'Maps', $event)" id="nav_Maps">
                                     <span><Icon type="ios-globe" /></span>
                                     <span v-text="{'CN':'电子地图','EN':'Maps','TW':'電子地圖'}[language]"></span>
@@ -108,7 +112,7 @@
                                     </template>
                                     <template v-if="item.functionCode=='org_manage_role'">
                                         <p @click="setTabItem('/airport/www/module/roleManage/roleManage.html', 'RoleManage', $event)" id="nav_RoleManage">
-                                            <span><Icon type="logo-javascript" /></span>
+                                            <span><Icon type="md-person-add" /></span>
                                             <span v-text="{'CN':'角色管理','EN':'RoleManage','TW':'角色管理'}[language]"></span>
                                         </p>
                                     </template>
@@ -254,18 +258,10 @@
         </div>
         <div class="fixedNav">
             <div class="fixedNavWrap" :style="{width: (innerWidth-220) +'px'}">
-                <div class="fixedNavBox" :style="{width: ((tabList.length*140)+140) +'px'}">
-                    <template>
-                        <div class="tabItem show active" id="tab_Welcom" @click="switchTab('Welcom', $event)">
-                            <p class="item">
-                                <span><Icon type="ios-home-outline" /></span>
-                                <span v-text="{'CN':'欢迎首页','EN':'WelcomePage','TW':'歡迎首頁'}[language]"></span>
-                            </p>
-                        </div>
-                    </template>
-                    <template v-if="tabList.length > 0">
-                        <template v-for="item in tabList">
-                            <div class="tabItem" :id="'tab_'+item.id" @click="switchTab(item.id, $event)" v-html="item.html"></div>
+                <div class="fixedNavBox">
+                    <template v-for="(value, key) in tabList">
+                        <template v-if="!!value">
+                            <div v-if="!value.isDelete" class="tabItem" :class="{active: value.isActive}" :id="'tab_'+key" @click="switchTab(key, $event)" v-html="value.html"></div>
                         </template>
                     </template>
                 </div>
@@ -273,10 +269,9 @@
         </div>
         
         <div class="mainWrap">
-            <iframe frameborder="0" class="show" id="iframe_Welcom" :src="'/airport/www/module/welcom/welcom.html'+'?v=' + Date.parse(new Date())"></iframe>
-            <template v-if="iframeList.length > 0">
-                <template v-for="item in iframeList">
-                    <iframe frameborder="0" class="show" :id="'iframe_'+item.id" :src="item.src+'?v=' + Date.parse(new Date())"></iframe>
+            <template v-for="(value, key) in iframeList">
+                <template v-if="!!value">
+                    <iframe v-if="!value.isDelete" :class="{active: value.isActive}" frameborder="0" :id="'iframe_'+key" :src="value.src"></iframe>
                 </template>
             </template>
         </div>
@@ -285,9 +280,9 @@
         <script src="/airport/assets/vender/iView/iview.min.js"></script>
         <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
         <script src="/airport/assets/js/md5.min.js"></script>
-        <script src="/airport/assets/js/config.min.js?v=5756574646372"></script>
-        <script src="/airport/assets/js/utility.min.js?v=4r83748483"></script>
-        <script src="/airport/www/module/index/index.min.js?v=345723475394"></script>
+        <script src="/airport/assets/js/config.min.js?v=12312734123417234"></script>
+        <script src="/airport/assets/js/utility.min.js?v=12312734123417234"></script>
+        <script src="/airport/www/module/index/index.min.js?v=12312734123417234"></script>
     </div> 
 
 </body>

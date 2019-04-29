@@ -71,9 +71,13 @@
                         </i-select>
                     </label> -->
                     <label>
-                        <i-select v-model="airPort" size="large">
-                            <i-option v-for="(item, index) in airPortList" :value="item.value" :key="index">{{item.label}}</i-option>
-                        </i-select>
+                        <template>
+                            <i-select v-model="airPort" placeholder="请选择机场">
+                                <template v-for="item in airPortList">
+                                    <i-option :value="item.value">{{item.label}}</i-option>
+                                </template>
+                            </i-select>
+                        </template>
                     </label>
                     <Checkbox v-model="loginInfo.remember">{{{'CN':'记住我','EN':'Remember Me','TW':'記住我'}[language]}}</Checkbox>
                     <label>
@@ -90,9 +94,9 @@
     <script src="/airport/assets/vender/iView/iview.min.js"></script>
     <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
     <script src="/airport/assets/js/md5.min.js"></script>
-    <script src="/airport/assets/js/config.min.js?v=12341234123481234"></script>
-    <script src="/airport/assets/js/utility.min.js?v=234812738471"></script>
-    <script src="/airport/www/action/login.min.js?v=34712374123849"></script>
+    <script src="/airport/assets/js/config.min.js?v=3452347237458"></script>
+    <script src="/airport/assets/js/utility.min.js?v=3452347237458"></script>
+    <script src="/airport/www/action/login.min.js?v=3452347237458"></script>
 </body>
 
 </html>

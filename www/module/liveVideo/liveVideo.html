@@ -48,6 +48,23 @@
     <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
     <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=73483418234172" />
     <style type="text/css">
+        ::-webkit-scrollbar {
+            width: 3px;
+            height: 3px;
+            background-color: #F5F5F5;
+        }
+        /*定义滚动条轨道 内阴影+圆角*/
+        ::-webkit-scrollbar-track {
+            box-shadow: inset 0 0 6px rgba(208, 219, 245, 0.3);
+            border-radius: 10px;
+            background-color: #F5F5F5;
+        }
+        /*定义滑块 内阴影+圆角*/
+        ::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            box-shadow: inset 0 0 6px rgba(208, 219, 245, 0.3);
+            background-color: #555;
+        }
         .video_main {
             position: absolute;
             border: 0px;
@@ -69,6 +86,7 @@
 
         .video_ctrl_area {
             position: relative;
+            z-index: 50;
             width: 100%;
             height: 45px;
             line-height: 45px;
@@ -101,16 +119,24 @@
             color: #FFF;
         }
         .video_ctrl_area .playWrap {
-            padding-left: 30px;
+            padding-left: 20px;
             float: left;
+        }
+        .closeTime {
+            display: inline-block;
+            width: 180px;
+            text-align: center;
+            font-size: 16px;
+            color: #fff;
         }
         .video_ctrl_area .splitWrap {
             display: inline-block;
-            padding-right: 20px;
+            padding-right: 10px;
         }
 
         .video_player_area {
             position: relative;
+            z-index: 10;
             width: 100%;
             height: calc(100% - 50px);
             white-space: nowrap;
@@ -134,14 +160,37 @@
             border-color: #f90;
         }
         .videoItem video {
+            /* position: absolute;
+            z-index: 0;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: fill; */
             display: block;
-            width: calc(100%);
-            height: calc(100%);
-            object-fit: fill;
+            width: 100%;
+            height: 100%;
+            /* object-fit: cover; */
+            transform: scaleX(1.7);
+        }
+        .videoMasker {
+            /* position: absolute;
+            z-index: 100;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            background: url(/airport/www/img/videMasker.png) no-repeat center center;
+            background-size: cover; */
+            display: none;
         }
         .dealWrap {
             position: absolute;
-            z-index: 10;
+            z-index: 10000;
             top: 1px;
             right: 10px;
         }
@@ -155,19 +204,23 @@
             bottom: 0;
             width: 100%;
             height: 100%;
-            background-color: #464545;
+            background-color: #000;
         }
         
         .netnSignal {
-            position: relative;
+            position: fixed;
             z-index: 0;
-            top: -10px;
-            float: right;
-            display: none;
+            right: 20px;
+            top: 0;
+            color: #fff;
+            font-size: 14px;
+        }
+        .netnSignal .label {
+            font-size: 16px;
         }
         .msgTip {
             float: left;
-            padding-left: 80px;
+            padding-left: 30px;
         }
         .msgTip span {
             font-size: 14px;
@@ -198,45 +251,40 @@
                     <div class="splitWrap">
                         <template>
                             <ButtonGroup shape="circle">
-                                <!-- <i-button :type="splitNum==1?'warning':'default'" icon="ios-square" @click="updateVideoWin(1)">1屏</i-button> -->
                                 <i-button :type="splitNum==4?'warning':'default'" icon="logo-windows" @click="updateVideoWin(4)">4屏</i-button>
-                                <!-- <i-button :type="splitNum==6?'warning':'default'" icon="ios-grid-outline" @click="updateVideoWin(6)">6屏</i-button> -->
                                 <i-button :type="splitNum==8?'warning':'default'" icon="ios-grid" @click="updateVideoWin(8)">8屏</i-button>
-                                <!-- <i-button :type="splitNum==9?'warning':'default'" icon="md-apps" @click="updateVideoWin(9)">9屏</i-button> -->
                             </ButtonGroup>
                         </template>
                     </div>
                     <template v-if="isStop==true">
-                        <i-button type="success" :disabled="!isStop" icon="md-play" @click="startVideo">播放</i-button>
+                        <i-button type="success" :disabled="!isStop" icon="md-play" @click="reStart">重新播放</i-button>
                     </template>
                     <template v-else>
                         <i-button type="error" :disabled="isStop" icon="md-pause" @click="stopVideo">停止</i-button>
                     </template>
+                    <span class="closeTime" v-text="timeLen+' 秒后关闭视频'"></span>
                 </div>
                 
                 <!-- 状态 -->
                 <template v-if="msgInfo">
                     <div class="msgTip">
-                        <Tag type="border" :color="msgType">{{msgInfo}}</Tag>
+                        <Tag type="dot" :color="msgType">{{msgInfo}}</Tag>
                     </div>
                 </template>
                 
                 <!-- 网络信号 -->
                 <div class="netnSignal">
-                    <template v-if="netnSignal==0">
-                        <Tag color="error">网络信号：数据无效</Tag>
-                    </template>
-                    <template v-if="netnSignal==1">
-                        <Tag color="error">网络信号：无信号</Tag>
-                    </template>
-                    <template v-if="netnSignal>1&&netnSignal<=15">
-                        <Tag color="warning">网络信号：较弱</Tag>
-                    </template>
-                    <template v-if="netnSignal>15&&netnSignal<=30">
-                        <Tag color="primary">网络信号：较强</Tag>
-                    </template>
-                    <template v-if="netnSignal>30">
-                        <Tag color="success">网络信号：最强</Tag>
+                    <template>
+                        <span class="label">视频播放时长：</span>
+                        <i-select v-model="timeSelect" style="width:120px" @on-change="onTimeChange">
+                            <i-option value="5">5秒</i-option>
+                            <i-option value="15">15秒</i-option>
+                            <i-option value="30">30秒</i-option>
+                            <i-option value="60">60秒</i-option>
+                            <i-option value="120">120秒</i-option>
+                            <i-option value="240">240秒</i-option>
+                            <i-option value="300">300秒</i-option>
+                        </i-select>
                     </template>
                 </div>
                 
@@ -247,7 +295,8 @@
                 <template v-for="index in mVideoCount">
                     <div class="videoItem" :id="'liveVideo'+(index-1)" @click="setCurrentStyle('liveVideo'+(index-1))">
                         <div class="videoWrap">
-                            <video @dblclick="setFullScream('video'+(index-1))" :id="'video'+(index-1)" width="100%" height="100%">无视频</video>
+                            <video playsinline @dblclick="setFullScream('video'+(index-1))" :id="'video'+(index-1)" preload="meta" loop muted autoplay>无视频</video>
+                            <!-- <div class="videoMasker"></div> -->
                             <div class="dealWrap">
                                 <template v-if="isFullScream==true">
                                     <i-button @click="closeFullScream('video'+(index-1))"><Icon color="#78b1ef" size="24" type="md-close" /></i-button>
@@ -269,13 +318,26 @@
             </div>
 
         </div>
+
+        <Modal v-model="offLine" width="360" footer-hide>
+            <p slot="header" style="color:#f60;text-align:center">
+                <i-icon type="ios-information-circle" size="18px"></i-icon>
+                <span style="font-size: 18px;">关闭视频</span>
+            </p>
+            <div style="text-align:center; font-size: 18px;">
+                <p>车辆暂无视频数据,视频画面即将关闭......</p>
+                <p style="font-size: 64px; color: #f60;">{{timeOffline}}</p>
+            </div>
+        </Modal>
     </div>
+
     <script src="/airport/assets/js/vue.min.js"></script>
     <script src="/airport/assets/vender/iView/iview.min.js"></script>
     <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
-    <script src="/airport/assets/js/utility.min.js?v=2341234"></script>
-    <script src="/airport/www/module/liveVideo/vsplayer.min.js?v=234123471023"></script>
-    <script src="/airport/www/module/liveVideo/liveVideo.min.js?v=1234123741982"></script>
+    <!-- <script src="/airport/assets/js/objectFitPolyfill.min.js"></script> -->
+    <script src="/airport/assets/js/utility.min.js?v=234123471234293848"></script>
+    <script src="/airport/www/module/liveVideo/vsplayer.min.js?v=234123471234293848"></script>
+    <script src="/airport/www/module/liveVideo/liveVideo.min.js?v=234123471234293848"></script>
 </body>
 
 </html>

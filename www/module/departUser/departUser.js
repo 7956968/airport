@@ -24,7 +24,7 @@
                 "userName": "", // 查询关键字（用户姓名）
                 "posiName": "", // 查询关键字（职位名称）
                 "companyId": "", // 公司ID
-                "deptId": [], // 部门ID
+                "deptIds": [], // 部门ID
             },
             "index": 0,
             "selectItem": "",
@@ -121,7 +121,6 @@
             "userList": [],
             "companyList": [],
             "tableRowList": [],
-            "departmentList": [],
             "departUserList": [],
             "superiorDepartmentList": [],
             "deptUserPositionTypeList": bizParam["departmentPositionType"]
@@ -161,9 +160,7 @@
                     self.getUserList(function() {
                         self.itemInfo.userIds = [self.itemInfo.userId];
                     });
-                    self.getDepartmentList("itemInfo", function() {
-                        self.itemInfo.deptIds = [self.itemInfo.deptId];
-                    });
+                    self.getSuperiorDeprtList("itemInfo");
                     self.isShowModal = true;
                     self.modalTitle = { "CN": "修改", "EN": "Edit", "TW": "修改" }[self.language];
                 });
@@ -293,7 +290,7 @@
                     });
                 }
             },
-            // 获取机构信息
+            // 获取机构用户信息
             "getDepartUserDataList": function (bool) {
                 var self = this;
                 // 如果是查询，则重新从第一页开始
@@ -311,7 +308,7 @@
                         "userName": self.pageInfo.userName, // 查询关键字（用户姓名）
                         "posiName": self.pageInfo.posiName, // 查询关键字（职位名称）
                         "companyId": self.pageInfo.companyId, // 公司ID
-                        "deptId": self.pageInfo.deptId[self.pageInfo.deptId.length-1], // 部门ID
+                        "deptId": self.pageInfo.deptIds[self.pageInfo.deptIds.length-1] || 0, // 部门ID
                     },
                     beforeSendCallback: function () {
                         self.isTableLoading = true;
@@ -348,19 +345,30 @@
                     }
                 });
             },
+            "getSuper": function(list, value, arr){
+                var self = this;
+                for(var i = 0, len = list.length; i < len; i++) {
+                    if(list[i].value == value) {
+                        arr.push(value);
+                        if(list[i].paraDeptId == 0) {
+                            return;
+                        }
+                        self.getSuper(self.superiorDepartmentList, list[i].paraDeptId, arr);
+                    } else {
+                        self.getSuper(list[i]["children"], value, arr);
+                    }
+                }
+            },
             // 格式化上级部门
             "formatSuperiorDeprt": function(list) {
                 var self = this;
                 var listInfo = JSON.stringify(list).replace(/id/g, 'value').replace(/deptName/g, 'label').replace(/subDeptList/g, 'children');
                 self.superiorDepartmentList = JSON.parse(listInfo);
-                self.departmentList = self.superiorDepartmentList;
             },
             // 获取部门信息
-            "getDepartmentList": function (type, callback) {
+            "getSuperiorDeprtList": function (type) {
                 var self = this;
-                self.departmentList = [];
                 self.superiorDepartmentList = [];
-                self[type]["deptId"] = [];
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.deptService + "?action=" + CONFIG.ACTION.getDeptTreeList,
                     actionUrl: CONFIG.SERVICE.deptService,
@@ -377,9 +385,11 @@
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
+                            var arr = [];
+                            self[type]["deptIds"] = [];
                             self.formatSuperiorDeprt(data.data); // 格式化机构部门数据
-
-                            !!callback && callback();
+                            self.getSuper(self.superiorDepartmentList, self[type]["deptId"], arr);
+                            self[type]["deptIds"] = arr.reverse();
                         }
                     }
                 });
@@ -415,7 +425,7 @@
                 var self = this;
                 self.itemInfo.userIds = [];
                 self.getUserList();
-                self.getDepartmentList("itemInfo");
+                self.getSuperiorDeprtList("itemInfo");
             },
         },
         "created": function () {
@@ -427,7 +437,7 @@
             setTimeout(function () {
                 self.getDepartUserDataList(true);
                 self.getCompanyList();
-                self.getDepartmentList("pageInfo");
+                self.getSuperiorDeprtList("pageInfo");
             }, 500);
         }
     });
