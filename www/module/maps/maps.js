@@ -89,7 +89,7 @@
                 },
                 // 动画信息
                 "animationInfo": {
-                    "speed": 120,
+                    "speed": 90,
                     "index": 0,
                     "time": null,
                     "point": null,
@@ -141,7 +141,8 @@
                 "licenseNumber": "", // 车牌号
                 "gpsDeviceCode": "", // 定位终端编号
                 "vehicleTypeId": "", // 车辆类型ID
-                "vehicleStatus": "", // 车辆运行状态
+                "vehicleStatus": "", // 车辆运动状态
+                "useStatus": -1, // 车辆使用状态
                 "vehicleColorId": "", // 车辆颜色ID
                 "vehicleBrandId": "", // 车辆品牌ID
                 "centerPosition": "", // 查询中心点坐标，格式为：经度,纬度
@@ -510,16 +511,22 @@
 
             //#region 车辆查询
             "isSearchLoading": false,
+            "vehicleUseStatusList": bizParam["vehicleUseStatus"], // 车辆使用状态
             "searchColumns": [
                 {
                     "title": { "CN": "车牌号", "EN": "Plate No.", "TW": "車牌號" }[language["language"]],
                     "key": "licenseNumber",
                     "fixed": "left",
-                    "width": 120
+                    "width": 130
                 },
                 {
-                    "title": { "CN": "车辆状态", "EN": "Vehicle State", "TW": "車輛狀態" }[language["language"]],
+                    "title": { "CN": "运动状态", "EN": "Vehicle State", "TW": "車輛狀態" }[language["language"]],
                     "key": "vehicleStatus",
+                    "width": 100
+                },
+                {
+                    "title": { "CN": "使用状态", "EN": "Vehicle State", "TW": "車輛狀態" }[language["language"]],
+                    "key": "useStatus",
                     "width": 100
                 },
                 {
@@ -530,37 +537,38 @@
                 {
                     "title": { "CN": "车辆名称", "EN": "Vehicle Name", "TW": "車輛名稱" }[language["language"]],
                     "key": "vehicleName",
-                    "width": 130
+                    "width": 150
                 },
                 {
                     "title": { "CN": "操作", "EN": "Operation", "TW": "操作" }[language["language"]],
                     "key": "operation",
                     "width": 100,
                     "fixed": "right",
-                    "render": function (h, params) {
-                        var liveVideoBtn = h("Button", {
-                            "props": {
-                                "size": "small",
-                            }
-                        }, { "CN": "详情", "EN": "Detail", "TW": "詳情" }[language["language"]]);;
+                    "slot": "action",
+                    // "render": function (h, params) {
+                    //     var liveVideoBtn = h("Button", {
+                    //         "props": {
+                    //             "size": "small",
+                    //         }
+                    //     }, { "CN": "详情", "EN": "Detail", "TW": "詳情" }[language["language"]]);;
 
-                        if (!!params.row.licenseNumber) {
-                            liveVideoBtn = h("Button", {
-                                "props": {
-                                    "type": "primary",
-                                    "size": "small"
-                                },
-                                "on": {
-                                    "click": function () {
-                                        pageVue.showLiveVideo(params.row.licenseNumber);
-                                    }
-                                }
-                            }, { "CN": "视频", "EN": "Video", "TW": "視頻" }[language["language"]]);
-                        }
-                        return h("div", [
-                            liveVideoBtn
-                        ]);
-                    }
+                    //     if (!!params.row.licenseNumber) {
+                    //         liveVideoBtn = h("Button", {
+                    //             "props": {
+                    //                 "type": "primary",
+                    //                 "size": "small"
+                    //             },
+                    //             "on": {
+                    //                 "click": function () {
+                    //                     pageVue.showLiveVideo(params.row.licenseNumber);
+                    //                 }
+                    //             }
+                    //         }, { "CN": "视频", "EN": "Video", "TW": "視頻" }[language["language"]]);
+                    //     }
+                    //     return h("div", [
+                    //         liveVideoBtn
+                    //     ]);
+                    // }
                 }
             ],
             "searchDatas": []
@@ -1841,6 +1849,7 @@
                         "lastPosition": !!self.vehiclePositionList[i]["lastPosition"]?JSON.parse(self.vehiclePositionList[i]["lastPosition"])["coordinates"]:null, //"",
                         "vehicleTypeId": self.vehiclePositionList[i]["vehicleTypeName"], //"",
                         "gpsDeviceCode": self.vehiclePositionList[i]["gpsDeviceCode"], //"",
+                        "providerId": self.vehiclePositionList[i]["providerId"], //"",
                         "vehicleStatus": (function () {
                             var vehicleStatusNameList = $.grep(self.terminalStatusList, function (item) {
                                 return item.type == self.vehiclePositionList[i]["vehicleStatus"];
@@ -1851,9 +1860,19 @@
 
                             return vehicleStatusNameList[0]["name"];
                         })(), //self.vehiclePositionList[i]["vehicleStatus"], //"",
+                        "useStatus": (function () {
+                            var vehicleUserStatus = $.grep(self.vehicleUseStatusList, function (item) {
+                                return item.type == self.vehiclePositionList[i]["useStatus"];
+                            });
+                    
+                            return vehicleUserStatus[0]["name"];
+                        })(), //self.vehiclePositionList[i]["vehicleStatus"], //"",
                         "vehicleColorId": self.vehiclePositionList[i]["vehicleColorName"], //"",
                         "vehicleBrandId": self.vehiclePositionList[i]["vehicleBrandName"], //"",
                         "vehicleStatusName": self.vehiclePositionList[i]["vehicleStatusName"], //"",
+                        "cellClassName": {
+                            "vehicleStatus": "_" + self.vehiclePositionList[i]["vehicleStatus"]
+                        }
                     });
                 }
             },
@@ -1887,6 +1906,7 @@
                         "gpsDeviceCode": self.vehiclePositonPageInfo.gpsDeviceCode, //"", // 定位终端编号
                         "vehicleTypeId": self.vehiclePositonPageInfo.vehicleTypeId, //"", // 车辆类型ID
                         "vehicleStatus": self.vehiclePositonPageInfo.vehicleStatus, //"", // 车辆运行状态
+                        "useStatus": self.vehiclePositonPageInfo.useStatus, //"", // 车辆运行状态
                         "vehicleColorId": self.vehiclePositonPageInfo.vehicleColorId, //"", // 车辆颜色ID
                         "vehicleBrandId": self.vehiclePositonPageInfo.vehicleBrandId, //"", // 车辆品牌ID
                         "centerPosition": self.vehiclePositonPageInfo.centerPosition, //"", // 查询中心点坐标，格式为：经度,纬度
@@ -2244,10 +2264,14 @@
                 });
             },
             // 显示视屏
-            "showLiveVideo": function (vehicleNo) {
+            "showLiveVideo": function (vehicleNo, providerId) {
                 var self = this;
+                var url = "http://43.247.68.26:9090/airport/www/module/liveVideo/liveVideo.html?vehicleNo=" + encodeURI(vehicleNo);
+                if(providerId == 2) {
+                    url = "http://43.247.68.26:9090/airport/www/module/liveVideoTest1/liveVideo.html?vehicleNo=" + encodeURI(vehicleNo)+"&id=" + userInfo["id"] + "&userToken="+ userInfo["userToken"];
+                }
                 window.open(
-                    "http://43.247.68.26:9090/airport/www/module/liveVideo/liveVideo.html?vehicleNo=" + encodeURI(vehicleNo),
+                    url,
                     "liveVideo",
                     "toolbar=yes, location=0, directories=no, status=0, menubar=0, scrollbars=1, resizable=1, copyhistory=1, width=" + window.outerWidth + ", height=" + window.outerHeight
                 );

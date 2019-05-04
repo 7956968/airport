@@ -20,7 +20,7 @@
             "msgType": "primary",
             "msgInfo": "",
             "isFullScream": false,
-            "channelIndex": 1,
+            "channelIndex": 0,
             "fullScreamIndex": "",
             "defaultColor": "rgb(255,125,0)", // 当前激活视频样式
             "splitNum": 1,
@@ -452,10 +452,8 @@
                 self.updateVideoWin(splitcn);
                 for (var idx = 0; idx < channelNum; idx++) {
                     ret = vsclientSession.startPlay(self.mVehicleNo, idx, $("#video" + idx)[0]);
-                    if (idx == 0) {
-                        self.playAudio(idx + 1);
-                    }
                 }
+                self.playAudio(0);
                 if (ret) {
                     self.isStop = true;
                     self.msgInfo = "";
@@ -522,6 +520,7 @@
                 if(self.timeLen <= 0) {
                     self.timeLen = parseInt(self.timeSelect);
                 }
+                self.stopAudio();
             },
             // 全屏
             "setFullScream": function (id) {
@@ -545,11 +544,11 @@
                 self.channelIndex = channel;
                 vsclientSession.stopListening();
                 setTimeout(function(){
-                    vsclientSession.startListening(self.mVehicleNo, channel);
+                    vsclientSession.startListening(self.mVehicleNo, self.channelIndex);
                 }, 1000);
 
-                console.log(self.channelIndex);
-                console.log(self.mVehicleNo);
+                console.log("音频通道："+self.channelIndex);
+                console.log("车牌号："+self.mVehicleNo);
             },
             // 停止播放声音
             "stopAudio": function () {

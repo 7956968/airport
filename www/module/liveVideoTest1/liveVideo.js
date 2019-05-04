@@ -2,6 +2,7 @@
     var pageVue = new Vue({
         "el": "#js-vue",
         "data": {
+            "queryInfo": utility.getQueryParams(),
             "mIP": "", // socket登录IP
             "mPort": "", // socket登录端口
             "mUserName": "", // 登录用户名
@@ -11,10 +12,6 @@
             "maxVideoNum": 10, // 最大视频数
             "isStop": true, // 是否开始了
             "offLine": false, // 是否开始了
-            "isLogin": false, // 登录框
-            "loginCodeUrl": "http://140.246.113.143:6680/code/verificationCode.do",
-            "loginCode": "", // 验证码
-            "loading": false,
             "uSession": "",
             "errorTip": "",
             "timeOfflineOut": null,
@@ -249,41 +246,47 @@
                 }
 
                 self.updateVideoWin(4);
+            },
+            "loginGetVideo": function () {
+                var self = this;
+                var timestamp = Date.parse(new Date());
 
-                self.loginGetVideo();
-            },
-            "changLoginCode": function() {
-                var self = this;
-                self.loginCodeUrl = "http://140.246.113.143:6680/code/verificationCode.do?t=" + Date.parse(new Date);
-            },
-            "loginGetVideo": function() {
-                var self = this;
-                // if($.trim(self.loginCode).length != 0) {
-                    $.ajax({
-                        url: "http://39.106.1.200:8080/turkeyApi/user/loginApi.do?userAccount=zyltest&password=000000&languages=cn",
-                        beforeSend: function (data) {
-                            self.loading = true;
-                        },
-                        complete: function (XMLHttpRequest, textStatus) {
-                            self.loading = false;
-                        },
-                        success: function (data) {
-                            if (data.result == 0) {
-                                self.isLogin = false;
-                                self.uSession = data.pojo.sessionId;
-                                if(data.pojo.sessionId) {
-                                    self.startVideo();
-                                }
+                $.ajax({
+                    url: "http://43.247.68.26:8080" + CONFIG.SERVICE.providerService + "?action=" + CONFIG.ACTION.getProviderSessionId + "&platformCode=SZ_YJL",
+                    type: 'POST',
+                    dataType: "json",  //数据格式设置为jsonp
+                    jsonp: "callback",  //Jquery生成验证参数的名称
+                    crossDomain: true,
+                    xhrFields: { withCredentials: true },
+                    headers: {
+                        appType: 2, // 请求来源类型：1:H5 2:WWW 3:android app 4: ios app
+                        version: 100, // 默认100
+                        languageVer: "cn", // cn：中文简体 en：英语 hk：中文繁体
+                        crossDomain: true,
+                        timestamp: timestamp,
+                        withCredentials: true,
+                        userId: self.queryInfo["id"],
+                        "Access-Control-Allow-Origin": "",
+                        userToken: self.queryInfo["userToken"], // 登陆后会有，如无则为空字符串
+                        actionUrl: CONFIG.SERVICE.providerService, // 使用接口URL(注意：不包含http://ip:port的服务器域名/IP+端口这部分)
+                        signStr: md5(self.queryInfo["userToken"] + self.queryInfo["id"] + timestamp + "100").toUpperCase() // 算法：MD5(userToken + userid+ timestamp+languageVer +version)，安全Key由系统设定
+                    },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            self.isLogin = false;
+                            self.uSession = data.data.sessionValue;
+                            if (data.data.sessionValue) {
+                                self.startVideo();
                             }
-                            self.loading = false;
-                        },
-                        error: function (XMLHttpRequest, textStatus, errorThrown) {
-                            console.log(textStatus);
                         }
-                    });
-                // } else {
-                //     self.errorTip = "请输入验证码";
-                // }
+                        // self.loading = false;
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        // console.log(textStatus);
+                        console.log(errorThrown);
+                    }
+                });
+
             },
             "onTimeChange": function (value) {
                 var self = this;
@@ -303,19 +306,22 @@
                     self.playerList.push(null);
                     self.loadVideoSource({
                         type: 'flv',
-                        url: "http://140.246.113.143:6604/RealplayFlv.do?DevIDNO=015831021100&Channel="+ i +"&StreamType=1&uSession="+ self.uSession
-                    },i);
+                        url: "http://39.106.1.200:6604/RealplayFlv.do?DevIDNO="+ self.queryInfo["vehicleNo"] +"&Channel=" + i + "&StreamType=1&uSession=" + self.uSession
+                    }, i);
                 }
-                for (var a = 0; a < self.splitNum; a++) {
-                    self.playerList[a].play();
-                }
+                setTimeout(function () {
+                    for (var a = 0; a < self.splitNum; a++) {
+                        self.playerList[a].play();
+                        $("#video" + a)[0].play();
+                    }
+                }, 1000);
                 self.isStop = false;
                 self.timeLenOut = null;
-                setTimeout(function() {
-                    self.timeLenOut = setInterval(function() {
+                setTimeout(function () {
+                    self.timeLenOut = setInterval(function () {
                         self.timeLen--;
                         self.$Message.destroy();
-                        if(self.timeLen <= 0) {
+                        if (self.timeLen <= 0) {
                             self.stopVideo();
                         }
                     }, 1000);
@@ -357,6 +363,8 @@
 
                 self.splitNum = splitNum;
                 $("body").find("#liveVideo0").addClass("active");
+
+                self.loginGetVideo();
             },
 
             // 获取视频资源
@@ -394,7 +402,7 @@
             "stopVideo": function () {
                 var self = this;
                 for (var i = 0; i < self.splitNum; i++) {
-                    if(!!self.playerList[i]) {
+                    if (!!self.playerList[i]) {
                         self.playerList[i].pause();
                         self.playerList[i].unload();
                         self.playerList[i].detachMediaElement();

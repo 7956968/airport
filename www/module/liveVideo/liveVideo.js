@@ -13,14 +13,14 @@
             "offLine": false, // 是否开始了
             "timeOfflineOut": null,
             "timeOffline": 5,
-            "timeLen": 15,
-            "timeSelect": "15",
+            "timeLen": 30,
+            "timeSelect": "30",
             "timeLenOut": null,
             "netnSignal": "",
             "msgType": "primary",
             "msgInfo": "",
             "isFullScream": false,
-            "channelIndex": 1,
+            "channelIndex": 0,
             "fullScreamIndex": "",
             "defaultColor": "rgb(255,125,0)", // 当前激活视频样式
             "splitNum": 1,
@@ -451,10 +451,8 @@
                 self.updateVideoWin(splitcn);
                 for (var idx = 0; idx < channelNum; idx++) {
                     ret = vsclientSession.startPlay(self.mVehicleNo, idx, $("#video" + idx)[0]);
-                    if (idx == 0) {
-                        self.playAudio(idx + 1);
-                    }
                 }
+                self.playAudio(0);
                 if (ret) {
                     self.isStop = true;
                     self.msgInfo = "";
@@ -521,6 +519,7 @@
                 if(self.timeLen <= 0) {
                     self.timeLen = parseInt(self.timeSelect);
                 }
+                self.stopAudio();
             },
             // 全屏
             "setFullScream": function (id) {
@@ -543,7 +542,7 @@
 
                 self.channelIndex = channel;
                 vsclientSession.stopListening();
-                vsclientSession.startListening(self.mVehicleNo, channel);
+                vsclientSession.startListening(self.mVehicleNo, self.channelIndex);
 
                 console.log(self.channelIndex);
                 console.log(self.mVehicleNo);

@@ -43,6 +43,43 @@ table {
 .request {
   color: red;
 }
+._401 span,
+._402 span,
+._403 span,
+._404 span,
+._405 span,
+._406 span,
+._407 span,
+._408 span {
+  display: inline-block;
+  padding: 2px 5px;
+  color: #FFF;
+}
+._401 span {
+  color: #333;
+  background-color: #fbd048;
+}
+._402 span {
+  background-color: #339a7b;
+}
+._403 span {
+  background-color: #8958be;
+}
+._404 span {
+  background-color: #ed9b3e;
+}
+._405 span {
+  background-color: #e24251;
+}
+._406 span {
+  background-color: #f86568;
+}
+._407 span {
+  background-color: #5d81ca;
+}
+._408 span {
+  background-color: #767676;
+}
 .loginPage .login {
   position: absolute;
   z-index: 0;
@@ -155,6 +192,10 @@ table {
 .graphPage .welcomPage .layout .ivu-card .ivu-card-head {
   padding: 10px 16px;
   border-bottom: 1px solid rgba(109, 106, 106, 0.5);
+}
+.graphPage .welcomPage .layout .ivu-card .ivu-card-head i {
+  font-style: normal;
+  font-size: 14px;
 }
 .graphPage .welcomPage .layout .ivu-spin-fix {
   background-color: transparent;
@@ -444,7 +485,7 @@ table {
   font-style: normal;
   border-radius: 50%;
   color: rgba(119, 126, 142, 0.2);
-  background-color: rgba(24, 38, 70, 0.1);
+  background-color: rgba(24, 38, 70, 0.1);  
 }
 .index .fixedNav .tabItem.active,
 .index .fixedNav .modifyPass.active {

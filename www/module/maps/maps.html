@@ -99,8 +99,9 @@
                     <p>{{{'CN':'车辆类型','EN':'Type','TW':'車輛類型'}[language]}}：{{vehicleItemPop.vehicleTypeName}}</p>
                     <p>{{{'CN':'终端设备','EN':'Termina','TW':'終端設備'}[language]}}：{{vehicleItemPop.gpsDeviceCode}}</p>
                     <p>{{{'CN':'车辆速度','EN':'Speed','TW':'車輛速度'}[language]}}：{{vehicleItemPop.speed}}</p>
-                    <p>{{{'CN':'车辆状态','EN':'State','TW':'車輛狀態'}[language]}}：{{vehicleItemPop.vehicleStatusName}}</p>
-                    <p>{{{'CN':'回放速度','EN':'Speed','TW':'回放速度'}[language]}}：<Slider v-model="mapContainer.animationInfo.speed" :min="10" :max="120" show-tip="always"></Slider></p>
+                    <p>{{{'CN':'运动状态','EN':'State','TW':'車輛狀態'}[language]}}：<span :class="'_'+vehicleItemPop.vehicleStatus"><span>{{vehicleItemPop.vehicleStatusName}}</span></span></p>
+                    <p>{{{'CN':'使用状态','EN':'State','TW':'車輛狀態'}[language]}}：{{vehicleItemPop.useStatusName}}</p>
+                    <p>{{{'CN':'回放速度','EN':'Speed','TW':'回放速度'}[language]}}：{{mapContainer.animationInfo.speed}}<Slider v-model="mapContainer.animationInfo.speed" :min="60" :max="200" show-tip="always"></Slider></p>
                     <Row gutter="5" class="trajectoryAction">
                         <i-col span="8">
                             <i-button size="small" long @click="getSingleVehicleTrack" type="primary" icon="ios-search-outline">{{{'CN':'查轨迹','EN':'Track','TW':'查軌跡'}[language]}}</i-button>
@@ -275,16 +276,6 @@
                                     </template>
                                 </td>
                             </tr>
-                            <!-- <tr>
-                                <td>
-                                    <span class="label" v-text="{'CN':'结束时间','EN':'Start Time','TW':'結束時間'}[language]"></span>
-                                </td>
-                                <td>
-                                    <template>
-                                        <date-picker @on-change="getEndTime" style="width: 100%;" type="datetime" format="yyyy-MM-dd HH:mm:ss" :confirm="false" :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"></date-picker>
-                                    </template>
-                                </td> -->
-                            </tr>
                             <tr>
                                 <td>
                                     <span class="label" v-text="{'CN':'回放速度','EN':'Speed','TW':'回放速度'}[language]"></span>
@@ -307,6 +298,25 @@
                             </tr>
                         </tbody>
                     </table>
+                    <template v-if="vehicleItemPop">
+                        <div style="padding: 10px; background-color: #f8f8f9;">
+                            <p>{{{'CN':'公司名称','EN':'Company','TW':'公司名稱'}[language]}}：{{vehicleItemPop.companyName}}</p>
+                            <p>{{{'CN':'部门名称','EN':'Department','TW':'部門名稱'}[language]}}：{{vehicleItemPop.deptName}}</p>
+                            <p>{{{'CN':'车辆编码','EN':'Code','TW':'車輛編碼'}[language]}}：{{vehicleItemPop.vehicleCode}}</p>
+                            <template v-if="vehicleItemPop.licenseNumber">
+                                <p>
+                                    {{{'CN':'车牌号','EN':'Plate No.','TW':'車牌號'}[language]}}：{{vehicleItemPop.licenseNumber}}  
+                                    <i-button size="small" @click="showLiveVideo(vehicleItemPop.licenseNumber)" type="primary" icon="md-play">{{{'CN':'视频','EN':'Video','TW':'視頻'}[language]}}</i-button>
+                                </p>
+                            </template>
+                            <p>{{{'CN':'车辆名称','EN':'Name','TW':'車輛名稱'}[language]}}：{{vehicleItemPop.vehicleName}}</p>
+                            <p>{{{'CN':'车辆类型','EN':'Type','TW':'車輛類型'}[language]}}：{{vehicleItemPop.vehicleTypeName}}</p>
+                            <p>{{{'CN':'终端设备','EN':'Termina','TW':'終端設備'}[language]}}：{{vehicleItemPop.gpsDeviceCode}}</p>
+                            <p>{{{'CN':'车辆速度','EN':'Speed','TW':'車輛速度'}[language]}}：{{vehicleItemPop.speed}}</p>
+                            <p>{{{'CN':'运动状态','EN':'State','TW':'車輛狀態'}[language]}}：<span :class="'_'+vehicleItemPop.vehicleStatus"><span>{{vehicleItemPop.vehicleStatusName}}</span></span></p>
+                            <p>{{{'CN':'使用状态','EN':'State','TW':'車輛狀態'}[language]}}：{{vehicleItemPop.useStatusName}}</p>
+                        </div>
+                    </template>
                 </div>
             </Modal>
         </template>
@@ -946,13 +956,7 @@
 
                             <tr>
                                 <td style="text-align: right;">
-                                    <span class="label" v-text="{'CN':'车辆编号','EN':'Vehicle Number','TW':'車輛編號'}[language]"></span>
-                                </td>
-                                <td>
-                                    <i-input v-model="vehiclePositonPageInfo.vehicleCode" :placeholder="{'CN':'请输入车辆编号','EN':'Vehicle Number','TW':'請輸入車輛編號'}[language]"></i-input>
-                                </td>
-                                <td style="text-align: right;">
-                                    <span class="label" v-text="{'CN':'车辆状态','EN':'Vehicle Statu','TW':'車輛狀態'}[language]"></span>
+                                    <span class="label" v-text="{'CN':'运动状态','EN':'Vehicle Statu','TW':'車輛狀態'}[language]"></span>
                                 </td>
                                 <td>
                                     <template>
@@ -967,9 +971,28 @@
                                         </i-select>
                                     </template>
                                 </td>
+                                <td style="text-align: right;">
+                                    <span class="label" v-text="{'CN':'使用状态','EN':'Vehicle Statu','TW':'車輛狀態'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <i-select v-model="vehiclePositonPageInfo.useStatus" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <i-option v-text="{'CN':'全部','EN':'All','TW':'全部'}[language]"></i-option>
+                                            <template v-for="item in vehicleUseStatusList">
+                                                <i-option :value="item.type">{{item.name}}</i-option>
+                                            </template>
+                                        </i-select>
+                                    </template>
+                                </td>
                             </tr>
 
                             <tr>
+                                <!-- <td style="text-align: right;">
+                                    <span class="label" v-text="{'CN':'车辆编号','EN':'Vehicle Number','TW':'車輛編號'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input v-model="vehiclePositonPageInfo.vehicleCode" :placeholder="{'CN':'请输入车辆编号','EN':'Vehicle Number','TW':'請輸入車輛編號'}[language]"></i-input>
+                                </td> -->
                                 <td style="text-align: right;">
                                     <span class="label" v-text="{'CN':'半径范围','EN':'Radius','TW':'半徑範圍'}[language]"></span>
                                 </td>
@@ -1014,7 +1037,24 @@
                 <div class="modifiedWrap">
                     <div class="tableWrap">
                         <template>
-                            <i-table height="250" @on-row-click="showRowDataPosition" :loading="isSearchLoading" highlight-row :columns="searchColumns" :data="searchDatas" stripe="true" size="small"></i-table>
+                            <i-table 
+                            height="250" 
+                            @on-row-click="showRowDataPosition" 
+                            :loading="isSearchLoading" 
+                            highlight-row 
+                            :columns="searchColumns" 
+                            :data="searchDatas" 
+                            stripe="true" 
+                            size="small">
+                            <template slot-scope="{row, index}" slot="action">
+                                <template v-if="row.licenseNumber && vehiclePositionList[index]['providerId']<100">
+                                    <i-button size="small" type="primary" @click="showLiveVideo(row.licenseNumber, vehiclePositionList[index]['providerId'])" style="width: 40px;">视频</i-button>
+                                </template>
+                                <template v-else>
+                                    <i-button size="small">详情</i-button>
+                                </template>
+                            </template>
+                        </i-table>
                         </template>
                     </div>
                     <div class="pageWrap">

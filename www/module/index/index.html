@@ -46,7 +46,7 @@
     <meta name="x5-page-mode" content="app">
     <link rel="icon" href="/airport/www/img/logo.png">
     <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
-    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=7412734923489247" />
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=741239472389412" />
 </head>
 
 <body>
@@ -226,10 +226,10 @@
                                         </p>
                                     </template>
                                 </template>
-                                <p @click="setTabItem('/airport/www/module/terminalParame/terminalParame.html', 'TerminalParame', $event)" id="nav_TerminalParame">
+                                <!-- <p @click="setTabItem('/airport/www/module/terminalParame/terminalParame.html', 'TerminalParame', $event)" id="nav_TerminalParame">
                                     <span><Icon type="ios-options-outline" /></span>
                                     <span v-text="{'CN':'修改用户信息','EN':'Modify UserInfo ','TW':'修改用戶信息'}[language]"></span>
-                                </p>
+                                </p> -->
                             </div>
                         </li>
                     </template>
@@ -271,7 +271,8 @@
         <div class="mainWrap">
             <template v-for="(value, key) in iframeList">
                 <template v-if="!!value">
-                    <iframe v-if="!value.isDelete" :class="{active: value.isActive}" frameborder="0" :id="'iframe_'+key" :src="value.src"></iframe>
+                    <iframe v-if="!value.isDelete" :class="{active: value.isActive}" frameborder="0" :id="'iframe_'+key" :src="value.src+'?v='+ (Date.parse(new Date()))"></iframe>
+                    <!-- <iframe v-if="!value.isDelete" :class="{active: value.isActive}" frameborder="0" :id="'iframe_'+key" :src="value.src"></iframe> -->
                 </template>
             </template>
         </div>

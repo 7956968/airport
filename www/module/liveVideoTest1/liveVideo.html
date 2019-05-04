@@ -294,23 +294,12 @@
                 <template v-for="index in mVideoCount">
                     <div class="videoItem" :id="'liveVideo'+(index-1)" @click="setCurrentStyle('liveVideo'+(index-1))">
                         <div class="videoWrap">
-                            <video playsinline @dblclick="setFullScream('video'+(index-1))" :id="'video'+(index-1)" data-object-fit="cover" preload="meta" loop muted autoplay>无视频</video>
-                            <div class="videoMasker"></div>
-                            <div class="dealWrap">
-                                <template v-if="isFullScream==true">
-                                    <i-button @click="closeFullScream('video'+(index-1))"><Icon color="#78b1ef" size="24" type="md-close" /></i-button>
-                                </template>
-                                <template v-else>
-                                    <i-button @click="setFullScream('video'+(index-1))" type="text"><Icon color="#78b1ef" size="24" type="md-qr-scanner" /></i-button>
-                                </template>
-
-                                <template v-if="channelIndex == index">
-                                    <i-button @click="stopAudio" type="text"><Icon color="#78b1ef" type="md-volume-up" size="24"/></i-button>
-                                </template>
-                                <template v-else>
-                                    <i-button @click="playAudio(index)" type="text"><Icon color="#78b1ef" type="md-volume-off" size="24" /></i-button>
-                                </template>
-                            </div>
+                            <template v-if="index-1==0">
+                                <video :id="'video'+(index-1)" controls autoplay>无视频</video>
+                            </template>
+                            <template>
+                                    <video :id="'video'+(index-1)" muted controls autoplay>无视频</video>
+                            </template>
                         </div>
                     </div>
                 </template>
@@ -329,7 +318,7 @@
             </div>
         </Modal>
 
-        <Modal v-model="isLogin" width="400" :mask-closable="false" :closable="false" footer-hide>
+        <!-- <Modal v-model="isLogin" width="400" :mask-closable="false" :closable="false" footer-hide>
             <p slot="header" style="color:#f60;text-align:center">
                 <i-icon type="ios-information-circle" size="18px"></i-icon>
                 <span style="font-size: 18px;">验证登录</span>
@@ -360,17 +349,18 @@
                     <p v-text="errorTip" style="margin: 0; font-size: 16px; color: red;"></p>
                 </template>
             </div>
-        </Modal>
+        </Modal> -->
+
     </div>
 
     <script src="/airport/assets/js/vue.min.js"></script>
     <script src="/airport/assets/vender/iView/iview.min.js"></script>
     <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
-    <script src="/airport/assets/js/objectFitPolyfill.min.js"></script>
-    <script src="/airport/assets/js/utility.min.js?v=774234128347128347"></script>
-    <!-- <script src="/airport/www/module/liveVideoTest/vsplayer.js?v=774234128347128347"></script> -->
-    <script src="/airport/www/module/liveVideoTest1/flv.min.js?v=3471234712374"></script>
-    <script src="/airport/www/module/liveVideoTest1/liveVideo.js?v=3471234712374"></script>
+    <script src="/airport/assets/js/md5.min.js"></script>
+    <script src="/airport/assets/js/config.min.js?v=41239412347"></script>
+    <script src="/airport/assets/js/utility.min.js?v=41239412347"></script>
+    <script src="/airport/www/module/liveVideoTest1/flv.min.js?v=41239412347"></script>
+    <script src="/airport/www/module/liveVideoTest1/liveVideo.js?v=41239412347"></script>
 </body>
 
 </html>

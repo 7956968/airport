@@ -1,7 +1,7 @@
-const STREAM_PLAY_STATE_REQUESTTING = 1;//请求中
-const STREAM_PLAY_STATE_REQ_STREAM_SUCCESS = 2;//请求成功
-const STREAM_PLAY_STATE_PLAY_STRAM_SUCCESS = 3;//播放成功
-const STREAM_PLAY_STATE_PLAY_STRAM_FAILED = 10;//请求失败
+var STREAM_PLAY_STATE_REQUESTTING = 1;//请求中
+var STREAM_PLAY_STATE_REQ_STREAM_SUCCESS = 2;//请求成功
+var STREAM_PLAY_STATE_PLAY_STRAM_SUCCESS = 3;//播放成功
+var STREAM_PLAY_STATE_PLAY_STRAM_FAILED = 10;//请求失败
 function VSClientSession(callback) {
     this.connection = null; // WebSocket
     this.hasLogon = false;
@@ -192,7 +192,6 @@ VSClientSession.prototype.startPlay = function (name, channel, videoCtrl) {
     var videoCtx = {
         videoCtrl: videoCtrl,
         player: new Player(videoCtrl, front.id, channel, true, false)
-
     };
 
     this.videos.push(videoCtx);
@@ -768,7 +767,7 @@ VideoStream.prototype.start = function () {
 
         console.log("websocket closed ");
         if (self.callback.onSocketClose) {
-            self.callback.onSocketClose();
+            self.callback.onSocketClose(this.isAudio);
         }
     };
 

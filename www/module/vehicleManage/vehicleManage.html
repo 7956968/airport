@@ -45,7 +45,7 @@
     <!-- QQ应用模式 -->
     <meta name="x5-page-mode" content="app">
     <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
-    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css" />
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=1238741823741" />
 </head>
 
 <body class="innerPage">
@@ -60,7 +60,7 @@
                                     <td>
                                         <template>
                                             &nbsp;&nbsp;{{{'CN':'公司','EN':'Company','TW':'公司'}[language]}}:
-                                            <i-select @on-change="getDepartmentList('pageInfo')" v-model="pageInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:180px;">
+                                            <i-select @on-change="getDepartmentList('pageInfo')" v-model="pageInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:140px;">
                                                 <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
                                                 <i-option v-for="item in companyList" :value="item.id">{{item.companyName}}</i-option>
                                             </i-select>
@@ -68,15 +68,21 @@
                                         <template>
                                             &nbsp;&nbsp;{{{'CN':'部门','EN':'Superior Department','TW':'部門'}[language]}}:
                                             <template>
-                                                <Cascader :data="departmentList" v-model="pageInfo.deptId" style="width:180px; display: inline-block;" trigger="hover" change-on-select></Cascader>
+                                                <Cascader :data="departmentList" v-model="pageInfo.deptId" style="width:140px; display: inline-block;" trigger="hover" change-on-select></Cascader>
                                             </template>
                                         </template>
                                         <template>
-                                            &nbsp;&nbsp;{{{'CN':'是否绑定终端','EN':'Binding Terminal','TW':'是否綁定終端'}[language]}}:
-                                            <i-select v-model="pageInfo.bindDeviceFlag" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100px;">
-                                                <i-option value="">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
-                                                <i-option value="0">{{{'CN':'否','EN':'No','TW':'否'}[language]}}</i-option>
-                                                <i-option value="1">{{{'CN':'是','EN':'Yes','TW':'是'}[language]}}</i-option>
+                                            &nbsp;&nbsp;运动状态:
+                                            <i-select v-model="pageInfo.vehicleStatus" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100px;">
+                                                <i-option value=""></i-option>
+                                                <i-option v-for="item in vehicleStatuList" :value="item.type">{{item.name}}</i-option>
+                                            </i-select>
+                                        </template>
+                                        <template>
+                                            &nbsp;&nbsp;使用状态:
+                                            <i-select v-model="pageInfo.useStatus" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100px;">
+                                                <i-option value=""></i-option>
+                                                <i-option v-for="item in vehicleUseStatusList" :value="item.type">{{item.name}}</i-option>
                                             </i-select>
                                         </template>
                                         <template>
@@ -130,8 +136,36 @@
 
         <div class="tableWrap">
             <template>
-                <i-table :height="tableHeight" :loading="isTableLoading" highlight-row :columns="columnsList" :data="dataList" stripe="true"
-                    size="small" @on-row-click="setCurrentRowData"></i-table>
+                <i-table 
+                :height="tableHeight" 
+                :loading="isTableLoading" 
+                highlight-row 
+                :columns="columnsList" 
+                :data="dataList" 
+                stripe="true"
+                size="small" 
+                @on-row-click="setCurrentRowData">
+                    <template slot-scope="{row, index}" slot="vehicleUseStatus">
+                        <i-select 
+                            @on-change="vehicleUseStatusChange(row, index)" 
+                            v-model="dataList[index]['useStatus']" 
+                            clearable 
+                            size="small" 
+                            :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"
+                            style="width: 80px;">
+                            <i-option v-for="item in vehicleUseStatusList" :value="item.type">{{item.name}}</i-option>
+                        </i-select>
+                        &nbsp;&nbsp;
+                        <i-button size="small" @click="showRecordList(index)" style="width: 40px;">记录</i-button>
+                    </template>
+                    <template slot-scope="{row, index}" slot="vehicleStatus">
+                        <span :class="'_'+vehicleList[index]['vehicleStatus']"><span v-text="row.vehicleStatus"></span></span>
+                        &nbsp;&nbsp;
+                        <template v-if="row.licenseNumber && vehicleList[index]['providerId']<100">
+                            <i-button size="small" type="primary" @click="showLiveVideo(row.licenseNumber, vehicleList[index]['providerId'])" style="width: 40px;">视频</i-button>
+                        </template>
+                    </template>
+                </i-table>
             </template>
         </div>
 
@@ -141,6 +175,7 @@
             </template>
         </div>
 
+        <!-- 修改、编辑 -->
         <template>
             <Modal v-model="isShowModal" :styles="{top: '60px'}" width="45" :title="modalTitle" :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
                 :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" :loading="isModalLoading" @on-ok="uploadDataToServer">
@@ -164,7 +199,30 @@
                                 </td>
                                 <td>
                                     <template>
-                                        <Cascader :data="departmentList" v-model="itemInfo.deptId" trigger="hover" change-on-select></Cascader>
+                                        <Cascader :data="departmentList" v-model="itemInfo.deptIds" trigger="hover" change-on-select></Cascader>
+                                    </template>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <span class="request">＊</span>
+                                    <span v-text="{'CN':'车牌号','EN':'Plate No.','TW':'車牌號'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <i-input v-model="itemInfo.licenseNumber"/>
+                                    </template>
+                                </td>
+                                <td class="label">
+                                    <span class="request">＊</span>
+                                    <span>使用状态</span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <i-select v-model="itemInfo.useStatus" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <i-option value="">未知</i-option>
+                                            <i-option v-for="item in vehicleUseStatusList" :value="item.type">{{item.name}}</i-option>
+                                        </i-select>
                                     </template>
                                 </td>
                             </tr>
@@ -178,22 +236,13 @@
                                 </td>
                                 <td class="label">
                                     <span class="request">＊</span>
-                                    <span v-text="{'CN':'车牌号','EN':'Plate No.','TW':'車牌號'}[language]"></span>
-                                </td>
-                                <td>
-                                    <template>
-                                        <i-input v-model="itemInfo.licenseNumber"/>
-                                    </template>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label">
-                                    <span class="request">＊</span>
                                     <span v-text="{'CN':'车辆编号','EN':'Vehicle Code','TW':'車輛編號'}[language]"></span>
                                 </td>
                                 <td>
                                     <i-input v-model="itemInfo.vehicleCode"/>
                                 </td>
+                            </tr>
+                            <tr>
                                 <td class="label">
                                     <span v-text="{'CN':'绑定终端','EN':'Terminal Number','TW':'綁定終端'}[language]"></span>
                                 </td>
@@ -204,8 +253,6 @@
                                         </i-select>
                                     </template>
                                 </td>
-                            </tr>
-                            <tr>
                                 <td class="label">
                                     <span class="request">＊</span>
                                     <span v-text="{'CN':'车辆类型','EN':'Vehicle Type','TW':'車輛類型'}[language]"></span>
@@ -217,6 +264,8 @@
                                         </i-select>
                                     </template>
                                 </td>
+                            </tr>
+                            <tr>
                                 <td class="label">
                                     <span class="request">＊</span>
                                     <span v-text="{'CN':'车辆颜色','EN':'Vehicle Color','TW':'車輛顔色'}[language]"></span>
@@ -228,8 +277,6 @@
                                         </i-select>
                                     </p>
                                 </td>
-                            </tr>
-                            <tr>
                                 <td class="label">
                                     <span class="request">＊</span>
                                     <span v-text="{'CN':'品牌','EN':'Brand','TW':'品牌'}[language]"></span>
@@ -243,11 +290,22 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td class="label">
+                                    <span class="request">＊</span>
+                                    <span>设备供应商</span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <i-select v-model="itemInfo.providerId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <i-option v-for="item in deviceProviderIdList" :value="item.type">{{item.name}}</i-option>
+                                        </i-select>
+                                    </template>
+                                </td>
                                 <td class="label" style="vertical-align: top;">
                                     <span v-text="{'CN':'备注','EN':'Remarks','TW':'備註'}[language]"></span>
                                 </td>
-                                <td colspan="3">
-                                    <i-input v-model="itemInfo.remark" type="textarea" :rows="4" />
+                                <td>
+                                    <i-input v-model="itemInfo.remark" type="textarea" />
                                 </td>
                             </tr>
                         </tbody>
@@ -255,8 +313,10 @@
                 </div>
             </Modal>
         </template>
+
+        <!-- 查看详情 -->
         <template>
-            <Modal v-model="isShowDetail" :styles="{top: '60px'}" width="25" title="查看详情">
+            <Modal v-model="isShowDetail" footer-hide :styles="{top: '60px'}" width="25" title="查看详情">
                 <div class="modifiedWrap">
                     <table>
                         <tbody>
@@ -269,16 +329,24 @@
                                 <td><span v-text="itemInfo.deptName"></span></td>
                             </tr>
                             <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'车牌号：','EN':'Plate No.：','TW':'車牌號'}[language]"></span></td>
+                                <td><span v-text="itemInfo.licenseNumber"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'活动状态','EN':'Plate No.：','TW':'車牌號'}[language]"></span></td>
+                                <td><span v-text="itemInfo.vehicleStatusName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'使用状态','EN':'Plate No.：','TW':'車牌號'}[language]"></span></td>
+                                <td><span v-text="itemInfo.useStatusName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
                                 <td class="detailLabel"><span v-text="{'CN':'车辆名称：','EN':'Vehicle Name：','TW':'車輛名稱：'}[language]"></span></td>
                                 <td><span v-text="itemInfo.vehicleName"></span></td>
                             </tr>
                             <tr class="detailInfo">
                                 <td class="detailLabel"><span v-text="{'CN':'车辆编号：','EN':'Vehicle Code：','TW':'車輛編號：'}[language]"></span></td>
                                 <td><span v-text="itemInfo.vehicleCode"></span></td>
-                            </tr>
-                            <tr class="detailInfo">
-                                <td class="detailLabel"><span v-text="{'CN':'车牌号：','EN':'Plate No.：','TW':'車牌號'}[language]"></span></td>
-                                <td><span v-text="itemInfo.licenseNumber"></span></td>
                             </tr>
                             <tr class="detailInfo">
                                 <td class="detailLabel"><span v-text="{'CN':'绑定终端：','EN':'Terminal Number：','TW':'綁定終端：'}[language]"></span></td>
@@ -305,13 +373,144 @@
                 </div>
             </Modal>
         </template>
+
+        <!-- 使用记录 -->
+        <template>
+            <Modal v-model="isRecord" footer-hide :styles="{top: '60px'}" width="50" title="使用记录">
+                <Row>
+                    <i-col span="12">
+                        <div class="modifiedWrap" style="background-color: #f8f8f9;" :style="{height: tableHeight-200+'px'}">
+                            <table style="padding: 10px;">
+                                <tbody>
+                                    <tr class="detailInfo">
+                                        <td class="detailLabel"><span v-text="{'CN':'公司：','EN':'Company：','TW':'公司：'}[language]"></span></td>
+                                        <td><span v-text="itemInfo.companyName"></span></td>
+                                    </tr>
+                                    <tr class="detailInfo">
+                                        <td class="detailLabel"><span v-text="{'CN':'部门：','EN':'Department：','TW':'部門：'}[language]"></span></td>
+                                        <td><span v-text="itemInfo.deptName"></span></td>
+                                    </tr>
+                                    <tr class="detailInfo">
+                                        <td class="detailLabel"><span v-text="{'CN':'车牌号：','EN':'Plate No.：','TW':'車牌號'}[language]"></span></td>
+                                        <td><span v-text="itemInfo.licenseNumber"></span></td>
+                                    </tr>
+                                    <tr class="detailInfo">
+                                        <td class="detailLabel"><span v-text="{'CN':'车辆名称：','EN':'Vehicle Name：','TW':'車輛名稱：'}[language]"></span></td>
+                                        <td><span v-text="itemInfo.vehicleName"></span></td>
+                                    </tr>
+                                    <tr class="detailInfo">
+                                        <td class="detailLabel"><span v-text="{'CN':'车辆编号：','EN':'Vehicle Code：','TW':'車輛編號：'}[language]"></span></td>
+                                        <td><span v-text="itemInfo.vehicleCode"></span></td>
+                                    </tr>
+                                    <tr class="detailInfo">
+                                        <td class="detailLabel"><span v-text="{'CN':'绑定终端：','EN':'Terminal Number：','TW':'綁定終端：'}[language]"></span></td>
+                                        <td><span v-text="itemInfo.gpsDeviceCode"></span></td>
+                                    </tr>
+                                    <tr class="detailInfo">
+                                        <td class="detailLabel"><span v-text="{'CN':'车辆类型：','EN':'Vehicle Type：','TW':'車輛類型：'}[language]"></span></td>
+                                        <td><span v-text="itemInfo.vehicleTypeName"></span></td>
+                                    </tr>
+                                    <tr class="detailInfo">
+                                        <td class="detailLabel"><span v-text="{'CN':'车辆颜色：','EN':'Vehicle Color：','TW':'車輛顔色：'}[language]"></span></td>
+                                        <td><span v-text="itemInfo.vehicleColorName"></span></td>
+                                    </tr>
+                                    <tr class="detailInfo">
+                                        <td class="detailLabel"><span v-text="{'CN':'车辆品牌：','EN':'Vehicle Brand：','TW':'車輛品牌：'}[language]"></span></td>
+                                        <td><span v-text="itemInfo.vehicleBrandName"></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </i-col>
+                    <i-col span="12">
+                        <div class="tableWrap">
+                            <i-table :height="tableHeight-200" highlight-row :columns="userRecordcolumns" :data="userRecordList"  stripe="true" size="small"></i-table>
+                        </div>
+        
+                        <div class="pageWrap">
+                            <template>
+                                <Page :total="recordPageInfo.count" @on-change="userStatuPageSizeChange" @on-page-size-change="userStatuPageRowChange" :page-size="20" show-sizer show-total/>
+                            </template>
+                        </div>
+                    </i-col>
+                </Row>
+            </Modal>
+
+        </template>
+
+        <!-- 删除车辆 -->
+        <template>
+            <Modal 
+                v-model="isDelete" 
+                :styles="{top: '60px'}" 
+                width="25" 
+                title="确定删除？" 
+                :loading="isModalLoading"
+                @on-ok="delItem">
+                <div class="modifiedWrap">
+                    <table>
+                        <tbody>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'公司：','EN':'Company：','TW':'公司：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.companyName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'部门：','EN':'Department：','TW':'部門：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.deptName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'车牌号：','EN':'Plate No.：','TW':'車牌號'}[language]"></span></td>
+                                <td><span v-text="itemInfo.licenseNumber"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'活动状态','EN':'Plate No.：','TW':'車牌號'}[language]"></span></td>
+                                <td><span v-text="itemInfo.vehicleStatusName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'使用状态','EN':'Plate No.：','TW':'車牌號'}[language]"></span></td>
+                                <td><span v-text="itemInfo.useStatusName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'车辆名称：','EN':'Vehicle Name：','TW':'車輛名稱：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.vehicleName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'车辆编号：','EN':'Vehicle Code：','TW':'車輛編號：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.vehicleCode"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'绑定终端：','EN':'Terminal Number：','TW':'綁定終端：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.gpsDeviceCode"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'车辆类型：','EN':'Vehicle Type：','TW':'車輛類型：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.vehicleTypeName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'车辆颜色：','EN':'Vehicle Color：','TW':'車輛顔色：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.vehicleColorName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'车辆品牌：','EN':'Vehicle Brand：','TW':'車輛品牌：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.vehicleBrandName"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span class="detailLabel" v-text="{'CN':'备注：','EN':'Remarks：','TW':'備註：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.remark"></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </Modal>
+        </template>
+
         <script src="/airport/assets/js/vue.min.js"></script>
-        <script src="/airport/assets/vender/iView/iview.min.js"></script>
+        <script src="/airport/assets/vender/iView/iview.min.js?v=41274127043"></script>
         <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
         <script src="/airport/assets/js/md5.min.js"></script>
-        <script src="/airport/assets/js/config.min.js?v=12834324237498"></script>
-        <script src="/airport/assets/js/utility.min.js?v=12834324237498"></script>
-        <script src="/airport/www/module/vehicleManage/vehicleManage.min.js?v=12834324237498"></script>
+        <script src="/airport/assets/js/config.min.js?v=417241234798"></script>
+        <script src="/airport/assets/js/utility.min.js?v=417241234798"></script>
+        <script src="/airport/www/module/vehicleManage/vehicleManage.min.js?v=417241234798"></script>
     </div>
 </body>
 

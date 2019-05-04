@@ -11,6 +11,7 @@
             "isShowDetail": false,
             "isShowTerminal": false,
             "isModalLoading": true,
+            "isDelete": false,
             "modalTitle": "",
             "tableHeight": (function () {
                 var containerHeight = $(".tableContainer").height();
@@ -19,7 +20,9 @@
             "vehicleColorList": bizParam["vehicleColor"], // 车辆颜色
             "vehicleTypeList": bizParam["vehicleType"], // 车辆类型
             "vehicleBrandList": bizParam["vehicleBrand"], // 车辆品牌
-            "vehicleStatuList": bizParam["terminalStatus"], // 车辆状态
+            "vehicleStatuList": bizParam["terminalStatus"], // 车辆运动状态
+            "vehicleUseStatusList": bizParam["vehicleUseStatus"], // 车辆使用状态
+            "deviceProviderIdList": bizParam["deviceProviderId"], // 定位设备供应商
             "index": 0,
             "selectItem": null,
             "itemInfo": {
@@ -28,7 +31,9 @@
                 "companyName": "", // 公司名称
                 "vehicleName": "", // 车辆名称
                 "vehicleCode": "", // 车辆编号
+                "useStatus": "", // 使用状态
                 "remark": "", // 车辆备注
+                "providerId": "", // 设备供应商ID
                 "vehicleColorId": "", // 车辆颜色ID
                 "vehicleTypeId": "", // 车辆类型ID
                 "vehicleBrandId": "", // 车辆品牌ID
@@ -50,6 +55,8 @@
                 "vehicleName": "", // 车辆名称
                 "vehicleCode": "", // 车辆编码
                 "licenseNumber": "", // 车牌号
+                "vehicleStatus": "", // 车辆运行状态
+                "useStatus": "-1", // 使用状态
                 "gpsDeviceId": "", // 
                 "vehicleColorId": "", // 
                 "vehicleTypeId": "", // 
@@ -76,6 +83,16 @@
                     "width": 150
                 },
                 {
+                    "title": { "CN": "运动状态", "EN": "Move State", "TW": "運動狀態" }[language["language"]],
+                    "slot": "vehicleStatus",
+                    "width": 180
+                },
+                {
+                    "title": { "CN": "使用状态", "EN": "User State", "TW": "使用狀態" }[language["language"]],
+                    "width": 240,
+                    "slot": "vehicleUseStatus"
+                },
+                {
                     "title": { "CN": "车辆名称", "EN": "Vehicle Name", "TW": "車輛名稱" }[language["language"]],
                     "key": "vehicleName",
                     "width": 150
@@ -84,11 +101,6 @@
                     "title": { "CN": "车辆编码", "EN": "Vehicle Code", "TW": "車輛編碼" }[language["language"]],
                     "key": "vehicleCode",
                     "width": 150
-                },
-                {
-                    "title": { "CN": "状态", "EN": "State", "TW": "狀態" }[language["language"]],
-                    "key": "vehicleStatus",
-                    "width": 120
                 },
                 {
                     "title": { "CN": "绑定终端", "EN": "Terminal", "TW": "綁定終端" }[language["language"]],
@@ -114,24 +126,8 @@
                     "title": { "CN": "操作", "EN": "Operation", "TW": "操作" }[language["language"]],
                     "key": "operation",
                     "fixed": "right",
-                    "width": 220,
+                    "width": 180,
                     "render": function (h, params) {
-                        var liveVideoBtn = null;
-
-                        if (!!params.row.licenseNumber) {
-                            liveVideoBtn = h("Button", {
-                                "props": {
-                                    "type": "primary",
-                                    "size": "small",
-                                },
-                                "on": {
-                                    "click": function () {
-                                        pageVue.showLiveVideo(params.row.licenseNumber);
-                                    }
-                                }
-                            }, { "CN": "视频", "EN": "Video", "TW": "視頻" }[language["language"]]);
-                        }
-
                         return h("div", [
                             h("Button", {
                                 "props": {
@@ -176,11 +172,11 @@
                                     "click": function () {
                                         pageVue.index = params.index;
                                         pageVue.selectItem = params.row;
-                                        pageVue.delItem();
+                                        pageVue.itemInfo = pageVue.vehicleList[pageVue.index];
+                                        pageVue.isDelete = true;
                                     }
                                 }
                             }, { "CN": "删除", "EN": "Delete", "TW": "刪除" }[language["language"]]),
-                            liveVideoBtn
                         ]);
                     }
                 }
@@ -189,6 +185,25 @@
             "companyList": [],
             "departmentList": [],
             "terminalList": [],
+            "isRecord": false,
+            "recordIndex": 0,
+            "recordPageInfo": {
+                "count": 0,
+                "pageSize": 20,
+                "pageNum": 0,
+                "vehicleId": "",
+            },
+            "userRecordcolumns": [
+                {
+                    "title": { "CN": "运动状态", "EN": "Move State", "TW": "運動狀態" }[language["language"]],
+                    "key": "vehicleStatusName",
+                },
+                {
+                    "title": { "CN": "使用状态", "EN": "User State", "TW": "使用狀態" }[language["language"]],
+                    "key": "lastUseStatusName"
+                },
+            ],
+            "userRecordList": []
         },
         "methods": {
             // 刷新
@@ -214,6 +229,7 @@
                     "companyName": "", // 公司名称
                     "vehicleName": "", // 车辆名称
                     "vehicleCode": "", // 车辆编号
+                    "useStatus": "", // 使用状态
                     "remark": "", // 车辆备注
                     "vehicleColorId": "", // 车辆颜色ID
                     "vehicleTypeId": "", // 车辆类型ID
@@ -249,31 +265,26 @@
             // 删除
             "delItem": function () {
                 var self = this;
-                self.$Modal.confirm({
-                    "title": "确定删除？",
-                    "width": 200,
-                    "onOk": function () {
-                        self.itemInfo = self.vehicleList[self.index];
-                        utility.showMessageTip(self, function () {
-                            utility.interactWithServer({
-                                url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.delVehicle + "&ids=" + self.itemInfo.id + "&modifyUserId=" + userInfo["id"],
-                                actionUrl: CONFIG.SERVICE.vehicleService,
-                                beforeSendCallback: function () {
-                                    self.isTableLoading = true;
-                                },
-                                completeCallback: function () {
-                                    self.isTableLoading = false;
-                                },
-                                successCallback: function (data) {
-                                    if (data.code == 200) {
-                                        self.getVehicleList(false);
-                                    } else {
-                                        self.$Message.error(data.message);
-                                    }
-                                }
-                            });
-                        });
-                    }
+                self.itemInfo = self.vehicleList[self.index];
+                utility.showMessageTip(self, function () {
+                    utility.interactWithServer({
+                        url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.delVehicle + "&ids=" + self.itemInfo.id + "&modifyUserId=" + userInfo["id"],
+                        actionUrl: CONFIG.SERVICE.vehicleService,
+                        beforeSendCallback: function () {
+                            self.isModalLoading = true;
+                        },
+                        completeCallback: function () {
+                            self.isModalLoading = false;
+                        },
+                        successCallback: function (data) {
+                            if (data.code == 200) {
+                                self.isDelete = false;
+                                self.getVehicleList(false);
+                            } else {
+                                self.$Message.error(data.message);
+                            }
+                        }
+                    });
                 });
             },
             // 页数改变时的回调
@@ -298,23 +309,33 @@
                 self.index = index;
                 self.selectItem = item;
             },
+            "vehicleUseStatusChange": function(row, index) {
+                var self = this;
+                self.itemInfo = self.vehicleList[index];
+                self.itemInfo.useStatus = self.dataList[index]["useStatus"];
+
+                self.uploadDataToServer();
+            },
             // 提交信息到服務器
             "uploadDataToServer": function () {
                 var self = this;
+                console.log(self.itemInfo["deptIds"][self.itemInfo["deptIds"].length - 1]);
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.saveVehicle,
                     actionUrl: CONFIG.SERVICE.vehicleService,
                     dataObj: {
                         "id": self.itemInfo["id"], // 车辆ID
                         "companyId": self.itemInfo["companyId"], // 所属公司ID，手动从公司列表选择
-                        "deptId": self.itemInfo["deptId"][self.itemInfo["deptId"].length - 1], // 部门ID，可选
+                        "deptId": self.itemInfo["deptIds"][self.itemInfo["deptIds"].length - 1], // 部门ID，可选
                         "vehicleName": encodeURI(self.itemInfo["vehicleName"]), // 车辆名称
                         "vehicleCode": encodeURI(self.itemInfo["vehicleCode"]), // 车辆编码
                         "licenseNumber": encodeURI(self.itemInfo["licenseNumber"]), // 车辆编码
                         "gpsDeviceId": self.itemInfo["gpsDeviceId"], // 
+                        "useStatus": self.itemInfo["useStatus"], // 
                         "vehicleColorId": self.itemInfo["vehicleColorId"], // 
                         "vehicleTypeId": self.itemInfo["vehicleTypeId"], // 
                         "vehicleBrandId": self.itemInfo["vehicleBrandId"], // 
+                        "providerId": self.itemInfo["providerId"], // // 设备供应商ID
                         "remark": encodeURI(self.itemInfo["remark"]), // 
                         "createUserId": userInfo["id"], // 创建用户ID，新增时必传
                         "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传 
@@ -343,6 +364,7 @@
                         "vehicleCode": decodeURI(self.vehicleList[i]["vehicleCode"]), // 车辆编码
                         "licenseNumber": decodeURI(self.vehicleList[i]["licenseNumber"]), // 车牌号
                         "gpsDeviceId": self.vehicleList[i]["gpsDeviceCode"], // 
+                        "useStatus": self.vehicleList[i]["useStatus"], // 
                         "vehicleColorId": (function () {
                             var label = "";
                             for (var c = 0, clen = self.vehicleColorList.length; c < clen; c++) {
@@ -383,6 +405,9 @@
                             }
                             return label;
                         }()), // self.vehicleList[i]["vehicleStatusName"], // 
+                        "cellClassName": {
+                            "vehicleStatus": "_" + self.vehicleList[i]["vehicleStatus"]
+                        }
                     });
                 }
             },
@@ -390,7 +415,6 @@
             "getVehicleList": function (bool) {
                 var self = this;
                 // 如果是查询，则重新从第一页开始
-                self.dataList = [];
                 if (bool == true) {
                     self.pageInfo.pageNum = 1;
                 }
@@ -404,6 +428,8 @@
                         "pageSize": self.pageInfo.pageSize,
                         "companyId": self.pageInfo.companyId, // 所属公司ID，手动从公司列表选择
                         "vehicleTypeId": self.pageInfo.vehicleTypeId, // 
+                        "vehicleStatus": self.pageInfo.vehicleStatus, // 
+                        "useStatus": self.pageInfo.useStatus, // 
                         "bindDeviceFlag": self.pageInfo.bindDeviceFlag, // 是否绑定定位设备
                         "vehicleColorId": self.pageInfo.vehicleColorId, // 
                         "vehicleBrandId": self.pageInfo.vehicleBrandId, // 
@@ -421,6 +447,7 @@
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
+                            self.dataList = [];
                             self.vehicleList = data.data;
                             self.pageInfo.count = data.count;
                             self.formatVehicle();
@@ -508,14 +535,87 @@
                 });
             },
             // 显示视屏
-            "showLiveVideo": function (vehicleNo) {
+            "showLiveVideo": function (vehicleNo, providerId) {
                 var self = this;
+                var url = "http://43.247.68.26:9090/airport/www/module/liveVideo/liveVideo.html?vehicleNo=" + encodeURI(vehicleNo);
+                if(providerId == 2) {
+                    url = "http://43.247.68.26:9090/airport/www/module/liveVideoTest1/liveVideo.html?vehicleNo=" + encodeURI(vehicleNo)+"&id=" + userInfo["id"] + "&userToken="+ userInfo["userToken"];
+                }
                 window.open(
-                    "http://43.247.68.26:9090/airport/www/module/liveVideo/liveVideo.html?vehicleNo=" + encodeURI(vehicleNo),
+                    url,
                     "liveVideo",
                     "toolbar=yes, location=0, directories=no, status=0, menubar=0, scrollbars=1, resizable=1, copyhistory=1, width=" + window.outerWidth + ", height=" + window.outerHeight
                 );
             },
+            // 页数改变时的回调
+            "userStatuPageSizeChange": function (value) {
+                var self = this;
+                self.recordPageInfo.pageNum = parseInt(value, 10);
+                setTimeout(function () {
+                    self.getVehicleUseRecordList(false);
+                }, 200);
+            },
+            // 切换每页条数时的回调
+            "userStatuPageRowChange": function (value) {
+                var self = this;
+                self.recordPageInfo.pageSize = parseInt(value, 10);
+                setTimeout(function () {
+                    self.getVehicleUseRecordList(false);
+                }, 200);
+            },
+            // 格式化使用记录
+            "formatRecord": function(dataList) {
+                var self = this;
+                for(var i = 0, len = dataList.length; i < len; i++) {
+                    self.userRecordList.push({
+                        "companyId": self.itemInfo.companyId, // 所属公司ID，手动从公司列表选择
+                        "deptId": self.itemInfo.deptId, // 部门ID，可选
+                        "vehicleName": decodeURI(self.itemInfo.vehicleName), // 车辆名称
+                        "vehicleCode": decodeURI(self.itemInfo.vehicleCode), // 车辆编码
+                        "licenseNumber": decodeURI(self.itemInfo.licenseNumber), // 车牌号
+                        "gpsDeviceId": decodeURI(self.itemInfo.gpsDeviceId), // 车牌号
+                        "lastUseStatusName": dataList[i].lastUseStatusName, // 
+                        "vehicleColorId": self.itemInfo.vehicleColorId,
+                        "vehicleTypeId": self.itemInfo.vehicleTypeId,
+                        "vehicleBrandId": self.itemInfo.vehicleBrandId,
+                        "vehicleStatusName": dataList[i].vehicleStatusName,
+                        "cellClassName": {
+                            "vehicleStatusName": "_" + dataList[i]["vehicleStatus"]
+                        }
+                    });
+                }
+            },
+            // 获取车辆使用记录列表
+            "getVehicleUseRecordList": function(bool) {
+                var self = this;
+                if (bool == true) {
+                    self.recordPageInfo.pageNum = 1;
+                }
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getVehicleUseRecordList,
+                    actionUrl: CONFIG.SERVICE.vehicleService,
+                    dataObj: {
+                        "pageNum": self.recordPageInfo.pageNum,
+                        "pageSize": self.recordPageInfo.pageSize,
+                        "vehicleId": self.dataList[self.recordIndex].vehicleId,
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            self.userRecordList = [];
+                            self.recordPageInfo.count = data.count;
+                            self.formatRecord(data.data);
+                        }
+                    }
+                });
+            },
+            // 显示使用列表
+            "showRecordList": function(index) {
+                var self = this;
+                self.isRecord = true;
+                self.recordIndex = index;
+                self.itemInfo = self.vehicleList[self.recordIndex];
+                self.getVehicleUseRecordList(false);
+            }
         },
         "created": function () {
             var self = this;

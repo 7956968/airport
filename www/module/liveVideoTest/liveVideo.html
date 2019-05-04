@@ -305,11 +305,11 @@
                                     <i-button @click="setFullScream('video'+(index-1))" type="text"><Icon color="#78b1ef" size="24" type="md-qr-scanner" /></i-button>
                                 </template>
 
-                                <template v-if="channelIndex == index">
+                                <template v-if="channelIndex == index-1">
                                     <i-button @click="stopAudio" type="text"><Icon color="#78b1ef" type="md-volume-up" size="24"/></i-button>
                                 </template>
                                 <template v-else>
-                                    <i-button @click="playAudio(index)" type="text"><Icon color="#78b1ef" type="md-volume-off" size="24" /></i-button>
+                                    <i-button @click="playAudio(index-1)" type="text"><Icon color="#78b1ef" type="md-volume-off" size="24" /></i-button>
                                 </template>
                             </div>
                         </div>
@@ -335,9 +335,9 @@
     <script src="/airport/assets/vender/iView/iview.min.js"></script>
     <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
     <!-- <script src="/airport/assets/js/objectFitPolyfill.min.js"></script> -->
-    <script src="/airport/assets/js/utility.min.js?v=234123471234293848"></script>
-    <script src="/airport/www/module/liveVideoTest/vsplayer.js?v=234123471234293848"></script>
-    <script src="/airport/www/module/liveVideoTest/liveVideo.js?v=234123471234293848"></script>
+    <script src="/airport/assets/js/utility.min.js?v=123748127347123"></script>
+    <script src="/airport/www/module/liveVideoTest/vsplayer.js?v=123748127347123"></script>
+    <script src="/airport/www/module/liveVideoTest/liveVideo.js?v=123748127347123"></script>
 </body>
 
 </html>

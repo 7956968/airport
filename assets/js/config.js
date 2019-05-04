@@ -19,6 +19,7 @@ var CONFIG = (function (CONFIG) {
         "deptUserService": "/airportCore/base/deptUserService", // 部门服务
         "permissionService": "/airportCore/base/permissionService", // 权限服务
         "vehicleRepairService": "/airportCore/core/vehicleRepairService", // 车辆保养
+        "providerService": "/airportCore/third/providerService", // 设备商
     };
 
     // 接口动作
@@ -96,6 +97,7 @@ var CONFIG = (function (CONFIG) {
         "updateVehiclePosition": "updateVehiclePosition", // 修改车辆位置接口
         "getVehicleMilesReport": "getVehicleMilesReport", // 获取车辆里程数统计数据接口
         "getVehicleStatusReport": "getVehicleStatusReport", // 获取按运行状态的车辆分类占比统计数据接口
+        "getVehicleUseRecordList": "getVehicleUseRecordList", // 获取车辆使用记录列表
         "getVehicleMileRateReport": "getVehicleMileRateReport", // 车辆运行情况
         "getAllVehiclePositonList": "getAllVehiclePositonList", // 查询车辆最新位置数据接口
 
@@ -119,6 +121,9 @@ var CONFIG = (function (CONFIG) {
         "getVehicleRepairList": "getVehicleRepairList", // 获取车辆保养信息列表
         "delVehicleRepairInfo": "delVehicleRepairInfo", // 删除车辆保养信息接口
         "saveVehicleRepairInfo": "saveVehicleRepairInfo", // 新增/修改车辆保养信息
+
+        // providerService
+        "getProviderSessionId": "getProviderSessionId", // 获取第三方设备平台的http sessionId接口
     };
 
     return CONFIG;

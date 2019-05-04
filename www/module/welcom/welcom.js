@@ -20,8 +20,8 @@
             "vehicleTypeList": bizParam["vehicleType"],
             "vehiclePassTypeList": bizParam["vehiclePassType"],
             "vehicleTypeInfo": {},
-
             "vehiclePassType": {},
+
             "isloadDefen": false,
             "totalChartData": null,
             "colorList": ["#66CCCC","#CCFF66","#FF99CC","#A0522D","#FFFF00", "#336699","#CC9933", "#339999"],
@@ -308,53 +308,15 @@
 
                 myChart.setOption(option);
             },
-            // 实时防区信息
-            "getCrossAreaList": function () {
-                var self = this;
-                // 如果是查询，则重新从第一页开始
-                utility.interactWithServer({
-                    url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getCrossAreaList,
-                    actionUrl: CONFIG.SERVICE.vehicleService,
-                    dataObj: {
-                        "pageNum": 1,
-                        "pageSize": 100000,
-                    },
-                    beforeSendCallback: function () {
-                        self.isloadDefen = true;
-                    },
-                    completeCallback: function () {
-                        self.isloadDefen = false;
-                    },
-                    successCallback: function (data) {
-                        if (data.code == 200) {
-                            self.vehiclePassType["_501"]["value"] = 0;
-                            self.vehiclePassType["_502"]["value"] = 0;
-                            self.vehiclePassType["_503"]["value"] = 0;
-                            self.vehiclePassType["_504"]["value"] = 0;
-                            self.vehiclePassType["_505"]["value"] = 0;
-
-                            for (var i = 0, len = data.data.length; i < len; i++) {
-                                if (data.data[i]["crossTypeId"] == 501) {
-                                    self.vehiclePassType["_501"]["value"] = self.vehiclePassType["_501"]["value"] + 1;
-                                } else if (data.data[i]["crossTypeId"] == 502) {
-                                    self.vehiclePassType["_502"]["value"] = self.vehiclePassType["_502"]["value"] + 1;
-                                } else if (data.data[i]["crossTypeId"] == 503) {
-                                    self.vehiclePassType["_503"]["value"] = self.vehiclePassType["_503"]["value"] + 1;
-                                } else if (data.data[i]["crossTypeId"] == 504) {
-                                    self.vehiclePassType["_504"]["value"] = self.vehiclePassType["_504"]["value"] + 1;
-                                } else if (data.data[i]["crossTypeId"] == 505) {
-                                    self.vehiclePassType["_505"]["value"] = self.vehiclePassType["_505"]["value"] + 1;
-                                }
-                            }
-
-                            self.setVehicleEchart();
-                        }
-                    }
-                });
-            },
             // 重置
             "resetVehicleBizParamInfo": function() {
                 var self = this;
+                self.vehicleTypeInfo = {};
+                self.vehiclePassType = {};
+                self.vehicleInfo = {
+                    "list": [],
+                    "count": 0
+                };
                 for(var i = 0, len = self.vehicleTypeList.length; i < len; i++) {
                     self.vehicleTypeInfo["_"+self.vehicleTypeList[i]["type"]] = {
                         "value": 0,
@@ -377,14 +339,34 @@
                     }
                 }
             },
-            // 格式化车辆数据
-            "formatVehicle": function () {
+            // 实时防区信息
+            "getCrossAreaList": function () {
                 var self = this;
+                // 如果是查询，则重新从第一页开始
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getCrossAreaList,
+                    actionUrl: CONFIG.SERVICE.vehicleService,
+                    dataObj: {
+                        "pageNum": 1,
+                        "pageSize": 100000,
+                    },
+                    beforeSendCallback: function () {
+                        self.isloadDefen = true;
+                    },
+                    completeCallback: function () {
+                        self.isloadDefen = false;
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                          
+                            for (var i = 0, len = data.data.length; i < len; i++) {
+                                self.vehiclePassType["_" + data.data[i]["crossTypeId"]]["value"] = self.vehiclePassType["_" + data.data[i]["crossTypeId"]]["value"] + 1;
+                            }
 
-                for (var i = 0, len = self.vehicleInfo.list.length; i < len; i++) {
-                    self.vehicleInfo["_"+self.vehicleInfo.list[i]["vehicleStatus"]] = self.vehicleInfo["_"+self.vehicleInfo.list[i]["vehicleStatus"]] + 1;
-                    self.vehicleTypeInfo["_"+self.vehicleInfo.list[i]["vehicleTypeId"]]["value"] = self.vehicleTypeInfo["_"+self.vehicleInfo.list[i]["vehicleTypeId"]]["value"] + 1;
-                }
+                            self.setVehicleEchart();
+                        }
+                    }
+                });
             },
             // 获取车辆信息
             "getVehicleList": function () {
@@ -404,20 +386,12 @@
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
-                            self.vehicleInfo["_401"] = 0;
-                            self.vehicleInfo["_402"] = 0;
-                            self.vehicleInfo["_403"] = 0;
-                            self.vehicleInfo["_404"] = 0;
-                            self.vehicleInfo["_405"] = 0;
-                            self.vehicleInfo["_406"] = 0;
-                            self.vehicleInfo["_407"] = 0;
-                            self.vehicleInfo["_408"] = 0;
-                            self.vehicleTypeInfo["_301"]["value"] = 0;
-                            self.vehicleTypeInfo["_302"]["value"] = 0;
-                            self.vehicleTypeInfo["_303"]["value"] = 0;
                             self.vehicleInfo.count = data.count;
                             self.vehicleInfo.list = data.data;
-                            self.formatVehicle();
+                            for (var i = 0, len = self.vehicleInfo.list.length; i < len; i++) {
+                                self.vehicleInfo["_"+self.vehicleInfo.list[i]["vehicleStatus"]] = self.vehicleInfo["_"+self.vehicleInfo.list[i]["vehicleStatus"]] + 1;
+                                self.vehicleTypeInfo["_"+self.vehicleInfo.list[i]["vehicleTypeId"]]["value"] = self.vehicleTypeInfo["_"+self.vehicleInfo.list[i]["vehicleTypeId"]]["value"] + 1;
+                            }
                         }
                     }
                 });
@@ -474,6 +448,22 @@
                     }
                 });
             },
+            // 初始化
+            "init": function() {
+                var self = this;
+
+                 // 重置常量数据
+                self.resetVehicleBizParamInfo();
+
+                // 车辆数据
+                self.getVehicleList();
+
+                // 防区数据
+                self.getCrossAreaList();
+
+                // 获取按车辆类型的车辆使用情况统计数据接口
+                self.getVehicleRunReport();
+            }
         },
         "created": function () {
             var self = this;
@@ -481,17 +471,12 @@
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
             utility.isLogin(false);
 
-            // 重置常量数据
-            self.resetVehicleBizParamInfo();
+            // 初始化数据
+            self.init();
 
-            // 车辆数据
-            self.getVehicleList();
-
-            // 防区数据
-            self.getCrossAreaList();
-
-            // 获取按车辆类型的车辆使用情况统计数据接口
-            self.getVehicleRunReport();
+            setInterval(function() {
+                self.init();
+            }, 10000);
 
             // 当窗口变化时，重新调整高度
             $(window).resize(function () {
