@@ -468,7 +468,7 @@
                             self.timeLen--;
                             self.$Message.destroy();
                             if(self.timeLen <= 0) {
-                                self.stopVideo();
+                                self.stopVideo("视频已经全部关闭");
                             }
                         }, 1000);
                     }, 5000);

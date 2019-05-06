@@ -318,49 +318,19 @@
             </div>
         </Modal>
 
-        <!-- <Modal v-model="isLogin" width="400" :mask-closable="false" :closable="false" footer-hide>
-            <p slot="header" style="color:#f60;text-align:center">
-                <i-icon type="ios-information-circle" size="18px"></i-icon>
-                <span style="font-size: 18px;">验证登录</span>
-            </p>
-            <div style="text-align:center; padding: 10px 0;">
-                <table>
-                    <tbody>
-                        <tr>
-                            <td style="text-align:center; font-size: 16px;">验证码</td>
-                            <td style="padding: 0 10px 0 5px;">
-                                <template>
-                                    <i-input v-model="loginCode" size="large" placeholder="请输入验证码" style="width: 140px; text-align: center;" />
-                                </template>
-                            </td>
-                            <td>
-                                <img @click="changLoginCode" :src="loginCodeUrl" style="width: 80px; height: 30px;"/>
-                            </td>
-                            <td style="padding-left: 10px;">
-                                <i-button @click="changLoginCode" type="info" ghost>换一张</i-button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div style="padding: 20px 20% 10px 20%;">
-                    <i-button :loading="loading" type="success" size="large" long @click="loginGetVideo">确认验证</i-button>
-                </div>
-                <template v-if="!!errorTip && !!!loginCode">
-                    <p v-text="errorTip" style="margin: 0; font-size: 16px; color: red;"></p>
-                </template>
-            </div>
-        </Modal> -->
-
     </div>
 
-    <script src="/airport/assets/js/vue.min.js"></script>
-    <script src="/airport/assets/vender/iView/iview.min.js"></script>
-    <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
+    <script src="https://cdn.bootcss.com/babel-polyfill/7.4.4/polyfill.min.js"></script>
+    <script src="https://cdn.bootcss.com/es6-promise/4.1.1/es6-promise.min.js"></script>
+    <script src="https://cdn.bootcss.com/es6-promise/4.1.1/es6-promise.auto.min.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+    <script src="https://cdn.bootcss.com/iview/3.4.1/iview.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
     <script src="/airport/assets/js/md5.min.js"></script>
-    <script src="/airport/assets/js/config.min.js?v=41239412347"></script>
-    <script src="/airport/assets/js/utility.min.js?v=41239412347"></script>
-    <script src="/airport/www/module/liveVideoTest1/flv.min.js?v=41239412347"></script>
-    <script src="/airport/www/module/liveVideoTest1/liveVideo.js?v=41239412347"></script>
+    <script src="/airport/assets/js/config.min.js?v=4137492734394"></script>
+    <script src="/airport/assets/js/utility.min.js?v=4137492734394"></script>
+    <script src="/airport/www/module/liveVideoTest1/flv.min.js?v=4137492734394"></script>
+    <script src="/airport/www/module/liveVideoTest1/liveVideo.js?v=4137492734394"></script>
 </body>
 
 </html>

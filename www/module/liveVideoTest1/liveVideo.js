@@ -252,24 +252,24 @@
                 var timestamp = Date.parse(new Date());
 
                 $.ajax({
-                    url: "http://43.247.68.26:8080" + CONFIG.SERVICE.providerService + "?action=" + CONFIG.ACTION.getProviderSessionId + "&platformCode=SZ_YJL",
+                    url: "http://43.247.68.26:8080" + CONFIG.SERVICE.providerService + "?action=" + CONFIG.ACTION.getProviderSessionId + "&platformCode=SZ_YJW",
                     type: 'POST',
                     dataType: "json",  //数据格式设置为jsonp
                     jsonp: "callback",  //Jquery生成验证参数的名称
                     crossDomain: true,
                     xhrFields: { withCredentials: true },
                     headers: {
-                        appType: 2, // 请求来源类型：1:H5 2:WWW 3:android app 4: ios app
-                        version: 100, // 默认100
-                        languageVer: "cn", // cn：中文简体 en：英语 hk：中文繁体
-                        crossDomain: true,
-                        timestamp: timestamp,
-                        withCredentials: true,
-                        userId: self.queryInfo["id"],
+                        "appType": 2, // 请求来源类型：1:H5 2:WWW 3:android app 4: ios app
+                        "version": 100, // 默认100
+                        "languageVer": "cn", // cn：中文简体 en：英语 hk：中文繁体
+                        "crossDomain": true,
+                        "timestamp": timestamp,
+                        "withCredentials": true,
+                        "userId": self.queryInfo["id"],
                         "Access-Control-Allow-Origin": "",
-                        userToken: self.queryInfo["userToken"], // 登陆后会有，如无则为空字符串
-                        actionUrl: CONFIG.SERVICE.providerService, // 使用接口URL(注意：不包含http://ip:port的服务器域名/IP+端口这部分)
-                        signStr: md5(self.queryInfo["userToken"] + self.queryInfo["id"] + timestamp + "100").toUpperCase() // 算法：MD5(userToken + userid+ timestamp+languageVer +version)，安全Key由系统设定
+                        "userToken": self.queryInfo["userToken"], // 登陆后会有，如无则为空字符串
+                        "actionUrl": CONFIG.SERVICE.providerService, // 使用接口URL(注意：不包含http://ip:port的服务器域名/IP+端口这部分)
+                        "signStr": md5(self.queryInfo["userToken"] + self.queryInfo["id"] + timestamp + "100").toUpperCase() // 算法：MD5(userToken + userid+ timestamp+languageVer +version)，安全Key由系统设定
                     },
                     success: function (data) {
                         if (data.code == 200) {
@@ -306,7 +306,7 @@
                     self.playerList.push(null);
                     self.loadVideoSource({
                         type: 'flv',
-                        url: "http://39.106.1.200:6604/RealplayFlv.do?DevIDNO="+ self.queryInfo["vehicleNo"] +"&Channel=" + i + "&StreamType=1&uSession=" + self.uSession
+                        url: "http://39.106.1.200:6604/RealplayFlv.do?DevIDNO="+ self.queryInfo["vehicleNo"] +"&Channel=" + i + "&StreamType=0&uSession=" + self.uSession
                     }, i);
                 }
                 setTimeout(function () {

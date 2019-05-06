@@ -272,7 +272,7 @@
             </div>
         </div>
         
-        <div class="mainWrap">
+        <div class="mainWrap mainWrapMg">
             <iframe frameborder="0" class="show" id="iframe_Welcom" :src="'/airport/www/module/welcomMg/welcom.html'+'?v=' + Date.parse(new Date())"></iframe>
             <template v-if="iframeList.length > 0">
                 <template v-for="item in iframeList">
@@ -281,15 +281,19 @@
             </template>
         </div>
         
-        <script src="/airport/assets/js/vue.min.js"></script>
-        <script src="/airport/assets/vender/iView/iview.min.js"></script>
-        <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
-        <script src="/airport/assets/js/md5.min.js"></script>
-        <script src="/airport/assets/js/config.min.js?v=5756574646372"></script>
-        <script src="/airport/assets/js/utility.min.js?v=3412341234198"></script>
-        <script src="/airport/www/module/indexMg/index.min.js?v=23412348823417829"></script>
     </div> 
+    <!-- <script src="/airport/assets/js/vue.min.js"></script>
+    <script src="/airport/assets/vender/iView/iview.min.js"></script>
+    <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
+    <script src="/airport/assets/js/md5.min.js"></script>
+    <script src="/airport/assets/js/config.min.js?v=5756574646372"></script>
+    <script src="/airport/assets/js/utility.min.js?v=3412341234198"></script>
+    <script src="/airport/www/module/indexMg/index.min.js?v=23412348823417829"></script> -->
 
+    <script src="/airport/assets/js/LAB.min.js"></script>
+    <script>
+        loadScript(MODUL+"module/indexMg/index.min.js");
+    </script>
 </body>
 
 </html>

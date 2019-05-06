@@ -119,7 +119,7 @@
         <!-- 新增或编辑 -->
         <template>
             <Modal v-model="isShowModal" 
-                :styles="{top: '60px'}"
+                :styles="{top: '60px'}" 
                 width="25" 
                 :title="modalTitle" 
                 :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
@@ -341,14 +341,18 @@
                 </div>
             </Modal>
         </template>
-        <script src="/airport/assets/js/vue.min.js"></script>
+        <!-- <script src="/airport/assets/js/vue.min.js"></script>
         <script src="/airport/assets/vender/iView/iview.min.js"></script>
         <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
         <script src="/airport/assets/js/md5.min.js"></script>
         <script src="/airport/assets/js/config.min.js?v=5756574646372"></script>
         <script src="/airport/assets/js/utility.min.js?v=5756574646372"></script>
-        <script src="/airport/www/module/dataGroup/dataGroup.min.js?v=5756574646372"></script>
+        <script src="/airport/www/module/dataGroup/dataGroup.min.js?v=5756574646372"></script> -->
     </div>
+    <script src="/airport/assets/js/LAB.min.js"></script>
+    <script>
+        loadScript(MODUL+"module/dataGroup/dataGroup.min.js");
+    </script>
 </body>
 
 </html>

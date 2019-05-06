@@ -52,6 +52,7 @@
 </head>
 
 <body>
+
     <div id="js-vue" class="mapContainer">
         
         <!-- 地图容器 -->
@@ -76,7 +77,6 @@
 
         <!-- 移动车辆 -->
         <div id="ol-moveVehicle" class="moveVehicle popupLayer"></div>
-        <!--  id="ol-dbClickSearch" -->
         <div id="ol-dbClickSearch" class="searchVehicle popupLayer">
             <div class="radar"></div>
         </div>
@@ -120,16 +120,20 @@
         <!-- 搜索 -->
         <div class="searchWrap">
             <template>
-                <Row type="flex" justify="start" gutter="5">
+                <Row type="flex" justify="start" :gutter="5">
                     <i-col span="14">
-                        <template>
-                            <i-input v-model="searchCode" @on-search="searchMap" size="large" search enter-button :placeholder="{'CN':'车辆编码','EN':'Vehicle Code','TW':'車輛編碼'}[language]" />
-                        </template>
+                        <div>
+                            <template>
+                                <i-input v-model="searchCode" @on-search="searchMap" size="large" search enter-button :placeholder="{'CN':'车辆编码','EN':'Vehicle Code','TW':'車輛編碼'}[language]" />
+                            </template>
+                        </div>
                     </i-col>
                     <i-col span="10">
                         <template>
-                            <i-button @click="refresh" size="large" type="info"><template><Icon size="20" type="ios-refresh-circle" /></template>{{{'CN':'刷新页面','EN':'Refresh Page','TW':'刷新頁面'}[language]}}</i-button>
-                            <i-button @click="resetView" size="large" type="warning"><template><Icon size="20" type="ios-refresh-circle-outline" /></template>{{{'CN':'重置视图','EN':'Reset View','TW':'重置視圖'}[language]}}</i-button>
+                            <div style="display: inline-block"><i-button @click="refresh" size="large" type="info"><span><Icon size="20" type="ios-refresh-circle" /></span>{{{'CN':'刷新页面','EN':'Refresh Page','TW':'刷新頁面'}[language]}}</i-button></div>
+                        </template>
+                        <template>
+                            <div style="display: inline-block"><i-button @click="resetView" size="large" type="warning"><span><Icon size="20" type="ios-refresh-circle-outline" /></span>{{{'CN':'重置视图','EN':'Reset View','TW':'重置視圖'}[language]}}</i-button></div>
                         </template>
                     </i-col>
                 </Row>
@@ -137,7 +141,7 @@
         </div>
 
         <!-- 菜单 -->
-        <div class="menuWrap">
+        <div class="menuWrap">     
             <template>
                 <i-menu mode="horizontal">
                     <menu-item name="1">
@@ -146,12 +150,6 @@
                             <span class="label" v-text="{'CN':'车辆实时查询','EN':'Vehicle Search','TW':'車輛实时查詢'}[language]"></span>
                         </div>
                     </menu-item>
-                    <!-- <menu-item name="2">
-                        <div @click="showModal('isVehicle')">
-                            <span class="icon"><Icon type="ios-bus-outline" /></span>
-                            <span class="label" v-text="{'CN':'车辆管理','EN':'Vehicle Management','TW':'車輛管理'}[language]"></span>
-                        </div>
-                    </menu-item> -->
                     <menu-item name="3">
                         <div @click="showModal('isHistory')">
                             <span class="icon"><Icon type="ios-git-branch" /></span>
@@ -180,12 +178,6 @@
                             <span class="label" v-text="{'CN':'图层控制','EN':'Layer Control','TW':'圖層控制'}[language]"></span>
                         </div>
                     </menu-item>
-                    <!-- <menu-item name="7">
-                        <div @click="showModal('isAlarm')">
-                            <span class="icon"><Icon type="ios-alert-outline" /></span>
-                            <span class="label" v-text="{'CN':'告警管理','EN':'Alarm Management','TW':'告警管理'}[language]"></span>
-                        </div>
-                    </menu-item> -->
                 </i-menu>
             </template>
         </div>
@@ -609,7 +601,6 @@
                         </tbody>
                     </table>
                 </div>
-                <!-- <p class="tip" v-text="{'CN':'注:表格仅显示当前视域内数据','EN':'Notes:The table shows only the data in the current view.','TW':'注:表格僅顯示當前視域內數據'}[language]"></p> -->
                 <div class="modifiedWrap">
                     <div class="tableWrap">
                         <template>
@@ -728,7 +719,6 @@
                                     <span class="label" v-text="{'CN':'半径','EN':'raduis','TW':'半徑'}[language]"></span>
                                 </td>
                                 <td>
-                                    <!-- <i-input v-model="cameraDetailInfo.radius" /> -->
                                     <Input-number
                                         :disabled="!cameraFunc"
                                         v-model="cameraDetailInfo.radius"
@@ -741,7 +731,6 @@
                                     <span class="label" v-text="{'CN':'视野角度','EN':'Angle of view','TW':'視野角度'}[language]"></span>
                                 </td>
                                 <td>
-                                    <!-- <i-input v-model="cameraDetailInfo.angle"/> -->
                                     <Input-number
                                         :min="0"
                                         :max="360"
@@ -792,34 +781,6 @@
         
                 <div class="modifiedWrap">
                     <Row type="flex" justify="start" class-name="layerWrap">
-                        <!-- <i-col span="12" class-name="layerMenu">
-                            <template>
-                                <radio-group value="1" style="width: 100%;">
-                                    <i-menu theme="light" active-name="1" mode="vertical" width="auto">
-                                        <menu-item name="1">
-                                            <Radio label="1">
-                                                <span class="label" v-text="{'CN':'矢量地图(在线)','EN':'Vector Map(On-line)','TW':'矢量地圖(在線)'}[language]"></span>
-                                            </Radio>
-                                        </menu-item>
-                                        <menu-item name="2">
-                                            <Radio label="2">
-                                                <span class="label" v-text="{'CN':'卫星(在线)','EN':'Satellite(On-line)','TW':'衛星(在線)'}[language]"></span>
-                                            </Radio>
-                                        </menu-item>
-                                        <menu-item name="3">
-                                            <Radio label="3">
-                                                <span class="label" v-text="{'CN':'离线影像地图','EN':'Offline Image Map','TW':'離線影像地圖'}[language]"></span>
-                                            </Radio>
-                                        </menu-item>
-                                        <menu-item name="4">
-                                            <Radio label="4">
-                                                <span class="label" v-text="{'CN':'离线电子地图','EN':'Offline Electronic Map','TW':'離線電子地圖'}[language]"></span>
-                                            </Radio>
-                                        </menu-item>
-                                    </i-menu>        
-                                </radio-group>
-                            </template>
-                        </i-col> -->
                         <i-col span="24" class-name="layerMenu">
                                 <template>
                                     <checkbox-group v-model="layerControl" style="width: 100%;">
@@ -829,16 +790,6 @@
                                                     <span class="label" v-text="{'CN':'背景','EN':'Background','TW':'背景'}[language]"></span>
                                                 </Checkbox>
                                             </menu-item>
-                                            <!-- <menu-item name="seat">
-                                                <Checkbox label="seat">
-                                                    <span class="label" v-text="{'CN':'机位','EN':'Seat','TW':'機位'}[language]"></span>
-                                                </Checkbox>
-                                            </menu-item>
-                                            <menu-item name="alarm">
-                                                <Checkbox label="alarm">
-                                                    <span class="label" v-text="{'CN':'告警','EN':'Alarm','TW':'告警'}[language]"></span>
-                                                </Checkbox>
-                                            </menu-item> -->
                                             <menu-item name="vehicle">
                                                 <Checkbox label="vehicle">
                                                     <span class="label" v-text="{'CN':'车辆','EN':'Vehicle','TW':'車輛'}[language]"></span>
@@ -987,12 +938,6 @@
                             </tr>
 
                             <tr>
-                                <!-- <td style="text-align: right;">
-                                    <span class="label" v-text="{'CN':'车辆编号','EN':'Vehicle Number','TW':'車輛編號'}[language]"></span>
-                                </td>
-                                <td>
-                                    <i-input v-model="vehiclePositonPageInfo.vehicleCode" :placeholder="{'CN':'请输入车辆编号','EN':'Vehicle Number','TW':'請輸入車輛編號'}[language]"></i-input>
-                                </td> -->
                                 <td style="text-align: right;">
                                     <span class="label" v-text="{'CN':'半径范围','EN':'Radius','TW':'半徑範圍'}[language]"></span>
                                 </td>
@@ -1046,14 +991,14 @@
                             :data="searchDatas" 
                             stripe="true" 
                             size="small">
-                            <template slot-scope="{row, index}" slot="action">
+                            <!-- <template slot-scope="{row, index}" slot="action">
                                 <template v-if="row.licenseNumber && vehiclePositionList[index]['providerId']<100">
                                     <i-button size="small" type="primary" @click="showLiveVideo(row.licenseNumber, vehiclePositionList[index]['providerId'])" style="width: 40px;">视频</i-button>
                                 </template>
                                 <template v-else>
                                     <i-button size="small">详情</i-button>
                                 </template>
-                            </template>
+                            </template> -->
                         </i-table>
                         </template>
                     </div>
@@ -1066,16 +1011,14 @@
             </Modal>
         </template>
 
-        <script src="/airport/assets/js/vue.min.js"></script>
-        <script src="/airport/assets/vender/iView/iview.min.js"></script>
-        <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
-        <script src="/airport/assets/js/md5.min.js"></script>
-        <script src="/airport/assets/vender/openLayer/ol.min.js"></script>
-        <script src="/airport/assets/vender/radar/radar.min.js"></script>
-        <script src="/airport/assets/js/config.min.js?v=83478723412394"></script>
-        <script src="/airport/assets/js/utility.min.js?v=83478723412394"></script>
-        <script src="/airport/www/module/maps/maps.min.js?v=83478723412394"></script>
     </div>
+    
+    <script src="/airport/assets/js/LAB.min.js"></script>
+    <script src="/airport/assets/vender/openLayer/ol.min.js"></script>
+    <script src="/airport/assets/vender/radar/radar.min.js?v=4123471829347"></script>
+    <script>
+        loadScript(MODUL+"module/maps/maps.min.js");
+    </script>
 </body>
 
 </html>

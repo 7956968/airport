@@ -45,7 +45,7 @@
     <!-- QQ应用模式 -->
     <meta name="x5-page-mode" content="app">
     <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
-    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=1238741823741" />
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=41341273491237" />
 </head>
 
 <body class="innerPage">
@@ -145,7 +145,7 @@
                 stripe="true"
                 size="small" 
                 @on-row-click="setCurrentRowData">
-                    <template slot-scope="{row, index}" slot="vehicleUseStatus">
+                    <!-- <template slot-scope="{row, index}" slot="vehicleUseStatusSlot">
                         <i-select 
                             @on-change="vehicleUseStatusChange(row, index)" 
                             v-model="dataList[index]['useStatus']" 
@@ -155,16 +155,15 @@
                             style="width: 80px;">
                             <i-option v-for="item in vehicleUseStatusList" :value="item.type">{{item.name}}</i-option>
                         </i-select>
-                        &nbsp;&nbsp;
                         <i-button size="small" @click="showRecordList(index)" style="width: 40px;">记录</i-button>
                     </template>
-                    <template slot-scope="{row, index}" slot="vehicleStatus">
+                    
+                    <template slot-scope="{row, index}" slot="vehicleStatusSlot">
                         <span :class="'_'+vehicleList[index]['vehicleStatus']"><span v-text="row.vehicleStatus"></span></span>
-                        &nbsp;&nbsp;
                         <template v-if="row.licenseNumber && vehicleList[index]['providerId']<100">
                             <i-button size="small" type="primary" @click="showLiveVideo(row.licenseNumber, vehicleList[index]['providerId'])" style="width: 40px;">视频</i-button>
                         </template>
-                    </template>
+                    </template> -->
                 </i-table>
             </template>
         </div>
@@ -290,22 +289,11 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="label">
-                                    <span class="request">＊</span>
-                                    <span>设备供应商</span>
-                                </td>
-                                <td>
-                                    <template>
-                                        <i-select v-model="itemInfo.providerId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
-                                            <i-option v-for="item in deviceProviderIdList" :value="item.type">{{item.name}}</i-option>
-                                        </i-select>
-                                    </template>
-                                </td>
                                 <td class="label" style="vertical-align: top;">
                                     <span v-text="{'CN':'备注','EN':'Remarks','TW':'備註'}[language]"></span>
                                 </td>
-                                <td>
-                                    <i-input v-model="itemInfo.remark" type="textarea" />
+                                <td colspan="3">
+                                    <i-input v-model="itemInfo.remark" type="textarea" :row="4" />
                                 </td>
                             </tr>
                         </tbody>
@@ -333,11 +321,11 @@
                                 <td><span v-text="itemInfo.licenseNumber"></span></td>
                             </tr>
                             <tr class="detailInfo">
-                                <td class="detailLabel"><span v-text="{'CN':'活动状态','EN':'Plate No.：','TW':'車牌號'}[language]"></span></td>
+                                <td class="detailLabel"><span v-text="{'CN':'活动状态：','EN':'Plate No.：','TW':'車牌號'}[language]"></span></td>
                                 <td><span v-text="itemInfo.vehicleStatusName"></span></td>
                             </tr>
                             <tr class="detailInfo">
-                                <td class="detailLabel"><span v-text="{'CN':'使用状态','EN':'Plate No.：','TW':'車牌號'}[language]"></span></td>
+                                <td class="detailLabel"><span v-text="{'CN':'使用状态：','EN':'Plate No.：','TW':'車牌號'}[language]"></span></td>
                                 <td><span v-text="itemInfo.useStatusName"></span></td>
                             </tr>
                             <tr class="detailInfo">
@@ -376,9 +364,9 @@
 
         <!-- 使用记录 -->
         <template>
-            <Modal v-model="isRecord" footer-hide :styles="{top: '60px'}" width="50" title="使用记录">
+            <Modal v-model="isRecord" footer-hide :styles="{top: '60px'}" width="60" title="使用记录">
                 <Row>
-                    <i-col span="12">
+                    <i-col span="8">
                         <div class="modifiedWrap" style="background-color: #f8f8f9;" :style="{height: tableHeight-200+'px'}">
                             <table style="padding: 10px;">
                                 <tbody>
@@ -422,7 +410,7 @@
                             </table>
                         </div>
                     </i-col>
-                    <i-col span="12">
+                    <i-col span="16">
                         <div class="tableWrap">
                             <i-table :height="tableHeight-200" highlight-row :columns="userRecordcolumns" :data="userRecordList"  stripe="true" size="small"></i-table>
                         </div>
@@ -504,14 +492,11 @@
             </Modal>
         </template>
 
-        <script src="/airport/assets/js/vue.min.js"></script>
-        <script src="/airport/assets/vender/iView/iview.min.js?v=41274127043"></script>
-        <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
-        <script src="/airport/assets/js/md5.min.js"></script>
-        <script src="/airport/assets/js/config.min.js?v=417241234798"></script>
-        <script src="/airport/assets/js/utility.min.js?v=417241234798"></script>
-        <script src="/airport/www/module/vehicleManage/vehicleManage.min.js?v=417241234798"></script>
     </div>
+    <script src="/airport/assets/js/LAB.min.js"></script>
+    <script>
+        loadScript(MODUL+"module/vehicleManage/vehicleManage.min.js");
+    </script>
 </body>
 
 </html>

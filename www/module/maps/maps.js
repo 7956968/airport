@@ -544,31 +544,30 @@
                     "key": "operation",
                     "width": 100,
                     "fixed": "right",
-                    "slot": "action",
-                    // "render": function (h, params) {
-                    //     var liveVideoBtn = h("Button", {
-                    //         "props": {
-                    //             "size": "small",
-                    //         }
-                    //     }, { "CN": "详情", "EN": "Detail", "TW": "詳情" }[language["language"]]);;
+                    "render": function (h, params) {
+                        var liveVideoBtn = h("Button", {
+                            "props": {
+                                "size": "small",
+                            }
+                        }, { "CN": "详情", "EN": "Detail", "TW": "詳情" }[language["language"]]);;
 
-                    //     if (!!params.row.licenseNumber) {
-                    //         liveVideoBtn = h("Button", {
-                    //             "props": {
-                    //                 "type": "primary",
-                    //                 "size": "small"
-                    //             },
-                    //             "on": {
-                    //                 "click": function () {
-                    //                     pageVue.showLiveVideo(params.row.licenseNumber);
-                    //                 }
-                    //             }
-                    //         }, { "CN": "视频", "EN": "Video", "TW": "視頻" }[language["language"]]);
-                    //     }
-                    //     return h("div", [
-                    //         liveVideoBtn
-                    //     ]);
-                    // }
+                        if (!!params.row.licenseNumber) {
+                            liveVideoBtn = h("Button", {
+                                "props": {
+                                    "type": "primary",
+                                    "size": "small"
+                                },
+                                "on": {
+                                    "click": function () {
+                                        pageVue.showLiveVideo(params.row.licenseNumber);
+                                    }
+                                }
+                            }, { "CN": "视频", "EN": "Video", "TW": "視頻" }[language["language"]]);
+                        }
+                        return h("div", [
+                            liveVideoBtn
+                        ]);
+                    }
                 }
             ],
             "searchDatas": []
@@ -2518,12 +2517,11 @@
                     timePosition = setInterval(function () {
                         self.getAllVehiclePositonList(); // 获取所有实时车辆
                     }, 5000);
-                }, {
-                        deep: true
-                    });
-
-                var radar = new Radar(document.querySelector('.radar'));
-                radar.init({ scanSpeed: 2 });  // 扫描的速度，单位为deg，必须为360的约数
+                }, { deep: true}); 
+                
+                if($('.radar')[0]) {
+                    new Radar($('.radar')[0]).init({ scanSpeed: 2 });  // 扫描的速度，单位为deg，必须为360的约数
+                }
             }, 2000);
         }
     });

@@ -55,6 +55,16 @@ table {
   padding: 2px 5px;
   color: #FFF;
 }
+._401 button span,
+._402 button span,
+._403 button span,
+._404 button span,
+._405 button span,
+._406 button span,
+._407 button span,
+._408 button span {
+  background-color: transparent;
+}
 ._401 span {
   color: #333;
   background-color: #fbd048;
@@ -470,7 +480,7 @@ table {
   top: 0;
   right: 0;
   width: 30px;
-  height: 30px;
+  height: 30px;    
   line-height: 30px;
 }
 .index .fixedNav .tabItem .close i,
@@ -485,7 +495,7 @@ table {
   font-style: normal;
   border-radius: 50%;
   color: rgba(119, 126, 142, 0.2);
-  background-color: rgba(24, 38, 70, 0.1);  
+  background-color: rgba(24, 38, 70, 0.1);
 }
 .index .fixedNav .tabItem.active,
 .index .fixedNav .modifyPass.active {
@@ -521,6 +531,9 @@ table {
   left: 110px;
   right: 0;
   bottom: 0;
+}
+.index .mainWrap.mainWrapMg iframe {
+  display: block;
 }
 .index .mainWrap iframe {
   position: absolute;

@@ -78,9 +78,14 @@ table {
 ._407,
 ._408 {
     span {
-        display: inline-block;
+        display: inline-block; 
         padding: 2px 5px;
         color: #FFF;
+    } 
+    button {
+        span {
+            background-color: transparent;
+        }
     }
 }
 
@@ -670,6 +675,11 @@ table {
         left: 110px;
         right: 0;
         bottom: 0;
+        &.mainWrapMg {
+            iframe {
+                display: block;
+            }
+        }
 
         iframe {
             position: absolute; 

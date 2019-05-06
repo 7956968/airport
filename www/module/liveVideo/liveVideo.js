@@ -452,7 +452,9 @@
                 for (var idx = 0; idx < channelNum; idx++) {
                     ret = vsclientSession.startPlay(self.mVehicleNo, idx, $("#video" + idx)[0]);
                 }
-                self.playAudio(0);
+                setTimeout(function() {
+                    self.playAudio(0);
+                }, 1000);
                 if (ret) {
                     self.isStop = true;
                     self.msgInfo = "";
@@ -467,7 +469,7 @@
                             self.timeLen--;
                             self.$Message.destroy();
                             if(self.timeLen <= 0) {
-                                self.stopVideo();
+                                self.stopVideo("视频已经全部关闭");
                             }
                         }, 1000);
                     }, 5000);
@@ -543,9 +545,6 @@
                 self.channelIndex = channel;
                 vsclientSession.stopListening();
                 vsclientSession.startListening(self.mVehicleNo, self.channelIndex);
-
-                console.log(self.channelIndex);
-                console.log(self.mVehicleNo);
             },
             // 停止播放声音
             "stopAudio": function () {

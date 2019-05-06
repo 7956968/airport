@@ -229,8 +229,6 @@ VSClientSession.prototype.startListening = function (name, channel) {
         return false;
     }
 
-    console.log(front);
-
     this.audioElement = document.createElement("audio");
     this.audioElement.controls = false;
     document.body.appendChild(this.audioElement);
@@ -285,9 +283,8 @@ Player.prototype.setStreamPlayStatus = function (stateFunc) {
 };
 
 Player.prototype.start = function () {
-    if (!window.MediaSource) {
+    if (!window.MediaSource)
         return;
-    }
 
     this.gotInitSeg = false
     this.track = null;
@@ -428,6 +425,13 @@ Player.prototype.start = function () {
     var fileCnt = 0;
 
     this.processNewFrame = function () {
+        //var keyframe = this.parseFrame(this.frames[this.frames.length - 1]);
+
+        //if (!this.track) {
+        //    this.frames = [];
+        //    return;
+        //}
+
         this.segments.push(this.frames[0]);
         if (this.isRecording && this.gotInitSeg) {
             this.recordBuffers.push(this.frames[0]);
@@ -535,6 +539,8 @@ Player.prototype.start = function () {
 
 Player.prototype.onGettingStream = function () {
 
+    // if(this.onStreamPlayState)
+    //     this.onStreamPlayState(STREAM_PLAY_STATE_REQUESTTING);
 };
 
 Player.prototype.reset = function () {
@@ -549,6 +555,8 @@ Player.prototype.reset = function () {
 
 Player.prototype.onStreamError = function () {
     this.onStreamEnd()
+    // if(onStreamPlayState)
+    //     onStreamPlayState(STREAM_PLAY_STATE_PLAY_STRAM_FAILED);
     if (this.stream) {
         this.stream.removeStreamSink(this)
         this.stream = null
@@ -568,7 +576,7 @@ Player.prototype.onStreamEnd = function () {
         this.flushRecordFile();
     }
 
-    this.gotInitSeg = false;
+    this.gotInitSeg = false
     this.track = null;
     this.seq = 0;
     this.segments = [];
@@ -675,8 +683,6 @@ Player.prototype.startPlay = function () {
     this.video.src = window.URL.createObjectURL(this.mediaSource);
     this.video.autoplay = true;
     this.video.play();
-
-    console.log(window.URL.createObjectURL(this.mediaSource));
 
     var player = this;
 
