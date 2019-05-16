@@ -160,32 +160,13 @@
             border-color: #f90;
         }
         .videoItem video {
-            /* position: absolute;
-            z-index: 0;
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: fill; */
             display: block;
             width: 100%;
             height: 100%;
-            /* object-fit: cover; */
-            transform: scaleX(1.7);
+            object-fit: fill;
+            -ms-transform: scaleX(1.8);
         }
         .videoMasker {
-            /* position: absolute;
-            z-index: 100;
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: 100%;
-            height: 100%;
-            background: url(/airport/www/img/videMasker.png) no-repeat center center;
-            background-size: cover; */
             display: none;
         }
         .dealWrap {
@@ -268,7 +249,7 @@
                 <!-- 状态 -->
                 <template v-if="msgInfo">
                     <div class="msgTip">
-                        <Tag type="dot" :color="msgType">{{msgInfo}}</Tag>
+                        <Tag type="dot" :color="msgType"><span v-text="msgInfo"></span></Tag>
                     </div>
                 </template>
                 
@@ -293,10 +274,9 @@
             <!-- 视频 -->
             <div class="video_player_area" id="videoContainer">
                 <template v-for="index in mVideoCount">
-                    <div class="videoItem" :id="'liveVideo'+(index-1)" @click="setCurrentStyle('liveVideo'+(index-1))">
-                        <div class="videoWrap">
+                    <div class="videoItem" :id="'liveVideo'+(index-1)" draggable="true" @drop="drop($event)" @dragend="dragEnd($event)" @dragover="dragOver($event)">
+                        <div class="videoWrap" @click="setCurrentStyle('liveVideo'+(index-1))">
                             <video playsinline @dblclick="setFullScream('video'+(index-1))" :id="'video'+(index-1)" preload="meta" loop muted autoplay>无视频</video>
-                            <!-- <div class="videoMasker"></div> -->
                             <div class="dealWrap">
                                 <template v-if="isFullScream==true">
                                     <i-button @click="closeFullScream('video'+(index-1))"><Icon color="#78b1ef" size="24" type="md-close" /></i-button>
@@ -319,7 +299,7 @@
 
         </div>
 
-        <Modal v-model="offLine" width="360" footer-hide>
+        <Modal v-model="offLine" width="360" footer-hide :closable="false" :mask-closable="false">
             <p slot="header" style="color:#f60;text-align:center">
                 <i-icon type="ios-information-circle" size="18px"></i-icon>
                 <span style="font-size: 18px;">关闭视频</span>
@@ -331,15 +311,11 @@
         </Modal>
     </div>
 
-    <script src="https://cdn.bootcss.com/babel-polyfill/7.4.4/polyfill.min.js"></script>
-    <script src="https://cdn.bootcss.com/es6-promise/4.1.1/es6-promise.min.js"></script>
-    <script src="https://cdn.bootcss.com/es6-promise/4.1.1/es6-promise.auto.min.js"></script>
-    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
-    <script src="https://cdn.bootcss.com/iview/3.4.1/iview.min.js"></script>
-    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
-    <script src="/airport/assets/js/utility.min.js?v=4714712341823"></script>
     <script src="/airport/www/module/liveVideo/vsplayer.min.js?v=4714712341823"></script>
-    <script src="/airport/www/module/liveVideo/liveVideo.min.js?v=4714712341823"></script>
+    <script src="/airport/assets/js/LAB.min.js?v=49127341723"></script>
+    <script>
+        loadScript(MODUL+"module/liveVideo/liveVideo.min.js");
+    </script>
 </body>
 
 </html>

@@ -44,45 +44,31 @@
     <meta name="browsermode" content="application">
     <!-- QQ应用模式 -->
     <meta name="x5-page-mode" content="app">
-    <link rel="icon" href="/airport/assets/img/favicon.ico">
-    <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
-    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=742834834283" />
+    <link rel="stylesheet" href="https://cdn.bootcss.com/iview/3.4.1/styles/iview.css">
+    <link rel="stylesheet" type="text/css" href="./css/common.min.css?v=42341234129" />
 </head>
 
 <body class="loginPage">
     <div id="js-vue" class="login">
         <div class="wrap">
             <div class="header">
-                <img src="/airport/assets/img/logo.png" />
-                <span class="label">特种车辆音视频可视化系统</span>
+                <p class="label">
+                    <span><Icon type="ios-cube" size="64" color="#005ddc" /></span>
+                    <span>代码下载</span>
+                </p>
             </div>
             <div class="inputInfo">
                 <template>
                     <label>
-                        <i-input prefix="ios-contact" v-model="loginInfo.userCode" size="large" :placeholder="{'CN':'用户名','EN':'userName','TW':'用戶名'}[language]" />
+                        <i-input prefix="ios-contact" v-model="loginInfo.userCode" size="large" placeholder="用户名" />
                     </label>
                     <label>
-                        <i-input prefix="md-unlock" v-model="loginInfo.userPwd" size="large" type="password"
-                            :placeholder="{'CN':'密码','EN':'password','TW':'密碼'}[language]" />
+                        <i-input prefix="md-unlock" v-model="loginInfo.userPwd" size="large" type="password" placeholder="密码" />
                     </label>
-                    <!-- <label>
-                        <i-select v-model="language" size="large">
-                            <i-option v-for="(item, index) in languageList" :value="item.value" :key="index">{{item.label}}</i-option>
-                        </i-select>
-                    </label> -->
-                    <label>
-                        <template>
-                            <i-select v-model="airPort" placeholder="请选择机场">
-                                <template v-for="item in airPortList">
-                                    <i-option :value="item.value">{{item.label}}</i-option>
-                                </template>
-                            </i-select>
-                        </template>
-                    </label>
-                    <Checkbox v-model="loginInfo.remember">{{{'CN':'记住我','EN':'Remember Me','TW':'記住我'}[language]}}</Checkbox>
+                    <Checkbox v-model="loginInfo.remember">记住我</Checkbox>
                     <label>
                         <i-button @click="loginAction" type="primary" size="large" :loading="loading" long>
-                            <span v-if="!loading" v-text="{'CN':'登录','EN':'Login','TW':'登錄'}[language]"></span>
+                            <span v-if="!loading">登录</span>
                             <span v-else>Loading...</span>
                         </i-button>
                     </label>
@@ -90,9 +76,9 @@
             </div>
         </div>
     </div>
-    <script src="/airport/assets/js/LAB.min.js"></script>
+    <script src="./js/LAB.min.js"></script>
     <script>
-        loadScript(MODUL+"action/login.min.js");
+        loadScript("./action/login/login.min.js");
     </script>
 </body>
 

@@ -70,11 +70,15 @@
                     "title": { "CN": "公司", "EN": "Company", "TW": "公司" }[language["language"]],
                     "key": "companyId",
                     "fixed": "left",
+                    "sortable": true,
+                    "sortType": "asc",
                     "width": 150
                 },
                 {
                     "title": { "CN": "部门", "EN": "Department", "TW": "部門" }[language["language"]],
                     "key": "deptId",
+                    "sortable": true,
+                    "sortType": "asc",
                     "width": 200
                 },
                 {
@@ -93,22 +97,37 @@
                     "width": 180,
                     "render": function (h, params) {
                         var liveButton = null;
+                        var txt = { "CN": "视频", "EN": "Video", "TW": "视频" }[language["language"]];
 
                         if(pageVue.vehicleList[params.index]['licenseNumber'] && pageVue.vehicleList[params.index]['providerId']<100) {
-                            liveButton = h("Button", {
-                                "props": {
-                                    "type": "primary",
-                                    "size": "small",
-                                },
-                                "style": {
-                                    "marginLeft": '5px'
-                                },
-                                "on": {
-                                    "click": function () {
-                                        pageVue.showLiveVideo(params.row.licenseNumber, pageVue.vehicleList[params.index]['providerId'])
+                            if(pageVue.vehicleList[params.index]['vehicleStatus'] == 401 || pageVue.vehicleList[params.index]['vehicleStatus'] == 402) {
+                                liveButton = h("Button", {
+                                    "props": {
+                                        "type": "primary",
+                                        "size": "small",
+                                    },
+                                    "style": {
+                                        "marginLeft": '5px'
+                                    },
+                                    "on": {
+                                        "click": function () {
+                                            pageVue.showLiveVideo(params.row.licenseNumber, pageVue.vehicleList[params.index]['providerId'])
+                                        }
                                     }
-                                }
-                            }, { "CN": "视频", "EN": "Video", "TW": "视频" }[language["language"]]);
+                                }, txt);
+                            } else {
+                                liveButton = h("Button", {
+                                    "props": {
+                                        "type": "default",
+                                        "size": "small",
+                                        "disabled": true,
+                                    },
+                                    "class": "disabled",
+                                    "style": {
+                                        "marginLeft": '5px'
+                                    },
+                                }, txt);
+                            }
                         }
                         return h("div", [
                             h("span", {
@@ -132,7 +151,7 @@
                         if(pageVue.vehicleList[params.index]['providerId']>=100) {
                             text = pageVue.vehicleList[params.index]['useStatusName'];
                         } else {
-                            text = "--";
+                            text = "----";
                         }
 
                         return h("div", [

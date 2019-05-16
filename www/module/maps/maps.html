@@ -91,8 +91,8 @@
                     <p>{{{'CN':'车辆编码','EN':'Code','TW':'車輛編碼'}[language]}}：{{vehicleItemPop.vehicleCode}}</p>
                     <template v-if="vehicleItemPop.licenseNumber">
                         <p>
-                            {{{'CN':'车牌号','EN':'Plate No.','TW':'車牌號'}[language]}}：{{vehicleItemPop.licenseNumber}}  
-                            <i-button size="small" @click="showLiveVideo(vehicleItemPop.licenseNumber)" type="primary" icon="md-play">{{{'CN':'视频','EN':'Video','TW':'視頻'}[language]}}</i-button>
+                            {{{'CN':'车 牌 号','EN':'Plate No.','TW':'車牌號'}[language]}}：{{vehicleItemPop.licenseNumber}}  
+                            <i-button size="small" @click="showLiveVideo(vehicleItemPop.licenseNumber, vehicleItemPop.providerId)" type="primary" icon="md-play">{{{'CN':'视频','EN':'Video','TW':'視頻'}[language]}}</i-button>
                         </p>
                     </template>
                     <p>{{{'CN':'车辆名称','EN':'Name','TW':'車輛名稱'}[language]}}：{{vehicleItemPop.vehicleName}}</p>
@@ -100,7 +100,7 @@
                     <p>{{{'CN':'终端设备','EN':'Termina','TW':'終端設備'}[language]}}：{{vehicleItemPop.gpsDeviceCode}}</p>
                     <p>{{{'CN':'车辆速度','EN':'Speed','TW':'車輛速度'}[language]}}：{{vehicleItemPop.speed}}</p>
                     <p>{{{'CN':'运动状态','EN':'State','TW':'車輛狀態'}[language]}}：<span :class="'_'+vehicleItemPop.vehicleStatus"><span>{{vehicleItemPop.vehicleStatusName}}</span></span></p>
-                    <p>{{{'CN':'使用状态','EN':'State','TW':'車輛狀態'}[language]}}：{{vehicleItemPop.useStatusName}}</p>
+                    <!-- <p>{{{'CN':'使用状态','EN':'State','TW':'車輛狀態'}[language]}}：{{vehicleItemPop.useStatusName}}</p> -->
                     <p>{{{'CN':'回放速度','EN':'Speed','TW':'回放速度'}[language]}}：{{mapContainer.animationInfo.speed}}<Slider v-model="mapContainer.animationInfo.speed" :min="60" :max="200" show-tip="always"></Slider></p>
                     <Row gutter="5" class="trajectoryAction">
                         <i-col span="8">
@@ -297,7 +297,7 @@
                             <p>{{{'CN':'车辆编码','EN':'Code','TW':'車輛編碼'}[language]}}：{{vehicleItemPop.vehicleCode}}</p>
                             <template v-if="vehicleItemPop.licenseNumber">
                                 <p>
-                                    {{{'CN':'车牌号','EN':'Plate No.','TW':'車牌號'}[language]}}：{{vehicleItemPop.licenseNumber}}  
+                                    {{{'CN':'车 牌 号','EN':'Plate No.','TW':'車牌號'}[language]}}：{{vehicleItemPop.licenseNumber}}  
                                     <i-button size="small" @click="showLiveVideo(vehicleItemPop.licenseNumber)" type="primary" icon="md-play">{{{'CN':'视频','EN':'Video','TW':'視頻'}[language]}}</i-button>
                                 </p>
                             </template>
@@ -306,7 +306,7 @@
                             <p>{{{'CN':'终端设备','EN':'Termina','TW':'終端設備'}[language]}}：{{vehicleItemPop.gpsDeviceCode}}</p>
                             <p>{{{'CN':'车辆速度','EN':'Speed','TW':'車輛速度'}[language]}}：{{vehicleItemPop.speed}}</p>
                             <p>{{{'CN':'运动状态','EN':'State','TW':'車輛狀態'}[language]}}：<span :class="'_'+vehicleItemPop.vehicleStatus"><span>{{vehicleItemPop.vehicleStatusName}}</span></span></p>
-                            <p>{{{'CN':'使用状态','EN':'State','TW':'車輛狀態'}[language]}}：{{vehicleItemPop.useStatusName}}</p>
+                            <!-- <p>{{{'CN':'使用状态','EN':'State','TW':'車輛狀態'}[language]}}：{{vehicleItemPop.useStatusName}}</p> -->
                         </div>
                     </template>
                 </div>

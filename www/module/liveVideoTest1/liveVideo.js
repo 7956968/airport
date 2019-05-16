@@ -16,8 +16,8 @@
             "errorTip": "",
             "timeOfflineOut": null,
             "timeOffline": 5,
-            "timeLen": 300,
-            "timeSelect": "300",
+            "timeLen": 30,
+            "timeSelect": "30",
             "timeLenOut": null,
             "netnSignal": "",
             "msgType": "primary",
@@ -29,6 +29,12 @@
             "splitNum": 1,
             "connectTimeOut": null,
             "playerList": [],
+            "dragAndDrop": {
+                "sourceEle": null,
+                "targetEle": null,
+                "sourceStyle": "",
+                "targetStyle": ""
+            },
             "mediaDataSourceList": [],
             "splitArea": [1, 4, 6, 8, 9], // 分屏类型
             "videoWinSplit": [
@@ -472,6 +478,34 @@
                 });
 
                 return usablePrefixMethod;
+            },
+            // 当拖拽结束
+            "dragEnd": function(event){
+                var self = this;
+                var srcElement = $(event.srcElement);
+
+                self.dragAndDrop.sourceEle = srcElement;
+                self.dragAndDrop.sourceStyle = srcElement.attr("style");
+
+            },
+            // 接收拖拽元素
+            "drop": function(event){
+                var self = this;
+                var srcElement = $(event.srcElement).parents(".videoItem");
+
+                event.preventDefault();
+
+                self.dragAndDrop.targetEle = srcElement;
+                self.dragAndDrop.targetStyle = srcElement.attr("style");
+
+                setTimeout(function(){
+                    self.dragAndDrop.targetEle.attr("style", self.dragAndDrop.sourceStyle);
+                    self.dragAndDrop.sourceEle.attr("style", self.dragAndDrop.targetStyle);
+                }, 250);
+            },
+            "dragOver": function(event){
+                var self = this;
+                event.preventDefault();
             },
         },
         "mounted": function () {

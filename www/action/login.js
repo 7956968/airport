@@ -42,7 +42,7 @@
                     "label": "上海浦东国际机场",
                 }
             ],
-            "title": { "CN": "车辆智能监控管理平台", 'EN': "Mingui Non-Powered Euipment Management System", 'TW': "民貴無動力管理系統" }
+            "title": { "CN": "特种车辆音视频可视化系统", 'EN': "Mingui Non-Powered Euipment Management System", 'TW': "民貴無動力管理系統" }
         },
         "watch": {
             "language": function (value) {

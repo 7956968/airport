@@ -81,10 +81,16 @@ table {
         display: inline-block; 
         padding: 2px 5px;
         color: #FFF;
-    } 
+    }  
     button {
         span {
+            color: #fff;
             background-color: transparent;
+        }
+        &.disabled {
+            span {
+                color: #827f7f;
+            }
         }
     }
 }
@@ -246,6 +252,8 @@ table {
         padding-top: 40px;
         overflow-x: hidden;
         overflow-y: auto;
+        -ms-overflow-x: hidden;
+        -ms-overflow-y: auto;
 
         .layout {
             padding: 0 10px 0 10px;
@@ -564,6 +572,8 @@ table {
             width: 100%;
             overflow-x: auto;
             overflow-y: hidden;
+            -ms-overflow-x: auto;
+            -ms-overflow-y: hidden;
 
             .fixedNavBox {
                 height: 30px;

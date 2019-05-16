@@ -25,6 +25,12 @@
             "defaultColor": "rgb(255,125,0)", // 当前激活视频样式
             "splitNum": 1,
             "connectTimeOut": null,
+            "dragAndDrop": {
+                "sourceEle": null,
+                "targetEle": null,
+                "sourceStyle": "",
+                "targetStyle": ""
+            },
             "splitArea": [1, 4, 6, 8, 9], // 分屏类型
             "videoWinSplit": [
                 {
@@ -342,6 +348,7 @@
                                 self.$Message.loading({
                                     "content": "请求完成,等待播放......"
                                 });
+                                clearInterval(self.timeLenOut);
                                 break;
                             case STREAM_PLAY_STATE_PLAY_STRAM_SUCCESS:
                                 self.$Message.destroy();
@@ -452,9 +459,7 @@
                 for (var idx = 0; idx < channelNum; idx++) {
                     ret = vsclientSession.startPlay(self.mVehicleNo, idx, $("#video" + idx)[0]);
                 }
-                setTimeout(function() {
-                    self.playAudio(0);
-                }, 1000);
+                self.playAudio(0);
                 if (ret) {
                     self.isStop = true;
                     self.msgInfo = "";
@@ -514,7 +519,7 @@
                 self.isStop = true;
                 self.$Message.destroy();
                 self.msgType = "error";
-                self.msgInfo = msgInfo || "视频已经全部关闭";
+                self.msgInfo = typeof msgInfo == "string" ? msgInfo : "视频已经全部关闭";
                 clearInterval(self.timeLenOut);
                 clearInterval( self.timeOfflineOut);
                 self.timeOffline = 5;
@@ -544,7 +549,9 @@
 
                 self.channelIndex = channel;
                 vsclientSession.stopListening();
-                vsclientSession.startListening(self.mVehicleNo, self.channelIndex);
+                setTimeout(function(){
+                    vsclientSession.startListening(self.mVehicleNo, self.channelIndex);
+                }, 1000);
             },
             // 停止播放声音
             "stopAudio": function () {
@@ -576,6 +583,32 @@
 
                 return usablePrefixMethod;
             },
+            "dragEnd": function(event){
+                var self = this;
+                var srcElement = $(event.srcElement);
+
+                self.dragAndDrop.sourceEle = srcElement;
+                self.dragAndDrop.sourceStyle = srcElement.attr("style");
+
+            },
+            "drop": function(event){
+                var self = this;
+                var srcElement = $(event.srcElement).parents(".videoItem");
+
+                event.preventDefault();
+
+                self.dragAndDrop.targetEle = srcElement;
+                self.dragAndDrop.targetStyle = srcElement.attr("style");
+
+                setTimeout(function(){
+                    self.dragAndDrop.targetEle.attr("style", self.dragAndDrop.sourceStyle);
+                    self.dragAndDrop.sourceEle.attr("style", self.dragAndDrop.targetStyle);
+                }, 250);
+            },
+            "dragOver": function(event){
+                var self = this;
+                event.preventDefault();
+            },
         },
         "mounted": function () {
             var self = this;
@@ -603,6 +636,7 @@
                 "ip": "220.231.225.7",
                 "vehicleNo": decodeURI(utility.getQueryParams().vehicleNo),
             });
+
         }
     });
 

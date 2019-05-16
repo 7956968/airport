@@ -318,11 +318,13 @@
                     "count": 0
                 };
                 for(var i = 0, len = self.vehicleTypeList.length; i < len; i++) {
-                    self.vehicleTypeInfo["_"+self.vehicleTypeList[i]["type"]] = {
-                        "value": 0,
-                        "name": self.vehicleTypeList[i]["name"],
-                        "list": [],
-                        "color": self.colorList[i]
+                    if(self.vehicleTypeList[i]["type"] != 302 && self.vehicleTypeList[i]["type"] != 303) {
+                        self.vehicleTypeInfo["_"+self.vehicleTypeList[i]["type"]] = {
+                            "value": 0,
+                            "name": self.vehicleTypeList[i]["name"],
+                            "list": [],
+                            "color": self.colorList[i]
+                        }
                     }
                 }
 

@@ -7,7 +7,7 @@
         "data": {
             "userInfo": userInfo,
             "language": !!language ? language["language"] : "CN",
-            "title": { "CN": "深圳市民贵科技有限公司", 'EN': "Mingui Non-Powered Euipment Management System", 'TW': "民貴無動力管理系統" },
+            "title": { "CN": "特种车辆音视频可视化系统", 'EN': "Mingui Non-Powered Euipment Management System", 'TW': "民貴無動力管理系統" },
             "tabList": {
                 "Welcom": null,
                 "Maps": null,
@@ -72,9 +72,9 @@
             "logout": function () {
                 var self = this;
                 utility.interactWithServer({
-                    url: CONFIG.HOST + CONFIG.SERVICE.userService + "?action=" + CONFIG.ACTION.userLogout,
-                    actionUrl: CONFIG.SERVICE.userService,
-                    successCallback: function (data) {
+                    "url": CONFIG.HOST + CONFIG.SERVICE.userService + "?action=" + CONFIG.ACTION.userLogout,
+                    "actionUrl": CONFIG.SERVICE.userService,
+                    "successCallback": function (data) {
                         if (data.code == 200) {
                             utility.setLocalStorage("userInfo", null);
                             utility.setLocalStorage("userFuncList", null);
@@ -92,6 +92,7 @@
                 var self = this;
                 var oldPass = $("body").find("#oldPass input").val();
                 var newPass = $("body").find("#newPass input").val();
+
                 if(utility.checkLen($.trim(oldPass), 0)) {
                     self.$Message.error("旧密码不能为空");
                     return;
@@ -104,18 +105,17 @@
                     self.$Message.error("旧密码不能与新密码一样");
                     return;
                 }
+                
                 utility.interactWithServer({
-                    url: CONFIG.HOST + CONFIG.SERVICE.userService + "?action=" + CONFIG.ACTION.changeUserPwd,
-                    actionUrl: CONFIG.SERVICE.userService,
-                    dataObj: {
+                    "url": CONFIG.HOST + CONFIG.SERVICE.userService + "?action=" + CONFIG.ACTION.changeUserPwd,
+                    "actionUrl": CONFIG.SERVICE.userService,
+                    "dataObj": {
                         "oldUserPwd": md5(oldPass).toUpperCase(),
                         "newUserPwd": md5(newPass).toUpperCase(),
                     },
-                    successCallback: function (data) {
-                        if (data.code == 200) {
-                            
-                        } else {
-                            self.$Message.error(data.message);
+                    "successCallback": function (data) {
+                        if (data.code != 200) {
+                            self.$Message.error(data.message);   
                         }
                     }
                 });
@@ -151,7 +151,6 @@
                 self.isDuplicate("iframeList", "isActive", false);
 
                 setTimeout(function() {
-                    console.log(id);
                     self.tabList[id]["isActive"] = true;
                     self.iframeList[id]["isActive"] = true;
                 }, 200);
@@ -191,8 +190,6 @@
             "closeTab": function (id) {
                 var self = this;
                 var preId = $("body").find("#tab_" + id).prev().attr("id").split("_")[1];
-
-                console.log(preId);
 
                 // 如果关闭的是当前激活的tab
                 if($("body").find("#tab_" + id).hasClass("active")) {

@@ -63,7 +63,18 @@ table {
 ._406 button span,
 ._407 button span,
 ._408 button span {
+  color: #fff;
   background-color: transparent;
+}
+._401 button.disabled span,
+._402 button.disabled span,
+._403 button.disabled span,
+._404 button.disabled span,
+._405 button.disabled span,
+._406 button.disabled span,
+._407 button.disabled span,
+._408 button.disabled span {
+  color: #827f7f;
 }
 ._401 span {
   color: #333;
@@ -184,6 +195,8 @@ table {
   padding-top: 40px;
   overflow-x: hidden;
   overflow-y: auto;
+  -ms-overflow-x: hidden;
+  -ms-overflow-y: auto;
 }
 .graphPage .welcomPage .layout {
   padding: 0 10px 0 10px;
@@ -435,6 +448,8 @@ table {
   width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
+  -ms-overflow-x: auto;
+  -ms-overflow-y: hidden;
 }
 .index .fixedNav .fixedNavWrap .fixedNavBox {
   height: 30px;
@@ -480,7 +495,7 @@ table {
   top: 0;
   right: 0;
   width: 30px;
-  height: 30px;    
+  height: 30px;
   line-height: 30px;
 }
 .index .fixedNav .tabItem .close i,

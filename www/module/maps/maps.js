@@ -526,8 +526,20 @@
                 },
                 {
                     "title": { "CN": "使用状态", "EN": "Vehicle State", "TW": "車輛狀態" }[language["language"]],
-                    "key": "useStatus",
-                    "width": 100
+                    "width": 100,
+                    "render": function (h, params) {
+                        var text = "";
+                        if(pageVue.vehiclePositionList[params.index]['providerId']>=100) {
+                            text = pageVue.vehiclePositionList[params.index]['useStatusName'];
+                        } else {
+                            text = "----";
+                        }
+
+                        return h("div", [
+                            h("span", {
+                            }, text)
+                        ]);
+                    }
                 },
                 {
                     "title": { "CN": "车辆编号", "EN": "Vehicle Number", "TW": "車輛編號" }[language["language"]],
@@ -551,18 +563,24 @@
                             }
                         }, { "CN": "详情", "EN": "Detail", "TW": "詳情" }[language["language"]]);;
 
-                        if (!!params.row.licenseNumber) {
-                            liveVideoBtn = h("Button", {
-                                "props": {
-                                    "type": "primary",
-                                    "size": "small"
-                                },
-                                "on": {
-                                    "click": function () {
-                                        pageVue.showLiveVideo(params.row.licenseNumber);
+                        
+                        if (pageVue.vehiclePositionList[params.index]['licenseNumber'] && pageVue.vehiclePositionList[params.index]['providerId']<100) {
+                            if(pageVue.vehiclePositionList[params.index]['vehicleStatus'] == 401 || pageVue.vehiclePositionList[params.index]['vehicleStatus'] == 402) {
+                                liveVideoBtn = h("Button", {
+                                    "props": {
+                                        "type": "primary",
+                                        "size": "small",
+                                    },
+                                    "style": {
+                                        "marginLeft": '5px'
+                                    },
+                                    "on": {
+                                        "click": function () {
+                                            pageVue.showLiveVideo(params.row.licenseNumber, pageVue.vehiclePositionList[params.index]['providerId'])
+                                        }
                                     }
-                                }
-                            }, { "CN": "视频", "EN": "Video", "TW": "視頻" }[language["language"]]);
+                                }, { "CN": "视频", "EN": "Video", "TW": "視頻" }[language["language"]]);
+                            }
                         }
                         return h("div", [
                             liveVideoBtn
@@ -1859,13 +1877,7 @@
 
                             return vehicleStatusNameList[0]["name"];
                         })(), //self.vehiclePositionList[i]["vehicleStatus"], //"",
-                        "useStatus": (function () {
-                            var vehicleUserStatus = $.grep(self.vehicleUseStatusList, function (item) {
-                                return item.type == self.vehiclePositionList[i]["useStatus"];
-                            });
-                    
-                            return vehicleUserStatus[0]["name"];
-                        })(), //self.vehiclePositionList[i]["vehicleStatus"], //"",
+                        "useStatus": self.vehiclePositionList[i]["useStatusName"], //self.vehiclePositionList[i]["vehicleStatus"], //"",
                         "vehicleColorId": self.vehiclePositionList[i]["vehicleColorName"], //"",
                         "vehicleBrandId": self.vehiclePositionList[i]["vehicleBrandName"], //"",
                         "vehicleStatusName": self.vehiclePositionList[i]["vehicleStatusName"], //"",

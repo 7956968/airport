@@ -350,8 +350,8 @@
                 :loading="isModalLoading" 
                 class-name="hasActionList"
                 @on-ok="uploadFunctionDataToServer">
-                <div class="modifiedWrap">
-                    <div class="tableWrap" style="height: 300px; overflow-y: auto;">
+                <div class="modifiedWrap" style="position: relative; z-index: 0; height: 300px; overflow: auto;">
+                    <div class="tableWrap">
                         <template>
                             <Tree :data="functionsTableRowList" @on-check-change="selectFunctionsChange" show-checkbox></Tree>
                         </template>
@@ -413,22 +413,6 @@
                 class-name="hasActionList"
                 @on-ok="addRoleDataGroup">
                 <div class="modifiedWrap">
-                    <!-- <div class="top">
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <td style="width: 70px;">
-                                        {{{'CN':'部门名称','EN':'Department','TW':'部門名稱'}[language]}}:
-                                    </td>
-                                    <td>
-                                        <template>
-                                            <Cascader @on-change="getUserListByDept" :data="superiorDepartmentList" v-model="userPageInfo.deptId" style="width:200px;"></Cascader>
-                                        </template>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div> -->
                     <div class="tableWrap">
                         <template>
                             <i-table height="300" @on-selection-change="selectDataGroupChange" :loading="isTableLoading" highlight-row :columns="dataGroupColumnsList" :data="dataGroupTableRowList" stripe="true" size="small"></i-table>
@@ -443,14 +427,7 @@
             </Modal>
         </template>
     </div>
-    <!-- <script src="/airport/assets/js/vue.min.js"></script>
-    <script src="/airport/assets/vender/iView/iview.min.js"></script>
-    <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
-    <script src="/airport/assets/js/md5.min.js"></script>
-    <script src="/airport/assets/js/config.min.js?v=5756574646372"></script>
-    <script src="/airport/assets/js/utility.min.js?v=5756574646372"></script>
-    <script src="/airport/www/module/roleManage/roleManage.min.js?v=5756574646372"></script> -->
-    
+
     <script src="/airport/assets/js/LAB.min.js"></script>
     <script>
         loadScript(MODUL+"module/roleManage/roleManage.min.js");
