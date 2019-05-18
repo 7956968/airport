@@ -11,16 +11,16 @@
   background-color: #F5F5F5;
 }
 /*定义滚动条轨道 内阴影+圆角*/
-::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 6px rgba(208, 219, 245, 0.3);
+::-webkit-scrollbar-track { 
+  box-shadow: inset 0 0 6px rgba(208, 219, 245, 0.1);
   border-radius: 10px;
   background-color: #F5F5F5;
 }
 /*定义滑块 内阴影+圆角*/
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  box-shadow: inset 0 0 6px rgba(208, 219, 245, 0.3);
-  background-color: #555;
+  box-shadow: inset 0 0 6px rgba(208, 219, 245, 0.1);
+  background-color: #999;
 }
 html {
   font-family: "Helvetica Neue", Helvetica, "微软雅黑", STHeiTi, sans-serif;
@@ -39,6 +39,10 @@ li {
 }
 table {
   border-collapse: collapse;
+}
+table .ivu-table-cell {
+  padding-left: 5px;
+  padding-right: 5px;
 }
 .request {
   color: red;
@@ -75,6 +79,16 @@ table {
 ._407 button.disabled span,
 ._408 button.disabled span {
   color: #827f7f;
+}
+._401 button.backPlay span,
+._402 button.backPlay span,
+._403 button.backPlay span,
+._404 button.backPlay span,
+._405 button.backPlay span,
+._406 button.backPlay span,
+._407 button.backPlay span,
+._408 button.backPlay span {
+  color: #2d8cf0;
 }
 ._401 span {
   color: #333;

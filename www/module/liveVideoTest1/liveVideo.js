@@ -35,6 +35,15 @@
                 "sourceStyle": "",
                 "targetStyle": ""
             },
+            "backPlay": {
+                "isBackPlay": false,
+                "date": "",
+                "beginTime": "",
+                "endTIme": "",
+                "Date": "",
+                "BeginSecond": "",
+                "EndSecond": ""
+            },
             "mediaDataSourceList": [],
             "splitArea": [1, 4, 6, 8, 9], // 分屏类型
             "videoWinSplit": [
@@ -282,7 +291,11 @@
                             self.isLogin = false;
                             self.uSession = data.data.sessionValue;
                             if (data.data.sessionValue) {
-                                self.startVideo();
+                                if(self.queryInfo.isBackPlay == 0) {
+                                    self.startLiveVideo();
+                                } else if(self.queryInfo.isBackPlay == 1) {
+                                    self.getVedioFile();
+                                }
                             }
                         }
                         // self.loading = false;
@@ -305,15 +318,56 @@
                 $("body").find("#" + id).addClass("active");
             },
 
-            // 链接 socket 服务器
-            "connectNet": function () {
+            // 获取视频文件
+            "getVedioFile": function() {
                 var self = this;
+                $.ajax({
+                    url: "http://39.106.1.200:6604/PlaybackSearch.do?DevIDNO=" + + self.queryInfo["vehicleNo"] + "&uSession=" + self.uSession,
+                    crossDomain: true,
+                    xhrFields: { withCredentials: true },
+                    success: function (data) {
+                        if (data.code == 200) {
+                            
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        // console.log(textStatus);
+                        console.log(errorThrown);
+                    }
+                });
+            },
+
+            // 视频回放
+            "playBackVideo": function() {
+                var self = this;
+
                 for (var i = 0; i < self.splitNum; i++) {
                     self.playerList.push(null);
                     self.loadVideoSource({
                         type: 'flv',
-                        url: "http://39.106.1.200:6604/RealplayFlv.do?DevIDNO="+ self.queryInfo["vehicleNo"] +"&Channel=" + i + "&StreamType=0&uSession=" + self.uSession
-                    }, i);
+                        url: "http://39.106.1.200:6604/PlaybackFlv.do?DevIDNO="+ self.queryInfo["vehicleNo"] +"&Channel=" + i + "&StreamType=0&uSession=" + self.uSession + "&Date=" + self.backPlay.Date + "&BeginSecond=" + self.backPlay.BeginSecond + "&EndSecond=" + self.backPlay.EndSecond
+                    }, i); 
+                }
+                setTimeout(function () {
+                    for (var a = 0; a < self.splitNum; a++) {
+                        self.playerList[a].play();
+                        $("#video" + a)[0].play();
+                    }
+                }, 1000);
+            },
+
+            // 链接 socket 服务器
+            "livePreivew": function () {
+                var self = this;
+                for (var i = 0; i < self.splitNum; i++) {
+                    self.playerList.push(null);
+                    // 如果是实时预览
+                    if(self.queryInfo.isBackPlay == 0) {
+                        self.loadVideoSource({
+                            type: 'flv',
+                            url: "http://39.106.1.200:6604/RealplayFlv.do?DevIDNO="+ self.queryInfo["vehicleNo"] +"&Channel=" + i + "&StreamType=0&uSession=" + self.uSession
+                        }, i);                   
+                    }
                 }
                 setTimeout(function () {
                     for (var a = 0; a < self.splitNum; a++) {
@@ -395,10 +449,19 @@
             },
 
             // 开始视频
-            "startVideo": function () {
+            "startLiveVideo": function () {
                 var self = this;
                 self.stopVideo(); // 先停止正在播放的视频
-                self.connectNet(); // 重新连接
+                self.livePreivew(); // 重新连接
+                self.$Message.destroy();
+                self.msgType = "error";
+                self.msgInfo = "";
+            },
+            // 开始视频
+            "startBackVideo": function () {
+                var self = this;
+                self.stopVideo(); // 先停止正在播放的视频
+                self.playBackVideo(); // 重新连接
                 self.$Message.destroy();
                 self.msgType = "error";
                 self.msgInfo = "";
@@ -425,59 +488,6 @@
                 if (self.timeLen <= 0) {
                     self.timeLen = parseInt(self.timeSelect);
                 }
-            },
-            // 全屏
-            "setFullScream": function (id) {
-                var self = this;
-                self.isFullScream = true;
-                $("body").find("#" + id).parents(".videoWrap").addClass("fullScream");
-                self.runPrefixMethod($("body").find("#" + id).parents(".videoWrap")[0], "RequestFullScreen")
-            },
-            // 关闭全屏
-            "closeFullScream": function (id) {
-                var self = this;
-                self.isFullScream = false;
-                $("body").find("#" + id).parents(".videoWrap").removeClass("fullScream");
-                self.runPrefixMethod(document, "CancelFullScreen");
-            },
-
-            // 播放声音
-            "playAudio": function (channel) {
-                var self = this;
-
-                // self.channelIndex = channel;
-                // vsclientSession.stopListening();
-                // vsclientSession.startListening(self.mVehicleNo, channel);
-            },
-            // 停止播放声音
-            "stopAudio": function () {
-                var self = this;
-                // self.channelIndex = 0;
-                // vsclientSession.stopListening();
-            },
-            // 
-            "runPrefixMethod": function (element, method) {
-                var usablePrefixMethod;
-                ["webkit", "moz", "ms", "o", ""].forEach(function (prefix) {
-                    if (usablePrefixMethod) return;
-                    if (prefix === "") {
-                        // 无前缀，方法首字母小写
-                        method = method.slice(0, 1).toLowerCase() + method.slice(1);
-
-                    }
-
-                    var typePrefixMethod = typeof element[prefix + method];
-
-                    if (typePrefixMethod + "" !== "undefined") {
-                        if (typePrefixMethod === "function") {
-                            usablePrefixMethod = element[prefix + method]();
-                        } else {
-                            usablePrefixMethod = element[prefix + method];
-                        }
-                    }
-                });
-
-                return usablePrefixMethod;
             },
             // 当拖拽结束
             "dragEnd": function(event){
@@ -507,6 +517,20 @@
                 var self = this;
                 event.preventDefault();
             },
+            "dateChange": function(value) {
+                var self = this;
+                self.backPlay.Date = value;
+            },
+            "beginTimeChange": function(value) {
+                var self = this;
+                var timeInfo = value.split(":");
+                self.backPlay.BeginSecond = timeInfo[0] * 3600 + timeInfo[1] * 60 + timeInfo[2];
+            },
+            "endTimeChange": function(value) {
+                var self = this;
+                var timeInfo = value.split(":");
+                self.backPlay.EndSecond = timeInfo[0] * 3600 + timeInfo[1] * 60 + timeInfo[2];
+            },
         },
         "mounted": function () {
             var self = this;
@@ -523,16 +547,14 @@
                 "closable": true
             });
 
-            // "ip": "192.168.1.102",//"220.231.225.7",
-            // "port": 8001, //7668,
-            // "userName": "admin1", //"mgkj",
-            // "pwd": "888888",
+            self.backPlay.isBackPlay = (self.queryInfo.isBackPlay==1);
+            
             self.init({
                 "port": 7668,
                 "pwd": "888888",
                 "userName": "mgkj",
                 "ip": "220.231.225.7",
-                "vehicleNo": decodeURI(utility.getQueryParams().vehicleNo),
+                "vehicleNo": decodeURI(self.queryInfo.vehicleNo),
             });
         }
     });

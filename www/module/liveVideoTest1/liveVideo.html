@@ -237,11 +237,16 @@
                             </ButtonGroup>
                         </template>
                     </div>
-                    <template v-if="isStop==true">
-                        <i-button type="success" :disabled="!isStop" icon="md-play" @click="startVideo">重新播放</i-button>
+                    <template v-if="queryInfo.isBackPlay==0">
+                        <template v-if="isStop==true">
+                            <i-button type="success" :disabled="!isStop" icon="md-play" @click="startLiveVideo">重新播放</i-button>
+                        </template>
+                        <template v-else>
+                            <i-button type="error" :disabled="isStop" icon="md-pause" @click="stopVideo">停止</i-button>
+                        </template>
                     </template>
-                    <template v-else>
-                        <i-button type="error" :disabled="isStop" icon="md-pause" @click="stopVideo">停止</i-button>
+                    <template  v-if="queryInfo.isBackPlay==1">
+                        <i-button type="success" @click="backPlay.isBackPlay=true"><span><Icon type="ios-alarm-outline" size="18" /></span><span>选择时间</span></i-button>
                     </template>
                     <span class="closeTime" v-text="timeLen+' 秒后关闭视频'"></span>
                 </div>
@@ -297,6 +302,37 @@
             <div style="text-align:center; font-size: 18px;">
                 <p>车辆暂无视频数据,视频画面即将关闭......</p>
                 <p style="font-size: 64px; color: #f60;">{{timeOffline}}</p>
+            </div>
+        </Modal>
+
+        <Modal 
+            width="250" 
+            footer-hide 
+            v-model="backPlay.isBackPlay" 
+            :mask-closable="false"
+            :draggable="true"
+            :styles="{top: '60px', left: '50px', position: 'absolute'}" 
+        >
+            <p slot="header" style="color:#f60;text-align:center">
+                <i-icon type="ios-information-circle" size="18px"></i-icon>
+                <span style="font-size: 18px;">选择时间</span>
+            </p>
+            <div style="padding: 5px 0;">
+                日期：<br/>
+                <template>
+                    <date-picker type="date" @on-change="dateChange" v-model="backPlay.date" placeholder="请选择日期" style="width: 100%"></date-picker>
+                </template>
+            </div>
+            <div style="padding: 5px 0;">
+                开始时间：<br/>
+                <time-picker type="time" v-model="backPlay.beginTime" @on-change="beginTimeChange"  placeholder="请选择开始时间" style="width: 100%"></time-picker>
+            </div>
+            <div style="padding: 5px 0;">
+                结束时间：<br/>
+                <time-picker type="time" v-model="backPlay.endTime" @on-change="endTimeChange"  placeholder="请选择结束时间" style="width: 100%"></time-picker>
+            </div>
+            <div style="padding: 5px 0;">
+                <i-button type="primary" style="width: 100%" @click="startBackVideo">确定</i-button>
             </div>
         </Modal>
 
