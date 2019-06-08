@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>视频回放</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <script src="jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="layui/layui.js"></script>
+    <script src="./video.js"></script>
+    <script src="./video_view.js"></script>
+    <script src="./vsplayer.js"></script>
+    <style>
+    .top{
+        padding-left: 15px;
+        width: 100%;
+        height: 50px;
+        display: inline-block;
+        line-height: 50px;
+    }
+    .main{
+        display: flex;
+    }
+    .list{
+        height: 70vh;
+        width: 400px;
+        /* background: red; */
+        border: 2px solid rgb(206, 202, 202);
+        overflow: auto;
+    }
+    .video{
+        height: 70vh;
+        /* background: blue; */
+        flex: 1;
+        border: 2px solid rgb(206, 202, 202);
+        position: relative;
+        text-align: center;
+    }
+    #replay_api{
+        height: 70vh;
+        position: absolute;
+        top: 0;
+        left: 0;
+        /* background: #2C3846; */
+    }
+    .inputClass{
+        width: 150px;
+        height: 20px;
+        line-height: 20px;
+        padding-left: 5px;
+    }
+    .queryClass{
+        height: 24px;
+        margin-left: 10px;
+        line-height: 24px;
+        /* line-height: 20px; */
+    }
+    </style>
+</head>
+<body>
+        <div class="top">
+            选择时间:
+            <input type="text" class=" inputClass" placeholder="开始时间" id="test1">
+            --
+            <input type="text" class=" inputClass" placeholder="结束时间" id="test2">
+             车牌号:
+             <input type="text" id="input" class="inputClass" id="vehicleNo">
+            <button class="layui-btn layui-btn-sm queryClass" >查询</button>
+            </div>
+        <main class="main">
+            <div class="list">
+                    <div>录像列表</div>
+            </div>
+            <div class="video">
+                <div id="show_status" style="font-size:20px;margin:2px 10px;"></div>
+                <video id="replay_api"  autoplay>
+
+                </video>
+            </div>
+        </main>
+        <script>
+            var time1='';
+            var time2='';
+            time1 = new Date()
+            time1.setHours(0);
+            time1.setMinutes(0);
+            time1.setSeconds(0);
+            time2 = new Date()
+            time2.setHours(23);
+            time2.setMinutes(59);
+            time2.setSeconds(59);
+
+            $('.queryClass').on('click',function(){
+                $('.list').empty()
+                $('#replay_api').hide()
+                $('<div>录像列表</div>').appendTo('.list')
+                var inputValue = $("#input").val()
+                var d1 = parseInt(new Date(time1).getTime()/1000) 
+                var d2 = parseInt(new Date(time2).getTime()/1000) 
+                window.videoObj = new VideoView(1,RequestTypeHistory);//
+                window.videoObj.init('220.231.225.7','7668','mgkj','888888',inputValue,d1,d2);
+            })
+            
+            
+
+            layui.use('laydate', function(){
+            var laydate = layui.laydate;
+            
+            //执行一个laydate实例
+                laydate.render({
+                    elem: '#test1' //指定元素
+                    ,value: new Date()//默认值
+                    ,done: function(value, date, endDate){
+                        var date1 = new Date(value)
+                        date1.setHours(0);
+                        date1.setMinutes(0);
+                        date1.setSeconds(0);
+                        time1 = date1
+                    }
+                });
+                laydate.render({
+                    elem: '#test2' //指定元素
+                    ,value: new Date()//默认值
+                    ,done: function(value, date, endDate){
+                        var date2 = new Date(value)
+                        date2.setHours(23);
+                        date2.setMinutes(59);
+                        date2.setSeconds(59);
+                        time2 = date2
+                    }
+                });
+            });
+        </script>
+</body>
+</html>

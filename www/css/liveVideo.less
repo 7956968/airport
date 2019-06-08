@@ -1,0 +1,401 @@
+::-webkit-scrollbar {
+    width: 3px;
+    height: 3px;
+    background-color: #F5F5F5;
+}
+
+/*定义滚动条轨道 内阴影+圆角*/
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(208, 219, 245, 0.3);
+    border-radius: 10px;
+    background-color: #F5F5F5;
+}
+
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    box-shadow: inset 0 0 6px rgba(208, 219, 245, 0.3);
+    background-color: #555;
+}
+
+.video_main {
+    position: absolute;
+    border: 0px;
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: #464545;
+    background: #464545 url(/airport/www/img/poster.png) no-repeat center center;
+    background-size: cover;
+}
+
+.info_status {
+    width: 250px !important;
+    line-height: 50px;
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+    text-align: center;
+}
+
+.video_ctrl_area {
+    position: relative;
+    z-index: 1010;
+    width: 100%;
+    height: 45px;
+    line-height: 45px;
+    overflow: hidden;
+    background: rgba(15, 55, 95, .4);
+    box-shadow: 0 1px 5px rgba(62, 84, 130, .2);
+
+    .logoIcon {
+        position: absolute;
+        z-index: 0;
+        top: 5px;
+        left: 10px;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        background-color: #fff;
+
+        img {
+            position: relative;
+            z-index: 0;
+            top: 1px;
+            width: 100%;
+            height: 95%;
+        }
+    }
+
+    .title {
+        float: left;
+        padding-left: 60px;
+        font-size: 16px;
+        color: #FFF;
+    }
+
+    .playWrap {
+        padding-left: 20px;
+        float: left;
+    }
+
+    .splitWrap {
+        display: inline-block;
+        padding-right: 10px;
+    }
+}
+
+
+.closeTime {
+    display: inline-block;
+    width: 180px;
+    text-align: center;
+    font-size: 16px;
+    color: #fff;
+}
+
+.video_player_area {
+    position: relative;
+    z-index: 10;
+    width: 80%;
+    height: calc(93%);
+    white-space: nowrap;
+}
+
+.videoItem {
+    position: absolute;
+    border: 2px solid rgb(212, 212, 212);
+    background-color: rgba(15, 55, 95, .8);
+    overflow: hidden;
+
+    &:hover {
+        border-color: red;
+    }
+
+    &.active {
+        border-color: #f90;
+    }
+
+    video {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        -ms-transform: scaleX(1.8);
+    }
+
+    .channelIndex {
+        position: absolute;
+        z-index: 100000000;
+        top: 0;
+        right: 0;
+        font-size: 13px;
+        color: #fff;
+        padding: 3px 6px;
+        background-color: #333;
+    }
+}
+
+
+.videoWrap {
+    width: 100%;
+    height: 100%;
+}
+
+.videoMasker {
+    display: none;
+}
+
+.dealWrap {
+    position: absolute;
+    z-index: 10000;
+    bottom: 35px;
+    right: 108px;
+    cursor: pointer;
+    display: none;
+}
+
+.fullScream {
+    position: fixed;
+    z-index: 1000000;
+    top: 45px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+}
+
+.netnSignal {
+    position: fixed;
+    z-index: 0;
+    right: 20px;
+    top: 0;
+    color: #fff;
+    font-size: 14px;
+
+    .label {
+        font-size: 16px;
+    }
+}
+
+.msgTip {
+    float: left;
+    padding-left: 30px;
+
+    span {
+        font-size: 14px;
+    }
+
+    .ivu-tag {
+        height: 32px;
+        line-height: 32px;
+        padding: 0 15px;
+    }
+}
+
+.modelTitle {
+    font-size: 16px;
+}
+
+.detailModal {
+    .ivu-modal-content {
+        background-color: transparent;
+        box-shadow: none;
+
+        .ivu-modal-body {
+            padding: 5px;
+        }
+    }
+}
+
+.modifiedWrap {
+    font-size: 16px;
+    color: #fff;
+    padding: 20px 30px;
+
+    .detailInfo {
+        color: #fff;
+
+        td {
+            padding-bottom: 5px;
+
+            span {
+                font-size: 16px;
+                color: #fff;
+
+                &.label {
+                    font-size: 13px;
+                }
+            }
+        }
+    }
+}
+
+.playBackVideoWrap {
+    width: 100%;
+
+    .videoBox {
+        position: absolute;
+        z-index: 10;
+        width: 100%;
+        height: 100%;
+
+        .listWrap {
+            .title {
+                height: 56px;
+                line-height: 56px;
+                font-size: 18px;
+                color: #fff;
+                border-bottom: 1px solid #fff;
+            }
+
+            .list {
+                background-color: #333333;
+                overflow: hidden;
+                border-left: 2px solid rgb(212, 212, 212);
+                border-right: 2px solid rgb(212, 212, 212);
+                border-bottom: 2px solid rgb(212, 212, 212);
+
+                .ivu-collapse-header {
+                    font-size: 16px;
+                    color: #fff;
+                    height: 48px;
+                    line-height: 48px;
+
+                    .playNum {
+                        float: right;
+                        font-size: 13px;
+                        padding-right: 5px;
+
+                        span {
+                            padding: 0 5px;
+                            color: #f90;
+                        }
+                    }
+
+                    .totalVideo {
+                        color: #f90;
+                        font-size: 14px;
+                    }
+                }
+
+                .ivu-radio-group {
+                    display: block;
+                }
+
+                .collapseWrap {
+                    overflow-x: hidden;
+                    overflow-y: auto;
+                }
+
+                .ivu-collapse-simple {
+                    border: none;
+                    background-color: #2b2929;
+                }
+
+                .ivu-collapse-content {
+                    padding: 0;
+                    background-color: #333333;
+
+                    .ivu-collapse-content-box {
+                        padding: 0;
+                    }
+                }
+            }
+        }
+    }
+
+    .item {
+        &:hover {
+            background-color: #0f375f;
+            color: #fff;
+        }
+
+        color: #000;
+        padding: 10px 2px 10px 5px;
+        cursor: pointer;
+        border-bottom: 1px solid #5b5c5d;
+        background-color: #3e3e3e;
+        color: #a2a6ab;
+        font-size: 14px;
+
+        .ivu-radio-wrapper {
+            font-size: 14px;
+
+            :nth-child(2n) {
+                background-color: #333333;
+            }
+        }
+
+        .num {
+            display: inline-block;
+            padding-right: 2px;
+            text-align: center;
+            min-width: 20px;
+            font-size: 14px;
+        }
+
+        .timeSection {
+            font-size: 15px;
+            padding: 0 3px;
+            color: #fff;
+        }
+    }
+
+    .videoWrap {
+        .search {
+            padding: 13px 20px 10px 20px;
+            /* border-bottom: 1px solid #fff; */
+            font-size: 14px;
+
+            .label {
+                color: #fff;
+            }
+        }
+
+        .videoItem {
+            width: 98%;
+            border: 2px solid rgb(212, 212, 212);
+            background-color: #333333;
+
+            .innerItem {
+                position: relative;
+                z-index: 0;
+                height: 100%;
+            }
+        }
+
+        .noData {
+            color: #fff;
+            font-size: 48px;
+            text-align: center;
+            background-color: transparent;
+        }
+    }
+}
+
+.tabsWrap {
+    .ivu-tabs-tab {
+        position: relative;
+        z-index: 0;
+        top: -5px;
+        font-size: 18px;
+        color: #fff;
+    }
+
+    .ivu-tabs-nav {
+        .ivu-tabs-tab-active {
+            font-size: 18px;
+            color: #fff;
+        }
+    }
+
+    .ivu-tabs-bar {
+        margin-bottom: 0;
+        padding: 14px 20px 0 20px;
+    }
+}

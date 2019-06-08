@@ -86,7 +86,7 @@ VSClientSession.prototype.handleMessage = function (msg) {
                     break;
                 case 3:
                     this.onFrontOnOfflineEvent(msg.info.data);
-                    this.callback.onOnOffline(msg.info.data);
+                    // this.callback.onOnOffline(msg.info.data);
                     break;
                 case 4: //gps
                     this.onFrontGPSEvent(msg.info.data);
@@ -673,8 +673,6 @@ Player.prototype.startPlay = function () {
     this.video.autoplay = true;
     this.video.play();
 
-    console.log(window.URL.createObjectURL(this.mediaSource));
-
     var player = this;
 
     this.mediaSource.addEventListener('sourceopen', function (event) {
@@ -764,9 +762,9 @@ VideoStream.prototype.start = function () {
         self.websockt = null;
 
         console.log("websocket closed ");
-        if (self.callback.onSocketClose) {
-            self.callback.onSocketClose();
-        }
+        // if (self.callback.onSocketClose) {
+        //     self.callback.onSocketClose();
+        // }
     };
 
     this.websockt.onerror = function () {

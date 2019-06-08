@@ -296,6 +296,22 @@ table {
             .tile {
                 font-size: 18px;
                 color: @mainFontColor;
+                overflow: hidden;
+                span {
+                    float: left;
+                }
+                .select {
+                    float: left;
+                    width: auto;
+                    font-size: 14px;
+                    padding-left: 20px;
+                    color: #5d81ca;
+                    .count {
+                        padding-left: 10px;
+                        font-size: 18px;
+                        color: #ed9b3e;
+                    }
+                }
             }
 
             .infoList {
@@ -358,7 +374,6 @@ table {
                             }
                         }
                     }
-
                 }
             }
         }
@@ -378,7 +393,8 @@ table {
                 color: #fff;
             }
 
-            .ivu-table-stripe .ivu-table-body tr:nth-child(2n+1) td {
+            .ivu-table-stripe .ivu-table-body tr:nth-child(2n+1) td,
+            .ivu-table-stripe .ivu-table-fixed-body tr:nth-child(2n+1) td {
                 background-color: #18416B;
             }
 
@@ -387,6 +403,10 @@ table {
             .ivu-table th,
             .ivu-table-wrapper>.ivu-spin-fix {
                 border: none;
+            }
+
+            .ivu-table th {
+                background-color: #061a2d;
             }
 
             .ivu-table-fixed-body {
@@ -399,6 +419,11 @@ table {
                     padding-right: 5px;
 
                 }
+            }
+            .overDay {
+                padding: 5px;
+                color: #061a2d;
+                background-color: #fbd048;
             }
         }
 
@@ -937,7 +962,7 @@ table {
         }
 
         .detailLabel {
-            width: 100px;
+            min-width: 100px;
             text-align: right;
         }
     }

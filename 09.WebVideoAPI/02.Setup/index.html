@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+
+<body>
+    <script type="text/javascript">
+        function getUrlParam(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) {
+                return decodeURI(r[2]);
+            } else {
+                return null;
+            }
+        }
+        var vehicleNo = getUrlParam("vehicleNo");
+        if(vehicleNo==null){
+            alert("url参数后面加上vehicleNo=车牌号");
+           // return;
+        } 
+        var newURL = window.location.protocol + "//" + window.location.host + "/video_view.php?vehicleNo="+vehicleNo+"&timestamp=" + (new Date().getTime()) ;
+        window.location.href = newURL;
+    </script>
+</body>
+
+</html>

@@ -2,6 +2,8 @@
     var pageVue = new Vue({
         "el": "#js-vue",
         "data": {
+            "isShowDetail": true,
+            "vehicleInfo": JSON.parse(decodeURI(utility.getQueryParams().vehicleInfo)), 
             "queryInfo": utility.getQueryParams(),
             "mIP": "", // socket登录IP
             "mPort": "", // socket登录端口
@@ -16,8 +18,8 @@
             "errorTip": "",
             "timeOfflineOut": null,
             "timeOffline": 5,
-            "timeLen": 30,
-            "timeSelect": "30",
+            "timeLen": 120,
+            "timeSelect": "120",
             "timeLenOut": null,
             "netnSignal": "",
             "msgType": "primary",
@@ -322,7 +324,8 @@
             "getVedioFile": function() {
                 var self = this;
                 $.ajax({
-                    url: "http://39.106.1.200:6604/PlaybackSearch.do?DevIDNO=" + + self.queryInfo["vehicleNo"] + "&uSession=" + self.uSession,
+                    type: "POST",
+                    url: "http://39.106.1.200:6604/PlaybackSearch.do?DevIDNO=" + self.vehicleInfo["licenseNumber"] + "&uSession=" + self.uSession,
                     crossDomain: true,
                     xhrFields: { withCredentials: true },
                     success: function (data) {
@@ -345,39 +348,38 @@
                     self.playerList.push(null);
                     self.loadVideoSource({
                         type: 'flv',
-                        url: "http://39.106.1.200:6604/PlaybackFlv.do?DevIDNO="+ self.queryInfo["vehicleNo"] +"&Channel=" + i + "&StreamType=0&uSession=" + self.uSession + "&Date=" + self.backPlay.Date + "&BeginSecond=" + self.backPlay.BeginSecond + "&EndSecond=" + self.backPlay.EndSecond
+                        url: "http://39.106.1.200:6604/PlaybackFlv.do?DevIDNO="+ self.vehicleInfo["licenseNumber"] +"&Channel=" + i + "&StreamType=0&uSession=" + self.uSession + "&Date=" + self.backPlay.Date + "&BeginSecond=" + self.backPlay.BeginSecond + "&EndSecond=" + self.backPlay.EndSecond
                     }, i); 
                 }
-                setTimeout(function () {
-                    for (var a = 0; a < self.splitNum; a++) {
-                        self.playerList[a].play();
-                        $("#video" + a)[0].play();
-                    }
-                }, 1000);
             },
 
             // 链接 socket 服务器
             "livePreivew": function () {
                 var self = this;
+                var port = "6604";
                 for (var i = 0; i < self.splitNum; i++) {
                     self.playerList.push(null);
+
+                    if(i>5) {
+                        port = "8604";
+                    }
                     // 如果是实时预览
                     if(self.queryInfo.isBackPlay == 0) {
                         self.loadVideoSource({
                             type: 'flv',
-                            url: "http://39.106.1.200:6604/RealplayFlv.do?DevIDNO="+ self.queryInfo["vehicleNo"] +"&Channel=" + i + "&StreamType=0&uSession=" + self.uSession
+                            url: "http://39.106.1.200:"+ port +"/RealplayFlv.do?DevIDNO="+ self.vehicleInfo["licenseNumber"] +"&Channel=" + i + "&StreamType=0&uSession=" + self.uSession
                         }, i);                   
                     }
                 }
-                setTimeout(function () {
-                    for (var a = 0; a < self.splitNum; a++) {
-                        self.playerList[a].play();
-                        $("#video" + a)[0].play();
+                setInterval(function(){
+                    for (var v = 0; v < self.splitNum; v++) {
+                        $("#video" + v)[0].play();
                     }
-                }, 1000);
+                }, 3000);
                 self.isStop = false;
-                self.timeLenOut = null;
+                clearInterval(self.timeLenOut);
                 setTimeout(function () {
+                    self.timeLenOut = null;
                     self.timeLenOut = setInterval(function () {
                         self.timeLen--;
                         self.$Message.destroy();
@@ -424,7 +426,11 @@
                 self.splitNum = splitNum;
                 $("body").find("#liveVideo0").addClass("active");
 
-                self.loginGetVideo();
+                if (self.playerList.length != 0) {
+                    self.livePreivew();
+                } else {
+                    self.loginGetVideo();
+                }
             },
 
             // 获取视频资源
@@ -446,6 +452,7 @@
                 });
                 self.playerList[index].attachMediaElement(element);
                 self.playerList[index].load();
+                self.playerList[index].play();
             },
 
             // 开始视频
@@ -531,6 +538,11 @@
                 var timeInfo = value.split(":");
                 self.backPlay.EndSecond = timeInfo[0] * 3600 + timeInfo[1] * 60 + timeInfo[2];
             },
+            // 返回
+            "backPage": function(){
+                var self = this;
+                window.close();
+            }
         },
         "mounted": function () {
             var self = this;
@@ -554,7 +566,7 @@
                 "pwd": "888888",
                 "userName": "mgkj",
                 "ip": "220.231.225.7",
-                "vehicleNo": decodeURI(self.queryInfo.vehicleNo),
+                "vehicleNo": self.vehicleInfo.licenseNumber,
             });
         }
     });

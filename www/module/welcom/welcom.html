@@ -45,7 +45,7 @@
     <!-- QQ应用模式 -->
     <meta name="x5-page-mode" content="app">
     <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
-    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=4128347129347" />
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=3479347" />
 </head>
 
 <body class="graphPage">
@@ -186,15 +186,41 @@
                         <i-col span="10" class-name="infoItem">
                             <template>
                                 <Card bordered="false" style="width: 100%;" padding="0">
-                                    <p slot="title" class="tile">
-                                        <span>{{{"CN":"车辆统计","EN":"Vehicle Statistics","TW":"車輛統計"}[language]}}</span>
-                                    </p>
-                                    <div class="chart" style="position: relative;" :style="{height: (innerHeight*2.55)+'px'}">
-                                        <div id="vehicleEchart" :style="{height: (innerHeight*2.55)+'px'}"></div>
-                                        <template v-if="isLoading">
-                                            <div style="position: absolute; width: 100%; left: 0; top: 0;" :style="{height: (innerHeight*2.5)+'px'}">
-                                                <Spin fix size="large"></Spin>
-                                            </div>
+                                    <div slot="title" class="tile">
+                                        <span>运行情况</span>
+                                        <template>
+                                            <p class="select">状态:
+                                                <i-select v-model="statuPageInfo.online" @on-change="getStatuVehicleList" clearable placeholder="请选择" style="width:100px;" size="small">
+                                                    <i-option :value="0">不限定</i-option>
+                                                    <i-option :value="1">在线</i-option>
+                                                    <i-option :value="2">离线</i-option>
+                                                </i-select>
+                                            </p>
+                                        </template>
+                                        <template>
+                                            <p class="select">时间:
+                                                <i-select v-model="statuPageInfo.daySpan" @on-change="getStatuVehicleList" clearable placeholder="请选择" style="width:100px;" size="small">
+                                                    <i-option :value="0">今天</i-option>
+                                                    <i-option :value="1">1天前</i-option>
+                                                    <i-option :value="2">2天前</i-option>
+                                                    <i-option :value="3">3天前</i-option>
+                                                    <i-option :value="4">4天前</i-option>
+                                                    <i-option :value="5">5天前</i-option>
+                                                    <i-option :value="6">6天前</i-option>
+                                                    <i-option :value="7">7天前</i-option>
+                                                    <i-option :value="8">8天前</i-option>
+                                                    <i-option :value="9">9天前</i-option>
+                                                    <i-option :value="10">10天前</i-option>
+                                                </i-select>
+                                            </p>
+                                        </template>
+                                        <template>
+                                            <p class="select">总数:<strong class="count">{{statuPageInfo.count}}</strong> 辆</p>
+                                        </template>
+                                    </div>
+                                    <div class="msList welcomTable" :style="{height: (innerHeight*2.55)+'px'}">
+                                        <template>
+                                            <i-table :height="innerHeight*2.55" :loading="isTableLoading" no-data-text="......" highlight-row :columns="statuColumns" :data="statuDataList" stripe="true" size="small"></i-table>
                                         </template>
                                     </div>
                                 </Card>

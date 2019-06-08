@@ -25,6 +25,72 @@
             "isloadDefen": false,
             "totalChartData": null,
             "colorList": ["#66CCCC","#CCFF66","#FF99CC","#A0522D","#FFFF00", "#336699","#CC9933", "#339999"],
+            "statuPageInfo": {
+                "online": 0,
+                "daySpan": 0,
+                "count": 0,
+            },
+            "isTableLoading": false,
+            "statuColumns": [
+                {
+                    "title": "车辆名称",
+                    "width": 120,
+                    "key": "vehicleName"
+                },
+                {
+                    "title": "车牌号",
+                    "width": 120,
+                    "key": "licenseNumber"
+                },
+                {
+                    "title": "车辆编号",
+                    "width": 120,
+                    "key": "vehicleCode"
+                },
+                // {
+                //     "title": "使用状态",
+                //     "width": 100,
+                //     "key": "useStatusName"
+                // },
+                {
+                    "title": "公司",
+                    "width": 200,
+                    "key": "companyName"
+                },
+                {
+                    "title": "部门",
+                    "width": 200,
+                    "key": "deptName"
+                },
+                // {
+                //     "title": "供应商",
+                //     "width": 100,
+                //     "key": "providerName"
+                // },
+                {
+                    "title": "最后上线时间",
+                    "key": "lastGpsTime",
+                    "width": 150,
+                    "fixed": "right",
+                    "sortable": true,
+                    "sortType": "desc",
+                    "render": function (h, params) {
+                        var  classType = "normalDay";
+                        var now = Date.parse(new Date());
+                        var lastTime = Date.parse(params.row.lastGpsTime.replace("-", "/"));
+                        var day = Math.floor((now-lastTime)/(24*3600*1000));
+                        if(day>3) {
+                            classType = "overDay";
+                        }
+                        return h("div", [
+                            h("span", {
+                                "class": classType,
+                            }, params.row.lastGpsTime),
+                        ]);
+                    }
+                }
+            ],
+            "statuDataList": []
         },
         "methods": {
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
@@ -364,14 +430,12 @@
                             for (var i = 0, len = data.data.length; i < len; i++) {
                                 self.vehiclePassType["_" + data.data[i]["crossTypeId"]]["value"] = self.vehiclePassType["_" + data.data[i]["crossTypeId"]]["value"] + 1;
                             }
-
-                            self.setVehicleEchart();
                         }
                     }
                 });
             },
             // 获取车辆信息
-            "getVehicleList": function () {
+            "getAllVehicleList": function () {
                 var self = this;
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getVehicleList,
@@ -394,6 +458,33 @@
                                 self.vehicleInfo["_"+self.vehicleInfo.list[i]["vehicleStatus"]] = self.vehicleInfo["_"+self.vehicleInfo.list[i]["vehicleStatus"]] + 1;
                                 self.vehicleTypeInfo["_"+self.vehicleInfo.list[i]["vehicleTypeId"]]["value"] = self.vehicleTypeInfo["_"+self.vehicleInfo.list[i]["vehicleTypeId"]]["value"] + 1;
                             }
+                        }
+                    }
+                });
+            },
+            // 获取车辆不同天数的状态信息信息
+            "getStatuVehicleList": function () {
+                var self = this;
+                self.statuDataList = [];
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getVehicleList,
+                    actionUrl: CONFIG.SERVICE.vehicleService,
+                    dataObj: {
+                        id: "",
+                        online: parseInt(self.statuPageInfo.online),
+                        daySpan: parseInt(self.statuPageInfo.daySpan),
+                        pageSize: 10000,
+                    },
+                    beforeSendCallback: function () {
+                        self.isTableLoading = true;
+                    },
+                    completeCallback: function () {
+                        self.isTableLoading = false;
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            self.statuPageInfo.count = data.count;
+                            self.statuDataList = data.data;
                         }
                     }
                 });
@@ -458,13 +549,12 @@
                 self.resetVehicleBizParamInfo();
 
                 // 车辆数据
-                self.getVehicleList();
-
-                // 防区数据
-                self.getCrossAreaList();
+                self.getAllVehicleList();
 
                 // 获取按车辆类型的车辆使用情况统计数据接口
                 self.getVehicleRunReport();
+
+                self.getStatuVehicleList();
             }
         },
         "created": function () {
@@ -492,7 +582,7 @@
             var self = this;
             setTimeout(function () {
                 self.isLoading = false;
-                self.setVehicleEchart(); // 车辆统计
+                // self.setVehicleEchart(); // 车辆统计
             }, 5000);
         }
     });

@@ -34,6 +34,7 @@
                 "status": "", // 员工帐号状态，默认值911表示正常： 911：正常 912：冻结 913：作废                
                 "idNo": "", // 身份证号
                 "address": "", // 员工家庭住址
+                "isCompanyAdmin": "", // 是否公司管理员
                 "createUserId": userInfo["id"], // 创建用户ID，新增时必传
                 "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传
             },
@@ -65,16 +66,12 @@
                     "key": "userName"
                 },
                 {
-                    "title": { "CN": "性别", "EN": "Gender", "TW": "性別" }[language["language"]],
-                    "key": "sex"
-                },
-                {
                     "title": { "CN": "手机号", "EN": "cellPhone No.", "TW": "手機號" }[language["language"]],
                     "key": "mobile"
                 },
                 {
-                    "title": { "CN": "固话", "EN": "Fixed Telephone", "TW": "固話" }[language["language"]],
-                    "key": "telephone"
+                    "title": "是否公司管理员",
+                    "key": "isCompanyAdmin"
                 },
                 {
                     "title": { "CN": "员工工号", "EN": "Staff Number", "TW": "員工工號" }[language["language"]],
@@ -184,6 +181,7 @@
                     "status": "", // 员工帐号状态，默认值911表示正常： 911：正常 912：冻结 913：作废                
                     "idNo": "", // 身份证号
                     "address": "", // 员工家庭住址
+                    "isCompanyAdmin": "", // 员工家庭住址
                     "createUserId": userInfo["id"], // 创建用户ID，新增时必传
                     "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传
                 };
@@ -196,6 +194,7 @@
                     self.itemInfo.userName = decodeURI(self.itemInfo.userName);
                     self.itemInfo.remark = decodeURI(self.itemInfo.remark);
                     self.itemInfo.address = decodeURI(self.itemInfo.address);
+                    console.log(self.itemInfo);
                     self.isShowModal = true;
                     self.modalTitle = { "CN": "修改", "EN": "Edit", "TW": "修改" }[self.language];
                 });
@@ -236,7 +235,8 @@
                 var self = this;
                 self.$Modal.confirm({
                     "title": "确定删除？",
-                    "width": 200,
+                    "content": "<p>账号："+ self.userList[self.index]["userCode"]+"</p><p>用户："+ self.userList[self.index]["userName"]+"</p>",
+                    "width": 300,
                     "onOk": function() {
                         self.itemInfo = self.userList[self.index];
                         utility.showMessageTip(self, function () {
@@ -308,6 +308,7 @@
                         "status": self.itemInfo.status, // 员工帐号状态，默认值911表示正常： 911：正常 912：冻结 913：作废                
                         "idNo": self.itemInfo.idNo, // 身份证号
                         "address": encodeURI(self.itemInfo.address), // 员工家庭住址
+                        "isCompanyAdmin": self.itemInfo.isCompanyAdmin || 0, // 是否公司管理员
                         "createUserId": userInfo["id"], // 创建用户ID，新增时必传
                         "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传
                     },
@@ -336,6 +337,7 @@
                         "mobile": self.userList[i]["mobile"], //"固话",
                         "telephone": self.userList[i]["telephone"], //"手机号",
                         "company": decodeURI(self.userList[i]["companyName"]), //"所属公司",
+                        "isCompanyAdmin": !!self.userList[i]["isCompanyAdmin"]?"是":"否", // 是否公司管理员,
                         "remark": decodeURI(self.userList[i]["remark"]), //"备注",
                         "sex": (function () {
                             var sex = "";

@@ -47,171 +47,7 @@
     <link rel="icon" href="/airport/www/img/logo.png">
     <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
     <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=73483418234172" />
-    <style type="text/css">
-        ::-webkit-scrollbar {
-            width: 3px;
-            height: 3px;
-            background-color: #F5F5F5;
-        }
-        /*定义滚动条轨道 内阴影+圆角*/
-        ::-webkit-scrollbar-track {
-            box-shadow: inset 0 0 6px rgba(208, 219, 245, 0.3);
-            border-radius: 10px;
-            background-color: #F5F5F5;
-        }
-        /*定义滑块 内阴影+圆角*/
-        ::-webkit-scrollbar-thumb {
-            border-radius: 10px;
-            box-shadow: inset 0 0 6px rgba(208, 219, 245, 0.3);
-            background-color: #555;
-        }
-        .video_main {
-            position: absolute;
-            border: 0px;
-            margin: 0px;
-            padding: 0px;
-            width: 100%;
-            height: 100%;
-            background-color: #464545;
-        }
-        
-        .info_status {
-            width: 250px !important;
-            line-height: 50px;
-            margin: 0px;
-            padding: 0px;
-            border: 0px;
-            text-align: center;
-        }
-
-        .video_ctrl_area {
-            position: relative;
-            z-index: 50;
-            width: 100%;
-            height: 45px;
-            line-height: 45px;
-            overflow: hidden;
-            background: rgba(15,55,95,.4);
-            box-shadow: 0 1px 5px rgba(62,84,130,.2);
-        }
-        .video_ctrl_area .logoIcon {
-            position: absolute;
-            z-index: 0;
-            top: 5px;
-            left: 10px;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            border: 2px solid #fff;
-            background-color: #fff;
-        }
-        .video_ctrl_area .logoIcon img {
-            position: relative;
-            z-index: 0;
-            top: 1px;
-            width: 100%;
-            height: 95%;
-        }
-        .video_ctrl_area .title {
-            float: left;
-            padding-left: 60px;
-            font-size: 16px;
-            color: #FFF;
-        }
-        .video_ctrl_area .playWrap {
-            padding-left: 20px;
-            float: left;
-        }
-        .closeTime {
-            display: inline-block;
-            width: 180px;
-            text-align: center;
-            font-size: 16px;
-            color: #fff;
-        }
-        .video_ctrl_area .splitWrap {
-            display: inline-block;
-            padding-right: 10px;
-        }
-
-        .video_player_area {
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            height: calc(100% - 50px);
-            white-space: nowrap;
-        }
-
-        .videoItem{
-            position: absolute;
-            border: 2px solid rgb(212, 212, 212);
-            background-color: rgba(15,55,95);
-            overflow: hidden;
-        }
-        .videoItem:hover {
-            border-color: red;
-        }
-        
-        .videoWrap {
-            width: 100%;
-            height: 100%;
-        }
-        .videoItem.active {
-            border-color: #f90;
-        }
-        .videoItem video {
-            display: block;
-            width: 100%;
-            height: 100%;
-            object-fit: fill;
-            -ms-transform: scaleX(1.8);
-        }
-        .videoMasker {
-            display: none;
-        }
-        .dealWrap {
-            position: absolute;
-            z-index: 10000;
-            top: 1px;
-            right: 10px;
-        }
-
-        .fullScream {
-            position: fixed;
-            z-index: 1000000;
-            top: 45px;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-        }
-        
-        .netnSignal {
-            position: fixed;
-            z-index: 0;
-            right: 20px;
-            top: 0;
-            color: #fff;
-            font-size: 14px;
-        }
-        .netnSignal .label {
-            font-size: 16px;
-        }
-        .msgTip {
-            float: left;
-            padding-left: 30px;
-        }
-        .msgTip span {
-            font-size: 14px;
-        }
-        .msgTip .ivu-tag {
-            height: 32px;
-            line-height: 32px;
-            padding: 0 15px;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/liveVideo.min.css?v=424723741234" />
 </head>
 
 <body>
@@ -256,15 +92,12 @@
                 <!-- 网络信号 -->
                 <div class="netnSignal">
                     <template>
-                        <span class="label">视频播放时长：</span>
+                        <span class="label">播放时长：</span>
                         <i-select v-model="timeSelect" style="width:120px" @on-change="onTimeChange">
-                            <i-option value="5">5秒</i-option>
-                            <i-option value="15">15秒</i-option>
-                            <i-option value="30">30秒</i-option>
-                            <i-option value="60">60秒</i-option>
                             <i-option value="120">120秒</i-option>
                             <i-option value="240">240秒</i-option>
                             <i-option value="300">300秒</i-option>
+                            <i-option value="360">360秒</i-option>
                         </i-select>
                     </template>
                 </div>
@@ -276,20 +109,24 @@
                 <template v-for="index in mVideoCount">
                     <div class="videoItem" :id="'liveVideo'+(index-1)" draggable="true" @drop="drop($event)" @dragend="dragEnd($event)" @dragover="dragOver($event)">
                         <div class="videoWrap" @click="setCurrentStyle('liveVideo'+(index-1))">
-                            <video playsinline @dblclick="setFullScream('video'+(index-1))" :id="'video'+(index-1)" preload="meta" loop muted autoplay>无视频</video>
+                            <video playsinline @dblclick="setFullScream('video'+(index-1))" poster="/airport/www/img/poster.png" :id="'video'+(index-1)" preload="meta" controls autoplay>无视频</video>
+                            <div class="channelIndex">
+                                <span>{{(index)+' 路摄像头'}}</span>
+                                <span><Icon type="ios-videocam-outline" size="14" /></span>
+                            </div>
                             <div class="dealWrap">
-                                <template v-if="isFullScream==true">
+                                <!-- <template v-if="isFullScream==true">
                                     <i-button @click="closeFullScream('video'+(index-1))"><Icon color="#78b1ef" size="24" type="md-close" /></i-button>
                                 </template>
                                 <template v-else>
                                     <i-button @click="setFullScream('video'+(index-1))" type="text"><Icon color="#78b1ef" size="24" type="md-qr-scanner" /></i-button>
-                                </template>
+                                </template> -->
 
                                 <template v-if="channelIndex == index-1">
-                                    <i-button @click="stopAudio" type="text"><Icon color="#78b1ef" type="md-volume-up" size="24"/></i-button>
+                                        <Icon  @click="playAudio(index-1)" color="#fff" type="md-volume-up" size="24"/>
                                 </template>
                                 <template v-else>
-                                    <i-button @click="playAudio(index-1)" type="text"><Icon color="#78b1ef" type="md-volume-off" size="24" /></i-button>
+                                        <Icon @click="playAudio(index-1)" :id="'playAudio_'+(index-1)" color="#FFF" type="md-volume-off" size="24" />
                                 </template>
                             </div>
                         </div>
@@ -299,19 +136,98 @@
 
         </div>
 
-        <Modal v-model="offLine" width="360" footer-hide :closable="false" :mask-closable="false">
+        <!-- <Modal v-model="offLine" width="360" footer-hide :closable="false" :mask-closable="false">
             <p slot="header" style="color:#f60;text-align:center">
                 <i-icon type="ios-information-circle" size="18px"></i-icon>
                 <span style="font-size: 18px;">关闭视频</span>
             </p>
             <div style="text-align:center; font-size: 18px;">
-                <p>车辆暂无视频数据,视频画面即将关闭......</p>
+                <p>车辆已经下线,即将关闭视频......</p>
                 <p style="font-size: 64px; color: #f60;">{{timeOffline}}</p>
             </div>
-        </Modal>
+        </Modal> -->
+
+        <template>
+            <Modal v-model="isShowDetail" class="detailModal" :footer-hide="true" :closable="false" :mask="false" :styles="{position: 'absolute', top: '50px', right: '5px'}" width="20" title="车辆详细信息">
+                <p slot="header" style="color:#FFF;">
+                    <span class="modelTitle">车辆详细信息</span>
+                </p>
+                <div class="modifiedWrap">
+                    <table>
+                        <tbody>
+                            <tr class="detailInfo">
+                                <td> 
+                                    <span class="label">公司：</span><br/>
+                                    <span v-text="vehicleInfo.companyName"></span>
+                                </td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td>
+                                    <span class="label">部门：</span><br/>
+                                    <span v-text="vehicleInfo.deptName"></span>
+                                </td>
+                            </tr>
+
+                            <tr class="detailInfo">
+                                <td>
+                                    <span class="label">车辆名称：</span><br/>
+                                    <span v-text="vehicleInfo.vehicleName"></span>
+                                </td>
+                            </tr>
+                            
+                            <tr class="detailInfo">
+                                <td>
+                                    <span class="label">车牌号：</span><br/>
+                                    <span v-text="vehicleInfo.licenseNumber"></span>
+                                </td>
+                            </tr>
+                        
+                            <tr class="detailInfo">
+                                <td>
+                                    <span class="label">车辆编号：</span><br/>
+                                    <span v-text="vehicleInfo.vehicleCode"></span>
+                                </td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td>
+                                    <span class="label">绑定终端：</span><br/>
+                                    <span v-text="vehicleInfo.gpsDeviceCode"></span>
+                                </td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td>
+                                    <span class="label">车辆类型：</span><br/>
+                                    <span v-text="vehicleInfo.vehicleTypeName"></span>
+                                </td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td>
+                                    <span class="label">车辆颜色：</span><br/>
+                                    <span v-text="vehicleInfo.vehicleColorName"></span>
+                                </td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td>
+                                    <span class="label">车辆品牌：</span><br/>
+                                    <span v-text="vehicleInfo.vehicleBrandName"></span>
+                                </td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td style="padding-top: 20px;">
+                                    <i-button @click="backPage" long type="primary">
+                                        <span><Icon type="md-arrow-back" /></span>
+                                        <span>返回上一页</span>
+                                    </i-button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table> 
+                </div>
+            </Modal>
+        </template>
     </div>
 
-    <script src="/airport/www/module/liveVideo/vsplayer.min.js?v=4714712341823"></script>
+    <script src="/airport/assets/js/vsplayer.min.js?v=4714712341823"></script>
     <script src="/airport/assets/js/LAB.min.js?v=49127341723"></script>
     <script>
         loadScript(MODUL+"module/liveVideo/liveVideo.min.js");

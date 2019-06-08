@@ -2,25 +2,27 @@
     var pageVue = new Vue({
         "el": "#js-vue",
         "data": {
-            "mIP": "", // socket登录IP
-            "mPort": "", // socket登录端口
-            "mUserName": "", // 登录用户名
-            "mPwd": "", // socket密码
-            "mVehicleNo": "", // 车牌号
+            "isShowDetail": true,
+            "vehicleInfo": JSON.parse(decodeURI(utility.getQueryParams().vehicleInfo)),
+            "queryInfo": utility.getQueryParams(),
+            "mIP": "220.231.225.7", // socket登录IP
+            "mPort": 7668, // socket登录端口
+            "mUserName": "mgkj", // 登录用户名
+            "mPwd": "888888", // socket密码
             "mVideoCount": 9, // 分屏数
             "maxVideoNum": 10, // 最大视频数
             "isStop": false, // 是否开始了
             "offLine": false, // 是否开始了
             "timeOfflineOut": null,
             "timeOffline": 5,
-            "timeLen": 30,
-            "timeSelect": "30",
+            "timeLen": 120,
+            "timeSelect": "120",
             "timeLenOut": null,
             "netnSignal": "",
             "msgType": "primary",
             "msgInfo": "",
             "isFullScream": false,
-            "channelIndex": 0,
+            "channelIndex": "-",
             "fullScreamIndex": "",
             "defaultColor": "rgb(255,125,0)", // 当前激活视频样式
             "splitNum": 1,
@@ -230,19 +232,13 @@
         },
         "methods": {
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
-            "init": function (options) {
+            "init": function () {
                 var self = this;
-
-                self.mIP = options.ip;
-                self.mPwd = options.pwd;
-                self.mPort = options.port;
-                self.mUserName = options.userName;
-                self.mVehicleNo = options.vehicleNo;
 
                 if (self.mVideoCount > self.maxVideoNum || self.mVideoCount < 0) {
                     self.$Message.destroy();
-                        self.msgType = "error";
-                        self.msgInfo = "视频窗口数量有误";
+                    self.msgType = "error";
+                    self.msgInfo = "视频窗口数量有误";
                     return;
                 }
 
@@ -250,7 +246,7 @@
                 self.connectNet();
 
             },
-            "onTimeChange": function(value) {
+            "onTimeChange": function (value) {
                 var self = this;
                 self.timeLen = parseInt(value, 10);
             },
@@ -269,7 +265,7 @@
                     onLoginFailed: function () {
                         self.$Message.destroy();
                         self.msgType = "error";
-                        self.msgInfo = "车辆 【" + self.mVehicleNo + "】登录失败";
+                        self.msgInfo = "车辆 【" + self.vehicleInfo.licenseNumber + "】登录失败";
                         clearInterval(self.timeLenOut);
                         setTimeout(function () {
                             vsclientSession.login(self.mUserName, self.mPwd, self.mIP, self.mPort);
@@ -277,14 +273,14 @@
                     },
                     // 登录成功
                     onlogon: function (info) {
-                        var front = vsclientSession.findFrontByName(self.mVehicleNo);
+                        var front = vsclientSession.findFrontByName(self.vehicleInfo.licenseNumber);
                         self.$Message.destroy();
                         self.msgType = "success";
-                        self.msgInfo = "车辆 【" + self.mVehicleNo + "】登录成功";
-                        
+                        self.msgInfo = "车辆 【" + self.vehicleInfo.licenseNumber + "】登录成功";
+
                         if (front == null) {
                             self.msgType = "error";
-                            self.msgInfo = "车辆【 " + self.mVehicleNo + " 】不存在";
+                            self.msgInfo = "车辆【 " + self.vehicleInfo.licenseNumber + " 】不存在";
                             self.isStop = true;
                             clearInterval(self.timeLenOut);
                             return;
@@ -293,42 +289,41 @@
                         // 登录成功后马上开始播放视频
                         self.startVideo();
                     },
-                    // 设备离线或上线
-                    onOnOffline: function(info) {
-                        if(info.online == false) {
+                    // // 设备离线或上线
+                    onOnOffline: function (onlineState) {
+                        if (onlineState == false) {
                             self.$Message.destroy();
                             self.msgType = "error";
-                            self.msgInfo = "车辆暂无视频数据，视屏画面即将关闭！";
-                            self.offLine = true;
+                            self.msgInfo = "车辆【 " + self.vehicleInfo.licenseNumber + " 】已经下线";
+                            // self.offLine = true;
+                            self.isStop = true;
                             self.timeOfflineOut = null;
                             clearInterval(self.timeLenOut);
-                            self.timeOfflineOut = setInterval(function() {
+                            self.timeOfflineOut = setInterval(function () {
                                 self.timeOffline--;
-                                if(self.timeOffline <= 0) {
-                                    self.offLine = false;
+                                if (self.timeOffline <= 0) {
+                                    // self.offLine = false;
                                     self.stopVideo(self.msgInfo);
                                 }
                             }, 1000);
-                        }  else {
-                            self.offLine = false;
-                            console.log("重新执行");
-                            self.reStart();
+                        } else {
+                            vsclientSession.login(self.mUserName, self.mPwd, self.mIP, self.mPort);
+                            self.msgInfo = "";
+                            self.$Message.destroy();
+                            self.$Message.loading({
+                                "content": "车辆【 " + self.vehicleInfo.licenseNumber + " 】登录中......",
+                            });
                         }
                     },
-                    // 当 socket 关闭
-                    onSocketClose: function() {
-                        // self.$Message.destroy();
-                        // self.msgType = "error";
-                        // self.msgInfo = "车辆【 " + self.mVehicleNo + " 】连接关闭";
-                        // self.stopVideo(self.msgInfo);
-                        // clearInterval(self.timeLenOut);
-                        console.log("socket关闭了");
-                    },
+                    // // 当 socket 关闭
+                    // onSocketClose: function() {
+                    //     console.log("socket关闭了");
+                    // },
                     // 但 socket 服务链接断开
                     onServerConnectionLost: function () {
                         self.$Message.destroy();
                         self.msgType = "error";
-                        self.msgInfo = "车辆【 " + self.mVehicleNo + " 】连接失败";
+                        self.msgInfo = "车辆【 " + self.vehicleInfo.licenseNumber + " 】连接失败";
                         self.stopVideo(self.msgInfo);
                     },
                     // 数据流状态
@@ -345,15 +340,14 @@
                             case STREAM_PLAY_STATE_REQ_STREAM_SUCCESS:
                                 self.msgInfo = "";
                                 self.$Message.destroy();
-                                self.$Message.loading({
-                                    "content": "请求完成,等待播放......"
-                                });
-                                clearInterval(self.timeLenOut);
+                                // self.$Message.loading({
+                                //     "content": "请求完成,等待播放......"
+                                // });
                                 break;
                             case STREAM_PLAY_STATE_PLAY_STRAM_SUCCESS:
                                 self.$Message.destroy();
                                 self.msgType = "success";
-                                self.msgInfo = "视频播放成功";
+                                self.msgInfo = "";
                                 self.isStop = false;
                                 break;
                             case STREAM_PLAY_STATE_PLAY_STRAM_FAILED:
@@ -368,7 +362,6 @@
                                 self.msgInfo = "播放状态异常";
                                 clearInterval(self.timeLenOut);
                                 break;
-
                         }
                     },
                     onGpsData: function (frontGpsData) {//车辆信息+GPS信
@@ -381,7 +374,7 @@
                 self.msgInfo = "";
                 self.$Message.destroy();
                 self.$Message.loading({
-                    "content": "车辆【 " + self.mVehicleNo + " 】登录中......",
+                    "content": "车辆【 " + self.vehicleInfo.licenseNumber + " 】登录中......",
                 });
                 clearInterval(self.timeLenOut);
             },
@@ -444,40 +437,52 @@
                 if (!front.online) {
                     self.$Message.destroy();
                     self.msgType = "error";
-                    self.msgInfo = "车辆 【 " + self.mVehicleNo + " 】不在线";
+                    self.isStop = true;
+                    // self.offLine = false;
+                    self.msgInfo = "车辆【 " + self.vehicleInfo.licenseNumber + " 】已经下线";
                     clearInterval(self.timeLenOut);
                     return;
                 }
                 var channelNum = front.channel_num;
                 var ret = false;
-                var splitcn = self.getSplitNumFromChNum(channelNum);
 
                 self.$Message.destroy();
                 self.msgType = "blue";
-                self.msgInfo = "车辆【" + self.mVehicleNo + "】，共【 " + channelNum + " 】个通道";
-                self.updateVideoWin(splitcn);
+                // self.msgInfo = "车辆【" + self.vehicleInfo.licenseNumber + "】，共【 " + channelNum + " 】个通道";
                 for (var idx = 0; idx < channelNum; idx++) {
-                    ret = vsclientSession.startPlay(self.mVehicleNo, idx, $("#video" + idx)[0]);
+                    ret = vsclientSession.startPlay(self.vehicleInfo.licenseNumber, idx, $("#video" + idx)[0]);
                 }
-                self.playAudio(0);
+
                 if (ret) {
-                    self.isStop = true;
+                    self.isStop = false;
                     self.msgInfo = "";
                     self.$Message.destroy()
                     self.$Message.loading({
                         "content": "正在请求视频......"
                     });
+
+                    setInterval(function(){
+                        for (var i = 0; i < channelNum; i++) {
+                            $("#video" + i)[0].play();
+                        }
+                    }, 3000);
+
                     clearInterval(self.timeLenOut);
                     self.timeLenOut = null;
-                    setTimeout(function() {
-                        self.timeLenOut = setInterval(function() {
+                    setTimeout(function () {
+                        self.timeLenOut = setInterval(function () {
                             self.timeLen--;
                             self.$Message.destroy();
-                            if(self.timeLen <= 0) {
+                            if (self.timeLen <= 0) {
                                 self.stopVideo("视频已经全部关闭");
                             }
                         }, 1000);
-                    }, 5000);
+                        self.stopAudio();
+                        setTimeout(function () {
+                            $("body").find("#playAudio_0").on("click");
+                            $("body").find("#playAudio_0").trigger("click");
+                        }, 3000);
+                    }, 15000);
                 } else {
                     self.$Message.destroy();
                     self.msgType = "error";
@@ -487,25 +492,33 @@
             },
 
             // reStart
-            "reStart": function() {
-                window.location.href = window.location.href;
+            "reStart": function () {
+                var self = this;
+                // window.location.href = window.location.href;
+                vsclientSession.login(self.mUserName, self.mPwd, self.mIP, self.mPort);
+                self.msgInfo = "";
+                self.$Message.destroy();
+                self.$Message.loading({
+                    "content": "车辆【 " + self.vehicleInfo.licenseNumber + " 】登录中......",
+                });
+                clearInterval(self.timeLenOut);
             },
 
             // 开始视频
             "startVideo": function () {
                 var self = this;
-                var front = vsclientSession.findFrontByName(self.mVehicleNo);
+                var front = vsclientSession.findFrontByName(self.vehicleInfo.licenseNumber);
                 if (front == null) {
                     self.$Message.destroy();
                     self.msgType = "error";
-                    self.msgInfo = "车辆【 " + self.mVehicleNo + " 】不存在";
+                    self.msgInfo = "车辆【 " + self.vehicleInfo.licenseNumber + " 】不存在";
                     self.isStop = true;
                     clearInterval(self.timeLenOut);
                     return;
                 }
                 self.playVideo(front);
 
-                if(self.timeLen <= 0) {
+                if (self.timeLen <= 0) {
                     self.timeLen = parseInt(self.timeSelect, 10);
                 }
             },
@@ -521,9 +534,9 @@
                 self.msgType = "error";
                 self.msgInfo = typeof msgInfo == "string" ? msgInfo : "视频已经全部关闭";
                 clearInterval(self.timeLenOut);
-                clearInterval( self.timeOfflineOut);
+                clearInterval(self.timeOfflineOut);
                 self.timeOffline = 5;
-                if(self.timeLen <= 0) {
+                if (self.timeLen <= 0) {
                     self.timeLen = parseInt(self.timeSelect);
                 }
                 self.stopAudio();
@@ -549,14 +562,15 @@
 
                 self.channelIndex = channel;
                 vsclientSession.stopListening();
-                setTimeout(function(){
-                    vsclientSession.startListening(self.mVehicleNo, self.channelIndex);
+
+                setTimeout(function () {
+                    vsclientSession.startListening(self.vehicleInfo.licenseNumber, self.channelIndex);
                 }, 1000);
             },
             // 停止播放声音
             "stopAudio": function () {
                 var self = this;
-                self.channelIndex = 0;
+                self.channelIndex = "-";
                 vsclientSession.stopListening();
             },
             // 
@@ -583,7 +597,7 @@
 
                 return usablePrefixMethod;
             },
-            "dragEnd": function(event){
+            "dragEnd": function (event) {
                 var self = this;
                 var srcElement = $(event.srcElement);
 
@@ -591,7 +605,7 @@
                 self.dragAndDrop.sourceStyle = srcElement.attr("style");
 
             },
-            "drop": function(event){
+            "drop": function (event) {
                 var self = this;
                 var srcElement = $(event.srcElement).parents(".videoItem");
 
@@ -600,15 +614,20 @@
                 self.dragAndDrop.targetEle = srcElement;
                 self.dragAndDrop.targetStyle = srcElement.attr("style");
 
-                setTimeout(function(){
+                setTimeout(function () {
                     self.dragAndDrop.targetEle.attr("style", self.dragAndDrop.sourceStyle);
                     self.dragAndDrop.sourceEle.attr("style", self.dragAndDrop.targetStyle);
                 }, 250);
             },
-            "dragOver": function(event){
+            "dragOver": function (event) {
                 var self = this;
                 event.preventDefault();
             },
+            // 返回
+            "backPage": function () {
+                var self = this;
+                window.close();
+            }
         },
         "mounted": function () {
             var self = this;
@@ -629,13 +648,7 @@
             // "port": 8001, //7668,
             // "userName": "admin1", //"mgkj",
             // "pwd": "888888",
-            self.init({
-                "port": 7668,
-                "pwd": "888888",
-                "userName": "mgkj",
-                "ip": "220.231.225.7",
-                "vehicleNo": decodeURI(utility.getQueryParams().vehicleNo),
-            });
+            self.init();
 
         }
     });

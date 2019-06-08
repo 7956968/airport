@@ -97,23 +97,23 @@
                                     }
                                 }
                             }, { "CN": "可用功能", "EN": "Role Functions", "TW": "可用功能" }[language["language"]]),
-                            h('Button', {
-                                "props": {
-                                    "type": 'primary',
-                                    "size": 'small'
-                                },
-                                "style": {
-                                    "marginRight": '5px'
-                                },
-                                "on": {
-                                    "click": function () {
-                                        pageVue.isShowDataGroup = true;
-                                        pageVue.roleDataGroupPageInfo.roleId = pageVue.roleList[params.index]["id"];
-                                        pageVue.roleDataGroupPageInfo.companyId = pageVue.roleList[params.index]["companyId"];
-                                        pageVue.getRoleDataGroupList(true);
-                                    }
-                                }
-                            }, { 'CN': '数据权限', 'EN': 'DataGroup', 'TW': '數據權限' }[language["language"]]),
+                            // h('Button', {
+                            //     "props": {
+                            //         "type": 'primary',
+                            //         "size": 'small'
+                            //     },
+                            //     "style": {
+                            //         "marginRight": '5px'
+                            //     },
+                            //     "on": {
+                            //         "click": function () {
+                            //             pageVue.isShowDataGroup = true;
+                            //             pageVue.roleDataGroupPageInfo.roleId = pageVue.roleList[params.index]["id"];
+                            //             pageVue.roleDataGroupPageInfo.companyId = pageVue.roleList[params.index]["companyId"];
+                            //             pageVue.getRoleDataGroupList(true);
+                            //         }
+                            //     }
+                            // }, { 'CN': '数据权限', 'EN': 'DataGroup', 'TW': '數據權限' }[language["language"]]),
                             h('Button', {
                                 "props": {
                                     "type": 'info',

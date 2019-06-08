@@ -200,7 +200,7 @@ window.utility = (function (utility) {
         var userInfo = utility.getLocalStorage("userInfo");
         var language = { "CN": "cn", "EN": "en", "TW": "hk" };
         var languageVer = !!utility.getLocalStorage("language") ? language[utility.getLocalStorage("language")["language"]] : "cn";
-
+        
         $.ajax({
             dataType: "json",
             url: options.url,
@@ -227,21 +227,24 @@ window.utility = (function (utility) {
             },
             success: function (data) {
                 var isParent = window.parent;
-                if(data.code==9003) {
-                    alert("登录令牌失效,请先登录!");
-                    if(!!isParent) {
-                        if(window.parent.window.location.href.indexOf("indexMg")!=-1) {
-                            window.parent.window.location.href = "/airport/www/indexMg.html";
+                if (data.code == 9003) {
+                    clearTimeout(window.clearLogin);
+                    window.clearLogin = setTimeout(function () {
+                        alert("登录令牌失效,请重新登录!");
+                        if (!!isParent) {
+                            if (window.parent.window.location.href.indexOf("indexMg") != -1) {
+                                window.parent.window.location.href = "/airport/www/indexMg.html";
+                            } else {
+                                window.parent.window.location.href = "/airport/www/login.html";
+                            }
                         } else {
-                            window.parent.window.location.href = "/airport/www/login.html";
+                            if (window.location.href.indexOf("indexMg") != -1) {
+                                window.location.href = "/airport/www/indexMg.html";
+                            } else {
+                                window.location.href = "/airport/www/login.html";
+                            }
                         }
-                    } else  {
-                        if(window.location.href.indexOf("indexMg")!=-1) {
-                            window.location.href = "/airport/www/indexMg.html";
-                        } else {
-                            window.location.href = "/airport/www/login.html";
-                        }
-                    }
+                    }, 500);
                 }
                 options.successCallback && options.successCallback(data);
             },
@@ -282,24 +285,24 @@ window.utility = (function (utility) {
     };
 
     // 判断是否已经登录，如果没有登录，则直接退出到登录页面
-    utility.isLogin = function(isParent) {
+    utility.isLogin = function (isParent) {
         var userInfo = utility.getLocalStorage("userInfo");
 
         // 判断是否有用户信息
-        if(!userInfo) {
+        if (!userInfo) {
             alert("请先登录！");
             utility.setLocalStorage("userInfo", null);
             utility.setLocalStorage("userFuncList", null);
-            if(isParent == true) {
+            if (isParent == true) {
                 window.location.href = "/airport/www/login.html";
-            } else if(isParent == false) {
+            } else if (isParent == false) {
                 window.parent.window.location.href = "/airport/www/login.html";
             }
         }
     };
 
     // 显示 messageTip
-    utility.showMessageTip = function(self, callback) {
+    utility.showMessageTip = function (self, callback) {
         if (!!!self.selectItem) {
             self.$Message.config({
                 top: 180,
@@ -310,7 +313,7 @@ window.utility = (function (utility) {
             });
             return;
         }
-        self.isModalLoading = true; 
+        self.isModalLoading = true;
         !!callback && callback();
     };
 

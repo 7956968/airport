@@ -11,7 +11,7 @@
   background-color: #F5F5F5;
 }
 /*定义滚动条轨道 内阴影+圆角*/
-::-webkit-scrollbar-track { 
+::-webkit-scrollbar-track {
   box-shadow: inset 0 0 6px rgba(208, 219, 245, 0.1);
   border-radius: 10px;
   background-color: #F5F5F5;
@@ -237,9 +237,25 @@ table .ivu-table-cell {
 .graphPage .welcomPage .layout .ivu-spin-fix {
   background-color: transparent;
 }
-.graphPage .welcomPage .layout .tile {
+.graphPage .welcomPage .layout .tile { 
   font-size: 18px;
   color: #777E8E;
+  overflow: hidden;
+}
+.graphPage .welcomPage .layout .tile span {
+  float: left;
+}
+.graphPage .welcomPage .layout .tile .select {
+  float: left;
+  width: auto;
+  font-size: 14px;
+  padding-left: 20px;
+  color: #5d81ca;
+}
+.graphPage .welcomPage .layout .tile .select .count {
+  padding-left: 10px;
+  font-size: 18px;
+  color: #ed9b3e;
 }
 .graphPage .welcomPage .layout .infoList {
   padding-bottom: 10px;
@@ -304,7 +320,8 @@ table .ivu-table-cell {
   background-color: transparent;
   color: #fff;
 }
-.graphPage .welcomPage .welcomTable .ivu-table-stripe .ivu-table-body tr:nth-child(2n+1) td {
+.graphPage .welcomPage .welcomTable .ivu-table-stripe .ivu-table-body tr:nth-child(2n+1) td,
+.graphPage .welcomPage .welcomTable .ivu-table-stripe .ivu-table-fixed-body tr:nth-child(2n+1) td {
   background-color: #18416B;
 }
 .graphPage .welcomPage .welcomTable .ivu-table-wrapper,
@@ -313,12 +330,20 @@ table .ivu-table-cell {
 .graphPage .welcomPage .welcomTable .ivu-table-wrapper > .ivu-spin-fix {
   border: none;
 }
+.graphPage .welcomPage .welcomTable .ivu-table th {
+  background-color: #061a2d;
+}
 .graphPage .welcomPage .welcomTable .ivu-table-fixed-body .ivu-table-row {
   background-color: #0F375F;
 }
 .graphPage .welcomPage .welcomTable .ivu-table-fixed-body .ivu-table-cell {
   padding-left: 10px;
   padding-right: 5px;
+}
+.graphPage .welcomPage .welcomTable .overDay {
+  padding: 5px;
+  color: #061a2d;
+  background-color: #fbd048;
 }
 .graphPage .welcomPage .copyRight {
   text-align: center;
@@ -721,7 +746,7 @@ table .ivu-table-cell {
   font-size: 13px;
 }
 .modifiedWrap .detailInfo .detailLabel {
-  width: 100px;
+  min-width: 100px;
   text-align: right;
 }
 .modifiedWrap table {

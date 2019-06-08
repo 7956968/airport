@@ -213,7 +213,7 @@
         </template> 
         
         <template>
-            <Modal v-model="isShowDetail" :styles="{top: '60px'}" width="25" title="查看详情">
+            <Modal v-model="isShowDetail" :footer-hide="true" :styles="{top: '60px'}" width="25" title="查看详情">
                 <div class="modifiedWrap">
                     <table>
                         <tbody>
@@ -264,13 +264,7 @@
         </template>
 
     </div>
-    <!-- <script src="/airport/assets/js/vue.min.js"></script>
-    <script src="/airport/assets/vender/iView/iview.min.js"></script>
-    <script src="/airport/assets/js/jquery-3.2.2.min.js"></script>
-    <script src="/airport/assets/js/md5.min.js"></script>
-    <script src="/airport/assets/js/config.min.js?v=5756574646372"></script>
-    <script src="/airport/assets/js/utility.min.js?v=5756574646372"></script>
-    <script src="/airport/www/module/videoCamera/videoCamera.min.js?v=5756574646372"></script> -->
+    
     <script src="/airport/assets/js/LAB.min.js"></script>
     <script>
         loadScript(MODUL+"module/videoCamera/videoCamera.min.js");

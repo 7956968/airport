@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>特种车辆音视频可视化系统</title>
+
+    <!-- 页面字符编码 -->
+    <meta charset="utf-8">
+
+    <!-- 避免IE使用兼容模式 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!-- 启用360浏览器的极速模式(webkit) -->
+    <meta name="renderer" content="webkit">
+    <!-- 微软的老式浏览器 -->
+    <meta name="MobileOptimized" content="320">
+
+    <!-- 关键字描述 -->
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <!-- 设置移动端视图 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+    <meta name="HandheldFriendly" content="true">
+
+    <!-- 删除苹果默认的工具栏和菜单栏 -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <!-- 设置苹果工具栏颜色 -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+    <!-- 忽略页面中的数字识别为电话，忽略email识别 -->
+    <meta name="format-detection" content="telphone=no, email=no" />
+
+    <!-- uc强制竖屏 -->
+    <meta name="screen-orientation" content="portrait">
+    <!-- QQ强制竖屏 -->
+    <meta name="x5-orientation" content="portrait">
+    <!-- UC强制全屏 -->
+    <meta name="full-screen" content="yes">
+    <!-- QQ强制全屏 -->
+    <meta name="x5-fullscreen" content="true">
+    <!-- UC应用模式 -->
+    <meta name="browsermode" content="application">
+    <!-- QQ应用模式 -->
+    <meta name="x5-page-mode" content="app">
+    <link rel="icon" href="/airport/www/img/logo.png">
+    <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=73483418234172" />
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/liveVideo.min.css?v=q48274328" />
+</head>
+
+<body>
+    <div id="js-vue" class="videoPage">
+        <div class="video_main backPlayVideoMain">
+
+            <!-- 顶部操作栏 -->
+            <div class="video_ctrl_area">
+
+                <!-- logo -->
+                <div class="logoIcon">
+                    <img src="/airport/www/img/logo.png" />
+                </div>
+                <div class="title">特种车辆音视频可视化系统</div>
+
+                <!-- 状态 -->
+                <!-- <template v-if="msgInfo">
+                    <div class="msgTip">
+                        <Tag type="dot" :color="msgType"><span v-text="msgInfo"></span></Tag>
+                    </div>
+                </template> -->
+
+            </div>
+
+            <div class="video_player_area playBackVideoWrap" id="videoContainer">
+                <div class="videoBox">
+                    <Row>
+                        <i-col span="18">
+                            <div class="videoWrap" :style="{height: (innerHeight-45) + 'px'}">
+                                <div class="search">
+                                    <Row>
+                                        <i-col span="12">
+                                            <!-- <span class="label">车牌号</span>
+                                            <template>
+                                                <i-select v-model="vehicleInfo.licenseNumber" style="width:100px">
+                                                    <template v-for="item in vehicleList">
+                                                        <i-option :value="item">{{item}}</i-option>
+                                                    </template>
+                                                </i-select>
+                                            </template>&nbsp;&nbsp;&nbsp;&nbsp; -->
+                                        <!-- </i-col>
+                                        <i-col span="4"> -->
+                                            <span class="label">日期</span>
+                                            <template>
+                                                <date-picker type="date" @on-change="dateChange" v-model="backPlay.date"
+                                                    placeholder="请选择日期" style="width: 110px;"></date-picker>
+                                            </template>&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <!-- </i-col>
+                                        <i-col span="4"> -->
+                                            <span class="label">开始时间</span>
+                                            <time-picker type="time" v-model="backPlay.beginTime"
+                                                @on-change="beginTimeChange" placeholder="请选择开始时间"
+                                                style="width: 100px;">
+                                            </time-picker>&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <!-- </i-col>
+                                        <i-col span="4"> -->
+                                            <span class="label">结束时间</span>
+                                            <time-picker type="time" v-model="backPlay.endTime"
+                                                @on-change="endTimeChange" placeholder="请选择结束时间" style="width: 100px;">
+                                            </time-picker>&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <!-- </i-col>
+                                        <i-col span="4"> -->
+                                            <i-button class="btnAction" type="primary" @click="getReplayVedio">
+                                                <span><Icon type="ios-search" size="16" /></span> 获取视频
+                                            </i-button>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;<i-button type="warning" @click="reStart">
+                                                <span><Icon type="ios-git-compare" size="16" /></span> 重新连接
+                                            </i-button>
+                                        </i-col>
+                                        <!-- <i-col span="4"></i-col> <Icon type="ios-git-compare" /><Icon type="ios-search" />-->
+                                    </Row>
+                                </div>
+                                <div style="position: relative; padding: 0 10px 10px 10px; height: calc(100% - 60px);">
+                                    <template v-if="backPlay.channelTotal==0">
+                                        <div class="videoItem noData" :style="{height: (innerHeight-109) + 'px', lineHeight: (innerHeight-200) + 'px'}">
+                                            {{msgInfo}}
+                                        </div>
+                                    </template>
+                                    <template v-else>
+                                        {{'count_'+backPlay.channelTotal}}
+                                        <template v-for="(item, index) in videoWinSplit['count_'+backPlay.channelTotal]">
+                                            <div class="videoItem"
+                                                :style="{display: 'block', top: item.top, left: item.left, width: item.width, height: item.height}"
+                                                draggable="true" @drop="drop($event)" @dragend="dragEnd($event)"
+                                                @dragover="dragOver($event)">
+                                                <div class="innerItem">
+                                                    <video playsinline controls poster="/airport/www/img/poster.png" :id="'backVedio'+index" preload="meta" loop
+                                                    autoplay></video>
+                                                    <div class="channelIndex">
+                                                        <span>{{(index+1)+' 路摄像头'}}</span>
+                                                        <span><Icon type="ios-videocam-outline" size="18" /></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </template>
+                                </div>
+
+                            </div>
+                        </i-col>
+                        <i-col span="6">
+                            <template>
+                                <Tabs v-model="backPlay.tabs" :animated="false" class="tabsWrap">
+                                    <tab-pane name="video" :label="'视频列表('+backPlay.videoCount+'个)'">
+                                        <div class="listWrap">
+                                            <div class="list" :style="{height: (innerHeight-110) + 'px'}">
+                                                <Collapse v-model="backPlay.channel" simple accordion id="js-Collapse">
+                                                    <template v-for="(value, key) in backPlay.channelInfo">
+                                                        <template v-if="value.isChannel">
+                                                            <Panel :name="key"
+                                                                :id="'channel'+value.channel">
+                                                                {{(value.channel+1)+' 路摄像头'}} <span class="totalVideo">( {{value.list.length + '个'}} )</span> <span class="playNum">当前播放第<span>{{value.radioIndex+1}}</span>个视频</span>
+                                                                <div slot="content">
+                                                                    <div class="collapseWrap"
+                                                                        :style="{maxHeight: (innerHeight-(backPlay.channelTotal*48)-112) + 'px'}">
+                                                                        <radio-group v-model="value.radioIndex">
+                                                                            <template
+                                                                                v-for="(channelItem, channelIndex) in value.list">
+                                                                                <div class="item"
+                                                                                    @click="playVideo(channelIndex, key)">
+                                                                                    <span
+                                                                                        class="num">{{channelIndex+1}}</span>
+                                                                                    <Radio
+                                                                                        :label="channelIndex"
+                                                                                        vertical>
+                                                                                        <span
+                                                                                            class="tItem">{{channelItem.date}}</span>
+                                                                                        <span
+                                                                                            class="tItem timeSection">{{channelItem.beginTime + ' 至 ' + channelItem.endTime}}</span>
+                                                                                        <span
+                                                                                            class="tItem">{{channelItem.weekDay}}</span>
+                                                                                    </Radio>
+                                                                                </div>
+                                                                            </template>
+                                                                        </radio-group>
+                                                                    </div>
+                                                                </div>
+                                                            </Panel>
+                                                        </template>
+                                                    </template>
+                                                </Collapse>
+                                            </div>
+                                        </div>
+                                    </tab-pane>
+                                    <tab-pane name="info" label="车辆信息">
+                                        <div class="modifiedWrap" style="padding-bottom: 20px;">
+                                            <table>
+                                                <tbody>
+                                                    <tr class="detailInfo">
+                                                        <td>
+                                                            <span class="label">公司：</span><br />
+                                                            <span v-text="vehicleInfo.companyName"></span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="detailInfo">
+                                                        <td>
+                                                            <span class="label">部门：</span><br />
+                                                            <span v-text="vehicleInfo.deptName"></span>
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr class="detailInfo">
+                                                        <td>
+                                                            <span class="label">车辆名称：</span><br />
+                                                            <span v-text="vehicleInfo.vehicleName"></span>
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr class="detailInfo">
+                                                        <td>
+                                                            <span class="label">车牌号：</span><br />
+                                                            <span v-text="vehicleInfo.licenseNumber"></span>
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr class="detailInfo">
+                                                        <td>
+                                                            <span class="label">车辆编号：</span><br />
+                                                            <span v-text="vehicleInfo.vehicleCode"></span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="detailInfo">
+                                                        <td>
+                                                            <span class="label">绑定终端：</span><br />
+                                                            <span v-text="vehicleInfo.gpsDeviceCode"></span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="detailInfo">
+                                                        <td>
+                                                            <span class="label">车辆类型：</span><br />
+                                                            <span v-text="vehicleInfo.vehicleTypeName"></span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="detailInfo">
+                                                        <td>
+                                                            <span class="label">车辆颜色：</span><br />
+                                                            <span v-text="vehicleInfo.vehicleColorName"></span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="detailInfo">
+                                                        <td>
+                                                            <span class="label">车辆品牌：</span><br />
+                                                            <span v-text="vehicleInfo.vehicleBrandName"></span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="detailInfo">
+                                                        <td style="padding-top: 20px;">
+                                                            <i-button @click="backPage" long type="primary">
+                                                                <span>
+                                                                    <Icon type="md-arrow-back" /></span>
+                                                                <span>返回上一页</span>
+                                                            </i-button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </tab-pane>
+                                </Tabs>
+                            </template>
+                        </i-col>
+                    </Row>
+                </div>
+            </div>
+
+        </div>
+
+        <script src="/airport/assets/js/vsplayer.min.js?v=13417234172"></script>
+        <script src="/airport/assets/js/LAB.min.js?v=12341234123"></script>
+        <script>
+            loadScript(MODUL + "module/playBack/liveVideo.min.js");
+        </script>
+</body>
+
+</html>

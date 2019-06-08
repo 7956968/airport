@@ -97,10 +97,10 @@
                     "width": 240,
                     "render": function (h, params) {
                         var liveButton = null;
-                        var txt = { "CN": "实时预览", "EN": "Video", "TW": "实时预览" }[language["language"]];
+                        var backButton = null;
 
-                        if(pageVue.vehicleList[params.index]['licenseNumber'] && pageVue.vehicleList[params.index]['providerId']<100) {
-                            if(pageVue.vehicleList[params.index]['vehicleStatus'] == 401 || pageVue.vehicleList[params.index]['vehicleStatus'] == 402) {
+                        if (pageVue.vehicleList[params.index]['licenseNumber'] && pageVue.vehicleList[params.index]['providerId'] < 100) {
+                            if (pageVue.vehicleList[params.index]['vehicleStatus'] == 401 || pageVue.vehicleList[params.index]['vehicleStatus'] == 402) {
                                 liveButton = h("Button", {
                                     "props": {
                                         "type": "primary",
@@ -111,10 +111,39 @@
                                     },
                                     "on": {
                                         "click": function () {
-                                            pageVue.showLiveVideo(params.row.licenseNumber, pageVue.vehicleList[params.index]['providerId'], 0)
+                                            pageVue.showLiveVideo(pageVue.vehicleList[params.index], 0)
                                         }
                                     }
-                                }, txt);
+                                }, "实时监控");
+
+                                if(pageVue.vehicleList[params.index]["providerId"] == 2) {
+                                    backButton = h("Button", {
+                                        "props": {
+                                            "type": "default",
+                                            "size": "small",
+                                            "disabled": true,
+                                        },
+                                        "class": "disabled",
+                                        "style": {
+                                            "marginLeft": '5px'
+                                        },
+                                    }, "视频回放");
+                                } else {
+                                    backButton = h("Button", {
+                                        "props": {
+                                            "size": "small",
+                                        },
+                                        "class": "backPlay",
+                                        "style": {
+                                            "marginLeft": '5px'
+                                        },
+                                        "on": {
+                                            "click": function () {
+                                                pageVue.showLiveVideo(pageVue.vehicleList[params.index], 1)
+                                            }
+                                        }
+                                    }, "视频回放");
+                                }
                             } else {
                                 liveButton = h("Button", {
                                     "props": {
@@ -126,7 +155,19 @@
                                     "style": {
                                         "marginLeft": '5px'
                                     },
-                                }, txt);
+                                }, "实时监控");
+
+                                backButton = h("Button", {
+                                    "props": {
+                                        "type": "default",
+                                        "size": "small",
+                                        "disabled": true,
+                                    },
+                                    "class": "disabled",
+                                    "style": {
+                                        "marginLeft": '5px'
+                                    },
+                                }, "视频回放");
                             }
                         }
                         return h("div", [
@@ -140,20 +181,7 @@
                                 },
                             }, params.row.vehicleStatus),
                             liveButton,
-                            h("Button", {
-                                "props": {
-                                    "size": "small",
-                                },
-                                "class": "backPlay",
-                                "style": {
-                                    "marginLeft": '5px'
-                                },
-                                "on": {
-                                    "click": function () {
-                                        pageVue.showLiveVideo(params.row.licenseNumber, pageVue.vehicleList[params.index]['providerId'], 1)
-                                    }
-                                }
-                            }, "视频回放")
+                            backButton
                         ]);
                     }
                 },
@@ -162,7 +190,7 @@
                     "width": 100,
                     "render": function (h, params) {
                         var text = "";
-                        if(pageVue.vehicleList[params.index]['providerId']>=100) {
+                        if (pageVue.vehicleList[params.index]['providerId'] >= 100) {
                             text = pageVue.vehicleList[params.index]['useStatusName'];
                         } else {
                             text = "----";
@@ -396,7 +424,7 @@
                 self.index = index;
                 self.selectItem = item;
             },
-            "vehicleUseStatusChange": function(row, index) {
+            "vehicleUseStatusChange": function (row, index) {
                 var self = this;
                 self.itemInfo = self.vehicleList[index];
                 self.itemInfo.useStatus = self.dataList[index]["useStatus"];
@@ -566,12 +594,12 @@
                     }
                 });
             },
-            "getSuper": function(list, value, arr){
+            "getSuper": function (list, value, arr) {
                 var self = this;
-                for(var i = 0, len = list.length; i < len; i++) {
-                    if(list[i].value == value) {
+                for (var i = 0, len = list.length; i < len; i++) {
+                    if (list[i].value == value) {
                         arr.push(value);
-                        if(list[i].paraDeptId == 0) {
+                        if (list[i].paraDeptId == 0) {
                             return;
                         }
                         self.getSuper(self.departmentList, list[i].paraDeptId, arr);
@@ -612,16 +640,25 @@
                 });
             },
             // 显示视屏
-            "showLiveVideo": function (vehicleNo, providerId, isBackPlay) {
+            "showLiveVideo": function (vehicleInfo, isBackPlay) {
                 var self = this;
-                var url = "http://43.247.68.26:9090/airport/www/module/liveVideo/liveVideo.html?vehicleNo=" + encodeURI(vehicleNo) +"&isBackPlay=" + isBackPlay;
-                if(providerId == 2) {
-                    url = "http://43.247.68.26:9090/airport/www/module/liveVideoTest1/liveVideo.html?vehicleNo=" + encodeURI(vehicleNo)+"&id=" + userInfo["id"] + "&userToken="+ userInfo["userToken"]+"&isBackPlay=" + isBackPlay;
+                var url = "http://43.247.68.26:9090/airport/www/module/liveVideo/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
+                
+                if(isBackPlay) {
+                    url = "http://43.247.68.26:9090/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
+                }
+
+                if (vehicleInfo.providerId == 2) {
+                    if(isBackPlay) {
+                        url = "http://43.247.68.26:9090/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
+                    } else {
+                        url = "http://43.247.68.26:9090/airport/www/module/liveVideoTest1/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&id=" + userInfo["id"] + "&userToken=" + userInfo["userToken"] + "&isBackPlay=" + isBackPlay;
+                    }
                 }
                 window.open(
                     url,
                     "liveVideo",
-                    "toolbar=yes, location=0, directories=no, status=0, menubar=0, scrollbars=1, resizable=1, copyhistory=1, width=" + window.outerWidth + ", height=" + window.outerHeight
+                    "toolbar=yes, location=0, directories=no, status=0, menubar=0, scrollbars=1, resizable=1, copyhistory=1, width=" + window.outerWidth + ", height=" + (window.outerHeight-50)
                 );
             },
             // 页数改变时的回调
@@ -641,9 +678,9 @@
                 }, 200);
             },
             // 格式化使用记录
-            "formatRecord": function(dataList) {
+            "formatRecord": function (dataList) {
                 var self = this;
-                for(var i = 0, len = dataList.length; i < len; i++) {
+                for (var i = 0, len = dataList.length; i < len; i++) {
                     self.userRecordList.push({
                         "lastCreateTime": dataList[i].lastCreateTime, // 
                         "lastFinishTime": dataList[i].lastFinishTime, // 
@@ -656,7 +693,7 @@
                 }
             },
             // 获取车辆使用记录列表
-            "getVehicleUseRecordList": function(bool) {
+            "getVehicleUseRecordList": function (bool) {
                 var self = this;
                 if (bool == true) {
                     self.recordPageInfo.pageNum = 1;
@@ -679,7 +716,7 @@
                 });
             },
             // 显示使用列表
-            "showRecordList": function(index) {
+            "showRecordList": function (index) {
                 var self = this;
                 self.isRecord = true;
                 self.recordIndex = index;
@@ -699,9 +736,9 @@
                 self.getTerminalList();
                 self.getDepartmentList("pageInfo");
 
-                setInterval(function() {
+                setInterval(function () {
                     self.getVehicleList(false);
-                }, 30000);
+                }, 5000);
             }, 500);
         }
     });

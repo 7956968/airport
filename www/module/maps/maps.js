@@ -517,7 +517,7 @@
                     "title": { "CN": "车牌号", "EN": "Plate No.", "TW": "車牌號" }[language["language"]],
                     "key": "licenseNumber",
                     "fixed": "left",
-                    "width": 110
+                    "width": 130
                 },
                 {
                     "title": { "CN": "运动状态", "EN": "Vehicle State", "TW": "車輛狀態" }[language["language"]],
@@ -544,7 +544,7 @@
                 {
                     "title": { "CN": "车辆编号", "EN": "Vehicle Number", "TW": "車輛編號" }[language["language"]],
                     "key": "vehicleCode",
-                    "width": 110
+                    "width": 130
                 },
                 {
                     "title": { "CN": "车辆名称", "EN": "Vehicle Name", "TW": "車輛名稱" }[language["language"]],
@@ -554,14 +554,15 @@
                 {
                     "title": { "CN": "操作", "EN": "Operation", "TW": "操作" }[language["language"]],
                     "key": "operation",
-                    "width": 150,
+                    "width": 120,
                     "fixed": "right",
                     "render": function (h, params) {
                         var liveVideoBtn = h("Button", {
                             "props": {
                                 "size": "small",
                             }
-                        }, { "CN": "详情", "EN": "Detail", "TW": "詳情" }[language["language"]]);;
+                        }, { "CN": "详情", "EN": "Detail", "TW": "詳情" }[language["language"]]);
+                        var backVideoBtn = null;
 
                         if (pageVue.vehiclePositionList[params.index]['licenseNumber'] && pageVue.vehiclePositionList[params.index]['providerId']<100) {
                             if(pageVue.vehiclePositionList[params.index]['vehicleStatus'] == 401 || pageVue.vehiclePositionList[params.index]['vehicleStatus'] == 402) {
@@ -572,28 +573,48 @@
                                     },
                                     "on": {
                                         "click": function () {
-                                            pageVue.showLiveVideo(params.row.licenseNumber, pageVue.vehiclePositionList[params.index]['providerId'], 0)
+                                            pageVue.showLiveVideo(pageVue.vehiclePositionList[params.index], 0)
                                         }
                                     }
-                                }, { "CN": "实时预览", "EN": "Video", "TW": "实时预览" }[language["language"]]);
+                                }, "实时");
+
+                                // backVideoBtn = h("Button", {
+                                //     "props": {
+                                //         "size": "small",
+                                //     },
+                                //     "class": "backPlay",
+                                //     "style": {
+                                //         "marginLeft": '2px'
+                                //     },
+                                //     "on": {
+                                //         "click": function () {
+                                //             pageVue.showLiveVideo(pageVue.vehiclePositionList[params.index], 1)
+                                //         }
+                                //     }
+                                // }, "视频回放");
+
+                                if(pageVue.vehiclePositionList[params.index]["providerId"] != 2) {
+                                    backVideoBtn = h("Button", {
+                                        "props": {
+                                            "size": "small",
+                                            "type": "warning",
+                                        },
+                                        "class": "backPlay",
+                                        "style": {
+                                            "marginLeft": '2px'
+                                        },
+                                        "on": {
+                                            "click": function () {
+                                                pageVue.showLiveVideo(pageVue.vehiclePositionList[params.index], 1)
+                                            }
+                                        }
+                                    }, "回放");
+                                }
                             }
                         }
                         return h("div", [
                             liveVideoBtn,
-                            h("Button", {
-                                "props": {
-                                    "size": "small",
-                                },
-                                "class": "backPlay",
-                                "style": {
-                                    "marginLeft": '2px'
-                                },
-                                "on": {
-                                    "click": function () {
-                                        pageVue.showLiveVideo(params.row.licenseNumber, pageVue.vehicleList[params.index]['providerId'], 1)
-                                    }
-                                }
-                            }, "视频回放")
+                            backVideoBtn
                         ]);
                     }
                 }
@@ -1620,6 +1641,10 @@
 
                 iconSrc = "/airport/assets/img/" + vehicleIcon + ".gif";
 
+                if(coordinate[0] == 0 && coordinate[1] == 0) {
+                    return;
+                }
+
                 if (zoom < 8) {
                     scale = 0.01;
                     radius = 0;
@@ -1803,12 +1828,15 @@
                 self.vehicleItemPop = self.vehiclePositionItem;
 
                 if(!!self.vehicleItemPop.lastPosition) {
-                    self.createVehicleFeature(self.vehiclePositionItem, index, function (coordinate) {
-                        self.showVehicleOverLayer(coordinate);
-                    });
+                    if(JSON.parse(self.vehicleItemPop.lastPosition).coordinates[0] == 0 || JSON.parse(self.vehicleItemPop.lastPosition).coordinates[1]==0) {
+                        self.$Message.error("没有车辆定位数据");
+                    } else {
+                        self.createVehicleFeature(self.vehiclePositionItem, index, function (coordinate) {
+                            self.showVehicleOverLayer(coordinate);
+                        });
+                    }
                 } else {
                     self.$Message.error("没有车辆定位数据");
-                    self.mapContainer.overlayInfo["trajectory"].setPosition(undefined);
                 }
             },
             // 画所有实时车辆
@@ -2285,16 +2313,25 @@
                 });
             },
             // 显示视屏
-            "showLiveVideo": function (vehicleNo, providerId, isBackPlay) {
+            "showLiveVideo": function (vehicleInfo, isBackPlay) {
                 var self = this;
-                var url = "http://43.247.68.26:9090/airport/www/module/liveVideo/liveVideo.html?vehicleNo=" + encodeURI(vehicleNo)+"&isBackPlay=" + isBackPlay;
-                if(providerId == 2) {
-                    url = "http://43.247.68.26:9090/airport/www/module/liveVideoTest1/liveVideo.html?vehicleNo=" + encodeURI(vehicleNo)+"&id=" + userInfo["id"] + "&userToken="+ userInfo["userToken"]+"&isBackPlay=" + isBackPlay;
+                var url = "http://43.247.68.26:9090/airport/www/module/liveVideo/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
+                
+                if(isBackPlay) {
+                    url = "http://43.247.68.26:9090/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
+                }
+
+                if (vehicleInfo.providerId == 2) {
+                    if(isBackPlay) {
+                        url = "http://43.247.68.26:9090/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
+                    } else {
+                        url = "http://43.247.68.26:9090/airport/www/module/liveVideoTest1/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&id=" + userInfo["id"] + "&userToken=" + userInfo["userToken"] + "&isBackPlay=" + isBackPlay;
+                    }
                 }
                 window.open(
                     url,
                     "liveVideo",
-                    "toolbar=yes, location=0, directories=no, status=0, menubar=0, scrollbars=1, resizable=1, copyhistory=1, width=" + window.outerWidth + ", height=" + window.outerHeight
+                    "toolbar=yes, location=0, directories=no, status=0, menubar=0, scrollbars=1, resizable=1, copyhistory=1, width=" + window.outerWidth + ", height=" + (window.outerHeight-50)
                 );
             },
             //#endregion
