@@ -70,10 +70,15 @@
                     "key": "illegalNum"
                 },
                 {
-                    "title": { "CN": "里程(km)", "EN": "Mileage(km)", "TW": "里程(km)" }[language["language"]],
+                    "title": { "CN": "里程", "EN": "Mileage(km)", "TW": "里程(km)" }[language["language"]],
                     "key": "currMiles",
                     "sortable": true,
                     "width": 110,
+                    "render": function(h, params){
+                        return h("div", [
+                            h("span", {}, params.row.currMiles+"（公里）"),
+                        ]);
+                    }
                 },
                 {
                     "title": { "CN": "时间", "EN": "Time", "TW": "時間" }[language["language"]],

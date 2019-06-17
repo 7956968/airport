@@ -18,68 +18,46 @@
             },
             "terminalStatusList": bizParam["terminalStatus"],
             "vehicleTypeList": bizParam["vehicleType"],
-            "vehiclePassTypeList": bizParam["vehiclePassType"],
             "vehicleTypeInfo": {},
             "vehiclePassType": {},
 
             "isloadDefen": false,
             "totalChartData": null,
-            "colorList": ["#66CCCC","#CCFF66","#FF99CC","#A0522D","#FFFF00", "#336699","#CC9933", "#339999"],
+            "colorList": ["#66CCCC", "#CCFF66", "#FF99CC", "#A0522D", "#FFFF00", "#336699", "#CC9933", "#339999"],
             "statuPageInfo": {
                 "online": 0,
                 "daySpan": 0,
+                "pageNum": 1,
+                "pageSize": 10,
                 "count": 0,
             },
             "isTableLoading": false,
+            "showStatuDetail": false,
+            "statuItemInfo": {},
             "statuColumns": [
                 {
                     "title": "车辆名称",
-                    "width": 120,
                     "key": "vehicleName"
                 },
                 {
                     "title": "车牌号",
-                    "width": 120,
                     "key": "licenseNumber"
                 },
                 {
                     "title": "车辆编号",
-                    "width": 120,
                     "key": "vehicleCode"
                 },
-                // {
-                //     "title": "使用状态",
-                //     "width": 100,
-                //     "key": "useStatusName"
-                // },
-                {
-                    "title": "公司",
-                    "width": 200,
-                    "key": "companyName"
-                },
-                {
-                    "title": "部门",
-                    "width": 200,
-                    "key": "deptName"
-                },
-                // {
-                //     "title": "供应商",
-                //     "width": 100,
-                //     "key": "providerName"
-                // },
                 {
                     "title": "最后上线时间",
                     "key": "lastGpsTime",
-                    "width": 150,
-                    "fixed": "right",
                     "sortable": true,
-                    "sortType": "desc",
+                    "sortType": "asc",
                     "render": function (h, params) {
-                        var  classType = "normalDay";
+                        var classType = "normalDay";
                         var now = Date.parse(new Date());
                         var lastTime = Date.parse(params.row.lastGpsTime.replace("-", "/"));
-                        var day = Math.floor((now-lastTime)/(24*3600*1000));
-                        if(day>3) {
+                        var day = Math.floor((now - lastTime) / (24 * 3600 * 1000));
+                        if (day > 3) {
                             classType = "overDay";
                         }
                         return h("div", [
@@ -88,9 +66,110 @@
                             }, params.row.lastGpsTime),
                         ]);
                     }
+                },
+                {
+                    "title": "操作",
+                    "key": "operation",
+                    "align": "center",
+                    "render": function (h, params) {
+                        return h("div", [
+                            h("Button", {
+                                "props": {
+                                    "type": "primary",
+                                    "size": "small",
+                                },
+                                "style": {
+                                    "marginRight": '5px'
+                                },
+                                "on": {
+                                    "click": function () {
+                                        pageVue.showStatuDetail = true;
+                                        pageVue.statuItemInfo = pageVue.statuDataList[params.index];
+                                        pageVue.statuItemInfo.lastPosition = JSON.parse(pageVue.statuItemInfo.lastPosition)["coordinates"].join(",")
+                                        var now = Date.parse(new Date());
+                                        var lastTime = Date.parse(params.row.lastGpsTime.replace("-", "/"));
+                                        var day = Math.floor((now - lastTime) / (24 * 3600 * 1000));
+                                        if (day > 3) {
+                                            pageVue.statuItemInfo.overDay = true;
+                                        }
+                                    }
+                                }
+                            }, { "CN": "详情", "EN": "Detail", "TW": "詳情" }[language["language"]])
+                        ]);
+                    }
                 }
             ],
-            "statuDataList": []
+            "statuDataList": [],
+            "isloadStae": false,
+            "onlineStatPageInfo": {
+                "count": 0,
+                "pageNum": 1,
+                "pageSize": 10,
+                "beginTime": "",
+                "endTime": ""
+            },
+            "onlineStatColumns": [
+                {
+                    "title": "车牌号",
+                    "width": 100,
+                    "key": "licenseNumber"
+                },
+                {
+                    "title": "统计日期",
+                    "key": "statDay",
+                    "sortable": true,
+                    "sortType": "asc",
+                },
+                {
+                    "title": "在线次数",
+                    "key": "onlineCount",
+                    "align": "center",
+                },
+                {
+                    "title": "离线次数",
+                    "key": "offlineCount",
+                    "align": "center",
+                },
+                {
+                    "title": "在线时长",
+                    "key": "onlineDuration",
+                    "align": "center",
+                    "render": function(h, params){
+                        var text = (params.row.onlineDuration/3600).toFixed(2) + "小时"
+                        return h("div", [
+                            h("span", {
+                            }, text)
+                        ]);
+                    }
+                },
+                {
+                    "title": "操作",
+                    "key": "operation",
+                    "align": "center",
+                    "render": function (h, params) {
+                        return h("div", [
+                            h("Button", {
+                                "props": {
+                                    "type": "primary",
+                                    "size": "small",
+                                },
+                                "style": {
+                                    "marginRight": '5px'
+                                },
+                                "on": {
+                                    "click": function () {
+                                        pageVue.showOnlineDetail = true;
+                                        pageVue.onlineStatItemInfo = pageVue.onlineStatList[params.index];
+                                    }
+                                }
+                            }, { "CN": "详情", "EN": "Detail", "TW": "詳情" }[language["language"]])
+                        ]);
+                    }
+                }
+            ],
+            "onlineStatList": [],
+            "onlineStatItemInfo": {},
+            "showOnlineDetail": false
         },
         "methods": {
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
@@ -115,13 +194,13 @@
                 for (var i = 0, len = totalChartDataList.length; i < len; i++) {
                     category.push(totalChartDataList[i]["day"]);
                     for (var s = 0, slen = totalChartDataList[i]["useStat"].length; s < slen; s++) {
-                        self.vehicleTypeInfo["_"+totalChartDataList[i]["useStat"][s]["vehicleTypeId"]]["list"].push(totalChartDataList[i]["useStat"][s]["totalVehicleNum"]);
+                        self.vehicleTypeInfo["_" + totalChartDataList[i]["useStat"][s]["vehicleTypeId"]]["list"].push(totalChartDataList[i]["useStat"][s]["totalVehicleNum"]);
                     }
                 }
 
-                for(var key in self.vehicleTypeInfo) {
+                for (var key in self.vehicleTypeInfo) {
                     legendLabel.push(self.vehicleTypeInfo[key]["name"]);
-                    if(self.vehicleTypeInfo.hasOwnProperty(key)) {
+                    if (self.vehicleTypeInfo.hasOwnProperty(key)) {
                         seriesList.push({
                             name: self.vehicleTypeInfo[key]["name"],
                             type: 'bar',
@@ -174,208 +253,8 @@
                 myChart.setOption(option);
 
             },
-            // 车辆统计
-            "setVehicleEchart": function () {
-                var self = this;
-                var myChart = echarts.init(document.getElementById('vehicleEchart'));
-                var typeList = (function () {
-                    var list = [];
-                    for (var key in self.vehicleTypeInfo) {
-                        if (self.vehicleTypeInfo.hasOwnProperty(key)) {
-                            if(self.vehicleTypeInfo[key]["value"] != 0) {
-                                list.push(self.vehicleTypeInfo[key]);
-                            }
-                        }
-                    }
-                    return list;
-                })();
-                var passList = (function () {
-                    var list = [];
-                    for (var key in self.vehiclePassType) {
-                        if (self.vehiclePassType.hasOwnProperty(key)) {
-                            list.push(self.vehiclePassType[key]);
-                        }
-                    }
-                    return list;
-                })();
-
-                option = {
-                    tooltip: {
-                        trigger: 'item',
-                        formatter: "{b}:{c} ({d}%)"
-                    },
-                    legend: {
-                        show: false
-                    },
-                    series: [
-                        {
-                            name: '车辆',
-                            type: 'pie',
-                            selectedMode: 'single',
-                            radius: [0, '30%'],
-                            label: {
-                                normal: {
-                                    formatter: '{b}',
-                                    backgroundColor: '#334455',
-                                    color: "#fff"
-                                }
-                            },
-                            labelLine: {
-                                normal: {
-                                    length: 5,
-                                    length2: 5,
-                                    smooth: true,
-                                    show: true
-                                }
-                            },
-                            data: typeList
-                        },
-                        {
-                            name: '状态',
-                            type: 'pie',
-                            radius: ['40%', '55%'],
-                            labelLine: {
-                                normal: {
-                                    smooth: true
-                                }
-                            },
-                            label: {
-                                normal: {
-                                    formatter: '{b|{b}:}{c}次{per|{d}%}',
-                                    backgroundColor: '#eee',
-                                    borderColor: '#aaa',
-                                    borderWidth: 1,
-                                    borderRadius: 4,
-                                    rich: {
-                                        a: {
-                                            color: '#999',
-                                            lineHeight: 22,
-                                            align: 'center'
-                                        },
-                                        hr: {
-                                            borderColor: '#aaa',
-                                            width: '100%',
-                                            borderWidth: 0.5,
-                                            height: 0
-                                        },
-                                        b: {
-                                            fontSize: 12,
-                                            lineHeight: 24
-                                        },
-                                        per: {
-                                            color: '#eee',
-                                            backgroundColor: '#334455',
-                                            padding: [1, 2],
-                                            borderRadius: 2
-                                        }
-                                    }
-                                }
-                            },
-                            data: passList
-                        }
-                    ]
-                };
-                myChart.setOption(option);
-            },
-            // 车载终端
-            "setTerminateState": function () {
-                var self = this;
-                var myChart = echarts.init(document.getElementById("terminateEchart"));
-
-                option = {
-                    tooltip: {
-                        trigger: 'axis',
-                        axisPointer: {            // 坐标轴指示器，坐标轴触发有效
-                            type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-                        }
-                    },
-                    legend: {
-                        data: ['正在静止', '活动', '开始进入休眠', '运动传感器故障', '侧翻', '离线', 'GPS未定位', '电压采集失败'],
-                        textStyle: {
-                            color: "#fff"
-                        }
-                    },
-                    grid: {
-                        left: '3%',
-                        right: '4%',
-                        bottom: '3%',
-                        containLabel: true
-                    },
-                    textStyle: {
-                        color: "#ffffff"
-                    },
-                    xAxis: [
-                        {
-                            type: 'category',
-                            data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
-                            nameTextStyle: {
-                                color: "#ffffff"
-                            }
-                        }
-                    ],
-                    yAxis: [
-                        {
-                            type: 'value',
-                            nameTextStyle: {
-                                color: "#ffffff"
-                            }
-                        }
-                    ],
-                    series: [
-                        {
-                            name: '正在静止',
-                            type: 'bar',
-                            data: [200, 302, 310, 340, 390, 330, 320]
-                        },
-                        {
-                            name: '活动',
-                            type: 'bar',
-                            stack: '活动',
-                            data: [200, 120, 100, 140, 300, 200, 201]
-                        },
-                        {
-                            name: '开始进入休眠',
-                            type: 'bar',
-                            stack: '开始进入休眠',
-                            data: [220, 120, 110, 240, 200, 300, 100]
-                        },
-                        {
-                            name: '运动传感器故障',
-                            type: 'bar',
-                            stack: '运动传感器故障',
-                            data: [100, 302, 210, 104, 190, 300, 100]
-                        },
-                        {
-                            name: '侧翻',
-                            type: 'bar',
-                            data: [620, 180, 640, 260, 160, 160, 100],
-                        },
-                        {
-                            name: '离线',
-                            type: 'bar',
-                            barWidth: 5,
-                            stack: '离线',
-                            data: [600, 320, 710, 740, 900, 300, 200]
-                        },
-                        {
-                            name: 'GPS未定位',
-                            type: 'bar',
-                            stack: 'GPS未定位',
-                            data: [200, 320, 110, 140, 900, 300, 200]
-                        },
-                        {
-                            name: '电压采集失败',
-                            type: 'bar',
-                            stack: '电压采集失败',
-                            data: [600, 720, 710, 740, 100, 100, 100]
-                        }
-                    ]
-                };
-
-                myChart.setOption(option);
-            },
             // 重置
-            "resetVehicleBizParamInfo": function() {
+            "resetVehicleBizParamInfo": function () {
                 var self = this;
                 self.vehicleTypeInfo = {};
                 self.vehiclePassType = {};
@@ -383,9 +262,9 @@
                     "list": [],
                     "count": 0
                 };
-                for(var i = 0, len = self.vehicleTypeList.length; i < len; i++) {
-                    if(self.vehicleTypeList[i]["type"] != 302 && self.vehicleTypeList[i]["type"] != 303) {
-                        self.vehicleTypeInfo["_"+self.vehicleTypeList[i]["type"]] = {
+                for (var i = 0, len = self.vehicleTypeList.length; i < len; i++) {
+                    if (self.vehicleTypeList[i]["type"] != 302 && self.vehicleTypeList[i]["type"] != 303) {
+                        self.vehicleTypeInfo["_" + self.vehicleTypeList[i]["type"]] = {
                             "value": 0,
                             "name": self.vehicleTypeList[i]["name"],
                             "list": [],
@@ -394,42 +273,60 @@
                     }
                 }
 
-                for(var j = 0, jlen = self.terminalStatusList.length; j < jlen; j++) {
-                    self.vehicleInfo["_"+self.terminalStatusList[j]["type"]] = 0
+                for (var j = 0, jlen = self.terminalStatusList.length; j < jlen; j++) {
+                    self.vehicleInfo["_" + self.terminalStatusList[j]["type"]] = 0
                 }
 
-                for(var k = 0, klen = self.vehiclePassTypeList.length; k < klen; k++) {
-                    self.vehiclePassType["_"+self.vehiclePassTypeList[k]["type"]] = {
-                        "value": 0,
-                        "name": self.vehiclePassTypeList[k]["name"],
-                        "list": [],
-                        "color": self.colorList[k]
-                    }
-                }
             },
-            // 实时防区信息
-            "getCrossAreaList": function () {
+            "startDateChange": function (value) {
+                var self = this;
+                self.onlineStatPageInfo.beginTime = value;
+                self.getVehicleOnlineStat();
+            },
+            "endDateChange": function (value) {
+                var self = this;
+                self.onlineStatPageInfo.endTime = value;
+                self.getVehicleOnlineStat();
+            },
+            // 页数改变时的回调
+            "onlineStatPageSizeChange": function (value) {
+                var self = this;
+                self.onlineStatPageInfo.pageNum = parseInt(value, 10);
+                setTimeout(function () {
+                    self.getVehicleOnlineStat();
+                }, 200);
+            },
+            // 切换每页条数时的回调
+            "onlineStatPageRowChange": function (value) {
+                var self = this;
+                self.onlineStatPageInfo.pageSize = parseInt(value, 10);
+                setTimeout(function () {
+                    self.getVehicleOnlineStat();
+                }, 200);
+            },
+            // 获取车辆在线统计情况
+            "getVehicleOnlineStat": function () {
                 var self = this;
                 // 如果是查询，则重新从第一页开始
                 utility.interactWithServer({
-                    url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getCrossAreaList,
+                    url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getVehicleOnlineStat,
                     actionUrl: CONFIG.SERVICE.vehicleService,
                     dataObj: {
-                        "pageNum": 1,
-                        "pageSize": 100000,
+                        "pageNum": self.onlineStatPageInfo.pageNum,
+                        "pageSize": self.onlineStatPageInfo.pageSize,
+                        "beginTime": self.onlineStatPageInfo.beginTime,
+                        "endTime": self.onlineStatPageInfo.endTime,
                     },
                     beforeSendCallback: function () {
-                        self.isloadDefen = true;
+                        self.isloadStae = true;
                     },
                     completeCallback: function () {
-                        self.isloadDefen = false;
+                        self.isloadStae = false;
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
-                          
-                            for (var i = 0, len = data.data.length; i < len; i++) {
-                                self.vehiclePassType["_" + data.data[i]["crossTypeId"]]["value"] = self.vehiclePassType["_" + data.data[i]["crossTypeId"]]["value"] + 1;
-                            }
+                            self.onlineStatPageInfo.count = data.count;
+                            self.onlineStatList = data.data;
                         }
                     }
                 });
@@ -455,17 +352,33 @@
                             self.vehicleInfo.count = data.count;
                             self.vehicleInfo.list = data.data;
                             for (var i = 0, len = self.vehicleInfo.list.length; i < len; i++) {
-                                self.vehicleInfo["_"+self.vehicleInfo.list[i]["vehicleStatus"]] = self.vehicleInfo["_"+self.vehicleInfo.list[i]["vehicleStatus"]] + 1;
-                                self.vehicleTypeInfo["_"+self.vehicleInfo.list[i]["vehicleTypeId"]]["value"] = self.vehicleTypeInfo["_"+self.vehicleInfo.list[i]["vehicleTypeId"]]["value"] + 1;
+                                self.vehicleInfo["_" + self.vehicleInfo.list[i]["vehicleStatus"]] = self.vehicleInfo["_" + self.vehicleInfo.list[i]["vehicleStatus"]] + 1;
+                                self.vehicleTypeInfo["_" + self.vehicleInfo.list[i]["vehicleTypeId"]]["value"] = self.vehicleTypeInfo["_" + self.vehicleInfo.list[i]["vehicleTypeId"]]["value"] + 1;
                             }
                         }
                     }
                 });
             },
+
+            // 页数改变时的回调
+            "statuPageSizeChange": function (value) {
+                var self = this;
+                self.statuPageInfo.pageNum = parseInt(value, 10);
+                setTimeout(function () {
+                    self.getStatuVehicleList();
+                }, 200);
+            },
+            // 切换每页条数时的回调
+            "statuPageRowChange": function (value) {
+                var self = this;
+                self.statuPageInfo.pageSize = parseInt(value, 10);
+                setTimeout(function () {
+                    self.getStatuVehicleList();
+                }, 200);
+            },
             // 获取车辆不同天数的状态信息信息
             "getStatuVehicleList": function () {
                 var self = this;
-                self.statuDataList = [];
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getVehicleList,
                     actionUrl: CONFIG.SERVICE.vehicleService,
@@ -473,7 +386,8 @@
                         id: "",
                         online: parseInt(self.statuPageInfo.online),
                         daySpan: parseInt(self.statuPageInfo.daySpan),
-                        pageSize: 10000,
+                        pageSize: self.statuPageInfo.pageSize,
+                        pageNum: self.statuPageInfo.pageNum,
                     },
                     beforeSendCallback: function () {
                         self.isTableLoading = true;
@@ -542,19 +456,23 @@
                 });
             },
             // 初始化
-            "init": function() {
+            "init": function () {
                 var self = this;
 
-                 // 重置常量数据
+                // 重置常量数据
                 self.resetVehicleBizParamInfo();
-
-                // 车辆数据
-                self.getAllVehicleList();
 
                 // 获取按车辆类型的车辆使用情况统计数据接口
                 self.getVehicleRunReport();
 
+                // 车辆数据
+                self.getAllVehicleList();
+
+                // 获取车辆不同天数的状态信息信息
                 self.getStatuVehicleList();
+
+                // 获取车辆在线统计情况
+                self.getVehicleOnlineStat();
             }
         },
         "created": function () {
@@ -566,7 +484,7 @@
             // 初始化数据
             self.init();
 
-            setInterval(function() {
+            setInterval(function () {
                 self.init();
             }, 10000);
 

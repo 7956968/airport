@@ -8,7 +8,7 @@
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
-  background-color: #F5F5F5;
+  background-color: #F5F5F5; 
 }
 /*定义滚动条轨道 内阴影+圆角*/
 ::-webkit-scrollbar-track {
@@ -198,7 +198,7 @@ table .ivu-table-cell {
 }
 .graphPage .welcomPage {
   position: absolute;
-  z-index: 10000;
+  z-index: 10;
   top: 0;
   bottom: 0;
   right: 0;
@@ -227,30 +227,35 @@ table .ivu-table-cell {
   border-color: rgba(109, 106, 106, 0.7);
 }
 .graphPage .welcomPage .layout .ivu-card .ivu-card-head {
-  padding: 10px 16px;
+  padding: 0 16px;
   border-bottom: 1px solid rgba(109, 106, 106, 0.5);
 }
-.graphPage .welcomPage .layout .ivu-card .ivu-card-head i {
+.graphPage .welcomPage .layout .ivu-card .ivu-card-head .subLabel {
+  display: inline-block;
+  padding-top: 13px;
   font-style: normal;
   font-size: 14px;
 }
 .graphPage .welcomPage .layout .ivu-spin-fix {
   background-color: transparent;
 }
-.graphPage .welcomPage .layout .tile { 
+.graphPage .welcomPage .layout .tile {
   font-size: 18px;
   color: #777E8E;
-  overflow: hidden;
+  height: 44px;
 }
-.graphPage .welcomPage .layout .tile span {
+.graphPage .welcomPage .layout .tile .label {
   float: left;
+  line-height: 44px;
 }
 .graphPage .welcomPage .layout .tile .select {
-  float: left;
+  float: right;
   width: auto;
+  height: auto;
+  line-height: 1;
   font-size: 14px;
-  padding-left: 20px;
-  color: #5d81ca;
+  padding-top: 10px;
+  padding-left: 10px;
 }
 .graphPage .welcomPage .layout .tile .select .count {
   padding-left: 10px;
@@ -258,7 +263,7 @@ table .ivu-table-cell {
   color: #ed9b3e;
 }
 .graphPage .welcomPage .layout .infoList {
-  padding-bottom: 10px;
+  padding-bottom: 3px;
 }
 .graphPage .welcomPage .layout .infoList .infoItem .info {
   height: 90px;
@@ -272,7 +277,7 @@ table .ivu-table-cell {
 }
 .graphPage .welcomPage .layout .infoList .infoItem .info .label {
   color: #fff;
-  padding: 8px 0;
+  padding: 24px 0;
   font-size: 13px;
 }
 .graphPage .welcomPage .layout .infoList .infoItem .info .detail {
@@ -308,6 +313,10 @@ table .ivu-table-cell {
   left: 10px;
   top: 0;
 }
+.graphPage .welcomPage .welcomTable {
+  position: relative;
+  z-index: 0;
+}
 .graphPage .welcomPage .welcomTable .ivu-table,
 .graphPage .welcomPage .welcomTable .ivu-table td,
 .graphPage .welcomPage .welcomTable .ivu-table-stripe .ivu-table-body tr.ivu-table-row-hover td,
@@ -341,14 +350,34 @@ table .ivu-table-cell {
   padding-right: 5px;
 }
 .graphPage .welcomPage .welcomTable .overDay {
-  padding: 5px;
   color: #061a2d;
   background-color: #fbd048;
+}
+.graphPage .welcomPage .welcomTable .pageTable {
+  position: absolute;
+  z-index: 10;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #0f375f;
+  height: 40px;
+  line-height: 40px;
+}
+.graphPage .welcomPage .welcomTable .pageTable .ivu-page-next,
+.graphPage .welcomPage .welcomTable .pageTable .ivu-page-prev {
+  color: #fff;
+  background-color: transparent;
+}
+.graphPage .welcomPage .welcomTable .pageTable .ivu-page-simple .ivu-page-simple-pager input {
+  border: none;
+  color: #fff;
+  background-color: transparent;
 }
 .graphPage .welcomPage .copyRight {
   text-align: center;
   color: #fff;
   font-size: 15px;
+  margin: 10px 0;
 }
 .index .header {
   position: fixed;
@@ -493,6 +522,10 @@ table .ivu-table-cell {
 .index .fixedNav .fixedNavWrap .fixedNavBox {
   height: 30px;
   line-height: 30px;
+  display: flex;
+}
+.index .fixedNav .fixedNavWrap .fixedNavBox .tabItem {
+  flex-shrink: 0;
 }
 .index .fixedNav i {
   position: relative;
@@ -587,7 +620,8 @@ table .ivu-table-cell {
   bottom: 0;
 }
 .index .mainWrap.mainWrapMg iframe {
-  display: block;
+  z-index: 100000;
+  opacity: 1;
 }
 .index .mainWrap iframe {
   position: absolute;
@@ -598,10 +632,11 @@ table .ivu-table-cell {
   right: 0;
   width: 100%;
   height: 100%;
-  display: none;
+  opacity: 0;
 }
 .index .mainWrap iframe.active {
-  display: block;
+  z-index: 100000;
+  opacity: 1;
 }
 .top {
   padding: 5px;
@@ -743,11 +778,19 @@ table .ivu-table-cell {
 }
 .modifiedWrap .detailInfo span {
   display: inline-block;
-  font-size: 13px;
+  font-size: 14px;
 }
 .modifiedWrap .detailInfo .detailLabel {
   min-width: 100px;
   text-align: right;
+}
+.modifiedWrap .overDay {
+  text-align: center;
+  padding-bottom: 5px;
+}
+.modifiedWrap .overDay span {
+  padding: 5px 10px;
+  background-color: #fbd048;
 }
 .modifiedWrap table {
   width: 100%;

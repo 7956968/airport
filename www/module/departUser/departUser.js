@@ -377,12 +377,6 @@
                         pageSize: 10000,
                         companyId: self[type]["companyId"] || 0,
                     },
-                    beforeSendCallback: function () {
-                        self.isTableLoading = true;
-                    },
-                    completeCallback: function () {
-                        self.isTableLoading = false;
-                    },
                     successCallback: function (data) {
                         if (data.code == 200) {
                             var arr = [];
@@ -405,12 +399,6 @@
                         id: 0,
                         pageSize: 10000,
                         companyId: self.itemInfo.companyId,
-                    },
-                    beforeSendCallback: function () {
-                        self.isTableLoading = true;
-                    },
-                    completeCallback: function () {
-                        self.isTableLoading = false;
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {

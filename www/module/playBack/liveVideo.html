@@ -134,7 +134,7 @@
                                                 draggable="true" @drop="drop($event)" @dragend="dragEnd($event)"
                                                 @dragover="dragOver($event)">
                                                 <div class="innerItem">
-                                                    <video playsinline controls poster="/airport/www/img/poster.png" :id="'backVedio'+index" preload="meta" loop
+                                                    <video playsinline  @dblclick="setFullScream('backVedio'+index)" muted controls poster="/airport/www/img/poster.png" :id="'backVedio'+index" preload="meta" loop
                                                     autoplay></video>
                                                     <div class="channelIndex">
                                                         <span>{{(index+1)+' 路摄像头'}}</span>
@@ -276,7 +276,7 @@
         </div>
 
         <script src="/airport/assets/js/vsplayer.min.js?v=13417234172"></script>
-        <script src="/airport/assets/js/LAB.min.js?v=12341234123"></script>
+        <script src="/airport/assets/js/LAB.min.js?v=3423841237481237"></script>
         <script>
             loadScript(MODUL + "module/playBack/liveVideo.min.js");
         </script>

@@ -56,9 +56,14 @@
                     "key": "vehicleCode"
                 },
                 {
-                    "title": { "CN": "里程数(公里)", "EN": "Mileage(km)", "TW": "里程數(公里)" }[language["language"]],
+                    "title": { "CN": "里程数", "EN": "Mileage(km)", "TW": "里程數(公里)" }[language["language"]],
                     "key": "miles",
-                    "sortable": true
+                    "sortable": true,
+                    "render": function(h, params){
+                        return h("div", [
+                            h("span", {}, params.row.miles+"（公里）"),
+                        ]);
+                    }
                 },
                 {
                     "title": { "CN": "里程占比", "EN": "Mileage(percent)", "TW": "里程數占比" }[language["language"]],

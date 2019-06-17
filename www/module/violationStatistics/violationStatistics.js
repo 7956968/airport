@@ -57,7 +57,12 @@
                 },
                 {
                     "title": { "CN": "行驶速度", "EN": "Speed", "TW": "行駛速度" }[language["language"]],
-                    "key": "speed"
+                    "key": "speed",
+                    "render": function(h, params){
+                        return h("div", [
+                            h("span", {}, params.row.speed+"（公里/小时）"),
+                        ]);
+                    }
                 },
                 {
                     "title": { "CN": "时间", "EN": "Time", "TW": "時間" }[language["language"]],

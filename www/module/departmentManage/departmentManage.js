@@ -22,7 +22,8 @@
                 "pageSize": 20,
                 "deptName": "", // 查询关键字（部门名称）
                 "companyId": "", // 公司ID
-                "paraDeptId": [], // 上级部门ID
+                "paraDeptId": "", // 上级部门ID
+                "paraDeptIds": [], // 上级部门ID
             },
             "index": 0,
             "selectItem": null,
@@ -30,7 +31,8 @@
                 "id": "", // 部门ID，修改部门信息时必传 
                 "deptName": "", // 部门名称
                 "companyId": "", // 所属公司ID，手动从公司列表选择
-                "paraDeptId": [], // 上级部门ID
+                "paraDeptId": "", // 上级部门ID
+                "paraDeptIds": [], // 上级部门ID
                 "paraDeptName": "", // 上级部门名称
                 "deptLevel": "", // 部门层级，从小到大
                 "orderNum": "", // 部门排序号
@@ -49,27 +51,24 @@
             },
             "columnsList": [
                 {
-                    "type": "index",
-                    "width": 60,
-                    "align": "center"
-                },
-                {
                     "title": { "CN": "公司名称", "EN": "Company name", "TW": "公司名稱" }[language["language"]],
-                    "key": "companyName"
+                    "key": "companyName",
+                    "width": 180
                 },
                 {
                     "title": { "CN": "部门名称", "EN": "Department Name", "TW": "部門名稱" }[language["language"]],
-                    "key": "deptName"
+                    "key": "deptName",
+                    "width": 180
                 },
                 {
-                    "title": { "CN": "部门编号", "EN": "Department Number", "TW": "部門編號" }[language["language"]],
-                    "key": "deptCode"
+                    "title": "上级部门",
+                    "key": "paraDeptName"
                 },
-                {
-                    "title": { "CN": "部门简称", "EN": "Department Abbreviation", "TW": "部門簡稱" }[language["language"]],
-                    "key": "deptShortName",
-                    "width": 120
-                },
+                // {
+                //     "title": { "CN": "部门简称", "EN": "Department Abbreviation", "TW": "部門簡稱" }[language["language"]],
+                //     "key": "deptShortName",
+                //     "width": 120
+                // },
                 {
                     "title": { "CN": "部门性质", "EN": "Department Nature", "TW": "部門性質" }[language["language"]],
                     "key": "deptTypeName"
@@ -89,7 +88,8 @@
                 {
                     "title": { "CN": "操作", "EN": "Operation", "TW": "操作" }[language["language"]],
                     "key": "operation",
-                    "width": 180,
+                    "align": "center",
+                    "width": 160,
                     "render": function (h, params) {
                         return h("div", [
                             h("Button", {
@@ -173,7 +173,8 @@
                     "id": "", // 部门ID，修改部门信息时必传 
                     "deptName": "", // 部门名称
                     "companyId": "", // 所属公司ID，手动从公司列表选择
-                    "paraDeptId": [], // 上级部门ID
+                    "paraDeptId": "", // 上级部门ID
+                    "paraDeptIds": [], // 上级部门ID
                     "paraDeptName": "", // 上级部门名称
                     "deptLevel": "", // 部门层级，从小到大
                     "orderNum": "", // 部门排序号
@@ -197,7 +198,7 @@
                 
                 utility.showMessageTip(self, function () {
                     self.itemInfo = self.departmentList[self.index];
-                    self.itemInfo.paraDeptId = [];
+                    self.itemInfo.paraDeptIds = [];
                     self.itemInfo.deptName = decodeURI(self.itemInfo.deptName);
                     self.itemInfo.deptShortName = decodeURI(self.itemInfo.deptShortName);
                     self.itemInfo.leaderUserName = decodeURI(self.itemInfo.leaderUserName);
@@ -215,7 +216,6 @@
                 var self = this;
                 utility.showMessageTip(self, function () {
                     self.itemInfo = self.departmentList[self.index];
-                    self.itemInfo.paraDeptId = decodeURI(self.itemInfo.paraDeptName);
                     self.itemInfo.deptName = decodeURI(self.itemInfo.deptName);
                     self.itemInfo.deptShortName = decodeURI(self.itemInfo.deptShortName);
                     self.itemInfo.leaderUserName = decodeURI(self.itemInfo.leaderUserName);
@@ -284,7 +284,7 @@
                         "id": self.itemInfo.id, // 部门ID，修改部门信息时必传 
                         "deptName": encodeURI(self.itemInfo.deptName), // 部门名称
                         "companyId": self.itemInfo.companyId, // 所属公司ID，手动从公司列表选择
-                        "paraDeptId": self.itemInfo.paraDeptId[self.itemInfo.paraDeptId.length-1], // 上级部门ID
+                        "paraDeptId": self.itemInfo.paraDeptIds[self.itemInfo.paraDeptIds.length-1], // 上级部门ID
                         "paraDeptName": encodeURI(self.itemInfo.paraDeptName), // 上级部门名称
                         "deptLevel": self.itemInfo.deptLevel, // 部门层级，从小到大
                         "orderNum": self.itemInfo.orderNum, // 部门排序号
@@ -427,10 +427,10 @@
                         var arr = [];
                         if (data.code == 200) {
                             self.superiorDepartmentList = [];
-                            self.itemInfo.paraDeptId = [];
+                            self.itemInfo.paraDeptIds = [];
                             self.formatSuperiorDeprt(data.data);
-                            self.getSuper(self.superiorDepartmentList, self.itemInfo.id, arr);
-                            self.itemInfo.paraDeptId = arr.reverse();
+                            self.getSuper(self.superiorDepartmentList, self.itemInfo.paraDeptId, arr);
+                            self.itemInfo.paraDeptIds = arr.reverse();
                         }
                     }
                 });

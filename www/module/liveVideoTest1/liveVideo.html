@@ -47,7 +47,7 @@
     <link rel="icon" href="/airport/www/img/logo.png">
     <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
     <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=73483418234172" />
-    <link rel="stylesheet" type="text/css" href="/airport/www/css/liveVideo.min.css?v=1341237412738" />
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/liveVideo.min.css?v=13412" />
 </head>
 
 <body>
@@ -115,10 +115,10 @@
                     <div class="videoItem" :id="'liveVideo'+(index-1)" draggable="true" @drop="drop($event)" @dragend="dragEnd($event)" @dragover="dragOver($event)">
                         <div class="videoWrap" @click="setCurrentStyle('liveVideo'+(index-1))">
                             <template v-if="index-1==0">
-                                <video :id="'video'+(index-1)" controls autoplay poster="/airport/www/img/poster.png">无视频</video>
+                                <video :id="'video'+(index-1)" @dblclick="setFullScream('video'+(index-1))" autoplay controls poster="/airport/www/img/poster.png">无视频</video>
                             </template>
                             <template  v-else>
-                                <video :id="'video'+(index-1)" muted controls autoplay poster="/airport/www/img/poster.png">无视频</video>
+                                <video :id="'video'+(index-1)" muted autoplay controls poster="/airport/www/img/poster.png">无视频</video>
                             </template>
                             <div class="channelIndex">
                                 <span>{{(index)+' 路摄像头'}}</span>
@@ -255,7 +255,7 @@
     </div>
 
     <script src="/airport/assets/js/flv.min.js?v=4137492734394"></script>
-    <script src="/airport/assets/js/LAB.min.js"></script>
+    <script src="/airport/assets/js/LAB.min.js?v=3423841237481237"></script>
     <script>
         loadScript(MODUL+"module/liveVideoTest1/liveVideo.min.js");
     </script>

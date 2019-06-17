@@ -250,7 +250,7 @@ table {
     // 欢迎页样式
     .welcomPage {
         position: absolute;
-        z-index: 10000;
+        z-index: 10;
         top: 0;
         bottom: 0;
         right: 0;
@@ -281,9 +281,11 @@ table {
                 }
 
                 .ivu-card-head {
-                    padding: 10px 16px;
+                    padding: 0 16px;
                     border-bottom: 1px solid rgba(109, 106, 106, 0.5);
-                    i {
+                    .subLabel {
+                        display: inline-block;
+                        padding-top: 13px;
                         font-style: normal;
                         font-size: 14px;
                     }
@@ -296,16 +298,19 @@ table {
             .tile {
                 font-size: 18px;
                 color: @mainFontColor;
-                overflow: hidden;
-                span {
+                height: 44px;
+                .label {
                     float: left;
+                    line-height: 44px;
                 }
                 .select {
-                    float: left;
+                    float: right;
                     width: auto;
+                    height: auto;
+                    line-height: 1;
                     font-size: 14px;
-                    padding-left: 20px;
-                    color: #5d81ca;
+                    padding-top: 10px;
+                    padding-left: 10px;
                     .count {
                         padding-left: 10px;
                         font-size: 18px;
@@ -315,7 +320,7 @@ table {
             }
 
             .infoList {
-                padding-bottom: 10px;
+                padding-bottom: 3px;
 
                 .infoItem {
                     .info {
@@ -331,7 +336,7 @@ table {
 
                         .label {
                             color: #fff;
-                            padding: 8px 0;
+                            padding: 24px 0;
                             font-size: 13px;
                         }
 
@@ -379,7 +384,8 @@ table {
         }
 
         .welcomTable {
-
+            position: relative;
+            z-index: 0;
             .ivu-table,
             .ivu-table td,
             .ivu-table-stripe .ivu-table-body tr.ivu-table-row-hover td,
@@ -421,9 +427,30 @@ table {
                 }
             }
             .overDay {
-                padding: 5px;
+                // padding: 5px;
                 color: #061a2d;
                 background-color: #fbd048;
+            }
+
+            .pageTable {
+                position: absolute;
+                z-index: 10;
+                left: 0;
+                bottom: 0;
+                width: 100%;
+                background-color: #0f375f;
+                height: 40px;
+                line-height: 40px;
+                .ivu-page-next, 
+                .ivu-page-prev {
+                    color: #fff;
+                    background-color: transparent;
+                }
+                .ivu-page-simple .ivu-page-simple-pager input {
+                    border: none;
+                    color: #fff;
+                    background-color: transparent;
+                }
             }
         }
 
@@ -431,6 +458,7 @@ table {
             text-align: center;
             color: #fff;
             font-size: 15px;
+            margin: 10px 0;
         }
     }
 }
@@ -595,7 +623,7 @@ table {
     .fixedNav {
         position: fixed;
         z-index: 1000;
-        top: 0;
+        top: 0; 
         left: 110px;
         right: 0;
         height: 30px;
@@ -612,6 +640,10 @@ table {
             .fixedNavBox {
                 height: 30px;
                 line-height: 30px;
+                display: flex;
+                .tabItem {
+                    flex-shrink: 0;
+                }
             }
         }
 
@@ -721,7 +753,9 @@ table {
         bottom: 0;
         &.mainWrapMg {
             iframe {
-                display: block;
+                // display: block;
+                z-index: 100000;
+                opacity: 1;
             }
         }
 
@@ -734,9 +768,11 @@ table {
             right: 0;
             width: 100%;
             height: 100%;
-            display: none;
+            opacity: 0;
             &.active {
-                display: block;
+                // display: block;
+                z-index: 100000;
+                opacity: 1;
             }
         }
     }
@@ -958,12 +994,20 @@ table {
 
         span {
             display: inline-block;
-            font-size: 13px;
+            font-size: 14px;
         }
 
         .detailLabel {
             min-width: 100px;
             text-align: right;
+        }
+    }
+    .overDay {
+        text-align: center;
+        padding-bottom: 5px;
+        span {
+            padding: 5px 10px;
+            background-color: #fbd048;
         }
     }
 

@@ -27,22 +27,14 @@
                 //     "label": "繁體",
                 // }
             ],
-            "airPort": "113.8077,22.6286",
+            "airPort": "113.2926,23.3925",
             "airPortList": [
                 {
-                    "value": "113.8077,22.6286",
-                    "label": "深圳宝安国际机场",
-                },
-                // {
-                //     "value": "121.3163,31.1958",
-                //     "label": "上海虹桥国际机场",
-                // },
-                // {
-                //     "value": "121.8019,31.1521",
-                //     "label": "上海浦东国际机场",
-                // }
+                    "value": "113.2926,23.3925",
+                    "label": "广州白云机场",
+                }
             ],
-            "title": { "CN": "民贵车辆管理系统", 'EN': "Mingui Non-Powered Euipment Management System", 'TW': "民貴無動力管理系統" }
+            "title": "民贵车辆管理系统"
         },
         "watch": {
             "language": function (value) {

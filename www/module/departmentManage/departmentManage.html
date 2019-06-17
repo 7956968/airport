@@ -132,7 +132,7 @@
                                 </td>
                                 <td>
                                     <template>
-                                        <Cascader :data="superiorDepartmentList" v-model="itemInfo.paraDeptId" trigger="hover" change-on-select></Cascader>
+                                        <Cascader :data="superiorDepartmentList" v-model="itemInfo.paraDeptIds" trigger="click" :change-on-select="true"></Cascader>
                                     </template>
                                 </td>
                             </tr>
@@ -266,7 +266,7 @@
             </Modal>
         </template>
     </div>
-    <script src="/airport/assets/js/LAB.min.js"></script>
+    <script src="/airport/assets/js/LAB.min.js?v=3423841237481237"></script>
     <script>
         loadScript(MODUL+"module/departmentManage/departmentManage.min.js");
     </script>

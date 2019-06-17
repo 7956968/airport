@@ -16,7 +16,7 @@
   background-color: #555;
 }
 .video_main {
-  position: absolute; 
+  position: absolute;
   border: 0px;
   margin: 0px;
   padding: 0px;
@@ -93,7 +93,7 @@
 .videoItem {
   position: absolute;
   border: 2px solid #d4d4d4;
-  background-color: rgba(15, 55, 95, 0.8);
+  background-color: rgba(15, 55, 95, 0.8); 
   overflow: hidden;
 }
 .videoItem:hover {
@@ -106,10 +106,9 @@
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  -ms-transform: scaleX(1.8);
+  object-fit: fill;
 }
-.videoItem .channelIndex {
+.videoItem .channelIndex {    
   position: absolute;
   z-index: 100000000;
   top: 0;

@@ -68,6 +68,11 @@
                     "title": { "CN": "当前速度", "EN": "Speed", "TW": "當前速度" }[language["language"]],
                     "key": "speed",
                     "sortable": true,
+                    "render": function(h, params){
+                        return h("div", [
+                            h("span", {}, params.row.speed+"（公里/小时）"),
+                        ]);
+                    }
                 },
                 {
                     "title": { "CN": "电量", "EN": "Power", "TW": "電量" }[language["language"]],

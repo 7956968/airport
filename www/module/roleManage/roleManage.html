@@ -252,12 +252,17 @@
                         <table>
                             <tbody>
                                 <tr>
+                                    <td style="width: 150px;">
+                                        <template v-if="selectItem">
+                                            公司：{{selectItem.companyName}}
+                                        </template>
+                                    </td>
                                     <td style="width: 70px;">
                                         {{{'CN':'部门名称','EN':'Department','TW':'部門名稱'}[language]}}:
                                     </td>
                                     <td>
                                         <template>
-                                            <Cascader @on-change="getUserListByDept" :data="superiorDepartmentList" v-model="userPageInfo.deptId" style="width:200px;"></Cascader>
+                                            <Cascader @on-change="getUserListByDept" trigger="click" :change-on-select="true" :data="superiorDepartmentList" v-model="userPageInfo.deptId" style="width:200px;"></Cascader>
                                         </template>
                                     </td>
                                 </tr>
@@ -299,7 +304,7 @@
             </Modal>
         </template>
 
-        <!-- 成员功能 -->
+        <!-- 角色功能 -->
         <template>
             <Modal v-model="isShowFunctions" 
                 :styles="{top: '60px'}" width="60" 
@@ -428,7 +433,7 @@
         </template>
     </div>
 
-    <script src="/airport/assets/js/LAB.min.js"></script>
+    <script src="/airport/assets/js/LAB.min.js?v=3423841237481237"></script>
     <script>
         loadScript(MODUL+"module/roleManage/roleManage.min.js");
     </script>

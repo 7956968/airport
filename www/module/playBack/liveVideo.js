@@ -10,6 +10,7 @@
             "mUserName": "mgkj", // 登录用户名
             "mPwd": "888888", // socket密码
             "msgInfo": "",
+            "codeType": true,
             "dragAndDrop": {
                 "sourceEle": null,
                 "targetEle": null,
@@ -224,7 +225,7 @@
             },
 
             // 获取回放视频
-            getReplayVedio: function () {
+            "getReplayVedio": function () {
                 var self = this;
                 var nowTime = utility.getDateDetailInfo(new Date());
                 var front = vsclientSession.findFrontByName(self.vehicleInfo.licenseNumber);
@@ -303,16 +304,18 @@
                         self.getReplayVedio();
                     },
                     // 当车辆下线的时候
-                    onOnOffline: function(onlineState){
-                        console.log(onlineState);
-                        if(onlineState==false) {
-                            self.backPlay.tabs = "info";
-                            self.backPlay.videoCount = 0;
-                            self.backPlay.channelTotal = 0;
-                            self.backPlay.channelInfo = {};
-                            self.msgInfo = "车辆【 " + self.vehicleInfo.licenseNumber + " 】已经下线";
-                        } else {
-                            self.reStart();
+                    onOnOffline: function(front){
+                        if(front.name == self.vehicleInfo.licenseNumber) {
+                            if (front.online == false) {
+                                self.backPlay.tabs = "info";
+                                self.backPlay.videoCount = 0;
+                                self.backPlay.channelTotal = 0;
+                                self.backPlay.channelInfo = {};
+                                self.msgInfo = "车辆【 " + self.vehicleInfo.licenseNumber + " 】已经下线";
+                            } else {
+                                self.backPlay.connectError = false;
+                                self.getReplayVedio();
+                            }
                         }
                     },
                     // 但 socket 服务链接断开
@@ -522,8 +525,14 @@
                 if (self.backPlay.connectError == true) {
                     self.reStart();
                 }
+                console.log(self.backPlay.channelInfo[key]["list"][index]["source"]);
                 setTimeout(function () {
-                    vsclientSession.startReplay(self.vehicleInfo.licenseNumber, self.backPlay.channelInfo[key]["list"][index]["channel"] + 1, $("#backVedio" + self.backPlay.channelInfo[key]["list"][index]["channel"])[0], self.backPlay.channelInfo[key]["list"][index]["source"]);
+                    vsclientSession.startReplay({
+                        name: self.vehicleInfo.licenseNumber,
+                        videoCtrl: $("#backVedio" + self.backPlay.channelInfo[key]["list"][index]["channel"])[0],
+                        info: self.backPlay.channelInfo[key]["list"][index]["source"],
+                        codeType: self.codeType
+                    });
                 }, 1000);
             },
 
@@ -584,6 +593,19 @@
                     self.dragAndDrop.targetEle.attr("style", self.dragAndDrop.sourceStyle);
                     self.dragAndDrop.sourceEle.attr("style", self.dragAndDrop.targetStyle);
                 }, 250);
+            },
+            // 设置全屏
+            "setFullScream": function (id) {
+                var el = $("body").find("#" + id)[0];
+                var rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullScreen;
+                if (typeof rfs != "undefined" && rfs) {
+                    rfs.call(el);
+                } else if (typeof window.ActiveXObject != "undefined") {
+                    var wscript = new ActiveXObject("WScript.Shell");
+                    if (wscript != null) {
+                        wscript.SendKeys("{F11}");
+                    }
+                }
             },
             "dragOver": function (event) {
                 var self = this;

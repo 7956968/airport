@@ -385,6 +385,7 @@
                         self.$Message.destroy();
                         if (self.timeLen <= 0) {
                             self.stopVideo();
+                            clearInterval(self.timeLenOut);
                         }
                     }, 1000);
                 }, 5000);
@@ -492,9 +493,8 @@
                 self.msgInfo = "视频已经全部关闭";
                 clearInterval(self.timeLenOut);
                 self.timeOffline = 5;
-                if (self.timeLen <= 0) {
-                    self.timeLen = parseInt(self.timeSelect);
-                }
+                self.timeLen = 120;
+                self.timeSelect = "120";
             },
             // 当拖拽结束
             "dragEnd": function(event){
@@ -537,6 +537,19 @@
                 var self = this;
                 var timeInfo = value.split(":");
                 self.backPlay.EndSecond = timeInfo[0] * 3600 + timeInfo[1] * 60 + timeInfo[2];
+            },
+            // 设置全屏
+            "setFullScream": function (id) {
+                var el = $("body").find("#" + id)[0];
+                var rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullScreen;
+                if (typeof rfs != "undefined" && rfs) {
+                    rfs.call(el);
+                } else if (typeof window.ActiveXObject != "undefined") {
+                    var wscript = new ActiveXObject("WScript.Shell");
+                    if (wscript != null) {
+                        wscript.SendKeys("{F11}");
+                    }
+                }
             },
             // 返回
             "backPage": function(){

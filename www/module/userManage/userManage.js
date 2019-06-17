@@ -34,7 +34,13 @@
                 "status": "", // 员工帐号状态，默认值911表示正常： 911：正常 912：冻结 913：作废                
                 "idNo": "", // 身份证号
                 "address": "", // 员工家庭住址
+                "deptIds": [],
                 "isCompanyAdmin": "", // 是否公司管理员
+                "roleIds": "", // 角色id，可多选，多个间以英文半角分割
+                "roleIdList": [],
+                "deptId": "", // 部门id，单选
+                "posiType": "", // 当deptId不为空时，必填。 员工在部门的职位类型： 141 =正负责人 142=副负责人 143=员工
+                "posiName": "", // 当deptId不为空时，必填。员工职位名称，默认为员工，可根据岗位设置设定员工的职位名称
                 "createUserId": userInfo["id"], // 创建用户ID，新增时必传
                 "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传
             },
@@ -46,49 +52,80 @@
                 "userCode": "", // 查询关键字（角色名称）
                 "userName": "", // 查询关键字（用户名称）
                 "companyId": "", // 公司ID
+                "deptId": "",
+                "deptIds": [],
             },
             "columnsList": [
                 {
-                    "type": "index",
-                    "width": 60,
-                    "align": "center"
+                    "title": "公司",
+                    "key": "companyName",
+                    "fixed": "left",
+                    "width": 180
                 },
                 {
-                    "title": { "CN": "所属公司", "EN": "Company", "TW": "所屬公司" }[language["language"]],
-                    "key": "company"
-                },
-                {
-                    "title": { "CN": "账号", "EN": "Account", "TW": "帳號" }[language["language"]],
-                    "key": "userCode"
+                    "title": "部门",
+                    "key": "deptName",
+                    "fixed": "left",
+                    "width": 150
                 },
                 {
                     "title": { "CN": "姓名", "EN": "Name", "TW": "姓名" }[language["language"]],
-                    "key": "userName"
+                    "key": "userName",
+                    "width": 120,
                 },
                 {
-                    "title": { "CN": "手机号", "EN": "cellPhone No.", "TW": "手機號" }[language["language"]],
-                    "key": "mobile"
+                    "title": { "CN": "账号", "EN": "Account", "TW": "帳號" }[language["language"]],
+                    "key": "userCode",
+                    "width": 120,
+                },
+                {
+                    "title": "角色",
+                    "key": "roleNames",
+                    "width": 150,
                 },
                 {
                     "title": "是否公司管理员",
-                    "key": "isCompanyAdmin"
-                },
-                {
-                    "title": { "CN": "员工工号", "EN": "Staff Number", "TW": "員工工號" }[language["language"]],
-                    "key": "userSeq"
+                    "key": "isCompanyAdmin",
+                    "width": 120,
+                    "align": "center"
                 },
                 {
                     "title": { "CN": "状态", "EN": "State", "TW": "狀態" }[language["language"]],
-                    "key": "state"
+                    "key": "state",
+                    "width": 120,
+                    "align": "center"
+                },
+                {
+                    "title": "职位类型",
+                    "key": "posiType",
+                    "width": 120,
+                },
+                {
+                    "title": "职位名称	",
+                    "key": "posiName",
+                    "width": 120,
+                },
+                {
+                    "title": { "CN": "手机号", "EN": "cellPhone No.", "TW": "手機號" }[language["language"]],
+                    "key": "mobile",
+                    "width": 120,
+                },
+                {
+                    "title": { "CN": "员工工号", "EN": "Staff Number", "TW": "員工工號" }[language["language"]],
+                    "key": "userSeq",
+                    "width": 120,
                 },
                 {
                     "title": { "CN": "备注", "EN": "Remarks", "TW": "備註" }[language["language"]],
-                    "key": "remark"
+                    "key": "remark",
+                    "width": 180,
                 },
                 {
                     "title": { "CN": "操作", "EN": "Operation", "TW": "操作" }[language["language"]],
                     "key": "operation",
-                    "width": 180,
+                    "width": 150,
+                    "fixed": "right",
+                    "align": "center",
                     "render": function (h, params) {
                         return h("div", [
                             h("Button", {
@@ -146,6 +183,13 @@
             "companyList": [],
             "sexTypeList": bizParam["sexType"],
             "userStatusTypeList": bizParam["userStatusType"],
+            "roleList": [],
+            "superiorDepartmentList": [],
+            "posiTypeInfo": {
+                "_141": "正负责人",
+                "_142": "副负责人",
+                "_143": "员工",
+            }
         },
         "methods": {
             // 刷新
@@ -181,7 +225,13 @@
                     "status": "", // 员工帐号状态，默认值911表示正常： 911：正常 912：冻结 913：作废                
                     "idNo": "", // 身份证号
                     "address": "", // 员工家庭住址
+                    "deptIds": [],
                     "isCompanyAdmin": "", // 员工家庭住址
+                    "roleIds": "", // 角色id，可多选，多个间以英文半角分割
+                    "roleIdList": [],
+                    "deptId": "", // 部门id，单选
+                    "posiType": "", // 当deptId不为空时，必填。 员工在部门的职位类型： 141 =正负责人 142=副负责人 143=员工
+                    "posiName": "", // 当deptId不为空时，必填。员工职位名称，默认为员工，可根据岗位设置设定员工的职位名称
                     "createUserId": userInfo["id"], // 创建用户ID，新增时必传
                     "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传
                 };
@@ -191,12 +241,21 @@
                 var self = this;
                 utility.showMessageTip(self, function () {
                     self.itemInfo = self.userList[self.index];
+                    self.itemInfo.roleIdList = (function () {
+                        var list = [];
+                        var role = self.itemInfo.roleIds.split(",");
+                        for (var i = 0, len = role.length; i < len; i++) {
+                            list.push(parseInt(role[i], 10));
+                        }
+                        return list;
+                    }());
                     self.itemInfo.userName = decodeURI(self.itemInfo.userName);
                     self.itemInfo.remark = decodeURI(self.itemInfo.remark);
                     self.itemInfo.address = decodeURI(self.itemInfo.address);
-                    console.log(self.itemInfo);
+                    self.itemInfo.posiName = decodeURI(self.itemInfo.posiName);
                     self.isShowModal = true;
                     self.modalTitle = { "CN": "修改", "EN": "Edit", "TW": "修改" }[self.language];
+                    self.getSuperiorDeprtList("itemInfo");
                 });
             },
             // 修改
@@ -207,6 +266,7 @@
                     self.itemInfo.userName = decodeURI(self.itemInfo.userName);
                     self.itemInfo.remark = decodeURI(self.itemInfo.remark);
                     self.itemInfo.address = decodeURI(self.itemInfo.address);
+                    self.itemInfo.posiName = decodeURI(self.itemInfo.posiName);
                     self.itemInfo.sexName = (function () {
                         var sex = "";
                         for (var s = 0, slen = self.sexTypeList.length; s < slen; s++) {
@@ -235,9 +295,9 @@
                 var self = this;
                 self.$Modal.confirm({
                     "title": "确定删除？",
-                    "content": "<p>账号："+ self.userList[self.index]["userCode"]+"</p><p>用户："+ self.userList[self.index]["userName"]+"</p>",
+                    "content": "<p>账号：" + self.userList[self.index]["userCode"] + "</p><p>用户：" + self.userList[self.index]["userName"] + "</p>",
                     "width": 300,
-                    "onOk": function() {
+                    "onOk": function () {
                         self.itemInfo = self.userList[self.index];
                         utility.showMessageTip(self, function () {
                             utility.interactWithServer({
@@ -286,9 +346,26 @@
                 }
             },
             // 提交信息到服務器
-            "uploadDataToServer": function () {
+            "uploadDataToServer": function (event) {
                 var self = this;
                 var dateInfo = utility.getDateDetailInfo(self.itemInfo.birthday);
+                self.$Message.config({
+                    top: 150,
+                    duration: 3
+                });
+                if (self.itemInfo.deptIds.length != 0) {
+                    if (!!!self.itemInfo.posiType) {
+                        self.$Message.error("请选择职位类型");
+                        self.isModalLoading = false;
+                        return false;
+                    }
+
+                    if (utility.checkLen(self.itemInfo.posiName, 0)) {
+                        self.$Message.error("请填写职位名称");
+                        self.isModalLoading = false;
+                        return false;
+                    }
+                }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.userService + "?action=" + CONFIG.ACTION.saveUser,
                     actionUrl: CONFIG.SERVICE.userService,
@@ -309,6 +386,10 @@
                         "idNo": self.itemInfo.idNo, // 身份证号
                         "address": encodeURI(self.itemInfo.address), // 员工家庭住址
                         "isCompanyAdmin": self.itemInfo.isCompanyAdmin || 0, // 是否公司管理员
+                        "roleIds": self.itemInfo.roleIdList.join(","), // 角色id，可多选，多个间以英文半角分割
+                        "deptId": self.itemInfo.deptIds[self.itemInfo.deptIds.length - 1], // 部门id，单选
+                        "posiType": self.itemInfo.posiType, // 当deptId不为空时，必填。 员工在部门的职位类型： 141 =正负责人 142=副负责人 143=员工
+                        "posiName": encodeURI(self.itemInfo.posiName), // 当deptId不为空时，必填。员工职位名称，默认为员工，可根据岗位设置设定员工的职位名称
                         "createUserId": userInfo["id"], // 创建用户ID，新增时必传
                         "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传
                     },
@@ -336,8 +417,12 @@
                         "userSeq": self.userList[i]["userSeq"], //"员工工号",
                         "mobile": self.userList[i]["mobile"], //"固话",
                         "telephone": self.userList[i]["telephone"], //"手机号",
-                        "company": decodeURI(self.userList[i]["companyName"]), //"所属公司",
-                        "isCompanyAdmin": !!self.userList[i]["isCompanyAdmin"]?"是":"否", // 是否公司管理员,
+                        "companyName": decodeURI(self.userList[i]["companyName"]), //"所属公司",
+                        "posiName": decodeURI(self.userList[i]["posiName"]), //"所属公司",
+                        "roleNames": decodeURI(self.userList[i]["roleNames"]), //"所属公司",
+                        "deptName": decodeURI(self.userList[i]["deptName"]), //"所属公司",
+                        "posiType": self.posiTypeInfo["_" + self.userList[i]["posiType"]], //"所属公司",
+                        "isCompanyAdmin": !!self.userList[i]["isCompanyAdmin"] ? "是" : "否", // 是否公司管理员,
                         "remark": decodeURI(self.userList[i]["remark"]), //"备注",
                         "sex": (function () {
                             var sex = "";
@@ -373,7 +458,14 @@
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.userService + "?action=" + CONFIG.ACTION.getUserList,
                     actionUrl: CONFIG.SERVICE.userService,
-                    dataObj: self.pageInfo,
+                    dataObj: {
+                        "pageNum": self.pageInfo.pageNum,
+                        "pageSize": self.pageInfo.pageSize,
+                        "userCode": self.pageInfo.userCode, // 查询关键字（角色名称）
+                        "userName": self.pageInfo.userName, // 查询关键字（用户名称）
+                        "companyId": self.pageInfo.companyId, // 公司ID
+                        "deptId": self.pageInfo.deptIds[self.pageInfo.deptIds.length-1],
+                    },
                     beforeSendCallback: function () {
                         self.isTableLoading = true;
                     },
@@ -408,6 +500,67 @@
                     }
                 });
             },
+            // 获取角色信息
+            "getRoleDataList": function () {
+                var self = this;
+                // 如果是查询，则重新从第一页开始
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.permissionService + "?action=" + CONFIG.ACTION.getRoleList,
+                    actionUrl: CONFIG.SERVICE.permissionService,
+                    dataObj: {
+                        "pageNum": 1,
+                        "pageSize": 100000,
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            self.roleList = data.data;
+                        }
+                    }
+                });
+            },
+            "getSuper": function (list, value, arr) {
+                var self = this;
+                for (var i = 0, len = list.length; i < len; i++) {
+                    if (list[i].value == value) {
+                        arr.push(value);
+                        if (list[i].paraDeptId == 0) {
+                            return;
+                        }
+                        self.getSuper(self.superiorDepartmentList, list[i].paraDeptId, arr);
+                    } else {
+                        self.getSuper(list[i]["children"], value, arr);
+                    }
+                }
+            },
+            // 格式化上级部门
+            "formatSuperiorDeprt": function (list) {
+                var self = this;
+                var listInfo = JSON.stringify(list).replace(/id/g, 'value').replace(/deptName/g, 'label').replace(/subDeptList/g, 'children');
+                self.superiorDepartmentList = JSON.parse(listInfo);
+            },
+            // 获取部门信息
+            "getSuperiorDeprtList": function (type) {
+                var self = this;
+                self.superiorDepartmentList = [];
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.deptService + "?action=" + CONFIG.ACTION.getDeptTreeList,
+                    actionUrl: CONFIG.SERVICE.deptService,
+                    dataObj: {
+                        id: 0,
+                        pageSize: 10000,
+                        companyId: self[type]["companyId"] || 0,
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            var arr = [];
+                            self[type]["deptIds"] = [];
+                            self.formatSuperiorDeprt(data.data); // 格式化机构部门数据
+                            self.getSuper(self.superiorDepartmentList, self[type]["deptId"], arr);
+                            self[type]["deptIds"] = arr.reverse();
+                        }
+                    }
+                });
+            },
         },
         "created": function () {
             var self = this;
@@ -418,6 +571,8 @@
             setTimeout(function () {
                 self.getUserList(false);
                 self.getCompanyList();
+                self.getRoleDataList();
+                self.getSuperiorDeprtList("pageInfo");
             }, 500);
         }
     });

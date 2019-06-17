@@ -143,15 +143,13 @@ VSClientSession.prototype.onLoginFailed = function(reason) {
 
 VSClientSession.prototype.onFrontOnOfflineEvent = function(event) {
     console.log("front" + event.front + " " + (event.online ? "online" : "offline"));
-
     var frontId = event.front;
     var front = this.findFrontByID(frontId);
-    !!this.callback.onOnOffline && this.callback.onOnOffline(event.online);
     if (!front) {
         return;
     }
-
     front.online = event.online;
+    !!this.callback.onOnOffline && this.callback.onOnOffline(front);
 }
 VSClientSession.prototype.onFrontGPSEvent = function(event) {
     if (!this.hasLogon) {
@@ -194,9 +192,10 @@ VSClientSession.prototype.findFrontByName = function(frontName) {
 }
 
 
-VSClientSession.prototype.startPlay = function(name, channel, videoCtrl) {
+VSClientSession.prototype.startPlay = function(options) {
+    // name, channel, videoCtrl
     var front = jQuery.grep(this.context.front, function (element) {
-        return element.name == name;
+        return element.name == options.name;
     });
     if (!front || front.length == 0) {
         return false;
@@ -208,8 +207,8 @@ VSClientSession.prototype.startPlay = function(name, channel, videoCtrl) {
     }
 
     var videoCtx = {
-        videoCtrl: videoCtrl,
-        player: new Player(videoCtrl, front.id, channel, true, false)
+        videoCtrl: options.videoCtrl,
+        player: new Player(options.videoCtrl, front.id, options.channel, options.codeType, false)
        
     };
 
@@ -268,12 +267,13 @@ VSClientSession.prototype.stopListening = function () {
     this.audioElement = null;
     this.isListening = false;
 }
-VSClientSession.prototype.startReplay = function(name, channel,videoCtrl,info) {
-    var channel = info.channel;
-    var frontId = info.front;
+VSClientSession.prototype.startReplay = function(options) {
+    // name, channel,videoCtrl,info
+    var channel = options.info.channel;
+    var frontId = options.info.front;
 
     var front = jQuery.grep(this.context.front, function (element) {
-        return element.name == name;
+        return element.name == options.name;
     });
     if (!front || front.length == 0) {
         return false;
@@ -284,13 +284,12 @@ VSClientSession.prototype.startReplay = function(name, channel,videoCtrl,info) {
         return false;
     }
     var videoCtx = {
-        videoCtrl: videoCtrl,
-        player: new Player(videoCtrl, frontId, channel, true)
-       
+        videoCtrl: options.videoCtrl,
+        player: new Player(options.videoCtrl, frontId, channel, options.codeType || true)
     };
 
     this.videos.push(videoCtx);
-    videoCtx.player.start(info);
+    videoCtx.player.start(options.info);
     videoCtx.player.setStreamPlayStatus(this.callback.onStreamPlayStatus);
     
     return true;

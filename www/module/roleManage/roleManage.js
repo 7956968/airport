@@ -996,6 +996,25 @@
                 self.isFunctionList = true;
                 self.getFunctionsDataList(true);
             },
+            "getSuper": function(list, value){
+                var self = this;
+                for(var i = 0, len = list.length; i < len; i++) {
+                    if(list[i]["id"] == value) {
+                        self.selectFunction.push(value);
+                        list[i]["checked"] = true;
+                        break;
+                    } else {
+                        self.getSuper(list[i]["children"], value,);
+                    }
+                }
+            },
+            "setChecked": function(){
+                var self = this;
+
+                for(var i = 0, len = self.roleFunctionList.length; i < len; i++){
+                    self.getSuper(self.functionsTableRowList, self.roleFunctionList[i]["functionId"]);
+                }
+            },
             // 当选择的行发生变化时 
             "selectFunctionsChange": function (selection) {
                 var self = this;
@@ -1012,6 +1031,7 @@
                 var self = this;
                 var fun = JSON.stringify(self.functionList).replace(/(subFunctionList)/g,'children').replace(/(functionName)/g, 'title').replace(/isValid/g, 'expand');
                 self.functionsTableRowList = JSON.parse(fun);
+                self.setChecked();
             },
             // 获取系统操作权限功能项目列表接口
             "getFunctionsDataList": function (bool) {

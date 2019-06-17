@@ -68,7 +68,7 @@
                                         <template>
                                             &nbsp;&nbsp;{{{'CN':'部门','EN':'Superior Department','TW':'部門'}[language]}}:
                                             <template>
-                                                <Cascader :data="departmentList" v-model="pageInfo.deptId" style="width:140px; display: inline-block;" trigger="hover" change-on-select></Cascader>
+                                                <Cascader :data="departmentList" v-model="pageInfo.deptId" style="width:140px; display: inline-block;" trigger="click" :change-on-select="true"></Cascader>
                                             </template>
                                         </template>
                                         <template>
@@ -198,7 +198,7 @@
                                 </td>
                                 <td>
                                     <template>
-                                        <Cascader :data="departmentList" v-model="itemInfo.deptIds" trigger="hover" change-on-select></Cascader>
+                                        <Cascader :data="departmentList" v-model="itemInfo.deptIds" trigger="click" :change-on-select="true"></Cascader>
                                     </template>
                                 </td>
                             </tr>
@@ -304,7 +304,7 @@
 
         <!-- 查看详情 -->
         <template>
-            <Modal v-model="isShowDetail" :footer-hide="true" :styles="{top: '60px'}" width="25" title="查看详情">
+            <Modal v-model="isShowDetail" :footer-hide="true" :styles="{top: '60px'}" width="30" title="查看详情">
                 <div class="modifiedWrap">
                     <table>
                         <tbody>
@@ -366,7 +366,7 @@
         <template>
             <Modal v-model="isRecord" footer-hide :styles="{top: '60px'}" width="60" title="使用记录">
                 <Row>
-                    <i-col span="8">
+                    <i-col span="10">
                         <div class="modifiedWrap" style="background-color: #f8f8f9;" :style="{height: tableHeight-200+'px'}">
                             <table style="padding: 10px;">
                                 <tbody>
@@ -410,7 +410,7 @@
                             </table>
                         </div>
                     </i-col>
-                    <i-col span="16">
+                    <i-col span="14">
                         <div class="tableWrap">
                             <i-table :height="tableHeight-200" highlight-row :columns="userRecordcolumns" :data="userRecordList"  stripe="true" size="small"></i-table>
                         </div>
@@ -431,7 +431,7 @@
             <Modal 
                 v-model="isDelete" 
                 :styles="{top: '60px'}" 
-                width="25" 
+                width="28" 
                 title="确定删除？" 
                 :loading="isModalLoading"
                 @on-ok="delItem">
@@ -451,11 +451,11 @@
                                 <td><span v-text="itemInfo.licenseNumber"></span></td>
                             </tr>
                             <tr class="detailInfo">
-                                <td class="detailLabel"><span v-text="{'CN':'活动状态','EN':'Plate No.：','TW':'車牌號'}[language]"></span></td>
+                                <td class="detailLabel"><span v-text="{'CN':'活动状态：','EN':'Plate No.：','TW':'車牌號'}[language]"></span></td>
                                 <td><span v-text="itemInfo.vehicleStatusName"></span></td>
                             </tr>
                             <tr class="detailInfo">
-                                <td class="detailLabel"><span v-text="{'CN':'使用状态','EN':'Plate No.：','TW':'車牌號'}[language]"></span></td>
+                                <td class="detailLabel"><span v-text="{'CN':'使用状态：','EN':'Plate No.：','TW':'車牌號'}[language]"></span></td>
                                 <td><span v-text="itemInfo.useStatusName"></span></td>
                             </tr>
                             <tr class="detailInfo">
@@ -493,7 +493,7 @@
         </template>
 
     </div>
-    <script src="/airport/assets/js/LAB.min.js"></script>
+    <script src="/airport/assets/js/LAB.min.js?v=3423841237481237"></script>
     <script>
         loadScript(MODUL+"module/vehicleManage/vehicleManage.min.js");
     </script>

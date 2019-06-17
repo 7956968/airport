@@ -47,7 +47,7 @@
     <link rel="icon" href="/airport/www/img/logo.png">
     <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
     <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=73483418234172" />
-    <link rel="stylesheet" type="text/css" href="/airport/www/css/liveVideo.min.css?v=424723741234" />
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/liveVideo.min.css?v=90837" />
 </head>
 
 <body>
@@ -74,7 +74,7 @@
                         </template>
                     </div>
                     <template v-if="isStop==true">
-                        <i-button type="success" :disabled="!isStop" icon="md-play" @click="reStart">重新播放</i-button>
+                        <i-button type="success" :disabled="!isStop" icon="md-play" @click="startVideo">重新播放</i-button>
                     </template>
                     <template v-else>
                         <i-button type="error" :disabled="isStop" icon="md-pause" @click="stopVideo">停止</i-button>
@@ -91,6 +91,10 @@
                 
                 <!-- 网络信号 -->
                 <div class="netnSignal">
+                    <radio-group v-model="codeType" @on-change="startVideo" size="large">
+                        <Radio :label="true">网络码流</Radio>
+                        <Radio :label="false">主码流</Radio>
+                    </radio-group>
                     <template>
                         <span class="label">播放时长：</span>
                         <i-select v-model="timeSelect" style="width:120px" @on-change="onTimeChange">
@@ -109,12 +113,22 @@
                 <template v-for="index in mVideoCount">
                     <div class="videoItem" :id="'liveVideo'+(index-1)" draggable="true" @drop="drop($event)" @dragend="dragEnd($event)" @dragover="dragOver($event)">
                         <div class="videoWrap" @click="setCurrentStyle('liveVideo'+(index-1))">
-                            <video playsinline @dblclick="setFullScream('video'+(index-1))" poster="/airport/www/img/poster.png" :id="'video'+(index-1)" preload="meta" controls autoplay>无视频</video>
+                            <video playsinline @dblclick="setFullScream('video'+(index-1))" poster="/airport/www/img/poster.png" :id="'video'+(index-1)" preload="meta" muted controls autoplay>无视频</video>
                             <div class="channelIndex">
-                                <span>{{(index)+' 路摄像头'}}</span>
+                                <span>
+                                    <template v-if="netnSignal">
+                                        信号:
+                                        <template v-if="netnSignal==0">无数据</template>
+                                        <template v-if="netnSignal==1">无信号</template>
+                                        <template v-if="netnSignal>=2&&netnSignal<33">信号强度</template>
+                                        <template v-if="netnSignal==33">最好</template>
+                                    </template>
+                                    {{(index)+' 路摄像头'}}
+                                </span>
                                 <span><Icon type="ios-videocam-outline" size="14" /></span>
                             </div>
                             <div class="dealWrap">
+                                
                                 <!-- <template v-if="isFullScream==true">
                                     <i-button @click="closeFullScream('video'+(index-1))"><Icon color="#78b1ef" size="24" type="md-close" /></i-button>
                                 </template>
@@ -228,7 +242,7 @@
     </div>
 
     <script src="/airport/assets/js/vsplayer.min.js?v=4714712341823"></script>
-    <script src="/airport/assets/js/LAB.min.js?v=49127341723"></script>
+    <script src="/airport/assets/js/LAB.min.js?v=3423841237481237"></script>
     <script>
         loadScript(MODUL+"module/liveVideo/liveVideo.min.js");
     </script>

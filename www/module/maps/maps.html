@@ -99,11 +99,20 @@
                     <p>{{{'CN':'终端设备','EN':'Termina','TW':'終端設備'}[language]}}：{{vehicleItemPop.gpsDeviceCode}}</p>
                     <p>{{{'CN':'车辆速度','EN':'Speed','TW':'車輛速度'}[language]}}：{{vehicleItemPop.speed}}</p>
                     <p>{{{'CN':'运动状态','EN':'State','TW':'車輛狀態'}[language]}}：<span :class="'_'+vehicleItemPop.vehicleStatus"><span>{{vehicleItemPop.vehicleStatusName}}</span></span></p>
-                    <p style="padding: 3px 0;">视&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;频：
-                        <i-button size="small" @click="showLiveVideo(vehicleItemPop, 0)" type="primary" icon="md-play">{{{'CN':'实时监控','EN':'Video','TW':'視頻'}[language]}}</i-button>
-                        <!-- <i-button size="small" @click="showLiveVideo(vehicleItemPop, 1)" icon="md-play">{{{'CN':'视频回放','EN':'Video','TW':'視頻'}[language]}}</i-button> -->
-                    </p>
+                    <template v-if="isViewVideo">
+                        <template v-if="vehicleItemPop.providerId<100">
+                            <template v-if="vehicleItemPop.vehicleStatus==401||vehicleItemPop.vehicleStatus==402">
+                                <p style="padding: 3px 0;">视&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;频：
+                                    <i-button size="small" @click="showLiveVideo(vehicleItemPop, 0)" type="primary" icon="md-play">{{{'CN':'实时监控','EN':'Video','TW':'視頻'}[language]}}</i-button>
+                                    <template v-if="vehicleItemPop.providerId!=2">
+                                        <i-button size="small" @click="showLiveVideo(vehicleItemPop, 1)" icon="md-play">{{{'CN':'视频回放','EN':'Video','TW':'視頻'}[language]}}</i-button>
+                                    </template>
+                                </p>
+                            </template>
+                        </template>
+                    </template>
                     <p>{{{'CN':'回放速度','EN':'Speed','TW':'回放速度'}[language]}}：{{mapContainer.animationInfo.speed}}<Slider v-model="mapContainer.animationInfo.speed" :min="60" :max="200" show-tip="always"></Slider></p>
+                
                     <Row gutter="5" class="trajectoryAction">
                         <i-col span="8">
                             <i-button size="small" long @click="getSingleVehicleTrack" type="primary" icon="ios-search-outline">{{{'CN':'查轨迹','EN':'Track','TW':'查軌跡'}[language]}}</i-button>
@@ -307,10 +316,18 @@
                             <p>{{{'CN':'终端设备','EN':'Termina','TW':'終端設備'}[language]}}：{{vehicleItemPop.gpsDeviceCode}}</p>
                             <p>{{{'CN':'车辆速度','EN':'Speed','TW':'車輛速度'}[language]}}：{{vehicleItemPop.speed}}</p>
                             <p>{{{'CN':'运动状态','EN':'State','TW':'車輛狀態'}[language]}}：<span :class="'_'+vehicleItemPop.vehicleStatus"><span>{{vehicleItemPop.vehicleStatusName}}</span></span></p>
-                            <p style="padding: 3px 0;">视&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;频：
-                                <i-button size="small" @click="showLiveVideo(vehicleItemPop, 0)" type="primary" icon="md-play">{{{'CN':'实时监控','EN':'Video','TW':'視頻'}[language]}}</i-button>
-                                <!-- <i-button size="small" @click="showLiveVideo(vehicleItemPop, 1)" icon="md-play">{{{'CN':'视频回放','EN':'Video','TW':'視頻'}[language]}}</i-button> -->
-                            </p>
+                            <template v-if="isViewVideo">
+                                <template v-if="vehicleItemPop.providerId<100">
+                                    <template v-if="vehicleItemPop.vehicleStatus==401||vehicleItemPop.vehicleStatus==402">
+                                        <p style="padding: 3px 0;">视&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;频：
+                                            <i-button size="small" @click="showLiveVideo(vehicleItemPop, 0)" type="primary" icon="md-play">{{{'CN':'实时监控','EN':'Video','TW':'視頻'}[language]}}</i-button>
+                                            <template v-if="vehicleItemPop.providerId!=2">
+                                                <i-button size="small" @click="showLiveVideo(vehicleItemPop, 1)" icon="md-play">{{{'CN':'视频回放','EN':'Video','TW':'視頻'}[language]}}</i-button>
+                                            </template>
+                                        </p>
+                                    </template>
+                                </template>
+                            </template>
                         </div>
                     </template>
                 </div>
@@ -429,7 +446,7 @@
                                 </td>
                                 <td>
                                     <template>
-                                        <Cascader :disabled="!defensFunc" :data="departmentList" v-model="defensAreaDetailInfo.deptId" trigger="hover" change-on-select></Cascader>
+                                        <Cascader :disabled="!defensFunc" :data="departmentList" v-model="defensAreaDetailInfo.deptId" trigger="click" :change-on-select="true"></Cascader>
                                     </template>
                                 </td>
                             </tr>
@@ -672,7 +689,7 @@
                                 </td>
                                 <td>
                                     <template>
-                                        <Cascader :disabled="!cameraFunc" :data="departmentList" v-model="cameraDetailInfo.deptId" trigger="hover" change-on-select></Cascader>
+                                        <Cascader :disabled="!cameraFunc" :data="departmentList" v-model="cameraDetailInfo.deptId" trigger="click" :change-on-select="true"></Cascader>
                                     </template>
                                 </td>
                             </tr>
@@ -1017,7 +1034,7 @@
 
     </div>
     
-    <script src="/airport/assets/js/LAB.min.js"></script>
+    <script src="/airport/assets/js/LAB.min.js?v=3423841237481237"></script>
     <script src="/airport/assets/vender/openLayer/ol.min.js"></script>
     <script src="/airport/assets/vender/radar/radar.min.js?v=4123471829347"></script>
     <script>

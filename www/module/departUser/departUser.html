@@ -60,7 +60,7 @@
                                     <td>
                                         <template>
                                             {{{'CN':'归属公司','EN':'Ownership Company','TW':'歸屬公司'}[language]}}:
-                                            <i-select @on-change="getDepartmentList('pageInfo')" v-model="pageInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:150px;">
+                                            <i-select @on-change="getSuperiorDeprtList('pageInfo')" v-model="pageInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:150px;">
                                                 <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
                                                 <i-option v-for="item in companyList" :value="item.id">{{item.companyName}}</i-option>
                                             </i-select>
@@ -71,7 +71,7 @@
                                     </td>
                                     <td>
                                         <template>
-                                            <Cascader :data="superiorDepartmentList" v-model="pageInfo.deptId" trigger="hover" change-on-select style="width:180px;"></Cascader>
+                                            <Cascader :data="superiorDepartmentList" v-model="pageInfo.deptIds" trigger="click" :change-on-select="true" style="width:180px;"></Cascader>
                                         </template>
                                     </td>
                                     <td>
@@ -150,7 +150,7 @@
                                 </td>
                                 <td>
                                     <template>
-                                        <Cascader :data="superiorDepartmentList" v-model="itemInfo.deptIds" trigger="hover" change-on-select></Cascader>
+                                        <Cascader :data="superiorDepartmentList" v-model="itemInfo.deptIds" trigger="click" :change-on-select="true"></Cascader>
                                     </template>
                                 </td>
                             </tr>
@@ -226,7 +226,7 @@
             </Modal>
         </template>
     </div>
-    <script src="/airport/assets/js/LAB.min.js"></script>
+    <script src="/airport/assets/js/LAB.min.js?v=3423841237481237"></script>
     <script>
         loadScript(MODUL+"module/departUser/departUser.min.js");
     </script>
