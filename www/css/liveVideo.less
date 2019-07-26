@@ -41,11 +41,10 @@
 
 .video_ctrl_area {
     position: relative;
-    z-index: 1010;
+    z-index: 1112;
     width: 100%;
     height: 45px;
     line-height: 45px;
-    overflow: hidden;
     background: rgba(15, 55, 95, .4);
     box-shadow: 0 1px 5px rgba(62, 84, 130, .2);
 
@@ -110,6 +109,16 @@
     background-color: rgba(15, 55, 95, .8);
     overflow: hidden;
 
+    &.left {
+        z-index: 100;
+        opacity: 1;
+    }
+
+    &.right {
+        z-index: 10;
+        opacity: 0;
+    }
+
     &:hover {
         border-color: red;
     }
@@ -143,17 +152,58 @@
     height: 100%;
 }
 
+.videoSelect {
+    position: absolute;
+    z-index: 100000;
+    top: 0;
+    left: 0;
+}
+
 .videoMasker {
     display: none;
 }
 
-.dealWrap {
+.dealWrap,
+.playPause,
+.noDowload {
     position: absolute;
     z-index: 10000;
     bottom: 35px;
     right: 108px;
     cursor: pointer;
     display: none;
+}
+
+.videoItem {
+    &:hover {
+
+        .playPause,
+        .noDowload {
+            display: inline-block;
+        }
+    }
+}
+
+.playPause {
+    display: none;
+    left: 10px;
+    top: 10px;
+    right: auto;
+    bottom: auto;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    text-align: center;
+    border-radius: 50%;
+}
+
+.noDowload {
+    display: block;
+    width: 40px;
+    height: 160px;
+    right: 3%;
+    bottom: 0;
+    cursor: text;
 }
 
 .fullScream {
@@ -214,7 +264,7 @@
 .modifiedWrap {
     font-size: 16px;
     color: #fff;
-    padding: 20px 30px;
+    padding: 10px 20px;
 
     .detailInfo {
         color: #fff;

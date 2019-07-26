@@ -45,7 +45,7 @@
     <!-- QQ应用模式 -->
     <meta name="x5-page-mode" content="app">
     <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
-    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=7417418" />
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=456456" />
 </head>
 
 <body class="graphPage">
@@ -66,7 +66,7 @@
                                         <template>
                                             <Card bordered="false" style="width: 100%;" padding="0">
                                                 <div @click="toMapPage(406)" class="info"
-                                                    :style="{height: (innerHeight*1.8)+'px'}"
+                                                    :style="{height: (innerHeight-140)+'px'}"
                                                     style="background-color: rgb(147, 154, 161);">
                                                     <Row>
                                                         <i-col span="24">
@@ -92,7 +92,7 @@
                                         <template>
                                             <Card bordered="false" style="width: 100%;" padding="0">
                                                 <div @click="toMapPage(402)" class="info"
-                                                    :style="{height: (innerHeight*1.8)+'px'}"
+                                                    :style="{height: (innerHeight-140)+'px'}"
                                                     style="background-color: #4CAF50;">
                                                     <Row>
                                                         <i-col span="24">
@@ -117,7 +117,7 @@
                                         <template>
                                             <Card bordered="false" style="width: 100%;" padding="0">
                                                 <div @click="toMapPage(401)" class="info"
-                                                    :style="{height: (innerHeight*1.8)+'px'}"
+                                                    :style="{height: (innerHeight-140)+'px'}"
                                                     style="background-color: #795548;">
                                                     <Row>
                                                         <i-col span="24">
@@ -142,20 +142,27 @@
                                     <i-col span="6" class-name="infoItem">
                                         <template>
                                             <Card bordered="false" style="width: 100%;" padding="0">
-                                                <div @click="toMapPage('')" class="info totalNum"
-                                                    :style="{height: (innerHeight*1.8)+'px'}"
-                                                    style="background-color: #0f375f; height: 180px;">
-                                                    <Row class-name="totalRow">
+                                                <div @click="toMapPage('')" class="info"
+                                                    :style="{height: (innerHeight-140)+'px'}"
+                                                    style="background-color: #0f375f;">
+                                                    <Row>
                                                         <i-col span="24">
-                                                            <p class="label">
+                                                            <p class="label" style="font-size: 18px;">
                                                                 {{{"CN":"总数","EN":"Sum","TW":"總數"}[language]}}
                                                             </p>
-                                                            <p class="detail" style="font-size: 106px;"
+                                                            <p class="detail" style="font-size: 64px;"
                                                                 v-text="vehicleInfo.count"></p>
                                                         </i-col>
                                                     </Row>
-                                                    <Icon class="totalIcon" style="left: -20px;" type="ios-car-outline"
-                                                        color="rgba(34, 91, 148, .5)" size="180" />
+                                                    <Row>
+                                                        <i-col span="24">
+                                                            <Icon style="position: relative; z-index: 0; top: -20px;"
+                                                                type="ios-car-outline" color="rgba(34, 91, 148, .5)"
+                                                                size="120" />
+                                                        </i-col>
+                                                    </Row>
+                                                    <!-- <Icon class="totalIcon" style="left: -20px;" type="ios-car-outline"
+                                                        color="rgba(34, 91, 148, .5)" size="180" /> -->
                                                 </div>
                                             </Card>
                                         </template>
@@ -171,12 +178,12 @@
                                     <span class="label">数据总汇</span><i class="subLabel">(车辆使用频率)</i>
                                 </p>
                                 <div class="chart" style="position: relative;"
-                                    :style="{height: (innerHeight*1.8+22)+'px'}">
+                                    :style="{height: (innerHeight-118)+'px'}">
                                     <!-- <div id="totalEchart" :style="{height: (innerHeight*2.55)+'px'}"></div> -->
-                                    <div id="totalEchart" :style="{height: (innerHeight*1.8+22)+'px'}"></div>
+                                    <div id="totalEchart" :style="{height: (innerHeight-118)+'px'}"></div>
                                     <template v-if="isLoading">
                                         <div style="position: absolute; width: 100%; left: 0; top: 0;"
-                                            :style="{height: (innerHeight*1.8+22)+'px'}">
+                                            :style="{height: (innerHeight-118)+'px'}">
                                             <Spin fix size="large"></Spin>
                                         </div>
                                     </template>
@@ -203,7 +210,7 @@
                                             <div class="select">结束日期:
                                                 <date-picker type="date" @on-change="endDateChange" size="small"
                                                     v-model="onlineStatPageInfo.endTime" placeholder="结束日期"
-                                                    style="width: 110px;">
+                                                    style="width: 90px;">
                                                 </date-picker>
                                             </div>
                                         </template>
@@ -211,22 +218,23 @@
                                             <div class="select">开始日期:
                                                 <date-picker type="date" @on-change="startDateChange"
                                                     v-model="onlineStatPageInfo.beginTime" size="small"
-                                                    placeholder="开始日期" style="width: 110px;">
+                                                    placeholder="开始日期" style="width: 90px;">
                                                 </date-picker>
                                             </div>
                                         </template>
 
                                     </div>
-                                    <div class="msList welcomTable" :style="{height: (innerHeight*2.55)+'px'}">
+                                    <div class="msList welcomTable" :style="{height: (innerHeight-80)+'px'}">
                                         <template>
-                                            <i-table :height="innerHeight*2.55-40" no-data-text="......" highlight-row
+                                            <i-table :height="innerHeight-130" no-data-text="......" highlight-row
                                                 :columns="onlineStatColumns" :data="onlineStatList" stripe="true"
                                                 size="small"></i-table>
                                         </template>
                                         <div class="pageTable">
                                             <template>
                                                 <Page :total="onlineStatPageInfo.count" size="small" show-sizer
-                                                    @on-change="onlineStatPageSizeChange" @on-page-size-change="onlineStatPageRowChange" :page-size="10"/>
+                                                    @on-change="onlineStatPageSizeChange"
+                                                    @on-page-size-change="onlineStatPageRowChange" :page-size="10" />
                                             </template>
                                         </div>
                                     </div>
@@ -239,19 +247,37 @@
                                     <div slot="title" class="tile">
                                         <span class="label">车辆运行情况</span>
                                         <template>
-                                            <div class="select">总数:<strong
-                                                    class="count">{{statuPageInfo.count}}</strong>
-                                                辆</div>
+                                            <div class="select"><strong class="count">{{statuPageInfo.count}}</strong>
+                                                辆<template v-if="statuPageInfo.online==1">正常</template>
+                                                <template v-if="statuPageInfo.online==2">异常</template>
+                                            </div>
+                                        </template>
+
+                                        <template>
+                                            <div class="select">类型:
+                                                <i-select v-model="statuPageInfo.online"
+                                                    @on-change="getStatuVehicleList(true)" placeholder="请选择"
+                                                    style="width:90px;" size="small">
+                                                    <!-- <i-option :value="0">不限定</i-option> -->
+                                                    <i-option :value="1">正常车辆</i-option>
+                                                    <i-option :value="2">异常车辆</i-option>
+                                                </i-select>
+                                            </div>
                                         </template>
                                         <template>
+                                            <div class="select">车牌号:
+                                                <i-input style="display: inline-block; width: 90px;" size="small"
+                                                    maxlength="16" @on-change="getStatuVehicleList(true)"
+                                                    v-model="statuPageInfo.licenseNumber" placeholder="请输入车牌号">
+                                                </i-input>
+                                            </div>
+                                        </template>
+
+                                        <!-- <template>
                                             <div class="select">时间:
                                                 <i-select v-model="statuPageInfo.daySpan"
                                                     @on-change="getStatuVehicleList" clearable placeholder="请选择"
                                                     style="width:100px;" size="small">
-                                                    <i-option :value="0">今天</i-option>
-                                                    <i-option :value="1">1天前</i-option>
-                                                    <i-option :value="2">2天前</i-option>
-                                                    <i-option :value="3">3天前</i-option>
                                                     <i-option :value="4">4天前</i-option>
                                                     <i-option :value="5">5天前</i-option>
                                                     <i-option :value="6">6天前</i-option>
@@ -261,10 +287,9 @@
                                                     <i-option :value="10">10天前</i-option>
                                                 </i-select>
                                             </div>
-                                        </template>
+                                        </template> -->
 
-
-                                        <template>
+                                        <!-- <template>
                                             <div class="select">状态:
                                                 <i-select v-model="statuPageInfo.online"
                                                     @on-change="getStatuVehicleList" clearable placeholder="请选择"
@@ -274,20 +299,22 @@
                                                     <i-option :value="2">离线</i-option>
                                                 </i-select>
                                             </div>
-                                        </template>
+                                        </template> -->
                                     </div>
-                                    <div class="msList welcomTable" :style="{height: (innerHeight*2.55)+'px'}">
+                                    <div class="msList welcomTable" :style="{height: (innerHeight-80)+'px'}">
                                         <template>
-                                            <i-table :height="innerHeight*2.55-40" :loading="isTableLoading"
+                                            <i-table :height="innerHeight-130" :loading="isTableLoading"
                                                 no-data-text="......" highlight-row :columns="statuColumns"
                                                 :data="statuDataList" stripe="true" size="small"></i-table>
                                         </template>
                                         <div class="pageTable">
-                                                <template>
-                                                    <Page :total="statuPageInfo.count" size="small"
-                                                        @on-change="statuPageSizeChange" @on-page-size-change="statuPageRowChange" :page-size="10" show-sizer/>
-                                                </template>
-                                            </div>
+                                            <template>
+                                                <Page :total="statuPageInfo.count" size="small"
+                                                    @on-change="statuPageSizeChange" :current="current"
+                                                    @on-page-size-change="statuPageRowChange" :page-size="10"
+                                                    show-sizer />
+                                            </template>
+                                        </div>
                                     </div>
                                 </Card>
                             </template>
@@ -335,24 +362,37 @@
                                 </tr>
                                 <tr class="detailInfo">
                                     <td class="detailLabel"><span>在线次数：</span></td>
-                                    <td><span v-text="onlineStatItemInfo.onlineCount"></span></td>
+                                    <td><span v-text="onlineStatItemInfo.onlineCount+'次'"></span></td>
                                 </tr>
                                 <tr class="detailInfo">
                                     <td class="detailLabel"><span>离线次数：</span></td>
-                                    <td><span v-text="onlineStatItemInfo.offlineCount"></span></td>
+                                    <td><span v-text="onlineStatItemInfo.offlineCount+'次'"></span></td>
                                 </tr>
                                 <tr class="detailInfo">
                                     <td class="detailLabel"><span>在线时长(秒)：</span></td>
-                                    <td><span v-text="onlineStatItemInfo.onlineDuration"></span></td>
+                                    <td><span v-text="(onlineStatItemInfo.onlineDuration/3600).toFixed(2)+'小时'"></span>
+                                    </td>
                                 </tr>
                                 <tr class="detailInfo">
                                     <td class="detailLabel"><span>离线时长(秒)：</span></td>
-                                    <td><span v-text="onlineStatItemInfo.offlineDuration"></span></td>
+                                    <!-- (onlineStatItemInfo.onlineDuration/3600).toFixed(2) + "小时" -->
+                                    <td><span v-text="(onlineStatItemInfo.offlineDuration/3600).toFixed(2)+'小时'"></span>
+                                    </td>
                                 </tr>
                                 <tr class="detailInfo">
                                     <td class="detailLabel"><span>统计日期：</span></td>
                                     <td><span v-text="onlineStatItemInfo.statDay"></span></td>
                                 </tr>
+                                <template v-if="functionInfo.isOnlineDetail">
+                                    <tr class="detailInfo">
+                                        <td></td>
+                                        <td>
+                                            <i-button @click="toOnlineDetail(onlineStatItemInfo)" size="small"
+                                                type="info">
+                                                查看详情</i-button>
+                                        </td>
+                                    </tr>
+                                </template>
                             </tbody>
                         </table>
                     </div>
@@ -360,66 +400,74 @@
             </template>
 
             <template>
-                    <Modal v-model="showStatuDetail" :footer-hide="true" :styles="{top: '60px'}" width="30"
-                        title="车辆运行情况详情">
-                        <div class="modifiedWrap">
-                            <template v-if="statuItemInfo.overDay">
-                                <p class="overDay"><span>超过三天未上线</span></p>
-                            </template>
-                            <table>
-                                <tbody>
-                                    <tr class="detailInfo">
-                                        <td class="detailLabel"><span>公司名称：</span></td>
-                                        <td><span v-text="statuItemInfo.companyName"></span></td>
-                                    </tr>
-    
-                                    <tr class="detailInfo">
-                                        <td class="detailLabel"><span>部门名称：</span>
-                                        </td>
-                                        <td><span v-text="statuItemInfo.deptName"></span></td>
-                                    </tr>
-                                    <tr class="detailInfo">
-                                        <td class="detailLabel"><span>车辆名称：</span></td>
-                                        <td><span v-text="statuItemInfo.vehicleName"></span></td>
-                                    </tr>
-                                    <tr class="detailInfo">
-                                        <td class="detailLabel"><span>车牌号：</span></td>
-                                        <td><span v-text="statuItemInfo.licenseNumber"></span></td>
-                                    </tr>
-                                    <tr class="detailInfo">
-                                        <td class="detailLabel"><span>车辆编号：</span></td>
-                                        <td><span v-text="statuItemInfo.vehicleCode"></span></td>
-                                    </tr>
-                                    <tr class="detailInfo">
-                                        <td class="detailLabel"><span>定位终端编号：</span></td>
-                                        <td><span v-text="statuItemInfo.gpsDeviceCode"></span></td>
-                                    </tr>
-                                    <tr class="detailInfo">
+                <Modal v-model="showStatuDetail" :footer-hide="true" :styles="{top: '60px'}" width="30"
+                    title="车辆运行情况详情">
+                    <div class="modifiedWrap">
+                        <template v-if="statuItemInfo.overDay">
+                            <p class="overDay"><span>超过24小时未上线</span></p>
+                        </template>
+                        <table>
+                            <tbody>
+                                <tr class="detailInfo">
+                                    <td class="detailLabel"><span>公司名称：</span></td>
+                                    <td><span v-text="statuItemInfo.companyName"></span></td>
+                                </tr>
+
+                                <tr class="detailInfo">
+                                    <td class="detailLabel"><span>部门名称：</span>
+                                    </td>
+                                    <td><span v-text="statuItemInfo.deptName"></span></td>
+                                </tr>
+                                <tr class="detailInfo">
+                                    <td class="detailLabel"><span>车辆名称：</span></td>
+                                    <td><span v-text="statuItemInfo.vehicleName"></span></td>
+                                </tr>
+                                <tr class="detailInfo">
+                                    <td class="detailLabel"><span>车牌号：</span></td>
+                                    <td><span v-text="statuItemInfo.licenseNumber"></span></td>
+                                </tr>
+                                <tr class="detailInfo">
+                                    <td class="detailLabel"><span>车辆编号：</span></td>
+                                    <td><span v-text="statuItemInfo.vehicleCode"></span></td>
+                                </tr>
+                                <tr class="detailInfo">
+                                    <td class="detailLabel"><span>定位终端编号：</span></td>
+                                    <td><span v-text="statuItemInfo.gpsDeviceCode"></span></td>
+                                </tr>
+                                <!-- <tr class="detailInfo">
                                         <td class="detailLabel"><span>当时里程数(公里)：</span></td>
                                         <td><span v-text="statuItemInfo.currMiles"></span></td>
-                                    </tr>
+                                    </tr> -->
+                                <tr class="detailInfo">
+                                    <td class="detailLabel"><span>当时经纬度坐标：</span></td>
+                                    <td><span v-text="statuItemInfo.lastPosition"></span></td>
+                                </tr>
+                                <tr class="detailInfo">
+                                    <td class="detailLabel"><span>车辆当时使用状态：</span></td>
+                                    <td><span v-text="statuItemInfo.useStatusName"></span></td>
+                                </tr>
+                                <tr class="detailInfo">
+                                    <td class="detailLabel"><span>设备供应商：</span></td>
+                                    <td><span v-text="statuItemInfo.providerName"></span></td>
+                                </tr>
+                                <tr class="detailInfo">
+                                    <td class="detailLabel"><span>最后上线时间：</span></td>
+                                    <td><span v-text="statuItemInfo.lastGpsTime"></span></td>
+                                </tr>
+                                <template v-if="functionInfo.isOnlineDetail">
                                     <tr class="detailInfo">
-                                        <td class="detailLabel"><span>当时经纬度坐标：</span></td>
-                                        <td><span v-text="statuItemInfo.lastPosition"></span></td>
+                                        <td></td>
+                                        <td>
+                                            <i-button @click="toOnlineDetail(statuItemInfo)" size="small" type="info">
+                                                查看详情</i-button>
+                                        </td>
                                     </tr>
-                                    <tr class="detailInfo">
-                                        <td class="detailLabel"><span>车辆当时使用状态：</span></td>
-                                        <td><span v-text="statuItemInfo.useStatusName"></span></td>
-                                    </tr>
-                                    <tr class="detailInfo">
-                                        <td class="detailLabel"><span>设备供应商：</span></td>
-                                        <td><span v-text="statuItemInfo.providerName"></span></td>
-                                    </tr>
-                                    <tr class="detailInfo">
-                                        <td class="detailLabel"><span>最后上线时间：</span></td>
-                                        <td><span v-text="statuItemInfo.lastGpsTime"></span></td>
-                                    </tr>
-                            
-                                </tbody>
-                            </table>
-                        </div>
-                    </Modal>
-                </template>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </Modal>
+            </template>
         </div>
 
         <template>

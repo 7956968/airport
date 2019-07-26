@@ -3,7 +3,7 @@
         "el": "#js-vue",
         "data": {
             "isShowDetail": true,
-            "vehicleInfo": JSON.parse(decodeURI(utility.getQueryParams().vehicleInfo)), 
+            "vehicleInfo": JSON.parse(decodeURI(utility.getQueryParams().vehicleInfo)),
             "queryInfo": utility.getQueryParams(),
             "mIP": "", // socket登录IP
             "mPort": "", // socket登录端口
@@ -22,13 +22,32 @@
             "timeSelect": "120",
             "timeLenOut": null,
             "netnSignal": "",
+            "cNet": "",
+            "FPS": "",
+            "seleceChannel": [{
+                value: '0-0'
+            }, {
+                value: '1-1'
+            }, {
+                value: '2-2'
+            }, {
+                value: '3-3'
+            }, {
+                value: '4-4'
+            }, {
+                value: '5-5'
+            }, {
+                value: '6-6'
+            }, {
+                value: '7-7'
+            }],
             "msgType": "primary",
             "msgInfo": "",
             "isFullScream": false,
             "channelIndex": 1,
             "fullScreamIndex": "",
             "defaultColor": "rgb(255,125,0)", // 当前激活视频样式
-            "splitNum": 1,
+            "splitNum": 4,
             "connectTimeOut": null,
             "playerList": [],
             "dragAndDrop": {
@@ -136,51 +155,99 @@
                         {
                             top: '0px',
                             left: '0px',
-                            width: 'calc(100% / 4 * 3 - 6px)',
-                            height: 'calc(100% / 4 * 3 - 8px)'
-                        },//大屏
-                        {
-                            top: 'calc(100% / 4 * 3 - 4px)',
-                            left: '0px',
-                            width: 'calc(100% / 4 * 1 - 4px)',
-                            height: 'calc(100% / 4 * 1)'
-                        },//左下1
-                        {
-                            top: 'calc(100% / 4 * 3 - 4px)',
-                            left: 'calc(100% / 4 * 1 - 0px)',
-                            width: 'calc(100% / 4 * 1 - 6px)',
-                            height: 'calc(100% / 4 * 1)'
-                        },//左下2
-                        {
-                            top: 'calc(100% / 4 * 3 - 4px)',
-                            left: 'calc(100% / 4 * 2 - 2px)',
-                            width: 'calc(100% / 4 * 1 - 4px)',
-                            height: 'calc(100% / 4 * 1)'
-                        },//左下3
-                        {
-                            top: 'calc(100% / 4 * 3 - 4px)',
-                            left: 'calc(100% / 4 * 3 - 2px)',
-                            width: 'calc(100% / 4 * 1 - 2px)',
-                            height: 'calc(100% / 4 * 1)'
-                        },//左下4
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
                         {
                             top: '0px',
-                            left: 'calc(100% / 4 * 3 - 2px)',
-                            width: 'calc(100% / 4 * 1 - 4px)',
-                            height: 'calc(100% / 4 * 1 - 6px)'
-                        },//右上1
+                            left: '50%',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
                         {
-                            top: 'calc(100% / 4 * 1 - 2px)',
-                            left: 'calc(100% / 4 * 3 - 2px)',
-                            width: 'calc(100% / 4 * 1 - 4px)',
-                            height: 'calc(100% / 4 * 1 - 6px)'
-                        },//右上2
+                            top: '50%',
+                            left: '0px',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
                         {
-                            top: 'calc(100% / 4 * 2 - 4px)',
-                            left: 'calc(100% / 4 * 3 - 2px)',
-                            width: 'calc(100% / 4 * 1 - 4px)',
-                            height: 'calc(100% / 4 * 1 - 4px)'
-                        }//右上3
+                            top: '50%',
+                            left: '50%',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
+                        {
+                            top: '0px',
+                            left: '0px',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
+                        {
+                            top: '0px',
+                            left: '50%',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
+                        {
+                            top: '50%',
+                            left: '0px',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
+                        {
+                            top: '50%',
+                            left: '50%',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        }
+                        // {
+                        //     top: '0px',
+                        //     left: '0px',
+                        //     width: 'calc(100% / 4 * 3 - 6px)',
+                        //     height: 'calc(100% / 4 * 3 - 8px)'
+                        // },//大屏
+                        // {
+                        //     top: 'calc(100% / 4 * 3 - 4px)',
+                        //     left: '0px',
+                        //     width: 'calc(100% / 4 * 1 - 4px)',
+                        //     height: 'calc(100% / 4 * 1)'
+                        // },//左下1
+                        // {
+                        //     top: 'calc(100% / 4 * 3 - 4px)',
+                        //     left: 'calc(100% / 4 * 1 - 0px)',
+                        //     width: 'calc(100% / 4 * 1 - 6px)',
+                        //     height: 'calc(100% / 4 * 1)'
+                        // },//左下2
+                        // {
+                        //     top: 'calc(100% / 4 * 3 - 4px)',
+                        //     left: 'calc(100% / 4 * 2 - 2px)',
+                        //     width: 'calc(100% / 4 * 1 - 4px)',
+                        //     height: 'calc(100% / 4 * 1)'
+                        // },//左下3
+                        // {
+                        //     top: 'calc(100% / 4 * 3 - 4px)',
+                        //     left: 'calc(100% / 4 * 3 - 2px)',
+                        //     width: 'calc(100% / 4 * 1 - 2px)',
+                        //     height: 'calc(100% / 4 * 1)'
+                        // },//左下4
+                        // {
+                        //     top: '0px',
+                        //     left: 'calc(100% / 4 * 3 - 2px)',
+                        //     width: 'calc(100% / 4 * 1 - 4px)',
+                        //     height: 'calc(100% / 4 * 1 - 6px)'
+                        // },//右上1
+                        // {
+                        //     top: 'calc(100% / 4 * 1 - 2px)',
+                        //     left: 'calc(100% / 4 * 3 - 2px)',
+                        //     width: 'calc(100% / 4 * 1 - 4px)',
+                        //     height: 'calc(100% / 4 * 1 - 6px)'
+                        // },//右上2
+                        // {
+                        //     top: 'calc(100% / 4 * 2 - 4px)',
+                        //     left: 'calc(100% / 4 * 3 - 2px)',
+                        //     width: 'calc(100% / 4 * 1 - 4px)',
+                        //     height: 'calc(100% / 4 * 1 - 4px)'
+                        // }//右上3
                     ]
                 },//8分屏
                 {
@@ -262,7 +329,7 @@
                     return;
                 }
 
-                self.updateVideoWin(4);
+                self.updateVideoWin(8);
             },
             "loginGetVideo": function () {
                 var self = this;
@@ -293,9 +360,9 @@
                             self.isLogin = false;
                             self.uSession = data.data.sessionValue;
                             if (data.data.sessionValue) {
-                                if(self.queryInfo.isBackPlay == 0) {
+                                if (self.queryInfo.isBackPlay == 0) {
                                     self.startLiveVideo();
-                                } else if(self.queryInfo.isBackPlay == 1) {
+                                } else if (self.queryInfo.isBackPlay == 1) {
                                     self.getVedioFile();
                                 }
                             }
@@ -319,9 +386,117 @@
                 $("body").find(".videoItem").removeClass("active");
                 $("body").find("#" + id).addClass("active");
             },
+            "onChannelChange": function (value) {
+                var self = this;
+                var info = value.split("-");
+                self.loadVideoSource(info[1], info[0]);
+            },
+            "pageSizeChange": function (value) {
+                var self = this;
+                var left = $("body").find(".left");
+                var right = $("body").find(".right");
+                if (value == 1) {
+                    left.css({
+                        zIndex: 1000,
+                        opacity: 1,
+                    });
+                    right.css({
+                        zIndex: 10,
+                        opacity: 0,
+                    });
+                    left.each(function (item) {
+                        var video = $(this).attr("data-id");
+                        var index = $(this).attr("data-index");
+                        self.loadVideoSource(index, index);
+                    });
+                    right.each(function (item) {
+                        var video = $(this).attr("data-id");
+                        var index = $(this).attr("data-index");
+                        self.stopVideoByNum(index);
+                    });
+                    return;
+                }
+                if (value == 2) {
+                    right.css({
+                        zIndex: 1000,
+                        opacity: 1,
+                    });
+                    left.css({
+                        zIndex: 10,
+                        opacity: 0,
+                    });
+                    right.each(function (item) {
+                        var index = $(this).attr("data-index");
+                        self.loadVideoSource(index, index);
+                    });
+                    left.each(function (item) {
+                        var index = $(this).attr("data-index");
+                        self.stopVideoByNum(index);
+                    });
+                    return;
+                }
+            },
+            // getVideoFrame
+            "getVideoFrame": function (videoId) {
+                var self = this;
+                var video = VideoFrame({
+                    id: videoId,
+                    frameRate: 29.97,
+                    callback: function (frame) {
+                        if (navigator.connection.downlink) {
+                            var speed = navigator.connection.downlink * 1024 / 8;
+                            if (speed / 1024 >= 1) {
+                                self.cNet = "当前网速:" + (speed / 1024) + "MB/s";
+                            } else {
+                                self.cNet = "当前网速:" + speed + "KB/s";
+                            }
+                        }
+                    }
+                });
+                video.listen('frame');
+            },
+            // listenVideoFrame
+            "listenVideoFrame": function () {
+                var self = this;
+                var rAF = function () {
+                    return (
+                        window.requestAnimationFrame ||
+                        window.webkitRequestAnimationFrame ||
+                        function (callback) {
+                            window.setTimeout(callback, 1000 / 60);
+                        }
+                    );
+                }();
 
+                var frame = 0;
+                var allFrameCount = 0;
+                var lastTime = Date.now();
+                var lastFameTime = Date.now();
+
+                var loop = function () {
+                    var now = Date.now();
+                    var fs = (now - lastFameTime);
+                    var fps = Math.round(1000 / fs);
+
+                    lastFameTime = now;
+                    // 不置 0，在动画的开头及结尾记录此值的差值算出 FPS
+                    allFrameCount++;
+                    frame++;
+
+                    if (now > 1000 + lastTime) {
+                        var fps = Math.round((frame * 1000) / (now - lastTime));
+                        // console.log(`${new Date()} 1S内 FPS：`, fps);
+                        frame = 0;
+                        lastTime = now;
+                        self.FPS = fps;
+                    };
+
+                    rAF(loop);
+                }
+                loop();
+            },
             // 获取视频文件
-            "getVedioFile": function() {
+            "getVedioFile": function () {
                 var self = this;
                 $.ajax({
                     type: "POST",
@@ -330,7 +505,7 @@
                     xhrFields: { withCredentials: true },
                     success: function (data) {
                         if (data.code == 200) {
-                            
+
                         }
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -341,37 +516,30 @@
             },
 
             // 视频回放
-            "playBackVideo": function() {
+            "playBackVideo": function () {
                 var self = this;
 
-                for (var i = 0; i < self.splitNum; i++) {
+                for (var i = 0; i < 4; i++) {
                     self.playerList.push(null);
                     self.loadVideoSource({
                         type: 'flv',
-                        url: "http://39.106.1.200:6604/PlaybackFlv.do?DevIDNO="+ self.vehicleInfo["licenseNumber"] +"&Channel=" + i + "&StreamType=0&uSession=" + self.uSession + "&Date=" + self.backPlay.Date + "&BeginSecond=" + self.backPlay.BeginSecond + "&EndSecond=" + self.backPlay.EndSecond
-                    }, i); 
+                        url: "http://39.106.1.200:6604/PlaybackFlv.do?DevIDNO=" + self.vehicleInfo["licenseNumber"] + "&Channel=" + i + "&StreamType=0&uSession=" + self.uSession + "&Date=" + self.backPlay.Date + "&BeginSecond=" + self.backPlay.BeginSecond + "&EndSecond=" + self.backPlay.EndSecond
+                    }, i);
                 }
             },
 
             // 链接 socket 服务器
             "livePreivew": function () {
                 var self = this;
-                var port = "6604";
-                for (var i = 0; i < self.splitNum; i++) {
+                for (var i = 0; i < 4; i++) {
                     self.playerList.push(null);
 
-                    if(i>5) {
-                        port = "8604";
-                    }
                     // 如果是实时预览
-                    if(self.queryInfo.isBackPlay == 0) {
-                        self.loadVideoSource({
-                            type: 'flv',
-                            url: "http://39.106.1.200:"+ port +"/RealplayFlv.do?DevIDNO="+ self.vehicleInfo["licenseNumber"] +"&Channel=" + i + "&StreamType=0&uSession=" + self.uSession
-                        }, i);                   
+                    if (self.queryInfo.isBackPlay == 0) {
+                        self.loadVideoSource(i, i);
                     }
                 }
-                setInterval(function(){
+                setInterval(function () {
                     for (var v = 0; v < self.splitNum; v++) {
                         $("#video" + v)[0].play();
                     }
@@ -390,7 +558,6 @@
                     }, 1000);
                 }, 5000);
             },
-
             // 重新分割窗口
             "updateVideoWin": function (splitNum) {
                 var self = this;
@@ -411,7 +578,7 @@
                     return;
                 }
 
-                $("body").find(".videoItem").css("display", "none");
+                // $("body").find(".videoItem").css("display", "none");
                 for (var idx = 0; idx < splitNum; idx++) {
                     var curVideoWin = $("body").find("#liveVideo" + idx);
                     if (curVideoWin == null) {
@@ -422,6 +589,7 @@
                         return;
                     }
                     curVideoWin.css({ "top": param[idx].top, "left": param[idx].left, "width": param[idx].width, "height": param[idx].height, "display": "block" });
+                    self.getVideoFrame("#video" + idx);
                 }
 
                 self.splitNum = splitNum;
@@ -435,25 +603,32 @@
             },
 
             // 获取视频资源
-            "loadVideoSource": function (mediaDataSource, index) {
+            "loadVideoSource": function (vIndex, pIndex) {
                 var self = this;
-                var element = $("body").find("#video" + index)[0];
-                if (typeof self.playerList[index] !== "undefined") {
-                    if (self.playerList[index] != null) {
-                        self.playerList[index].unload();
-                        self.playerList[index].detachMediaElement();
-                        self.playerList[index].destroy();
-                        self.playerList[index] = null;
+                var port = "6604";
+                var element = $("body").find("#video" + vIndex)[0];
+                if (vIndex > 5) {
+                    port = "8604";
+                }
+                if (typeof self.playerList[vIndex] !== "undefined") {
+                    if (self.playerList[vIndex] != null) {
+                        self.playerList[vIndex].unload();
+                        self.playerList[vIndex].detachMediaElement();
+                        self.playerList[vIndex].destroy();
+                        self.playerList[vIndex] = null;
                     }
                 }
-                self.playerList[index] = flvjs.createPlayer(mediaDataSource, {
-                    enableWorker: false,
-                    lazyLoadMaxDuration: 3 * 60, // 延迟负载最大持续时间180s
-                    seekType: 'range',  //滑块控件range
-                });
-                self.playerList[index].attachMediaElement(element);
-                self.playerList[index].load();
-                self.playerList[index].play();
+                self.playerList[vIndex] = flvjs.createPlayer({
+                    type: 'flv',
+                    url: "http://39.106.1.200:" + port + "/RealplayFlv.do?DevIDNO=" + self.vehicleInfo["licenseNumber"] + "&Channel=" + pIndex + "&StreamType=0&uSession=" + self.uSession
+                }, {
+                        enableWorker: false,
+                        lazyLoadMaxDuration: 3 * 60, // 延迟负载最大持续时间180s
+                        seekType: 'range',  //滑块控件range
+                    });
+                self.playerList[vIndex].attachMediaElement(element);
+                self.playerList[vIndex].load();
+                self.playerList[vIndex].play();
             },
 
             // 开始视频
@@ -474,7 +649,15 @@
                 self.msgType = "error";
                 self.msgInfo = "";
             },
-
+            "stopVideoByNum": function (index) {
+                if (!!self.playerList[index]) {
+                    self.playerList[index].pause();
+                    self.playerList[index].unload();
+                    self.playerList[index].detachMediaElement();
+                    self.playerList[index].destroy();
+                    self.playerList[index] = null;
+                }
+            },
             // 停止视频
             "stopVideo": function () {
                 var self = this;
@@ -497,7 +680,7 @@
                 self.timeSelect = "120";
             },
             // 当拖拽结束
-            "dragEnd": function(event){
+            "dragEnd": function (event) {
                 var self = this;
                 var srcElement = $(event.srcElement);
 
@@ -506,7 +689,7 @@
 
             },
             // 接收拖拽元素
-            "drop": function(event){
+            "drop": function (event) {
                 var self = this;
                 var srcElement = $(event.srcElement).parents(".videoItem");
 
@@ -515,25 +698,25 @@
                 self.dragAndDrop.targetEle = srcElement;
                 self.dragAndDrop.targetStyle = srcElement.attr("style");
 
-                setTimeout(function(){
+                setTimeout(function () {
                     self.dragAndDrop.targetEle.attr("style", self.dragAndDrop.sourceStyle);
                     self.dragAndDrop.sourceEle.attr("style", self.dragAndDrop.targetStyle);
                 }, 250);
             },
-            "dragOver": function(event){
+            "dragOver": function (event) {
                 var self = this;
                 event.preventDefault();
             },
-            "dateChange": function(value) {
+            "dateChange": function (value) {
                 var self = this;
                 self.backPlay.Date = value;
             },
-            "beginTimeChange": function(value) {
+            "beginTimeChange": function (value) {
                 var self = this;
                 var timeInfo = value.split(":");
                 self.backPlay.BeginSecond = timeInfo[0] * 3600 + timeInfo[1] * 60 + timeInfo[2];
             },
-            "endTimeChange": function(value) {
+            "endTimeChange": function (value) {
                 var self = this;
                 var timeInfo = value.split(":");
                 self.backPlay.EndSecond = timeInfo[0] * 3600 + timeInfo[1] * 60 + timeInfo[2];
@@ -552,13 +735,15 @@
                 }
             },
             // 返回
-            "backPage": function(){
+            "backPage": function () {
                 var self = this;
                 window.close();
             }
         },
         "mounted": function () {
             var self = this;
+
+            self.listenVideoFrame();
 
             self.$Message.config({
                 "top": 5,
@@ -572,8 +757,8 @@
                 "closable": true
             });
 
-            self.backPlay.isBackPlay = (self.queryInfo.isBackPlay==1);
-            
+            self.backPlay.isBackPlay = (self.queryInfo.isBackPlay == 1);
+
             self.init({
                 "port": 7668,
                 "pwd": "888888",

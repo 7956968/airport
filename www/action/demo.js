@@ -174,7 +174,7 @@
         "created": function () {
             var self = this;
 
-            document.title = self.title[self.language];
+            // document.title = self.title[self.language];
 
             // 获取枚举值
             self.getBizParam();

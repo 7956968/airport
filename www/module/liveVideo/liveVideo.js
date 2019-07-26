@@ -9,10 +9,49 @@
             "mPort": 7668, // socket登录端口
             "mUserName": "mgkj", // 登录用户名
             "mPwd": "888888", // socket密码
-            "mVideoCount": 9, // 分屏数
+            "mVideoCount": 8, // 分屏数
             "maxVideoNum": 10, // 最大视频数
             "codeType": true, // true是网络码流 false是主码流
             "front": null,
+            "cNet": "",
+            "FPS": "",
+            "pageCurrent": 1,
+            "pageNum": 0,
+            "frontChildren": [],
+            "seleceChannel": [{
+                value: '0-0'
+            }, {
+                value: '1-1'
+            }, {
+                value: '2-2'
+            }, {
+                value: '3-3'
+            }, {
+                value: '4-4'
+            }, {
+                value: '5-5'
+            }, {
+                value: '6-6'
+            }, {
+                value: '7-7'
+            }],
+            "flagChannel": [{
+                value: '0-0'
+            }, {
+                value: '1-1'
+            }, {
+                value: '2-2'
+            }, {
+                value: '3-3'
+            }, {
+                value: '4-4'
+            }, {
+                value: '5-5'
+            }, {
+                value: '6-6'
+            }, {
+                value: '7-7'
+            }],
             "isStop": false, // 是否开始了
             "offLine": false, // 是否开始了
             "timeOfflineOut": null,
@@ -27,7 +66,7 @@
             "channelIndex": "-",
             "fullScreamIndex": "",
             "defaultColor": "rgb(255,125,0)", // 当前激活视频样式
-            "splitNum": 1,
+            "splitNum": 4,
             "connectTimeOut": null,
             "dragAndDrop": {
                 "sourceEle": null,
@@ -36,7 +75,382 @@
                 "targetStyle": ""
             },
             "splitArea": [1, 4, 6, 8, 9], // 分屏类型
-            "videoWinSplit": [
+            "videoWinSplit": {
+                "_1": {
+                    count: 1,
+                    normal: [
+                        {
+                            top: '0px',
+                            left: '0px',
+                            width: 'calc(100% - 4px)',
+                            height: 'calc(100% - 4px)'//calc运算符一定要有空格，要不然解析不了
+                        }
+                    ],
+                    page: [
+                        {
+                            top: '0px',
+                            left: '0px',
+                            width: 'calc(100% - 4px)',
+                            height: 'calc(100% - 4px)'//calc运算符一定要有空格，要不然解析不了
+                        }
+                    ]
+                },
+                "_4": {
+                    count: 4,
+                    normal: [
+                        {
+                            top: '0px',
+                            left: '0px',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
+                        {
+                            top: '0px',
+                            left: '50%',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
+                        {
+                            top: '50%',
+                            left: '0px',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
+                        {
+                            top: '50%',
+                            left: '50%',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        }
+                    ],
+                    page: [
+                        {
+                            top: '0px',
+                            left: '0px',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
+                        {
+                            top: '0px',
+                            left: '50%',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
+                        {
+                            top: '50%',
+                            left: '0px',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
+                        {
+                            top: '50%',
+                            left: '50%',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        }
+                    ],
+                },
+                "_6": {
+                    count: 6,
+                    normal: [
+                        {
+                            top: '0px',
+                            left: '0px',
+                            width: 'calc(100% / 3 * 2 - 6px)',
+                            height: 'calc(100% / 3 * 2 - 8px)'
+                        },//大屏
+                        {
+                            top: 'calc(100% / 3 * 2 - 4px)',
+                            left: '0px',
+                            width: 'calc(100% / 3 * 1 - 4px)',
+                            height: 'calc(100% / 3 * 1)'
+                        },//左下1
+                        {
+                            top: 'calc(100% / 3 * 2 - 4px)',
+                            left: 'calc(100% / 3 * 1 - 0px)',
+                            width: 'calc(100% / 3 * 1 - 6px)',
+                            height: 'calc(100% / 3 * 1)'
+                        },//左下2
+                        {
+                            top: 'calc(100% / 3 * 2 - 4px)',
+                            left: 'calc(100% / 3 * 2 - 2px)',
+                            width: 'calc(100% / 3 * 1 - 4px)',
+                            height: 'calc(100% / 3 * 1)'
+                        },//左下3
+                        {
+                            top: '0px',
+                            left: 'calc(100% / 3 * 2 - 2px)',
+                            width: 'calc(100% / 3 * 1 - 2px)',
+                            height: 'calc(100% / 3 * 1 - 8px)'
+                        },//右上1
+                        {
+                            top: 'calc(100% / 3 * 1 - 4px)',
+                            left: 'calc(100% / 3 * 2 - 2px)',
+                            width: 'calc(100% / 3 * 1 - 4px)',
+                            height: 'calc(100% / 3 * 1 - 4px)'
+                        }//右上2
+                    ],
+                    page: [
+                        {
+                            top: '0px',
+                            left: '0px',
+                            width: 'calc(100% / 3 * 2 - 6px)',
+                            height: 'calc(100% / 3 * 2 - 8px)'
+                        },//大屏
+                        {
+                            top: 'calc(100% / 3 * 2 - 4px)',
+                            left: '0px',
+                            width: 'calc(100% / 3 * 1 - 4px)',
+                            height: 'calc(100% / 3 * 1)'
+                        },//左下1
+                        {
+                            top: 'calc(100% / 3 * 2 - 4px)',
+                            left: 'calc(100% / 3 * 1 - 0px)',
+                            width: 'calc(100% / 3 * 1 - 6px)',
+                            height: 'calc(100% / 3 * 1)'
+                        },//左下2
+                        {
+                            top: 'calc(100% / 3 * 2 - 4px)',
+                            left: 'calc(100% / 3 * 2 - 2px)',
+                            width: 'calc(100% / 3 * 1 - 4px)',
+                            height: 'calc(100% / 3 * 1)'
+                        },//左下3
+                        {
+                            top: '0px',
+                            left: 'calc(100% / 3 * 2 - 2px)',
+                            width: 'calc(100% / 3 * 1 - 2px)',
+                            height: 'calc(100% / 3 * 1 - 8px)'
+                        },//右上1
+                        {
+                            top: 'calc(100% / 3 * 1 - 4px)',
+                            left: 'calc(100% / 3 * 2 - 2px)',
+                            width: 'calc(100% / 3 * 1 - 4px)',
+                            height: 'calc(100% / 3 * 1 - 4px)'
+                        }//右上2
+                    ]
+                },
+                "_8": {
+                    count: 8,
+                    page: [
+                        {
+                            top: '0px',
+                            left: '0px',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
+                        {
+                            top: '0px',
+                            left: '50%',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
+                        {
+                            top: '50%',
+                            left: '0px',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
+                        {
+                            top: '50%',
+                            left: '50%',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
+                        {
+                            top: '0px',
+                            left: '0px',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
+                        {
+                            top: '0px',
+                            left: '50%',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
+                        {
+                            top: '50%',
+                            left: '0px',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
+                        {
+                            top: '50%',
+                            left: '50%',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        }
+                    ],
+                    normal: [
+                        {
+                            top: '0px',
+                            left: '0px',
+                            width: 'calc(100% / 4 * 3 - 6px)',
+                            height: 'calc(100% / 4 * 3 - 8px)'
+                        },//大屏
+                        {
+                            top: '0px',
+                            left: 'calc(100% / 4 * 3 - 2px)',
+                            width: 'calc(100% / 4 * 1 - 4px)',
+                            height: 'calc(100% / 4 * 1 - 6px)'
+                        },//右上1
+                        {
+                            top: 'calc(100% / 4 * 1 - 2px)',
+                            left: 'calc(100% / 4 * 3 - 2px)',
+                            width: 'calc(100% / 4 * 1 - 4px)',
+                            height: 'calc(100% / 4 * 1 - 6px)'
+                        },//右上2
+
+                        {
+                            top: 'calc(100% / 4 * 2 - 4px)',
+                            left: 'calc(100% / 4 * 3 - 2px)',
+                            width: 'calc(100% / 4 * 1 - 4px)',
+                            height: 'calc(100% / 4 * 1 - 4px)'
+                        },//右上3
+                        {
+                            top: 'calc(100% / 4 * 3 - 4px)',
+                            left: '0px',
+                            width: 'calc(100% / 4 * 1 - 4px)',
+                            height: 'calc(100% / 4 * 1)'
+                        },//左下3
+                        {
+                            top: 'calc(100% / 4 * 3 - 4px)',
+                            left: 'calc(100% / 4 * 1 - 0px)',
+                            width: 'calc(100% / 4 * 1 - 6px)',
+                            height: 'calc(100% / 4 * 1)'
+                        },//右上4
+                        {
+                            top: 'calc(100% / 4 * 3 - 4px)',
+                            left: 'calc(100% / 4 * 2 - 2px)',
+                            width: 'calc(100% / 4 * 1 - 4px)',
+                            height: 'calc(100% / 4 * 1)'
+                        },//左下1
+                        {
+                            top: 'calc(100% / 4 * 3 - 4px)',
+                            left: 'calc(100% / 4 * 3 - 2px)',
+                            width: 'calc(100% / 4 * 1 - 2px)',
+                            height: 'calc(100% / 4 * 1)'
+                        },//左下2
+                    ]
+                },
+                "_9": {
+                    count: 9,
+                    normal: [
+                        {
+                            top: '0px',
+                            left: '0px',
+                            width: 'calc(100% / 3 * 1 - 4px)',
+                            height: 'calc(100% / 3 * 1 - 6px)'
+                        },//1,1
+                        {
+                            top: '0px',
+                            left: 'calc(100% / 3 * 1)',
+                            width: 'calc(100% / 3 * 1 - 4px)',
+                            height: 'calc(100% / 3 * 1 - 6px)'
+                        },//1,2
+                        {
+                            top: '0px',
+                            left: 'calc(100% / 3 * 2)',
+                            width: 'calc(100% / 3 * 1 - 4px)',
+                            height: 'calc(100% / 3 * 1 - 6px)'
+                        },//1,3
+                        {
+                            top: 'calc(100% / 3 * 1 - 2px)',
+                            left: '0px',
+                            width: 'calc(100% / 3 * 1 - 4px)',
+                            height: 'calc(100% / 3 * 1 - 2px)'
+                        },//2,1
+                        {
+                            top: 'calc(100% / 3 * 1 - 2px)',
+                            left: 'calc(100% / 3 * 1)',
+                            width: 'calc(100% / 3 * 1 - 4px)',
+                            height: 'calc(100% / 3 * 1 - 2px)'
+                        },//2,2
+                        {
+                            top: 'calc(100% / 3 * 1 - 2px)',
+                            left: 'calc(100% / 3 * 2)',
+                            width: 'calc(100% / 3 * 1 - 4px)',
+                            height: 'calc(100% / 3 * 1 - 2px)'
+                        },//2,3
+                        {
+                            top: 'calc(100% / 3 * 2)',
+                            left: '0px',
+                            width: 'calc(100% / 3 * 1 - 4px)',
+                            height: 'calc(100% / 3 * 1 - 4px)'
+                        },//3,1
+                        {
+                            top: 'calc(100% / 3 * 2)',
+                            left: 'calc(100% / 3 * 1)',
+                            width: 'calc(100% / 3 * 1 - 4px)',
+                            height: 'calc(100% / 3 * 1 - 4px)'
+                        },//3,2
+                        {
+                            top: 'calc(100% / 3 * 2)',
+                            left: 'calc(100% / 3 * 2)',
+                            width: 'calc(100% / 3 * 1 - 4px)',
+                            height: 'calc(100% / 3 * 1 - 4px)'
+                        }//3,3
+                    ],
+                    page: [
+                        {
+                            top: '0px',
+                            left: '0px',
+                            width: 'calc(100% / 3 * 1 - 4px)',
+                            height: 'calc(100% / 3 * 1 - 6px)'
+                        },//1,1
+                        {
+                            top: '0px',
+                            left: 'calc(100% / 3 * 1)',
+                            width: 'calc(100% / 3 * 1 - 4px)',
+                            height: 'calc(100% / 3 * 1 - 6px)'
+                        },//1,2
+                        {
+                            top: '0px',
+                            left: 'calc(100% / 3 * 2)',
+                            width: 'calc(100% / 3 * 1 - 4px)',
+                            height: 'calc(100% / 3 * 1 - 6px)'
+                        },//1,3
+                        {
+                            top: 'calc(100% / 3 * 1 - 2px)',
+                            left: '0px',
+                            width: 'calc(100% / 3 * 1 - 4px)',
+                            height: 'calc(100% / 3 * 1 - 2px)'
+                        },//2,1
+                        {
+                            top: 'calc(100% / 3 * 1 - 2px)',
+                            left: 'calc(100% / 3 * 1)',
+                            width: 'calc(100% / 3 * 1 - 4px)',
+                            height: 'calc(100% / 3 * 1 - 2px)'
+                        },//2,2
+                        {
+                            top: 'calc(100% / 3 * 1 - 2px)',
+                            left: 'calc(100% / 3 * 2)',
+                            width: 'calc(100% / 3 * 1 - 4px)',
+                            height: 'calc(100% / 3 * 1 - 2px)'
+                        },//2,3
+                        {
+                            top: 'calc(100% / 3 * 2)',
+                            left: '0px',
+                            width: 'calc(100% / 3 * 1 - 4px)',
+                            height: 'calc(100% / 3 * 1 - 4px)'
+                        },//3,1
+                        {
+                            top: 'calc(100% / 3 * 2)',
+                            left: 'calc(100% / 3 * 1)',
+                            width: 'calc(100% / 3 * 1 - 4px)',
+                            height: 'calc(100% / 3 * 1 - 4px)'
+                        },//3,2
+                        {
+                            top: 'calc(100% / 3 * 2)',
+                            left: 'calc(100% / 3 * 2)',
+                            width: 'calc(100% / 3 * 1 - 4px)',
+                            height: 'calc(100% / 3 * 1 - 4px)'
+                        }//3,3
+                    ]
+                }
+            },
+            "isNormal": false,
+            "videoWinSplitDemo": [
                 {
                     count: 1,
                     param: [
@@ -124,51 +538,99 @@
                         {
                             top: '0px',
                             left: '0px',
-                            width: 'calc(100% / 4 * 3 - 6px)',
-                            height: 'calc(100% / 4 * 3 - 8px)'
-                        },//大屏
-                        {
-                            top: 'calc(100% / 4 * 3 - 4px)',
-                            left: '0px',
-                            width: 'calc(100% / 4 * 1 - 4px)',
-                            height: 'calc(100% / 4 * 1)'
-                        },//左下1
-                        {
-                            top: 'calc(100% / 4 * 3 - 4px)',
-                            left: 'calc(100% / 4 * 1 - 0px)',
-                            width: 'calc(100% / 4 * 1 - 6px)',
-                            height: 'calc(100% / 4 * 1)'
-                        },//左下2
-                        {
-                            top: 'calc(100% / 4 * 3 - 4px)',
-                            left: 'calc(100% / 4 * 2 - 2px)',
-                            width: 'calc(100% / 4 * 1 - 4px)',
-                            height: 'calc(100% / 4 * 1)'
-                        },//左下3
-                        {
-                            top: 'calc(100% / 4 * 3 - 4px)',
-                            left: 'calc(100% / 4 * 3 - 2px)',
-                            width: 'calc(100% / 4 * 1 - 2px)',
-                            height: 'calc(100% / 4 * 1)'
-                        },//左下4
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
                         {
                             top: '0px',
-                            left: 'calc(100% / 4 * 3 - 2px)',
-                            width: 'calc(100% / 4 * 1 - 4px)',
-                            height: 'calc(100% / 4 * 1 - 6px)'
-                        },//右上1
+                            left: '50%',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
                         {
-                            top: 'calc(100% / 4 * 1 - 2px)',
-                            left: 'calc(100% / 4 * 3 - 2px)',
-                            width: 'calc(100% / 4 * 1 - 4px)',
-                            height: 'calc(100% / 4 * 1 - 6px)'
-                        },//右上2
+                            top: '50%',
+                            left: '0px',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
                         {
-                            top: 'calc(100% / 4 * 2 - 4px)',
-                            left: 'calc(100% / 4 * 3 - 2px)',
-                            width: 'calc(100% / 4 * 1 - 4px)',
-                            height: 'calc(100% / 4 * 1 - 4px)'
-                        }//右上3
+                            top: '50%',
+                            left: '50%',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
+                        {
+                            top: '0px',
+                            left: '0px',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
+                        {
+                            top: '0px',
+                            left: '50%',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
+                        {
+                            top: '50%',
+                            left: '0px',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
+                        {
+                            top: '50%',
+                            left: '50%',
+                            width: 'calc(50% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        }
+                        // {
+                        //     top: '0px',
+                        //     left: '0px',
+                        //     width: 'calc(100% / 4 * 3 - 6px)',
+                        //     height: 'calc(100% / 4 * 3 - 8px)'
+                        // },//大屏
+                        // {
+                        //     top: 'calc(100% / 4 * 3 - 4px)',
+                        //     left: '0px',
+                        //     width: 'calc(100% / 4 * 1 - 4px)',
+                        //     height: 'calc(100% / 4 * 1)'
+                        // },//左下1
+                        // {
+                        //     top: 'calc(100% / 4 * 3 - 4px)',
+                        //     left: 'calc(100% / 4 * 1 - 0px)',
+                        //     width: 'calc(100% / 4 * 1 - 6px)',
+                        //     height: 'calc(100% / 4 * 1)'
+                        // },//左下2
+                        // {
+                        //     top: 'calc(100% / 4 * 3 - 4px)',
+                        //     left: 'calc(100% / 4 * 2 - 2px)',
+                        //     width: 'calc(100% / 4 * 1 - 4px)',
+                        //     height: 'calc(100% / 4 * 1)'
+                        // },//左下3
+                        // {
+                        //     top: 'calc(100% / 4 * 3 - 4px)',
+                        //     left: 'calc(100% / 4 * 3 - 2px)',
+                        //     width: 'calc(100% / 4 * 1 - 2px)',
+                        //     height: 'calc(100% / 4 * 1)'
+                        // },//左下4
+                        // {
+                        //     top: '0px',
+                        //     left: 'calc(100% / 4 * 3 - 2px)',
+                        //     width: 'calc(100% / 4 * 1 - 4px)',
+                        //     height: 'calc(100% / 4 * 1 - 6px)'
+                        // },//右上1
+                        // {
+                        //     top: 'calc(100% / 4 * 1 - 2px)',
+                        //     left: 'calc(100% / 4 * 3 - 2px)',
+                        //     width: 'calc(100% / 4 * 1 - 4px)',
+                        //     height: 'calc(100% / 4 * 1 - 6px)'
+                        // },//右上2
+                        // {
+                        //     top: 'calc(100% / 4 * 2 - 4px)',
+                        //     left: 'calc(100% / 4 * 3 - 2px)',
+                        //     width: 'calc(100% / 4 * 1 - 4px)',
+                        //     height: 'calc(100% / 4 * 1 - 4px)'
+                        // }//右上3
                     ]
                 },//8分屏
                 {
@@ -243,14 +705,212 @@
                     self.msgInfo = "视频窗口数量有误";
                     return;
                 }
-
-                self.updateVideoWin(4);
+                self.updateVideoWin(8);
                 self.connectNet();
-
             },
             "onTimeChange": function (value) {
                 var self = this;
                 self.timeLen = parseInt(value, 10);
+            },
+            "onChannelChange": function (value) {
+                var self = this;
+                var info = value.split("-");
+                var hiddenVideo = $(".hiddenVideo");
+                var bool = true;
+                var flagCha = $("body").find("#hidden" + info[1]);
+
+                for (var i = 0, len = hiddenVideo.length; i < len; i++) {
+                    // 如果当前是第二页
+                    if (self.pageCurrent == 2) {
+                        if (i > 3) {
+                            if ($(hiddenVideo[i]).val() != flagCha.val()) {
+                                if (info[0] == $(hiddenVideo[i]).val().split("-")[0]) {
+                                    bool = false;
+                                    self.seleceChannel[info[1]]['value'] = flagCha.val();
+                                    alert("摄像机" + self.frontChildren[info[0]]["name"] + "正在其他通道播放，请选择其他摄像头");
+                                    break;
+                                }
+                            }
+                        }
+                    } else {
+                        if (i < 4) {
+                            if ($(hiddenVideo[i]).val() != flagCha.val()) {
+                                if (info[0] == $(hiddenVideo[i]).val().split("-")[0]) {
+                                    bool = false;
+                                    self.seleceChannel[info[1]]['value'] = flagCha.val();
+                                    alert("摄像机" + self.frontChildren[info[0]]["name"] + "正在其他通道播放，请选择其他摄像头");
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (bool == true) {
+                    flagCha.val(value);
+                    vsclientSession.startPlay({
+                        name: self.vehicleInfo.licenseNumber,
+                        channel: info[0],
+                        videoCtrl: $("#video" + info[1])[0],
+                        codeType: self.codeType
+                    });
+                }
+            },
+            // 播放单个视频
+            "playSigleVideo": function (channel, video) {
+                var self = this;
+                var info = video.split("-");
+                if ($("body").find("#video" + info[1]).attr("src").length < 10) {
+                    vsclientSession.startPlay({
+                        name: self.vehicleInfo.licenseNumber,
+                        channel: channel,
+                        videoCtrl: $("#video" + info[1])[0],
+                        codeType: self.codeType
+                    });
+                } else {
+                    vsclientSession.stopPlay($("body").find("#video" + info[1])[0]);
+                }
+            },
+            "playAllVedio": function () {
+                var self = this;
+                var left = $("body").find(".left");
+                var right = $("body").find(".right");
+                self.isNormal = !self.isNormal;
+                self.updateVideoWin(8);
+                if (self.isNormal == true) {
+                    left.css({
+                        zIndex: 1000,
+                        opacity: 1,
+                    });
+                    right.css({
+                        zIndex: 1000,
+                        opacity: 1,
+                    });
+                    left.each(function (item) {
+                        var video = $(this).attr("data-id");
+                        var index = $(this).attr("data-index");
+                        if ($("#" + video).attr("src").length < 20) {
+                            $("#" + video).attr("controls", true);
+                            vsclientSession.startPlay({
+                                name: self.vehicleInfo.licenseNumber,
+                                channel: index,
+                                videoCtrl: $("#" + video)[0],
+                                codeType: self.codeType
+                            });
+                        }
+                    });
+                    right.each(function (item) {
+                        var video = $(this).attr("data-id");
+                        var index = $(this).attr("data-index");
+                        if ($("#" + video).attr("src").length < 20) {
+                            $("#" + video).attr("controls", true);
+                            vsclientSession.startPlay({
+                                name: self.vehicleInfo.licenseNumber,
+                                channel: index,
+                                videoCtrl: $("#" + video)[0],
+                                codeType: self.codeType
+                            });
+                        }
+                    });
+                } else {
+                    left.css({
+                        zIndex: 1000,
+                        opacity: 1,
+                    });
+                    right.css({
+                        zIndex: 10,
+                        opacity: 0,
+                    });
+                    left.each(function (item) {
+                        var video = $(this).attr("data-id");
+                        var index = $(this).attr("data-index");
+                        if ($("#" + video).attr("src").length < 20) {
+                            $("#" + video).attr("controls", true);
+                            vsclientSession.startPlay({
+                                name: self.vehicleInfo.licenseNumber,
+                                channel: index,
+                                videoCtrl: $("#" + video)[0],
+                                codeType: self.codeType
+                            });
+                        }
+                    });
+                    right.each(function (item) {
+                        var video = $(this).attr("data-id");
+                        var index = $(this).attr("data-index");
+                        vsclientSession.stopPlay($("body").find("#" + video)[0]);
+                    });
+                }
+                clearInterval(self.timeLenOut);
+                self.timeLenOut = null;
+                setTimeout(function () {
+                    self.timeLenOut = setInterval(function () {
+                        self.timeLen--;
+                        self.$Message.destroy();
+                        if (self.timeLen <= 0 || self.isStop == true) {
+                            self.stopVideo("");
+                            clearInterval(self.timeLenOut);
+                        }
+                    }, 1000);
+                    self.stopAudio();
+                    $("body").find("video").removeAttr("controls");;
+                }, 5000);
+            },
+            "pageSizeChange": function (value) {
+                var self = this;
+                var left = $("body").find(".left");
+                var right = $("body").find(".right");
+                self.pageCurrent = value;
+                if (value == 1) {
+                    left.css({
+                        zIndex: 1000,
+                        opacity: 1,
+                    });
+                    right.css({
+                        zIndex: 10,
+                        opacity: 0,
+                    });
+                    left.each(function (item) {
+                        var video = $(this).attr("data-id");
+                        var index = $(this).attr("data-index");
+                        vsclientSession.startPlay({
+                            name: self.vehicleInfo.licenseNumber,
+                            channel: index,
+                            videoCtrl: $("#" + video)[0],
+                            codeType: self.codeType
+                        });
+                    });
+                    right.each(function (item) {
+                        var video = $(this).attr("data-id");
+                        var index = $(this).attr("data-index");
+                        vsclientSession.stopPlay($("body").find("#" + video)[0]);
+                    });
+                    return;
+                }
+                if (value == 2) {
+                    right.css({
+                        zIndex: 1000,
+                        opacity: 1,
+                    });
+                    left.css({
+                        zIndex: 10,
+                        opacity: 0,
+                    });
+                    right.each(function (item) {
+                        var video = $(this).attr("data-id");
+                        var index = $(this).attr("data-index");
+                        vsclientSession.startPlay({
+                            name: self.vehicleInfo.licenseNumber,
+                            channel: index,
+                            videoCtrl: $("#" + video)[0],
+                            codeType: self.codeType
+                        });
+                    });
+                    left.each(function (item) {
+                        var video = $(this).attr("data-id");
+                        var index = $(this).attr("data-index");
+                        vsclientSession.stopPlay($("body").find("#" + video)[0]);
+                    });
+                    return;
+                }
             },
             // 设置当前选中视频样式
             "setCurrentStyle": function (id) {
@@ -277,6 +937,7 @@
                     onlogon: function (info) {
                         var front = vsclientSession.findFrontByName(self.vehicleInfo.licenseNumber);
                         self.front = front;
+                        self.frontChildren = self.front.children;
                         self.$Message.destroy();
                         self.msgType = "success";
                         self.msgInfo = "车辆 【" + self.vehicleInfo.licenseNumber + "】登录成功";
@@ -288,10 +949,10 @@
                             clearInterval(self.timeLenOut);
                             return;
                         }
+                        self.pageNum = self.frontChildren.length > 8 ? 8 : self.frontChildren.length;
                         // 登录成功后马上开始播放视频
                         self.startVideo();
-
-                        console.log(self.front);
+                        self.listenVideoFrame();
                     },
                     // // 设备离线或上线
                     onOnOffline: function (front) {
@@ -373,17 +1034,74 @@
                 });
                 clearInterval(self.timeLenOut);
             },
+            // getVideoFrame
+            "getVideoFrame": function (videoId) {
+                var self = this;
+                var video = VideoFrame({
+                    id: videoId,
+                    frameRate: 29.97,
+                    callback: function (frame) {
+                        if (navigator.connection.downlink) {
+                            var speed = navigator.connection.downlink * 1024 / 8;
+                            if (speed / 1024 >= 1) {
+                                self.cNet = "当前网速:" + (speed / 1024) + "MB/s";
+                            } else {
+                                self.cNet = "当前网速:" + speed + "KB/s";
+                            }
+                        }
+                    }
+                });
+                video.listen('frame');
+            },
+            // listenVideoFrame
+            "listenVideoFrame": function () {
+                var self = this;
+                var rAF = function () {
+                    return (
+                        window.requestAnimationFrame ||
+                        window.webkitRequestAnimationFrame ||
+                        function (callback) {
+                            window.setTimeout(callback, 1000 / 60);
+                        }
+                    );
+                }();
 
+                var frame = 0;
+                var allFrameCount = 0;
+                var lastTime = Date.now();
+                var lastFameTime = Date.now();
+
+                var loop = function () {
+                    var now = Date.now();
+                    var fs = (now - lastFameTime);
+                    var fps = Math.round(1000 / fs);
+
+                    lastFameTime = now;
+                    // 不置 0，在动画的开头及结尾记录此值的差值算出 FPS
+                    allFrameCount++;
+                    frame++;
+
+                    if (now > 1000 + lastTime) {
+                        var fps = Math.round((frame * 1000) / (now - lastTime));
+                        // console.log(`${new Date()} 1S内 FPS：`, fps);
+                        frame = 0;
+                        lastTime = now;
+                        self.FPS = fps;
+                    };
+
+                    rAF(loop);
+                }
+                loop();
+            },
             // 重新分割窗口
             "updateVideoWin": function (splitNum) {
                 var self = this;
                 var param = null;
 
-                for (var idx = 0; idx < self.videoWinSplit.length; idx++) {
-                    if (self.videoWinSplit[idx].count == splitNum) {
-                        param = self.videoWinSplit[idx].param;
-                        break;
-                    }
+                if (self.isNormal == true) {
+                    param = self.videoWinSplit["_" + splitNum]["normal"];
+                } else {
+                    param = self.videoWinSplit["_" + splitNum]["page"];
                 }
 
                 if (param == null) {
@@ -405,6 +1123,7 @@
                         return;
                     }
                     curVideoWin.css({ "top": param[idx].top, "left": param[idx].left, "width": param[idx].width, "height": param[idx].height, "display": "block" });
+                    self.getVideoFrame("#video" + idx);
                 }
 
                 self.splitNum = splitNum;
@@ -437,14 +1156,18 @@
                     clearInterval(self.timeLenOut);
                     return;
                 }
-                var channelNum = front.channel_num;
+                var channelNum = 4;
                 var ret = false;
 
+                if (self.isNormal == true) {
+                    channelNum = 8;
+                }
 
                 self.$Message.destroy();
                 self.msgType = "blue";
-                
+
                 for (var idx = 0; idx < channelNum; idx++) {
+                    $("#video" + idx).attr("controls", true);
                     ret = vsclientSession.startPlay({
                         name: self.vehicleInfo.licenseNumber,
                         channel: idx,
@@ -452,6 +1175,12 @@
                         codeType: self.codeType
                     });
                 }
+
+                setTimeout(function () {
+                    for (var i = 0; i < channelNum; i++) {
+                        $("#video" + i).removeAttr("controls");
+                    }
+                }, 20000);
 
                 if (ret) {
                     self.isStop = false;
@@ -468,7 +1197,7 @@
                             self.timeLen--;
                             self.$Message.destroy();
                             if (self.timeLen <= 0 || self.isStop == true) {
-                                self.stopVideo("视频已经全部关闭");
+                                self.stopVideo("");
                                 clearInterval(self.timeLenOut);
                             }
                         }, 1000);
@@ -516,8 +1245,6 @@
                 self.timeSelect = "120";
                 self.stopAudio();
                 self.playVideo(front);
-
-                console.log("流码类型：" + self.codeType);
             },
 
             // 停止视频
@@ -529,7 +1256,7 @@
                 self.isStop = true;
                 self.$Message.destroy();
                 self.msgType = "error";
-                self.msgInfo = typeof msgInfo == "string" ? msgInfo : "视频已经全部关闭";
+                self.msgInfo = typeof msgInfo == "string" ? msgInfo : "";
                 clearInterval(self.timeLenOut);
                 clearInterval(self.timeOfflineOut);
                 self.timeOffline = 5;

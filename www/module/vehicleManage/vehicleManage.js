@@ -227,11 +227,11 @@
                     "key": "vehicleTypeId",
                     "width": 120
                 },
-                {
-                    "title": { "CN": "车辆颜色", "EN": "Vehicle Color", "TW": "車輛顔色" }[language["language"]],
-                    "key": "vehicleColorId",
-                    "width": 120
-                },
+                // {
+                //     "title": { "CN": "车辆颜色", "EN": "Vehicle Color", "TW": "車輛顔色" }[language["language"]],
+                //     "key": "vehicleColorId",
+                //     "width": 120
+                // },
                 {
                     "title": { "CN": "品牌", "EN": "Brand", "TW": "品牌" }[language["language"]],
                     "key": "vehicleBrandId",
@@ -663,20 +663,19 @@
             // 显示视屏
             "showLiveVideo": function (vehicleInfo, isBackPlay) {
                 var self = this;
-                var url = "http://43.247.68.26:9090/airport/www/module/liveVideo/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
-
-
-                console.log(vehicleInfo);
+                var port = "8080";
+                // var port = "9090";
+                var url = "http://43.247.68.26:"+ port +"/airport/www/module/liveVideo/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
 
                 if (isBackPlay) {
-                    url = "http://43.247.68.26:9090/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
+                    url = "http://43.247.68.26:"+ port +"/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
                 }
 
                 if (vehicleInfo.providerId == 2) {
                     if (isBackPlay) {
-                        url = "http://43.247.68.26:9090/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
+                        url = "http://43.247.68.26:"+ port +"/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
                     } else {
-                        url = "http://43.247.68.26:9090/airport/www/module/liveVideoTest1/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&id=" + userInfo["id"] + "&userToken=" + userInfo["userToken"] + "&isBackPlay=" + isBackPlay;
+                        url = "http://43.247.68.26:"+ port +"/airport/www/module/liveVideoTest1/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&id=" + userInfo["id"] + "&userToken=" + userInfo["userToken"] + "&isBackPlay=" + isBackPlay;
                     }
                 }
                 window.open(

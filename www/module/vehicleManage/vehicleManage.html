@@ -265,7 +265,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="label">
+                                <!-- <td class="label">
                                     <span class="request">＊</span>
                                     <span v-text="{'CN':'车辆颜色','EN':'Vehicle Color','TW':'車輛顔色'}[language]"></span>
                                 </td>
@@ -275,7 +275,7 @@
                                             <i-option v-for="item in vehicleColorList" :value="item.type">{{item.name}}</i-option>
                                         </i-select>
                                     </p>
-                                </td>
+                                </td> -->
                                 <td class="label">
                                     <span class="request">＊</span>
                                     <span v-text="{'CN':'品牌','EN':'Brand','TW':'品牌'}[language]"></span>
@@ -287,13 +287,11 @@
                                         </i-select>
                                     </template>
                                 </td>
-                            </tr>
-                            <tr>
-                                <td class="label" style="vertical-align: top;">
+                                <td class="label">
                                     <span v-text="{'CN':'备注','EN':'Remarks','TW':'備註'}[language]"></span>
                                 </td>
-                                <td colspan="3">
-                                    <i-input v-model="itemInfo.remark" type="textarea" :row="4" />
+                                <td>
+                                    <i-input v-model="itemInfo.remark" type="textarea"/>
                                 </td>
                             </tr>
                         </tbody>
@@ -344,10 +342,10 @@
                                 <td class="detailLabel"><span v-text="{'CN':'车辆类型：','EN':'Vehicle Type：','TW':'車輛類型：'}[language]"></span></td>
                                 <td><span v-text="itemInfo.vehicleTypeName"></span></td>
                             </tr>
-                            <tr class="detailInfo">
+                            <!-- <tr class="detailInfo">
                                 <td class="detailLabel"><span v-text="{'CN':'车辆颜色：','EN':'Vehicle Color：','TW':'車輛顔色：'}[language]"></span></td>
                                 <td><span v-text="itemInfo.vehicleColorName"></span></td>
-                            </tr>
+                            </tr> -->
                             <tr class="detailInfo">
                                 <td class="detailLabel"><span v-text="{'CN':'车辆品牌：','EN':'Vehicle Brand：','TW':'車輛品牌：'}[language]"></span></td>
                                 <td><span v-text="itemInfo.vehicleBrandName"></span></td>
@@ -398,10 +396,10 @@
                                         <td class="detailLabel"><span v-text="{'CN':'车辆类型：','EN':'Vehicle Type：','TW':'車輛類型：'}[language]"></span></td>
                                         <td><span v-text="itemInfo.vehicleTypeName"></span></td>
                                     </tr>
-                                    <tr class="detailInfo">
+                                    <!-- <tr class="detailInfo">
                                         <td class="detailLabel"><span v-text="{'CN':'车辆颜色：','EN':'Vehicle Color：','TW':'車輛顔色：'}[language]"></span></td>
                                         <td><span v-text="itemInfo.vehicleColorName"></span></td>
-                                    </tr>
+                                    </tr> -->
                                     <tr class="detailInfo">
                                         <td class="detailLabel"><span v-text="{'CN':'车辆品牌：','EN':'Vehicle Brand：','TW':'車輛品牌：'}[language]"></span></td>
                                         <td><span v-text="itemInfo.vehicleBrandName"></span></td>
@@ -474,10 +472,10 @@
                                 <td class="detailLabel"><span v-text="{'CN':'车辆类型：','EN':'Vehicle Type：','TW':'車輛類型：'}[language]"></span></td>
                                 <td><span v-text="itemInfo.vehicleTypeName"></span></td>
                             </tr>
-                            <tr class="detailInfo">
+                            <!-- <tr class="detailInfo">
                                 <td class="detailLabel"><span v-text="{'CN':'车辆颜色：','EN':'Vehicle Color：','TW':'車輛顔色：'}[language]"></span></td>
                                 <td><span v-text="itemInfo.vehicleColorName"></span></td>
-                            </tr>
+                            </tr> -->
                             <tr class="detailInfo">
                                 <td class="detailLabel"><span v-text="{'CN':'车辆品牌：','EN':'Vehicle Brand：','TW':'車輛品牌：'}[language]"></span></td>
                                 <td><span v-text="itemInfo.vehicleBrandName"></span></td>

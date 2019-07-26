@@ -69,10 +69,10 @@
                 //     "key": "deptShortName",
                 //     "width": 120
                 // },
-                {
-                    "title": { "CN": "部门性质", "EN": "Department Nature", "TW": "部門性質" }[language["language"]],
-                    "key": "deptTypeName"
-                },
+                // {
+                //     "title": { "CN": "部门性质", "EN": "Department Nature", "TW": "部門性質" }[language["language"]],
+                //     "key": "deptTypeName"
+                // },
                 {
                     "title": { "CN": "负责人", "EN": "Head", "TW": "負責人" }[language["language"]],
                     "key": "leaderUserName"
@@ -287,7 +287,7 @@
                         "paraDeptId": self.itemInfo.paraDeptIds[self.itemInfo.paraDeptIds.length-1], // 上级部门ID
                         "paraDeptName": encodeURI(self.itemInfo.paraDeptName), // 上级部门名称
                         "deptLevel": self.itemInfo.deptLevel, // 部门层级，从小到大
-                        "orderNum": self.itemInfo.orderNum, // 部门排序号
+                        "deptCode": self.itemInfo.deptCode, // 部门排序号
                         "leaderUserId": self.itemInfo.leaderUserId, // 部门负责人用户id
                         "leaderUserName": encodeURI(self.itemInfo.leaderUserName), // 部门负责人用户姓名
                         "deptShortName": encodeURI(self.itemInfo.deptShortName), // 部门简称
@@ -349,6 +349,7 @@
                         "deptName": decodeURI(self.departmentList[i]["deptName"]), //"部门名称",
                         "deptCode": self.departmentList[i]["deptCode"], //"部门编号",
                         "deptShortName": decodeURI(self.departmentList[i]["deptShortName"]), //"部门简称",
+                        "paraDeptName": decodeURI(self.departmentList[i]["paraDeptName"]), //"部门简称",
                         "deptTypeName": decodeURI(self.departmentList[i]["deptTypeName"]), //"部门性质",
                         "leaderUserName": decodeURI(self.departmentList[i]["leaderUserName"]), //"负责人",
                         "deptTel": self.departmentList[i]["deptTel"], //"电话",

@@ -46,8 +46,8 @@
     <meta name="x5-page-mode" content="app">
     <link rel="icon" href="/airport/www/img/logo.png">
     <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
-    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=73483418234172" />
-    <link rel="stylesheet" type="text/css" href="/airport/www/css/liveVideo.min.css?v=13412" />
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=12341" />
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/liveVideo.min.css?v=12341234" />
 </head>
 
 <body>
@@ -56,44 +56,48 @@
 
             <!-- 顶部操作栏 -->
             <div class="video_ctrl_area">
-                
+
                 <!-- logo -->
                 <div class="logoIcon">
-                    <img src="/airport/www/img/logo.png"/>
+                    <img src="/airport/www/img/logo.png" />
                 </div>
                 <div class="title">特种车辆音视频可视化系统</div>
-                
+
                 <!-- 操作 -->
                 <div class="playWrap">
-                    <div class="splitWrap">
+                    <!-- <div class="splitWrap">
                         <template>
                             <ButtonGroup shape="circle">
-                                <i-button :type="splitNum==4?'warning':'default'" icon="logo-windows" @click="updateVideoWin(4)">4屏</i-button>
-                                <i-button :type="splitNum==8?'warning':'default'" icon="ios-grid" @click="updateVideoWin(8)">8屏</i-button>
+                                <i-button :type="splitNum==4?'warning':'default'" icon="logo-windows"
+                                    @click="updateVideoWin(4)">4屏</i-button>
+                                <i-button :type="splitNum==8?'warning':'default'" icon="ios-grid"
+                                    @click="updateVideoWin(8)">8屏</i-button>
                             </ButtonGroup>
                         </template>
-                    </div>
+                    </div> -->
                     <template v-if="queryInfo.isBackPlay==0">
                         <template v-if="isStop==true">
-                            <i-button type="success" :disabled="!isStop" icon="md-play" @click="startLiveVideo">重新播放</i-button>
+                            <i-button type="success" :disabled="!isStop" icon="md-play" @click="startLiveVideo">重新播放
+                            </i-button>
                         </template>
                         <template v-else>
                             <i-button type="error" :disabled="isStop" icon="md-pause" @click="stopVideo">停止</i-button>
                         </template>
                     </template>
-                    <template  v-if="queryInfo.isBackPlay==1">
-                        <i-button type="success" @click="backPlay.isBackPlay=true"><span><Icon type="ios-alarm-outline" size="18" /></span><span>选择时间</span></i-button>
+                    <template v-if="queryInfo.isBackPlay==1">
+                        <i-button type="success" @click="backPlay.isBackPlay=true"><span>
+                                <Icon type="ios-alarm-outline" size="18" /></span><span>选择时间</span></i-button>
                     </template>
                     <span class="closeTime" v-text="timeLen+' 秒后关闭视频'"></span>
                 </div>
-                
+
                 <!-- 状态 -->
                 <template v-if="msgInfo">
                     <div class="msgTip">
                         <Tag type="dot" :color="msgType" v-text="msgInfo"></Tag>
                     </div>
                 </template>
-                
+
                 <!-- 网络信号 -->
                 <div class="netnSignal">
                     <template>
@@ -106,23 +110,36 @@
                         </i-select>
                     </template>
                 </div>
-                
+
             </div>
 
             <!-- 视频 -->
             <div class="video_player_area" id="videoContainer">
-                <template v-for="index in mVideoCount">
-                    <div class="videoItem" :id="'liveVideo'+(index-1)" draggable="true" @drop="drop($event)" @dragend="dragEnd($event)" @dragover="dragOver($event)">
+                <template v-for="index in mVideoCount-1">
+                    <div class="videoItem" :data-index="index-1" :data-id="'video'+(index-1)"  :class="{left: index<=4,right: index>4}"
+                        :id="'liveVideo'+(index-1)" draggable="true" @drop="drop($event)" @dragend="dragEnd($event)"
+                        @dragover="dragOver($event)">
+                        <div class="videoSelect">
+                            <i-select v-model="seleceChannel[index-1]['value']" style="width:120px" size="small" @on-change="onChannelChange">
+                                <template v-for="i in (mVideoCount-1)">
+                                    <i-option :value="(i-1)+'-'+(index-1)">{{(i)+' 路摄像头'}}</i-option>
+                                </template>
+                            </i-select>
+                        </div>
                         <div class="videoWrap" @click="setCurrentStyle('liveVideo'+(index-1))">
                             <template v-if="index-1==0">
-                                <video :id="'video'+(index-1)" @dblclick="setFullScream('video'+(index-1))" autoplay controls poster="/airport/www/img/poster.png">无视频</video>
+                                <video :id="'video'+(index-1)" @dblclick="setFullScream('video'+(index-1))" autoplay
+                                    controls poster="/airport/www/img/poster.png">无视频</video>
                             </template>
-                            <template  v-else>
-                                <video :id="'video'+(index-1)" muted autoplay controls poster="/airport/www/img/poster.png">无视频</video>
+                            <template v-else>
+                                <video :id="'video'+(index-1)" muted autoplay controls
+                                    poster="/airport/www/img/poster.png">无视频</video>
                             </template>
                             <div class="channelIndex">
-                                <span>{{(index)+' 路摄像头'}}</span>
-                                <span><Icon type="ios-videocam-outline" size="18" /></span>
+                                <!-- <span>{{cNet}}</span>&nbsp;&nbsp; -->
+                                <span v-if="FPS">FPS({{FPS}})</span>
+                                <span>
+                                    <Icon type="ios-videocam-outline" size="18" /></span>
                             </div>
                         </div>
                     </div>
@@ -142,31 +159,28 @@
             </div>
         </Modal>
 
-        <Modal 
-            width="250" 
-            footer-hide 
-            v-model="backPlay.isBackPlay" 
-            :mask-closable="false"
-            :draggable="true"
-            :styles="{top: '60px', left: '50px', position: 'absolute'}" 
-        >
+        <Modal width="250" footer-hide v-model="backPlay.isBackPlay" :mask-closable="false" :draggable="true"
+            :styles="{top: '60px', left: '50px', position: 'absolute'}">
             <p slot="header" style="color:#f60;text-align:center">
                 <i-icon type="ios-information-circle" size="18px"></i-icon>
                 <span style="font-size: 18px;">选择时间</span>
             </p>
             <div style="padding: 5px 0;">
-                日期：<br/>
+                日期：<br />
                 <template>
-                    <date-picker type="date" @on-change="dateChange" v-model="backPlay.date" placeholder="请选择日期" style="width: 100%"></date-picker>
+                    <date-picker type="date" @on-change="dateChange" v-model="backPlay.date" placeholder="请选择日期"
+                        style="width: 100%"></date-picker>
                 </template>
             </div>
             <div style="padding: 5px 0;">
-                开始时间：<br/>
-                <time-picker type="time" v-model="backPlay.beginTime" @on-change="beginTimeChange"  placeholder="请选择开始时间" style="width: 100%"></time-picker>
+                开始时间：<br />
+                <time-picker type="time" v-model="backPlay.beginTime" @on-change="beginTimeChange" placeholder="请选择开始时间"
+                    style="width: 100%"></time-picker>
             </div>
             <div style="padding: 5px 0;">
-                结束时间：<br/>
-                <time-picker type="time" v-model="backPlay.endTime" @on-change="endTimeChange"  placeholder="请选择结束时间" style="width: 100%"></time-picker>
+                结束时间：<br />
+                <time-picker type="time" v-model="backPlay.endTime" @on-change="endTimeChange" placeholder="请选择结束时间"
+                    style="width: 100%"></time-picker>
             </div>
             <div style="padding: 5px 0;">
                 <i-button type="primary" style="width: 100%" @click="startBackVideo">确定</i-button>
@@ -174,80 +188,88 @@
         </Modal>
 
         <template>
-            <Modal v-model="isShowDetail" class="detailModal" :footer-hide="true" :closable="false" :mask="false" :styles="{position: 'absolute', top: '50px', right: '5px'}" width="20" title="车辆详细信息">
+            <Modal v-model="isShowDetail" class="detailModal" :footer-hide="true" :closable="false" :mask="false"
+                :styles="{position: 'absolute', top: '50px', right: '5px'}" width="20" title="车辆详细信息">
                 <p slot="header" style="color:#FFF;">
-                    <span style="font-size: 18px; padding-left: 30px;">车辆详细信息</span>
+                    <span style="font-size: 18px; padding-left: 10px;">车辆详细信息</span>
                 </p>
                 <div class="modifiedWrap">
                     <table>
                         <tbody>
                             <tr class="detailInfo">
-                                <td> 
-                                    <span class="label">公司：</span><br/>
+                                <td>
+                                    <span class="label">公司：</span><br />
                                     <span v-text="vehicleInfo.companyName"></span>
                                 </td>
                             </tr>
                             <tr class="detailInfo">
                                 <td>
-                                    <span class="label">部门：</span><br/>
+                                    <span class="label">部门：</span><br />
                                     <span v-text="vehicleInfo.deptName"></span>
                                 </td>
                             </tr>
 
                             <tr class="detailInfo">
                                 <td>
-                                    <span class="label">车辆名称：</span><br/>
+                                    <span class="label">车辆名称：</span><br />
                                     <span v-text="vehicleInfo.vehicleName"></span>
                                 </td>
                             </tr>
-                            
+
                             <tr class="detailInfo">
                                 <td>
-                                    <span class="label">车牌号：</span><br/>
+                                    <span class="label">车牌号：</span><br />
                                     <span v-text="vehicleInfo.licenseNumber"></span>
                                 </td>
                             </tr>
-                        
+
                             <tr class="detailInfo">
                                 <td>
-                                    <span class="label">车辆编号：</span><br/>
+                                    <span class="label">车辆编号：</span><br />
                                     <span v-text="vehicleInfo.vehicleCode"></span>
                                 </td>
                             </tr>
                             <tr class="detailInfo">
                                 <td>
-                                    <span class="label">绑定终端：</span><br/>
+                                    <span class="label">绑定终端：</span><br />
                                     <span v-text="vehicleInfo.gpsDeviceCode"></span>
                                 </td>
                             </tr>
                             <tr class="detailInfo">
                                 <td>
-                                    <span class="label">车辆类型：</span><br/>
+                                    <span class="label">车辆类型：</span><br />
                                     <span v-text="vehicleInfo.vehicleTypeName"></span>
                                 </td>
                             </tr>
                             <tr class="detailInfo">
                                 <td>
-                                    <span class="label">车辆颜色：</span><br/>
+                                    <span class="label">车辆颜色：</span><br />
                                     <span v-text="vehicleInfo.vehicleColorName"></span>
                                 </td>
                             </tr>
                             <tr class="detailInfo">
                                 <td>
-                                    <span class="label">车辆品牌：</span><br/>
+                                    <span class="label">车辆品牌：</span><br />
                                     <span v-text="vehicleInfo.vehicleBrandName"></span>
                                 </td>
                             </tr>
                             <tr class="detailInfo">
-                                <td style="padding-top: 20px;">
+                                <td style="padding: 20px 0;">
                                     <i-button @click="backPage" long type="primary">
-                                        <span><Icon type="md-arrow-back" /></span>
+                                        <span>
+                                            <Icon type="md-arrow-back" /></span>
                                         <span>返回上一页</span>
                                     </i-button>
                                 </td>
                             </tr>
                         </tbody>
-                    </table> 
+                    </table>
+                    <i-col span="12">
+                        共 {{8}} 摄像头
+                    </i-col>
+                    <i-col span="12">
+                        <Page size="small" :total="8" @on-change="pageSizeChange" :page-size="4"/>
+                    </i-col>
                 </div>
             </Modal>
         </template>
@@ -255,9 +277,10 @@
     </div>
 
     <script src="/airport/assets/js/flv.min.js?v=4137492734394"></script>
+    <script src="/airport/assets/vender/VideoFrame-master/VideoFrame.min.js?v=4714712341823"></script>
     <script src="/airport/assets/js/LAB.min.js?v=3423841237481237"></script>
     <script>
-        loadScript(MODUL+"module/liveVideoTest1/liveVideo.min.js");
+        loadScript(MODUL + "module/liveVideoTest1/liveVideo.js");
     </script>
 </body>
 

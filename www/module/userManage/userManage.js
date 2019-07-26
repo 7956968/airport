@@ -66,7 +66,7 @@
                     "title": "部门",
                     "key": "deptName",
                     "fixed": "left",
-                    "width": 150
+                    "width": 180
                 },
                 {
                     "title": { "CN": "姓名", "EN": "Name", "TW": "姓名" }[language["language"]],
@@ -256,6 +256,7 @@
                     self.isShowModal = true;
                     self.modalTitle = { "CN": "修改", "EN": "Edit", "TW": "修改" }[self.language];
                     self.getSuperiorDeprtList("itemInfo");
+                    self.getRoleDataList();
                 });
             },
             // 修改
@@ -508,12 +509,21 @@
                     url: CONFIG.HOST + CONFIG.SERVICE.permissionService + "?action=" + CONFIG.ACTION.getRoleList,
                     actionUrl: CONFIG.SERVICE.permissionService,
                     dataObj: {
+                        "companyId": self.itemInfo.companyId,
                         "pageNum": 1,
                         "pageSize": 100000,
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.roleList = data.data;
+                            if(self.roleList.length == 0) {
+                                for(var i = 0, len = self.companyList.length; i < len; i++) {
+                                    if(self.itemInfo.companyId == self.companyList[i]["id"]) {
+                                        self.$Message.error(self.companyList[i]["companyName"]+"没有可用角色");
+                                        return;
+                                    }
+                                }
+                            }
                         }
                     }
                 });
@@ -542,6 +552,7 @@
             "getSuperiorDeprtList": function (type) {
                 var self = this;
                 self.superiorDepartmentList = [];
+                self.getRoleDataList();
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.deptService + "?action=" + CONFIG.ACTION.getDeptTreeList,
                     actionUrl: CONFIG.SERVICE.deptService,
@@ -571,7 +582,6 @@
             setTimeout(function () {
                 self.getUserList(false);
                 self.getCompanyList();
-                self.getRoleDataList();
                 self.getSuperiorDeprtList("pageInfo");
             }, 500);
         }

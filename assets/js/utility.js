@@ -157,6 +157,30 @@ window.utility = (function (utility) {
             "weekDay": weekDay[day]
         };
     };
+    
+    utility.timeDiff = function(date1, date2) {
+		var time1 = date1 ? new Date(date1.replace(/\-/g, "/")).getTime() : new Date().getTime();
+		var time2 = date2 ? new Date(date2.replace(/\-/g, "/")).getTime() : new Date().getTime();
+		var timediff = Math.abs(time1 - time2);
+		var days = Math.floor(timediff / (24 * 3600 * 1000)); // //计算出相差天数
+
+		var leave1 = timediff % (24 * 3600 * 1000) //计算天数后剩余的毫秒数
+		var hours = Math.floor(leave1 / (3600 * 1000)); // //计算出小时数
+
+		var leave2 = leave1 % (3600 * 1000); //计算小时数后剩余的毫秒数
+		var minutes = Math.floor(leave2 / (60 * 1000));
+		//计算相差秒数
+		var leave3 = leave2 % (60 * 1000) //计算分钟数后剩余的毫秒数
+		var seconds = Math.round(leave3 / 1000);
+
+		return {
+			"isOver": time1 < time2,
+			"day": days,
+			"hour": hours,
+			"minute": minutes,
+			"second": seconds,
+		}
+	};
 
     // 把图片转换成
     utility.convertImgToBase64 = function (url, callback, outputFormat) {

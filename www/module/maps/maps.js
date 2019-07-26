@@ -5,20 +5,39 @@
     var bizParam = utility.getLocalStorage("bizParam");
     var userFuncList = utility.getLocalStorage("userFuncList");
     var deviceList = userFuncList["menu_device"];
-    var isViewVideo = (function () {
-        var bool = false;
-        for (var i = 0, len = deviceList.length; i < len; i++) {
-            if (deviceList[i]["functionCode"] == "device_manage_view_video") {
-                bool = true;
-                break;
+    var functionInfo = (function () {
+        var info = {
+            isViewVideo: false,
+            isSearch: false,
+            isTrack: false,
+        };
+        for (var key in userFuncList) {
+            if (userFuncList.hasOwnProperty(key)) {
+                for (var i = 0, len = userFuncList[key].length; i < len; i++) {
+                    if (userFuncList[key][i]["functionCode"] == "device_manage_view_video") {
+                        info.isViewVideo = true;
+                    }
+                    if (userFuncList[key][i]["functionCode"] == "map_query_live_vehicle") {
+                        info.isSearch = true;
+                    }
+                    if (userFuncList[key][i]["functionCode"] == "map_view_track") {
+                        info.isTrack = true;
+                    }
+                    if (userFuncList[key][i]["functionCode"] == "device_manage_secure_area") {
+                        info.isDefense = true;
+                    }
+                    if (userFuncList[key][i]["functionCode"] == "device_manage_camera") {
+                        info.isCamera = true;
+                    }
+                }
             }
         }
-        return bool;
+        return info;
     }());
     var pageVue = new Vue({
         "el": "#js-vue",
         "data": {
-            "isViewVideo": isViewVideo,
+            "functionInfo": functionInfo,
             "isShenZhen": false,
             "deleteLoading": false,
             "addLoading": false,
@@ -42,6 +61,8 @@
                 },
                 // 图层信息
                 "layersInfo": {
+                    "baiduVectorMap": null,
+                    "baiduSatellite": null, // 卫星图
                     "GPS": null, // GPS定位
                     "seat": null, // 机位
                     "layer": null, // 图层
@@ -54,7 +75,6 @@
                     "airportPoint": null, // 机场点
                     "airportPolygo": null, // 机场面
                     "OSM": null, // 底图
-                    "satellite": null, // 卫星图
                 },
                 // 资源信息
                 "sourceInfo": {
@@ -64,6 +84,7 @@
                     "camera": null, // 摄像机
                     "vehicle": null, // 车辆
                     "trajectory": null, // 摄像机
+                    "demo": null, // 摄像机
                 },
                 // 控件信息
                 "controlsInfo": {
@@ -141,13 +162,13 @@
                 "gpsDeviceCode": "",
             },
             "vehiclePositonPageInfo": {
-                "span": "", // 距离查询中间点的距离（密），不指定则默认为100米。 // 通过centerPosition+ span两个参数可以联合查询距离中心点多少米内的车辆最近位置
+                "span": 1000, // 距离查询中间点的距离（密），不指定则默认为100米。 // 通过centerPosition+ span两个参数可以联合查询距离中心点多少米内的车辆最近位置
                 "count": 0,
                 "pageNum": 1,
                 "deptId": "", // 部门ID
                 "pageSize": 15,
                 "companyId": "", // 所属公司ID
-                "vihecleId": "", // 车辆ID
+                "id": "", // 车辆ID
                 "vehicleName": "", // 车辆名称
                 "vehicleCode": "", // 车辆编码
                 "licenseNumber": "", // 车牌号
@@ -228,15 +249,32 @@
             },
             "vehiclePositionList": [],
             "singleVehiclePageInfo": {
+                "date": new Date(),
                 "endTime": "", // 查询结束时间
-                "vihecleId": "", // 车辆ID
-                "beginTime": (function () {
-                    var dateInfo = utility.getDateDetailInfo();
-                    return dateInfo.year + "-" + dateInfo.month + "-" + dateInfo.date
-                }()), // 查询开始时间
+                "id": "", // 车辆ID
+                "beginTime": "", // 查询开始时间
+                "lastGpsTime": "",
                 "vehicleCode": "", // 车辆编码
                 "licenseNumber": "", // 车牌号
                 "gpsDeviceCode": "", // 定位终端编号
+            },
+            "trackItem": {
+                "coordinate": [],
+                "licenseNumber": ""
+            },
+            "isTrackItem": false,
+            "dateTimeInfo": {
+                "date": new Date(),
+                "beginDate": (function () {
+                    var dateInfo = utility.getDateDetailInfo();
+                    return dateInfo.year + "-" + dateInfo.month + "-" + dateInfo.date;
+                }()),
+                "endDate": (function () {
+                    var dateInfo = utility.getDateDetailInfo();
+                    return dateInfo.year + "-" + dateInfo.month + "-" + dateInfo.date;
+                }()),
+                "beginTime": "00:00:00",
+                "endTime": "23:59:59"
             },
             "singleVehicleItem": {},
             //#endregion
@@ -550,7 +588,7 @@
                 {
                     "title": { "CN": "操作", "EN": "Operation", "TW": "操作" }[language["language"]],
                     "key": "operation",
-                    "width": isViewVideo ? 120 : 80,
+                    "width": functionInfo.isViewVideo ? 120 : 80,
                     "fixed": "right",
                     "render": function (h, params) {
                         var liveVideoBtn = h("Button", {
@@ -560,7 +598,7 @@
                         }, { "CN": "详情", "EN": "Detail", "TW": "詳情" }[language["language"]]);
                         var backVideoBtn = null;
 
-                        if (isViewVideo) {
+                        if (functionInfo.isViewVideo) {
                             if (pageVue.vehiclePositionList[params.index]['licenseNumber'] && pageVue.vehiclePositionList[params.index]['providerId'] < 100) {
                                 if (pageVue.vehiclePositionList[params.index]['vehicleStatus'] == 401 || pageVue.vehiclePositionList[params.index]['vehicleStatus'] == 402) {
                                     liveVideoBtn = h("Button", {
@@ -602,8 +640,54 @@
                     }
                 }
             ],
-            "searchDatas": []
+            "searchDatas": [],
             //#endregion
+
+            // demoInfo
+            "demoInfo": {
+                coordinate: [
+                    [113.297475, 23.415024],
+                    [113.301002, 23.419066],
+                    [113.301118, 23.418697],
+                    [113.302135, 23.418963],
+                    [113.30216, 23.419006],
+                    [113.29979, 23.420711],
+                    [113.298613, 23.41765],
+                    [113.298226, 23.417125],
+                    [113.297855, 23.417242],
+                    [113.298047, 23.416347],
+                    [113.298087, 23.416335],
+                    [113.298082, 23.416337]
+                ],
+                time: [
+                    '2019/7/10 03:01:13',
+                    '2019/7/10 03:21:42',
+                    '2019/7/10 04:36:07',
+                    '2019/7/10 06:29:49',
+                    '2019/7/10 15:46:49',
+                    '2019/7/10 17:05:23',
+                    '2019/7/11 04:36:15',
+                    '2019/7/11 04:37:41',
+                    '2019/7/11 05:55:50',
+                    '2019/7/11 07:18:35',
+                    '2019/7/11 08:46:16',
+                    '2019/7/11 08:57:23',
+                ],
+                status: [
+                    '起点',
+                    '休眠点',
+                    '起点',
+                    '休眠点',
+                    '起点',
+                    '休眠点',
+                    '起点',
+                    '休眠点',
+                    '起点',
+                    '休眠点',
+                    '起点',
+                    '休眠点',
+                ]
+            }
         },
 
         //#region  监听属性变化
@@ -611,21 +695,41 @@
             "layerControl": function (value) {
                 var self = this;
                 var isSeat = (value.indexOf("seat") != -1);
+                var isSatellite = (value.indexOf("satellite") != -1);
                 var isAlarm = (value.indexOf("alarm") != -1);
                 var isDefense = (value.indexOf("defens") != -1);
                 var isCamera = (value.indexOf("camera") != -1);
                 var isVehicle = (value.indexOf("vehicle") != -1);
                 var isBackground = (value.indexOf("background") != -1);
+                timeOut = null;
 
-                self.mapContainer.layersInfo.airportLine.setVisible(isBackground);
-                self.mapContainer.layersInfo.airportPoint.setVisible(isBackground);
-                self.mapContainer.layersInfo.airportPolygo.setVisible(isBackground);
+                if (self.isShenZhen) {
+                    self.mapContainer.layersInfo.airportLine.setVisible(isBackground);
+                    self.mapContainer.layersInfo.airportPoint.setVisible(isBackground);
+                    self.mapContainer.layersInfo.airportPolygo.setVisible(isBackground);
+                    self.mapContainer.layersInfo.defens.setVisible(isDefense);
+                    self.mapContainer.layersInfo.camera.setVisible(isCamera);
+                    self.mapContainer.layersInfo.seat.setVisible(isSeat);
+                    self.mapContainer.layersInfo.alarm.setVisible(isAlarm);
+                }
 
-                self.mapContainer.layersInfo.seat.setVisible(isSeat);
-                self.mapContainer.layersInfo.alarm.setVisible(isAlarm);
-                self.mapContainer.layersInfo.defens.setVisible(isDefense);
-                self.mapContainer.layersInfo.camera.setVisible(isCamera);
+                // // satellite vector
+                clearTimeout(timeOut);
+                timeOut = setTimeout(function () {
+                    if (isSatellite) {
+                        self.mapContainer.layersInfo.baiduVectorMap.setVisible(false);
+                        self.mapContainer.layersInfo.baiduSatellite.setVisible(true);
+                        self.mapContainer.viewInfo.view.setMaxZoom(18);
+                    } else {
+                        self.mapContainer.layersInfo.baiduVectorMap.setVisible(true);
+                        self.mapContainer.layersInfo.baiduSatellite.setVisible(false);
+                        self.mapContainer.viewInfo.view.setMaxZoom(20);
+                    }
+                }, 50);
+
+
                 self.mapContainer.layersInfo.vehicle.setVisible(isVehicle);
+
             },
         },
         //#endregion
@@ -668,11 +772,11 @@
 
             //#region 基础方法
             // 初始化地图功能
-            "init": function () {
+            "initMap": function (type) {
                 var self = this;
 
-                // 创建地图容器，设置背景地图
-                self.createdMap();
+                // 创建地图容器，设置背景地图 // satellite vector
+                self.createdMap(type);
 
                 if (self.isShenZhen == true) {
                     // 创建机场图层
@@ -696,32 +800,55 @@
                 // 添加GPS
                 self.createdGPS();
             },
-            // 创建地图
-            "createdMap": function () {
+            // countNewCoor
+            "countNewCoordinate": function (coordinate) {
+                return [coordinate[0] + 0.005551, coordinate[1] - 0.002691];
+            },
+            "transformLat": function (coordinate) {
                 var self = this;
+                // return ol.proj.transform(self.countNewCoordinate(coordinate), 'EPSG:3857', 'EPSG:4326');
+                return ol.proj.fromLonLat(self.countNewCoordinate(coordinate));
+            },
+            // 百度地图
+            "baiduMap": function (type) {
+                var self = this;
+                // var gaoDeType = loadMapType["gaoDe"]();
+                var baiduType = loadMapType["google"]();
 
-                self.mapContainer.layersInfo.OSM = new ol.layer.Tile({
-                    "source": new ol.source.OSM()
-                });
-
+                // satellite vector
+                self.mapContainer.layersInfo.baiduVectorMap = baiduType["vector"];
+                self.mapContainer.layersInfo.baiduSatellite = baiduType["satellite"];
+                self.mapContainer.layersInfo.baiduSatellite.setVisible(false);
                 self.mapContainer.map = new ol.Map({
                     "target": "map", // 地图容器div的id
                     "layers": [
-                        self.mapContainer.layersInfo.OSM,
-                        // self.mapContainer.layersInfo.satellite
+                        self.mapContainer.layersInfo.baiduSatellite,
+                        self.mapContainer.layersInfo.baiduVectorMap,
+
                     ],
                     "controls": ol.control.defaults({
                         attribution: false
                     }),
                     "loadTilesWhileAnimating": true,
+                    // hdms = ol.proj.transform(self.airPort, 'EPSG:3857', 'EPSG:4326')
+                    // self.transformLat(self.airPort),
                     "view": new ol.View({
-                        "center": self.airPort, // (深圳机场) 地图初始化中心点
-                        // "center": [121.3248514, 31.1961903], // (上海虹桥机场)地图初始化中心点
+                        "center": self.transformLat(self.airPort), // [12959773,4853101],// (深圳机场) 地图初始化中心点
+                        // "minResolution": 0.32858214173896974,
+                        // "center": [12959773,4853101], // (上海虹桥机场)地图初始化中心点
                         // "center": [121.8042311, 31.1477079], // (上海浦东国际机场)地图初始化中心点
-                        "zoom": 16, // 地图初始化显示级别
-                        "projection": "EPSG:4326"
+                        "zoom": 15, // 地图初始化显示级别
+                        "minZoom": 3,
+                        "maxZoom": 20,
+                        // "projection": "EPSG:4326"
                     })
                 });
+            },
+            // 创建地图
+            "createdMap": function (type) {
+                var self = this;
+
+                self.baiduMap(type);
 
                 // 获取各类型对象的引用
                 // 获取有所图层
@@ -767,16 +894,15 @@
                 var self = this;
 
                 self.mapContainer.viewInfo.view.animate({
-                    center: coordinate || [113.8077, 22.6286],
-                    duration: 2500,
-                    zoom: zoom || 16,
-                    easing: self.bounce
+                    center: coordinate || self.transformLat([113.8077, 22.6286]),
+                    duration: 1000,
+                    zoom: zoom || 15
                 });
             },
             // 重置视图
             "resetView": function () {
                 var self = this;
-                self.setAnimation(self.airPort, 16);
+                self.setAnimation(self.transformLat(self.airPort), 15);
             },
             // 添加机场背景图层，初始化时不显示
             "createAirportLayer": function () {
@@ -836,18 +962,22 @@
                 // 创建告警图层
                 createLayer("alarm", false);
 
-                if (self.isShenZhen == true) {
+                createLayer("demo", false);
+
+                if (self.functionInfo.isDefense == true) {
                     // 创建防区图层
                     createLayer("defens", false);
                 }
 
-                // 创建车辆轨迹
-                createLayer("trajectory", false);
+                if (self.functionInfo.isTrack == true) {
+                    // 创建车辆轨迹
+                    createLayer("trajectory", false);
+                }
 
                 // 创建车辆图层
                 createLayer("vehicle", false);
 
-                if (self.isShenZhen == true) {
+                if (self.functionInfo.isCamera == true) {
                     // 创建摄像机图层
                     createLayer("camera", false);
                 }
@@ -896,11 +1026,8 @@
                     self.mapContainer.controlsInfo.overviewMap = new ol.control.OverviewMap({
                         "className": "overViewMap",
                         "layers": [
-                            new ol.layer.Tile({
-                                "source": new ol.source.OSM({
-                                    "url": "http://{a-c}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png"
-                                })
-                            })
+                            self.mapContainer.layersInfo.baiduSatellite,
+                            self.mapContainer.layersInfo.baiduVectorMap,
                         ],
                         "collapseLabel": "\u00BB",
                         "label": "\u00AB",
@@ -908,7 +1035,7 @@
                         "view": new ol.View({
                             "center": self.airPort, // 地图初始化中心点
                             "zoom": 25, // 地图初始化显示级别
-                            "projection": "EPSG:4326"
+                            // "projection": "EPSG:4326"
                         })
                     });
                 }
@@ -933,13 +1060,15 @@
                 var defensFeature = null;
                 var currentFeature = null;
                 var coordinate = JSON.parse(item.areaRange)["coordinates"];
-
+                var flagCoordinate = [[]];
+                // for (var i = 0, len = coordinate.length; i < len; i++) {
+                //     console.log(coordinate[i]);
+                //     flagCoordinate[0].push(self.transformLat(coordinate[i]));
+                // }
+                // console.log(self.mapContainer.sourceInfo.defens);
                 if (!!self.mapContainer.sourceInfo.defens) {
                     currentFeature = self.mapContainer.sourceInfo.defens.getFeatureById("defens_" + item.id);
-                } else {
-                    return;
                 }
-
                 if (currentFeature) {
                     currentFeature.setStyle(new ol.style.Style(self.defensColor[item.secureStatus]));
                 } else {
@@ -951,6 +1080,7 @@
                     defensFeature.setStyle(new ol.style.Style(self.defensColor[item.secureStatus]));
                     self.mapContainer.sourceInfo.defens.addFeature(defensFeature);
                 }
+                // console.log(self.mapContainer.sourceInfo.defens);
                 !!callback && callback(item.id, coordinate);
             },
             // 选择行时设置防区
@@ -985,11 +1115,12 @@
                     "source": self.mapContainer.sourceInfo.defens,
                     "type": "Polygon",
                     "geomertyFunction": function (coordinates, geomerty) {
+                        var coordinate = self.transformLat(coordinates);
                         if (!geomerty) {
                             geomerty = new ol.geom.Polygon(null);
                         }
-                        var start = coordinates[0];
-                        var end = coordinates[1];
+                        var start = coordinate[0];
+                        var end = coordinate[1];
                         geomerty.setCoordinates([
                             [start, [start[0], end[1]], end, [end[0], start[0]], start]
                         ]);
@@ -1138,7 +1269,7 @@
 
                 setTimeout(function () {
                     self.isAddDefensDetailInfo = true;
-                    self.mapContainer.overlayInfo.defens.setPosition(coordinate);
+                    self.mapContainer.overlayInfo.defens.setPosition(showDefensPopLayer(coordinate));
                     self.autoFocus();
                 }, 500);
             },
@@ -1283,7 +1414,7 @@
 
                 if (self.isAddCameraAction == true) {
                     cameraFeature = new ol.Feature({
-                        "geometry": new ol.geom.Point(coordinate),
+                        "geometry": new ol.geom.Point(self.transformLat(coordinate)),
                         "name": "camera"
                     });
                     cameraFeature.setId(featureId);
@@ -1328,7 +1459,7 @@
                     }
                 }
 
-                !!callback && callback(id, coordinate);
+                !!callback && callback(id, self.transformLat(coordinate));
                 self.isAddCameraAction = false;
             },
 
@@ -1385,7 +1516,7 @@
                     self.isAddcameraDetailInfo = false;
                     setTimeout(function () {
                         self.isAddcameraDetailInfo = true;
-                        self.mapContainer.overlayInfo.camera.setPosition([coordinate]);
+                        self.mapContainer.overlayInfo.camera.setPosition(self.transformLat([coordinate]));
                         self.autoFocus();
                     }, 200);
                 }
@@ -1660,8 +1791,10 @@
 
                 // 如果车辆已经存在 
                 if (self.mapContainer.featrueInfo.vehiclePoint[item["id"] + "Vehicle"]) {
-                    self.mapContainer.featrueInfo.vehiclePoint[item["id"] + "Vehicle"].setCoordinates(coordinate);
-                    self.mapContainer.featrueInfo.circlePoint[item["id"] + "Circle"].setCoordinates(coordinate);
+                    // self.mapContainer.featrueInfo.vehiclePoint[item["id"] + "Vehicle"].setCoordinates(self.transformLat(coordinate));
+                    // self.mapContainer.featrueInfo.circlePoint[item["id"] + "Circle"].setCoordinates(self.transformLat(coordinate));
+                    self.mapContainer.featrueInfo.vehiclePoint[item["id"] + "Vehicle"].setCoordinates(self.transformLat(coordinate));
+                    self.mapContainer.featrueInfo.circlePoint[item["id"] + "Circle"].setCoordinates(self.transformLat(coordinate));
                     if (self.mapContainer.sourceInfo.vehicle.getFeatureById([item["id"] + "--" + index])) {
                         self.mapContainer.sourceInfo.vehicle.getFeatureById([item["id"] + "Circle"]).setStyle(new ol.style.Style({
                             "image": new ol.style.Circle({
@@ -1689,7 +1822,7 @@
                     }
                 } else {
                     if (self.isAddVehiclePosition == true) {
-                        self.mapContainer.featrueInfo.circlePoint[item["id"] + "Circle"] = new ol.geom.Point(coordinate);
+                        self.mapContainer.featrueInfo.circlePoint[item["id"] + "Circle"] = new ol.geom.Point(self.transformLat(coordinate));
                         circleFeatrue = new ol.Feature({
                             "name": "vehicle",
                             "geometry": self.mapContainer.featrueInfo.circlePoint[item["id"] + "Circle"],
@@ -1707,7 +1840,7 @@
                                 })
                             })
                         }));
-                        self.mapContainer.featrueInfo.vehiclePoint[item["id"] + "Vehicle"] = new ol.geom.Point(coordinate);
+                        self.mapContainer.featrueInfo.vehiclePoint[item["id"] + "Vehicle"] = new ol.geom.Point(self.transformLat(coordinate));
                         vehicleFeature = new ol.Feature({
                             "name": "vehicle",
                             "geometry": self.mapContainer.featrueInfo.vehiclePoint[item["id"] + "Vehicle"],
@@ -1730,7 +1863,7 @@
                     }
                 }
                 self.isAddVehiclePosition = false;
-                !!callback && callback(coordinate);
+                !!callback && callback(self.transformLat(coordinate));
             },
             // 清除所有的车辆
             "clearAllVehicle": function () {
@@ -1759,9 +1892,10 @@
                 var self = this;
                 var view = self.mapContainer.map.getView().getZoom();
                 // 设置轨迹查询数据
-                self.singleVehiclePageInfo.vehicleId = self.vehicleItemPop.vihecleId;// 车辆ID
+                self.singleVehiclePageInfo.vehicleId = self.vehicleItemPop.id;// 车辆ID
                 self.singleVehiclePageInfo.vehicleCode = self.vehicleItemPop.vehicleCode;// 车辆编码
                 self.singleVehiclePageInfo.licenseNumber = self.vehicleItemPop.licenseNumber;// 车牌号
+                self.singleVehiclePageInfo.lastGpsTime = self.vehicleItemPop.lastGpsTime;// 车牌号
                 $("body").find("#ol-vehicle").show();
                 if (!!!self.mapContainer.overlayInfo["vehicle"]) {
                     self.mapContainer.overlayInfo["vehicle"] = new ol.Overlay({
@@ -1777,6 +1911,7 @@
                 if (view < 16) {
                     view = 16;
                 }
+                // self.getAdressDetail(coordinate, self.vehicleItemPop);
                 self.setAnimation(coordinate, view);
                 $("body").on("click", "#popup-closer--vehicle", function () {
                     $("body").find("#ol-vehicle").hide();
@@ -1809,6 +1944,8 @@
                 self.isAddVehiclePosition = true;
                 self.vehiclePositionItem = self.vehiclePositionList[index];
                 self.vehicleItemPop = self.vehiclePositionItem;
+                self.trackItem = self.vehicleItemPop;
+                self.isTrackItem = true;
 
                 if (!!self.vehicleItemPop.lastPosition) {
                     if (JSON.parse(self.vehicleItemPop.lastPosition).coordinates[0] == 0 || JSON.parse(self.vehicleItemPop.lastPosition).coordinates[1] == 0) {
@@ -1825,9 +1962,27 @@
             // 画所有实时车辆
             "drawAlVehicle": function () {
                 var self = this;
+                var targetItem = null;
                 for (var i = 0, len = self.vehiclePositionList.length; i < len; i++) {
                     self.setVehicleRowData(i);
                 }
+
+                if (self.isTrackItem) {
+                    for (var t = 0, tlen = self.vehiclePositionList.length; t < tlen; t++) {
+                        if (self.trackItem.licenseNumber == self.vehiclePositionList[t]['licenseNumber']) {
+                            targetItem = self.vehiclePositionList[t];
+                            break;
+                        }
+                    }
+                    if (targetItem) {
+                        var view = self.mapContainer.map.getView().getZoom();
+                        self.setAnimation(self.transformLat(JSON.parse(targetItem["lastPosition"])["coordinates"]), view);
+                        setTimeout(function () {
+                            self.showVehicleOverLayer(self.transformLat(JSON.parse(targetItem["lastPosition"])["coordinates"]));
+                        }, 1200);
+                    }
+                }
+
             },
             // 点击当前的车辆时，显示当前车辆详细位置
             "showVehiclePositionByClick": function (featureId) {
@@ -1852,11 +2007,14 @@
                     return item;
                 }());
 
+                self.trackItem = self.vehicleItemPop;
+                self.isTrackItem = true;
+
                 if (self.vehicleItemPop) {
                     if (!!self.vehicleItemPop.lastPosition) {
                         coordinate = JSON.parse(self.vehicleItemPop["lastPosition"])["coordinates"];
                         self.createVehicleFeature(self.vehicleItemPop, index, function () {
-                            self.showVehicleOverLayer(coordinate);
+                            self.showVehicleOverLayer(self.transformLat(coordinate));
                         });
                     } else {
                         self.$Message.error("没有车辆定位数据");
@@ -1912,7 +2070,7 @@
             "cancelAreaSearch": function () {
                 var self = this;
                 self.vehiclePositonPageInfo.centerPosition = "";
-                self.vehiclePositonPageInfo.span = "";
+                self.vehiclePositonPageInfo.span = 1000;
                 self.clearAllVehicle();
                 self.getAllVehiclePositonList();
             },
@@ -1929,11 +2087,11 @@
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getAllVehiclePositonList,
                     actionUrl: CONFIG.SERVICE.vehicleService,
                     dataObj: {
-                        "span": self.vehiclePositonPageInfo.span, //"", // 距离查询中间点的距离（密），不指定则默认为100米。 // 通过centerPosition+ span两个参数可以联合查询距离中心点多少米内的车辆最近位置
+                        "span": self.vehiclePositonPageInfo.span || 1000, //"", // 距离查询中间点的距离（密），不指定则默认为100米。 // 通过centerPosition+ span两个参数可以联合查询距离中心点多少米内的车辆最近位置
                         "deptId": self.vehiclePositonPageInfo.deptId, //"", // 部门ID
                         "pageNum": self.vehiclePositonPageInfo.pageNum, //0,
                         "pageSize": self.vehiclePositonPageInfo.pageSize, //5,
-                        "vihecleId": self.vehiclePositonPageInfo.vihecleId, //"", // 车辆ID
+                        "id": self.vehiclePositonPageInfo.id, //"", // 车辆ID
                         "companyId": self.vehiclePositonPageInfo.companyId, //"", // 所属公司ID
                         "gpsDeviceCode": self.vehiclePositonPageInfo.gpsDeviceCode, //"", // 定位终端编号
                         "vehicleTypeId": self.vehiclePositonPageInfo.vehicleTypeId, //"", // 车辆类型ID
@@ -1955,7 +2113,7 @@
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.searchDatas = [];
-                            self.vehiclePositionList = data.data.sort(function(a, b){
+                            self.vehiclePositionList = data.data.sort(function (a, b) {
                                 return a.vehicleStatus - b.vehicleStatus;
                             });
                             self.vehiclePositonPageInfo.count = data.count;
@@ -1966,24 +2124,25 @@
                 });
             },
             // 获取开始时间
-            "getBeginTime": function (value, data) {
+            "getBeginDate": function (value) {
                 var self = this;
-
-                if (!!value) {
-                    self.singleVehiclePageInfo.beginTime = value;
-                    self.singleVehiclePageInfo.endTime = value;
-                } else {
-                    (function () {
-                        var dateInfo = utility.getDateDetailInfo();
-                        self.singleVehiclePageInfo.beginTime = dateInfo.year + "-" + dateInfo.month + "-" + dateInfo.date;
-                        self.singleVehiclePageInfo.endTime = dateInfo.year + "-" + dateInfo.month + "-" + dateInfo.date;
-                    }())
-                }
+                self.dateTimeInfo.beginDate = value;
             },
-            // 获取结束时间
-            "getEndTime": function (value, data) {
+            // 获取开始时间
+            "getEndDate": function (value) {
                 var self = this;
-                self.singleVehiclePageInfo.endTime = value;
+                self.dateTimeInfo.endDate = value;
+            },
+            // 获取时间
+            "getBeginTime": function (value) {
+                var self = this;
+                self.dateTimeInfo.beginTime = value;
+                // self.singleVehiclePageInfo.beginTime = (!!self.dateTimeInfo.beginDate ? self.dateTimeInfo.beginDate : self.singleVehiclePageInfo.beginTime.split(" ")[0]) + " " + self.dateTimeInfo.beginTime;
+            },
+            "getEndTime": function (value) {
+                var self = this;
+                self.dateTimeInfo.endTime = value;
+                // self.singleVehiclePageInfo.endTime = (!!self.dateTimeInfo.endDate ? self.dateTimeInfo.endDate : self.singleVehiclePageInfo.endTime.split(" ")[0]) + " " + self.dateTimeInfo.endTime;
             },
             // 格式化轨迹坐标数据
             "formatTrajectoryInfo": function () {
@@ -2002,8 +2161,14 @@
                                 return timeInfo.year + "-" + timeInfo.month + "-" + timeInfo.date + " " + timeInfo.hour + ":" + timeInfo.min + ":" + timeInfo.second;
                             }()),
                             "speed": trackArr[3],
-                            "coordinate": [trackArr[0], trackArr[1]],
+                            "coordinate": self.transformLat([parseFloat(trackArr[0], 10), parseFloat(trackArr[1], 10)]),
                             "vehicleCode": self.singleVehicleItem.vehicleCode,
+                            "companyName": self.singleVehicleItem.companyName,
+                            "deptName": self.singleVehicleItem.deptName,
+                            "vehicleName": self.singleVehicleItem.vehicleName,
+                            "licenseNumber": self.singleVehicleItem.licenseNumber,
+                            "lastGpsTime": self.singleVehicleItem.lastGpsTime,
+                            "vehicleTypeName": self.singleVehicleItem.vehicleTypeName,
                         });
                     }
                 }
@@ -2019,21 +2184,59 @@
             // 获取指定车辆的运动轨迹数据
             "getSingleVehicleTrack": function (bool) {
                 var self = this;
+                var timeDiff = null;
+
+                if (self.dateTimeInfo.beginDate.length == 0) {
+                    self.dateTimeInfo.beginDate = (function () {
+                        var dateInfo = utility.getDateDetailInfo();
+                        return dateInfo.year + "-" + dateInfo.month + "-" + dateInfo.date;
+                    }())
+                }
+
+                if (self.dateTimeInfo.beginTime.length == 0) {
+                    self.dateTimeInfo.beginTime = "00:00:00";
+                }
+
+                if (self.dateTimeInfo.endDate.length == 0) {
+                    self.dateTimeInfo.endDate = (function () {
+                        var dateInfo = utility.getDateDetailInfo();
+                        return dateInfo.year + "-" + dateInfo.month + "-" + dateInfo.date;
+                    }())
+                }
+
+                if (self.dateTimeInfo.endTime.length == 0) {
+                    self.dateTimeInfo.endTime = "23:59:59";
+                }
+
+                self.singleVehiclePageInfo.beginTime = self.dateTimeInfo.beginDate + " " + self.dateTimeInfo.beginTime;
+                self.singleVehiclePageInfo.endTime = self.dateTimeInfo.endDate + " " + self.dateTimeInfo.endTime;
+
+                timeDiff = utility.timeDiff(self.singleVehiclePageInfo.beginTime, self.singleVehiclePageInfo.endTime);
 
                 // 先清空原有轨迹
                 self.clearTrack();
                 self.$Message.destroy();
+
+                if (timeDiff.isOver == false) {
+                    self.$Message.error("开始时间大于结束时间");
+                    return;
+                }
+
+                if (timeDiff.day > 3) {
+                    self.$Message.error("时间跨度不能超过3天");
+                    return;
+                }
+
                 self.$Message.loading({
                     "content": "正在加载轨迹..."
                 });
-                self.showModal("isHistory");
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getSingleVehicleTrack,
                     actionUrl: CONFIG.SERVICE.vehicleService,
                     dataObj: {
-                        "vehicleId": self.singleVehiclePageInfo.vihecleId, // 车辆ID
+                        // "id": self.singleVehiclePageInfo.vehicleId, // 车辆ID
                         "gpsDeviceCode": self.singleVehiclePageInfo.gpsDeviceCode, // 车辆ID
-                        "vehicleCode": encodeURI(self.singleVehiclePageInfo.vehicleCode), // 车辆编码
+                        // "vehicleCode": encodeURI(self.singleVehiclePageInfo.vehicleCode), // 车辆编码
                         "licenseNumber": encodeURI(self.singleVehiclePageInfo.licenseNumber), // 车辆编码
                         "beginTime": self.singleVehiclePageInfo.beginTime, // 车辆编码
                         "endTime": self.singleVehiclePageInfo.endTime, // 车辆编码
@@ -2048,22 +2251,26 @@
                             self.singleVehicleItem = data.data;
                             self.vehicleItemPop = data.data;
 
+                            self.showModal("isHistory");
+
                             // 如果轨迹信息
                             if (self.singleVehicleItem.track) {
                                 track = self.vehicleItemPop["track"].split("/");
                                 coorArr = track[track.length - 1].split(",");
-                                coordinate = [coorArr[0], coorArr[1]];
+                                coordinate = self.transformLat([parseFloat(coorArr[0], 10), parseFloat(coorArr[1], 10)]);
                                 self.showVehicleOverLayer(coordinate);
                                 self.formatTrajectoryInfo(); // 格式化轨迹数据
                                 self.clearTrack(); // 先清除轨迹
                                 self.drawTrajPoint(); // 画轨迹上的点
                                 self.drawTrajectory(); // 画轨迹
                                 self.createTrajOverLayer(); // 画轨迹点上的详细信息
-                                if (view < 16) {
-                                    view = 16;
-                                }
 
-                                self.setAnimation(self.mapContainer.animationInfo.coordinates[Math.ceil(Math.random() * self.mapContainer.animationInfo.coordinates.length)], view);
+                                // if (view < 16) {
+                                //     view = 16;
+                                // }
+                                // var view = self.mapContainer.map.getView().getZoom();
+                                // self.setAnimation(self.mapContainer.animationInfo.coordinates[Math.ceil(Math.random() * self.mapContainer.animationInfo.coordinates.length)], view);
+
                                 setTimeout(function () {
                                     self.$Message.destroy();
                                     if (bool == true) {
@@ -2071,8 +2278,9 @@
                                     }
                                 }, 3000);
                             } else {
+                                var endTime = self.singleVehiclePageInfo.endTime;
                                 self.$Message.destroy();
-                                self.$Message.error("查询不到轨迹数据");
+                                self.$Message.error(self.singleVehiclePageInfo.beginTime + "  " + endTime.split(" ")[1] + "查询不到轨迹数据");
                                 setTimeout(function () {
                                     self.$Message.destroy();
                                 }, 3000);
@@ -2172,7 +2380,7 @@
                 }
                 self.mapContainer.overlayInfo["dbClickVehicle"].setPosition(coordinates);
                 $("body").find("#ol-dbClickSearch").css({ opacity: 1 });
-                self.setAnimation(coordinates, 16);
+                self.setAnimation(coordinates, 15);
                 setTimeout(function () {
                     if (self.isDbClickSearch == true) {
                         self.hiddenTwink();
@@ -2192,7 +2400,7 @@
             "startVehicleAnimation": function () {
                 var self = this;
                 var coordinates = self.mapContainer.animationInfo.coordinates;
-
+                self.cancelTrack();
                 if (!!!self.singleVehicleItem.track || self.singleVehicleItem.track.length == 0) {
                     self.getSingleVehicleTrack(true);
                     return;
@@ -2238,9 +2446,14 @@
                     // self.mapContainer.sourceInfo.trajectory.removeFeature(self.mapContainer.sourceInfo.trajectory.getFeatureById("trajectoryVehicle"));
                 }
             },
+            "cancelTrack": function () {
+                var self = this;
+                self.isTrackItem = false;
+            },
             // 清空轨迹数据
             "clearTrack": function () {
                 var self = this;
+                // self.cancelTrack();
                 self.stopVehicleAnimation(false);
                 self.mapContainer.sourceInfo.trajectory.clear();
                 if (!!self.mapContainer.overlayInfo["trajectory"]) {
@@ -2250,25 +2463,46 @@
             // 画轨迹上的各个点
             "drawTrajPoint": function () {
                 var self = this;
-                for (var i = 0, len = self.mapContainer.animationInfo.trajectoryInfo.length; i < len; i++) {
-                    var pointFeature = new ol.Feature({
-                        "name": "trajPoint",
-                        "geometry": new ol.geom.Point(self.mapContainer.animationInfo.trajectoryInfo[i]["coordinate"]),
-                    });
-                    pointFeature.setId("trajPoint-" + i);
-                    pointFeature.setStyle(new ol.style.Style({
-                        "image": new ol.style.Circle({
-                            "radius": 3,
-                            "stroke": new ol.style.Stroke({
-                                color: 'rgba(0, 0, 255, .7)',
-                                width: 2
-                            }),
-                            "file": new ol.style.Fill({
-                                color: 'rgba(0, 0, 255, .7)',
+                var len = self.mapContainer.animationInfo.trajectoryInfo.length;
+                var flag = 5;
+                console.log(len);
+                if (len > 30000) {
+                    flag = 500;
+                } else if (len > 20000) {
+                    flag = 300;
+                } else if (len > 10000) {
+                    flag = 150;
+                } else if (len > 8000) {
+                    flag = 120;
+                } else if (len > 6000) {
+                    flag = 100;
+                } else if (len > 4000) {
+                    flag = 50;
+                } else if (len > 2000) {
+                    flag = 20;
+                }
+                for (var i = 0; i < len; i = i + flag) {
+                    if (!!self.mapContainer.animationInfo.trajectoryInfo[i]) {
+                        var pointFeature = new ol.Feature({
+                            "name": "trajPoint",
+                            "geometry": new ol.geom.Point(self.mapContainer.animationInfo.trajectoryInfo[i]["coordinate"]),
+                        });
+                        pointFeature.set("coordinate", self.mapContainer.animationInfo.trajectoryInfo[i]["coordinate"]);
+                        pointFeature.setId("trajPoint-" + i);
+                        pointFeature.setStyle(new ol.style.Style({
+                            "image": new ol.style.Circle({
+                                "radius": 3,
+                                "stroke": new ol.style.Stroke({
+                                    color: 'rgba(0, 0, 255, .7)',
+                                    width: 2
+                                }),
+                                "file": new ol.style.Fill({
+                                    color: 'rgba(0, 0, 255, .7)',
+                                })
                             })
-                        })
-                    }));
-                    self.mapContainer.sourceInfo.trajectory.addFeature(pointFeature);
+                        }));
+                        self.mapContainer.sourceInfo.trajectory.addFeature(pointFeature);
+                    }
                 }
             },
             // 创建轨迹车辆overlayer
@@ -2289,9 +2523,11 @@
             "showTrajPopLayer": function (coordinate, id) {
                 var self = this;
                 var index = parseInt(id.split("-")[1]);
+                var coordinateInfo = coordinate; //self.mapContainer.sourceInfo.trajectory.getFeatureById(id).get("coordinate");
                 $("body").find("#popup").show();
-                self.mapContainer.overlayInfo["trajectory"].setPosition(coordinate);
+                self.mapContainer.overlayInfo["trajectory"].setPosition(coordinateInfo);
                 self.mapContainer.animationInfo.trajectoryItem = self.mapContainer.animationInfo.trajectoryInfo[index];
+                // self.getAdressDetail(coordinateInfo, self.mapContainer.animationInfo.trajectoryItem);
                 $("body").on("click", "#popup-closer", function () {
                     $("body").find("#popup").hide();
                     self.mapContainer.overlayInfo["trajectory"].setPosition(undefined);
@@ -2300,17 +2536,19 @@
             // 显示视屏
             "showLiveVideo": function (vehicleInfo, isBackPlay) {
                 var self = this;
-                var url = "http://43.247.68.26:9090/airport/www/module/liveVideo/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
+                var port = "8080";
+                // var port = "9090";
+                var url = "http://43.247.68.26:" + port + "/airport/www/module/liveVideo/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
 
                 if (isBackPlay) {
-                    url = "http://43.247.68.26:9090/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
+                    url = "http://43.247.68.26:" + port + "/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
                 }
 
                 if (vehicleInfo.providerId == 2) {
                     if (isBackPlay) {
-                        url = "http://43.247.68.26:9090/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
+                        url = "http://43.247.68.26:" + port + "/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
                     } else {
-                        url = "http://43.247.68.26:9090/airport/www/module/liveVideoTest1/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&id=" + userInfo["id"] + "&userToken=" + userInfo["userToken"] + "&isBackPlay=" + isBackPlay;
+                        url = "http://43.247.68.26:" + port + "/airport/www/module/liveVideoTest1/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&id=" + userInfo["id"] + "&userToken=" + userInfo["userToken"] + "&isBackPlay=" + isBackPlay;
                     }
                 }
                 window.open(
@@ -2452,6 +2690,45 @@
                     }
                 });
             },
+
+            // 
+            // 画轨迹上的各个点
+            "drawDemoPoint": function () {
+                var self = this;
+                for (var i = 0, len = self.demoInfo.coordinate.length; i < len; i++) {
+                    var pointFeature = new ol.Feature({
+                        "name": "trajPoint",
+                        "geometry": new ol.geom.Point(self.transformLat(self.demoInfo.coordinate[i])),
+                    });
+                    pointFeature.set("coordinate", self.transformLat(self.demoInfo.coordinate[i]));
+                    pointFeature.setId("demo-" + i);
+                    pointFeature.setStyle(new ol.style.Style({
+                        "image": new ol.style.Circle({
+                            "radius": 3,
+                            "stroke": new ol.style.Stroke({
+                                color: '#2d8cf0',
+                                width: 3
+                            }),
+                            "file": new ol.style.Fill({
+                                color: '#2d8cf0',
+                            })
+                        }),
+                        "text": new ol.style.Text({
+                            "text": self.demoInfo.status[i] + " " + self.demoInfo.time[i],
+                            "offsetX": 5,
+                            "offsetY": 15,
+                            "overflow": true,
+                            "file": new ol.style.Fill({
+                                color: '#ffffff',
+                            }),
+                            "backgroundFill": new ol.style.Fill({
+                                color: '#ffffff',
+                            }),
+                        })
+                    }));
+                    self.mapContainer.sourceInfo.demo.addFeature(pointFeature);
+                }
+            },
         },
         "created": function () {
             var self = this;
@@ -2469,7 +2746,7 @@
 
             // 初始化地图数据
             setTimeout(function () {
-                self.init();
+                self.initMap("vector"); // satellite
                 self.getVehicleList(true);
                 if (self.isShenZhen) {
                     self.getCameraList(true); // 获取摄像机列表数据
@@ -2478,7 +2755,9 @@
                 self.getCompanyList();// 获取公司
                 self.getAllVehiclePositonList(); // 获取所有实时车辆
 
-                self.showModal("isSearch");
+                // self.drawDemoPoint();
+
+                // self.showModal("isSearch");
 
                 timePosition = setInterval(function () {
                     self.getVehicleList(true);
@@ -2489,7 +2768,7 @@
                     var fromInfo = utility.getSessionStorage("fromInfo") || null;
                     // 初始化时显示实时查询模块
                     if (!!fromInfo) {
-                        self.showModal(fromInfo.type);
+                        // self.showModal(fromInfo.type);
                         self.vehiclePositonPageInfo.vehicleStatus = fromInfo.vehicleStatus;
                         setTimeout(function () {
                             utility.cleanSessionStorage();
@@ -2504,7 +2783,6 @@
                     var clickFeature = self.mapContainer.map.forEachFeatureAtPixel(event.pixel, function (feature, layer) {
                         return feature;
                     });
-
                     // 先判断点击的地方有没有要素，如果没有，则设置要素
                     if (nodeName == "canvas" && !!clickFeature) {
                         self.mapContainer.featrueInfo.clickId = clickFeature.getId();
@@ -2539,23 +2817,23 @@
                 });
 
                 // 监听视图变化
-                self.mapContainer.map.getView().on('change:resolution', function (event) {
-                    self.drawAlVehicle();
-                });
+                // self.mapContainer.map.getView().on('change:resolution', function (event) {
+                //     self.drawAlVehicle();
+                // });
 
                 // 双击地图
                 self.mapContainer.map.on("dblclick", function (event) {
                     var coordinate = event.coordinate;
-                    self.vehiclePositonPageInfo.centerPosition = coordinate.join(",");
+                    self.vehiclePositonPageInfo.centerPosition = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326').join(",");
                     self.drawDbClickVehicle(coordinate);
                 });
 
                 self.$watch('vehiclePositonPageInfo', function () {
                     var fromInfo = utility.getSessionStorage("fromInfo") || null;
                     self.clearAllVehicle();
-                    if (fromInfo == null || (!!fromInfo && fromInfo.type == "isSearch")) {
-                        self.showModal("isSearch");
-                    }
+                    // if (fromInfo == null || (!!fromInfo && fromInfo.type == "isSearch")) {
+                    //     self.showModal("isSearch");
+                    // }
                     clearInterval(timePosition);
                     self.getAllVehiclePositonList();
                     timePosition = setInterval(function () {
@@ -2566,6 +2844,7 @@
                 if ($('.radar')[0]) {
                     new Radar($('.radar')[0]).init({ scanSpeed: 2 });  // 扫描的速度，单位为deg，必须为360的约数
                 }
+
             }, 2000);
         }
     });

@@ -215,7 +215,7 @@
                                 </td>
                                 <td>
                                     <template>
-                                        <i-select v-model="itemInfo.roleIdList" multiple clearable style="width:100%"
+                                        <i-select not-found-text="所选公司没有角色" v-model="itemInfo.roleIdList" multiple clearable style="width:100%"
                                             :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
                                             <i-option v-for="item in roleList" :value="item.id">{{item.roleName}}
                                             </i-option>

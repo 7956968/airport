@@ -8,7 +8,7 @@
   box-shadow: inset 0 0 6px rgba(208, 219, 245, 0.3);
   border-radius: 10px;
   background-color: #F5F5F5;
-}
+} 
 /*定义滑块 内阴影+圆角*/
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
@@ -36,11 +36,10 @@
 }
 .video_ctrl_area {
   position: relative;
-  z-index: 1010;
+  z-index: 1112;
   width: 100%;
   height: 45px;
   line-height: 45px;
-  overflow: hidden;
   background: rgba(15, 55, 95, 0.4);
   box-shadow: 0 1px 5px rgba(62, 84, 130, 0.2);
 }
@@ -93,8 +92,16 @@
 .videoItem {
   position: absolute;
   border: 2px solid #d4d4d4;
-  background-color: rgba(15, 55, 95, 0.8); 
+  background-color: rgba(15, 55, 95, 0.8);
   overflow: hidden;
+}
+.videoItem.left {
+  z-index: 100;
+  opacity: 1;
+}
+.videoItem.right {
+  z-index: 10;
+  opacity: 0;
 }
 .videoItem:hover {
   border-color: red;
@@ -108,7 +115,7 @@
   height: 100%;
   object-fit: fill;
 }
-.videoItem .channelIndex {    
+.videoItem .channelIndex {
   position: absolute;
   z-index: 100000000;
   top: 0;
@@ -122,16 +129,48 @@
   width: 100%;
   height: 100%;
 }
+.videoSelect {
+  position: absolute;
+  z-index: 100000;
+  top: 0;
+  left: 0;
+}
 .videoMasker {
   display: none;
 }
-.dealWrap {
+.dealWrap,
+.playPause,
+.noDowload {
   position: absolute;
   z-index: 10000;
   bottom: 35px;
   right: 108px;
   cursor: pointer;
   display: none;
+}
+.videoItem:hover .playPause,
+.videoItem:hover .noDowload {
+  display: inline-block;
+}
+.playPause {
+  display: none;
+  left: 10px;
+  top: 10px;
+  right: auto;
+  bottom: auto;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  text-align: center;
+  border-radius: 50%;
+}
+.noDowload {
+  display: block;
+  width: 40px;
+  height: 160px;
+  right: 3%;
+  bottom: 0;
+  cursor: text;
 }
 .fullScream {
   position: fixed;
@@ -180,7 +219,7 @@
 .modifiedWrap {
   font-size: 16px;
   color: #fff;
-  padding: 20px 30px;
+  padding: 10px 20px;
 }
 .modifiedWrap .detailInfo {
   color: #fff;

@@ -4,8 +4,8 @@
 var CONFIG = (function (CONFIG) {
     // 服务器信息配置
     // CONFIG.HOST = LOCATION;
-    CONFIG.TESTHOST = "https://www.minguicloud.com";
-    CONFIG.HOST = "https://test2.cityeasyplay.com";
+    CONFIG.HOST = "https://www.minguicloud.com";
+    // CONFIG.HOST = "https://test2.cityeasyplay.com";
     
     // 接口服务
     CONFIG.SERVICE = {
@@ -21,6 +21,7 @@ var CONFIG = (function (CONFIG) {
         "permissionService": "/airportCore/base/permissionService", // 权限服务
         "vehicleRepairService": "/airportCore/core/vehicleRepairService", // 车辆保养
         "providerService": "/airportCore/third/providerService", // 设备商
+        "alarmService": "/airportCore/core/alarmService", // 系统报警
     };
 
     // 接口动作
@@ -102,6 +103,8 @@ var CONFIG = (function (CONFIG) {
         "getVehicleUseRecordList": "getVehicleUseRecordList", // 获取车辆使用记录列表
         "getVehicleMileRateReport": "getVehicleMileRateReport", // 车辆运行情况
         "getAllVehiclePositonList": "getAllVehiclePositonList", // 查询车辆最新位置数据接口
+        "getVehicleOnlineDetail": "getVehicleOnlineDetail", //获取车辆上下线明细
+        "downVehicleOnlineDetail": "downVehicleOnlineDetail", //下载车辆上下线明细excel
         
         // deviceService：设备服务
         "delDevice": "delDevice", // 删除设备接口
@@ -126,6 +129,10 @@ var CONFIG = (function (CONFIG) {
 
         // providerService
         "getProviderSessionId": "getProviderSessionId", // 获取第三方设备平台的http sessionId接口
+
+        // alarmService
+        "getAlarmList": "getAlarmList", // 获取系统报警信息接口
+        "updateAlarmStatus": "updateAlarmStatus", // 获取系统报警信息接口
     };
 
     return CONFIG;

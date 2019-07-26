@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title></title>
+
+    <!-- 页面字符编码 -->
+    <meta charset="utf-8">
+
+    <!-- 避免IE使用兼容模式 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!-- 启用360浏览器的极速模式(webkit) -->
+    <meta name="renderer" content="webkit">
+    <!-- 微软的老式浏览器 -->
+    <meta name="MobileOptimized" content="320">
+
+    <!-- 关键字描述 -->
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <!-- 设置移动端视图 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+    <meta name="HandheldFriendly" content="true">
+
+    <!-- 删除苹果默认的工具栏和菜单栏 -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <!-- 设置苹果工具栏颜色 -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+    <!-- 忽略页面中的数字识别为电话，忽略email识别 -->
+    <meta name="format-detection" content="telphone=no, email=no" />
+
+    <!-- uc强制竖屏 -->
+    <meta name="screen-orientation" content="portrait">
+    <!-- QQ强制竖屏 -->
+    <meta name="x5-orientation" content="portrait">
+    <!-- UC强制全屏 -->
+    <meta name="full-screen" content="yes">
+    <!-- QQ强制全屏 -->
+    <meta name="x5-fullscreen" content="true">
+    <!-- UC应用模式 -->
+    <meta name="browsermode" content="application">
+    <!-- QQ应用模式 -->
+    <meta name="x5-page-mode" content="app">
+    <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=0303939" />
+</head>
+
+<body class="innerPage">
+    <div id="js-vue" class="tableContainer">
+        <div class="top">
+            <Row type="flex" justify="start" gutter="10">
+                <i-col span="24">
+                    <div class="searchWrap">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <template>
+                                            &nbsp;&nbsp;{{{'CN':'公司','EN':'Company','TW':'公司'}[language]}}:
+                                            <i-select @on-change="getDepartmentList('pageInfo')" v-model="pageInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100px;">
+                                                <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
+                                                <i-option v-for="item in companyList" :value="item.id">{{item.companyName}}</i-option>
+                                            </i-select>
+                                        </template>
+                                        <template>
+                                            &nbsp;&nbsp;{{{'CN':'部门','EN':'Superior Department','TW':'部門'}[language]}}:
+                                            <template>
+                                                <Cascader :data="departmentList" v-model="pageInfo.deptId" style="width:90px; display: inline-block;" trigger="click" :change-on-select="true"></Cascader>
+                                            </template>
+                                        </template>
+                                        <template>
+                                            &nbsp;&nbsp;&nbsp;上下线:
+                                            <i-select v-model="pageInfo.statusType" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:80px;">
+                                                <i-option value="-1">全部</i-option>
+                                                <i-option value="0">下线</i-option>
+                                                <i-option value="1">上线</i-option>
+                                            </i-select>
+                                        </template>
+                                        <!-- <template>
+                                            &nbsp;&nbsp;&nbsp;车辆名称
+                                            <i-input v-model="pageInfo.vehicleName" :placeholder="{'CN':'请输入','EN':'Input','TW':'請輸入'}[language]" style="width: 90px"></i-input>
+                                        </template> -->
+                                        <template>
+                                            &nbsp;&nbsp;&nbsp;车牌号
+                                            <i-input v-model="pageInfo.licenseNumber" :placeholder="{'CN':'请输入','EN':'Input','TW':'請輸入'}[language]" style="width: 90px"></i-input>
+                                        </template>
+                                        <template>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;{{{'CN':'时间','EN':'Time','TW':'時間'}[language]}}:
+                                            <date-picker @on-change="beginRepairTime" type="date" confirm  :placeholder="{'CN':'请选择','EN':'Choose','TW':'請選擇'}[language]" style="width:100px;"></date-picker>
+                                            -
+                                            <date-picker @on-change="endRepairTime" type="date" confirm  :placeholder="{'CN':'请选择','EN':'Choose','TW':'請選擇'}[language]" style="width:100px;"></date-picker>
+                                        </template>
+
+                                        <template>
+                                            &nbsp;&nbsp;<i-button @click="getVehicleOnlineDetail(true)" size="small" type="primary" icon="ios-search-outline">{{{'CN':'查询','EN':'Search','TW':'查詢'}[language]}}</i-button>
+                                        </template>
+                                        <template>
+                                            &nbsp;&nbsp;<i-button @click="downLoadExcel" size="small" type="info" icon="md-download">下载Excel</i-button>
+                                        </template>
+                                        <template>
+                                            &nbsp;&nbsp;<i-buttonGroup>
+                                                <i-button @click="refresh" size="small" icon="ios-refresh">{{{'CN':'刷新','EN':'Refresh','TW':'刷新'}[language]}}</i-button>
+                                            </i-buttonGroup>
+                                        </template>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </i-col>
+            </Row>
+        </div>
+
+        <div class="tableWrap">
+            <template>
+                <i-table :height="tableHeight" :loading="isTableLoading" highlight-row :columns="columnsList" :data="vehicleList" stripe="true" size="small"></i-table>
+            </template>
+        </div>
+
+        <div class="pageWrap">
+            <template>
+                <Page :total="pageInfo.count" @on-change="pageSizeChange" @on-page-size-change="pageRowChange" :page-size="20" show-sizer show-total />
+            </template>
+        </div>
+    
+    </div>
+    <script src="/airport/assets/js/LAB.min.js?v=3423841237481237"></script>
+    <script>
+        loadScript(MODUL+"module/onlineDetail/onlineDetail.min.js");
+    </script>
+</body>
+
+</html>

@@ -140,6 +140,44 @@
                         height: 'calc(50% - 4px)'
                     }
                 ],
+                "count_6": [
+                    {
+                        top: '0px',
+                        left: '0px',
+                        width: 'calc(33.333% - 4px)',
+                        height: 'calc(50% - 4px)'
+                    },
+                    {
+                        top: '0px',
+                        left: '33.333%',
+                        width: 'calc(33.333% - 4px)',
+                        height: 'calc(50% - 4px)'
+                    },
+                    {
+                        top: '0px',
+                        left: '66.666%',
+                        width: 'calc(33.333% - 4px)',
+                        height: 'calc(50% - 4px)'
+                    },
+                    {
+                        top: '50%',
+                        left: '0px',
+                        width: 'calc(33.333% - 4px)',
+                        height: 'calc(50% - 4px)'
+                    },
+                    {
+                        top: '50%',
+                        left: '33.333%',
+                        width: 'calc(33.333% - 4px)',
+                        height: 'calc(50% - 4px)'
+                    },
+                    {
+                        top: '50%',
+                        left: '66.666%',
+                        width: 'calc(33.333% - 4px)',
+                        height: 'calc(50% - 4px)'
+                    }
+                ],
                 "count_8": [
                     {
                         top: '0px',
@@ -147,30 +185,6 @@
                         width: 'calc(100% / 4 * 3 - 6px)',
                         height: 'calc(100% / 4 * 3 - 8px)'
                     },//大屏
-                    {
-                        top: 'calc(100% / 4 * 3 - 4px)',
-                        left: '0px',
-                        width: 'calc(100% / 4 * 1 - 4px)',
-                        height: 'calc(100% / 4 * 1)'
-                    },//左下1
-                    {
-                        top: 'calc(100% / 4 * 3 - 4px)',
-                        left: 'calc(100% / 4 * 1 - 0px)',
-                        width: 'calc(100% / 4 * 1 - 6px)',
-                        height: 'calc(100% / 4 * 1)'
-                    },//左下2
-                    {
-                        top: 'calc(100% / 4 * 3 - 4px)',
-                        left: 'calc(100% / 4 * 2 - 2px)',
-                        width: 'calc(100% / 4 * 1 - 4px)',
-                        height: 'calc(100% / 4 * 1)'
-                    },//左下3
-                    {
-                        top: 'calc(100% / 4 * 3 - 4px)',
-                        left: 'calc(100% / 4 * 3 - 2px)',
-                        width: 'calc(100% / 4 * 1 - 2px)',
-                        height: 'calc(100% / 4 * 1)'
-                    },//左下4
                     {
                         top: '0px',
                         left: 'calc(100% / 4 * 3 - 2px)',
@@ -183,12 +197,38 @@
                         width: 'calc(100% / 4 * 1 - 4px)',
                         height: 'calc(100% / 4 * 1 - 6px)'
                     },//右上2
+
                     {
                         top: 'calc(100% / 4 * 2 - 4px)',
                         left: 'calc(100% / 4 * 3 - 2px)',
                         width: 'calc(100% / 4 * 1 - 4px)',
                         height: 'calc(100% / 4 * 1 - 4px)'
-                    }//右上3
+                    },//右上3
+                    {
+                        top: 'calc(100% / 4 * 3 - 4px)',
+                        left: '0px',
+                        width: 'calc(100% / 4 * 1 - 4px)',
+                        height: 'calc(100% / 4 * 1)'
+                    },//左下3
+                    {
+                        top: 'calc(100% / 4 * 3 - 4px)',
+                        left: 'calc(100% / 4 * 1 - 0px)',
+                        width: 'calc(100% / 4 * 1 - 6px)',
+                        height: 'calc(100% / 4 * 1)'
+                    },//右上4
+                    {
+                        top: 'calc(100% / 4 * 3 - 4px)',
+                        left: 'calc(100% / 4 * 2 - 2px)',
+                        width: 'calc(100% / 4 * 1 - 4px)',
+                        height: 'calc(100% / 4 * 1)'
+                    },//左下1
+                    {
+                        top: 'calc(100% / 4 * 3 - 4px)',
+                        left: 'calc(100% / 4 * 3 - 2px)',
+                        width: 'calc(100% / 4 * 1 - 2px)',
+                        height: 'calc(100% / 4 * 1)'
+                    },//左下2
+
                 ]
             },
             "vehicleList": [
@@ -235,7 +275,7 @@
                 var starTime = "";
                 var endTime = "";
                 var msg = null;
-                
+
                 self.front = front;
 
                 if (self.backPlay.Date.length == 0) {
@@ -304,8 +344,8 @@
                         self.getReplayVedio();
                     },
                     // 当车辆下线的时候
-                    onOnOffline: function(front){
-                        if(front.name == self.vehicleInfo.licenseNumber) {
+                    onOnOffline: function (front) {
+                        if (front.name == self.vehicleInfo.licenseNumber) {
                             if (front.online == false) {
                                 self.backPlay.tabs = "info";
                                 self.backPlay.videoCount = 0;
@@ -388,8 +428,8 @@
                             };
                             for (var i = 0, len = listInfo.length; i < len; i++) {
                                 if (listInfo[i]["channel"] >= 0) {
-                                    console.log("data_type="+listInfo[i]["data_type"]);
-                                    if(listInfo[i]["data_type"]==0 || listInfo[i]["data_type"]==2) {
+                                    console.log("data_type=" + listInfo[i]["data_type"]);
+                                    if (listInfo[i]["data_type"] == 0 || listInfo[i]["data_type"] == 2) {
                                         self.backPlay.videoCount = self.backPlay.videoCount + 1;
                                         self.backPlay.channelInfo["channel" + (listInfo[i]["channel"])] = {
                                             "channel": listInfo[i]["channel"],
@@ -408,7 +448,7 @@
                                     }
                                     for (var c = 0, clen = listInfo.length; c < clen; c++) {
                                         if ((listInfo[c]["channel"] == self.backPlay.channelInfo[key]["channel"])) {
-                                            if(listInfo[c]["data_type"] == 0 || listInfo[c]["data_type"] == 2) {
+                                            if (listInfo[c]["data_type"] == 0 || listInfo[c]["data_type"] == 2) {
                                                 self.backPlay.channelInfo[key]["list"].push({
                                                     channel: parseInt(listInfo[c]["channel"], 10),
                                                     date: (function () {
@@ -516,20 +556,21 @@
             },
 
             // 播放视频
-            "playVideo": function (index, key) {
+            "playVideo": function (index, key, current) {
                 var self = this;
+                var video = $("#backVedio" + self.backPlay.channelInfo[key]["list"][index]["channel"]);
+                console.log(index, key, current);
+                $("body").find("#hidden" + current).val(index + "-" + key + "-" + current);
                 $("#backVedio").attr("src", "");
-                vsclientSession.stopReplay($("#backVedio" + self.backPlay.channelInfo[key]["list"][index]["channel"])[0]);
+                vsclientSession.stopReplay(video[0]);
                 self.backPlay.channelInfo[key]["radioIndex"] = index;
-                console.log(self.backPlay.channelInfo[key]["radioIndex"]);
                 if (self.backPlay.connectError == true) {
                     self.reStart();
                 }
-                console.log(self.backPlay.channelInfo[key]["list"][index]["source"]);
                 setTimeout(function () {
                     vsclientSession.startReplay({
                         name: self.vehicleInfo.licenseNumber,
-                        videoCtrl: $("#backVedio" + self.backPlay.channelInfo[key]["list"][index]["channel"])[0],
+                        videoCtrl: video[0],
                         info: self.backPlay.channelInfo[key]["list"][index]["source"],
                         codeType: self.codeType
                     });
@@ -611,59 +652,46 @@
                 var self = this;
                 event.preventDefault();
             },
+            "playSigleVideo": function (info) {
+                var self = this;
+                var playInfo = $("#" + info).val().split("-");
+                var video = $("#backVedio" + playInfo[2]);
+                vsclientSession.stopReplay(video[0]);
+                setTimeout(function () {
+                    vsclientSession.stopReplay(video[0]);
+                    video[0].src = "";
+                }, 1000);
+                setTimeout(function () {
+                    vsclientSession.stopReplay(video[0]);
+                    video[0].src = "";
+                }, 2000);
+                setTimeout(function () {
+                    vsclientSession.stopReplay(video[0]);
+                    video[0].src = "";
+                }, 3000);
+                setTimeout(function () {
+                    vsclientSession.stopReplay(video[0]);
+                    video[0].src = "";
+                }, 4000);
+                setTimeout(function () {
+                    vsclientSession.stopReplay(video[0]);
+                    video[0].src = "";
+                }, 5000);
+                // if (playInfo) {
+                //     var video = $("#backVedio" + playInfo[2]);
+                //     if (video.attr("src").indexOf("blob") == -1) {
+                //         self.playVideo(playInfo[0], playInfo[1], playInfo[2]);
+                //     } else {
+                //         vsclientSession.stopReplay(video[0]);
+                //         setTimeout(function () {
+                //             video.attr("src", "");
+                //         }, 1000);
+                //     }
+                // }
+            }
         },
         "mounted": function () {
             var self = this;
-
-            // self.vehicleInfo = {
-            //     "vehicleColorId": 331,
-            //     "deptName": "浦东营运部特车运行中心",
-            //     "gpsDeviceId": 30,
-            //     "lastMaintainUserId": 0,
-            //     "createUserId": 1,
-            //     "lastMaintainDeptId": 0,
-            //     "vehicleName": "浦东-行李传送车",
-            //     "vehicleTypeId": 304,
-            //     "lastMaintainMiles": 0,
-            //     "useStatusName": "空闲中",
-            //     "lastMaintainDeptName": "",
-            //     "companyName": "上海浦东国际机场",
-            //     "maintainRemark": "",
-            //     "modifyUserId": 0,
-            //     "createUserName": "管理员",
-            //     "remark": "V",
-            //     "vehicleStatusName": "静止",
-            //     "delFlag": 0,
-            //     "vehicleColorName": "白色",
-            //     "otherStatusDesc": "",
-            //     "speed": 0,
-            //     "modifyUserName": "System",
-            //     "modifyTime": "2019-06-04 16:46:33",
-            //     "lastMaintainUserName": "",
-            //     "providerId": 1,
-            //     "currMaintainTime": "",
-            //     "lastPosition": "{\"type\":\"Point\",\"coordinates\":[121.80599,31.156428]}",
-            //     "vehicleBrandId": 323,
-            //     "licenseNumber": "民航-B3045",
-            //     "id": 34,
-            //     "power": 0,
-            //     "lastMaintainTime": "",
-            //     "nextMaintainMiles": 0,
-            //     "providerName": "民贵2",
-            //     "vehicleTypeName": "行李传送车",
-            //     "deptId": 14,
-            //     "vehicleBrandName": "威海广泰",
-            //     "vehicleCode": "民航-B3045",
-            //     "lastGpsTime": "2019-06-04 16:46:33",
-            //     "gpsDeviceCode": "00000000000000000023",
-            //     "illegalNum": 0,
-            //     "useStatus": 0,
-            //     "currMiles": 59044.0583,
-            //     "companyId": 11,
-            //     "createTime": "2019-01-20 20:28:15",
-            //     "lastPositionStr": "",
-            //     "vehicleStatus": 401
-            // };
 
             self.$Message.config({
                 "top": 3,

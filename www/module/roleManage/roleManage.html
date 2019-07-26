@@ -207,8 +207,8 @@
                 <div class="modifiedWrap">
                     <div class="top">
                         <Row type="flex" justify="start" gutter="10">
-                            <i-col span="14"></i-col>
-                            <i-col span="10">
+                            <i-col span="10"></i-col>
+                            <i-col span="14">
                                 <div class="actionWrap">
                                     <template>
                                         <i-buttonGroup>
@@ -223,7 +223,7 @@
                     </div>
                     <div class="tableWrap">
                         <template>
-                            <i-table height="400" :loading="isTableLoading" highlight-row :columns="roleMemberColumsList" :data="roleMemberTableRowList" stripe="true"
+                            <i-table height="400" highlight-row :columns="roleMemberColumsList" :data="roleMemberTableRowList" stripe="true"
                                 size="small" @on-selection-change="selectMemberChange"></i-table>
                         </template>
                     </div>
@@ -252,7 +252,7 @@
                         <table>
                             <tbody>
                                 <tr>
-                                    <td style="width: 150px;">
+                                    <td>
                                         <template v-if="selectItem">
                                             公司：{{selectItem.companyName}}
                                         </template>
@@ -271,7 +271,7 @@
                     </div>
                     <div class="tableWrap">
                         <template>
-                            <i-table height="300" @on-selection-change="selectUserChange" :loading="isTableLoading" highlight-row :columns="userColumnsList" :data="userTableRowList" stripe="true" size="small"></i-table>
+                            <i-table height="300" @on-selection-change="selectUserChange" highlight-row :columns="userColumnsList" :data="userTableRowList" stripe="true" size="small"></i-table>
                         </template>
                     </div>
                     <template>
@@ -332,7 +332,7 @@
                     </div>
                     <div class="tableWrap">
                         <template>
-                            <i-table height="400" @on-selection-change="selectRoleFunctionsChange" :loading="isTableLoading" highlight-row :columns="roleFunctionColumsList" :data="roleFunctionTableRowList" stripe="true" size="small"></i-table>
+                            <i-table height="400" @on-selection-change="selectRoleFunctionsChange" highlight-row :columns="roleFunctionColumsList" :data="roleFunctionTableRowList" stripe="true" size="small"></i-table>
                         </template>
                     </div>
                     <template>
@@ -393,7 +393,7 @@
                     </div>
                     <div class="tableWrap">
                         <template>
-                            <i-table height="400" :loading="isTableLoading" highlight-row :columns="roleDataGroupColumsList" :data="roleDataGroupTableRowList" stripe="true"
+                            <i-table height="400" highlight-row :columns="roleDataGroupColumsList" :data="roleDataGroupTableRowList" stripe="true"
                                 size="small" @on-selection-change="selectRoleDataGroupChange"></i-table>
                         </template>
                     </div>
@@ -420,7 +420,7 @@
                 <div class="modifiedWrap">
                     <div class="tableWrap">
                         <template>
-                            <i-table height="300" @on-selection-change="selectDataGroupChange" :loading="isTableLoading" highlight-row :columns="dataGroupColumnsList" :data="dataGroupTableRowList" stripe="true" size="small"></i-table>
+                            <i-table height="300" @on-selection-change="selectDataGroupChange" highlight-row :columns="dataGroupColumnsList" :data="dataGroupTableRowList" stripe="true" size="small"></i-table>
                         </template>
                     </div>
                     <template>

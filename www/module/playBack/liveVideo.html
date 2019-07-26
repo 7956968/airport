@@ -47,7 +47,7 @@
     <link rel="icon" href="/airport/www/img/logo.png">
     <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
     <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=73483418234172" />
-    <link rel="stylesheet" type="text/css" href="/airport/www/css/liveVideo.min.css?v=q48274328" />
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/liveVideo.min.css?v=3412341123" />
 </head>
 
 <body>
@@ -134,12 +134,17 @@
                                                 draggable="true" @drop="drop($event)" @dragend="dragEnd($event)"
                                                 @dragover="dragOver($event)">
                                                 <div class="innerItem">
-                                                    <video playsinline  @dblclick="setFullScream('backVedio'+index)" muted controls poster="/airport/www/img/poster.png" :id="'backVedio'+index" preload="meta" loop
-                                                    autoplay></video>
+                                                    <video playsinline  @dblclick="setFullScream('backVedio'+index)" muted poster="/airport/www/img/poster.png" :id="'backVedio'+index" preload="meta" loop
+                                                    controls autoplay></video>
                                                     <div class="channelIndex">
-                                                        <span>{{(index+1)+' 路摄像头'}}</span>
+                                                        <span>{{(front.children[index]['name'])}}</span>
                                                         <span><Icon type="ios-videocam-outline" size="18" /></span>
                                                     </div>
+                                                </div>
+                                                <input type="hidden" :id="'hidden'+index"/>
+                                                <div class="noDowload"></div>
+                                                <div class="playPause" @click="playSigleVideo('hidden'+index)" >
+                                                    <div class="play"><Icon type="ios-close-circle-outline" color="#fff"  size="32" /></div>
                                                 </div>
                                             </div>
                                         </template>
@@ -159,7 +164,7 @@
                                                         <template v-if="value.isChannel">
                                                             <Panel :name="key"
                                                                 :id="'channel'+value.channel">
-                                                                {{(value.channel+1)+' 路摄像头'}} <span class="totalVideo">( {{value.list.length + '个'}} )</span> <span class="playNum">当前播放第<span>{{value.radioIndex+1}}</span>个视频</span>
+                                                                {{((front.children[value.channel]['name']))}} <span class="totalVideo">( {{value.list.length + '个'}} )</span> <span class="playNum">当前播放第<span :id="key">{{parseInt(value.radioIndex,10)+1}}</span>个视频</span>
                                                                 <div slot="content">
                                                                     <div class="collapseWrap"
                                                                         :style="{maxHeight: (innerHeight-(backPlay.channelTotal*48)-112) + 'px'}">
@@ -167,7 +172,7 @@
                                                                             <template
                                                                                 v-for="(channelItem, channelIndex) in value.list">
                                                                                 <div class="item"
-                                                                                    @click="playVideo(channelIndex, key)">
+                                                                                    @click="playVideo(channelIndex, key, value.channel)">
                                                                                     <span
                                                                                         class="num">{{channelIndex+1}}</span>
                                                                                     <Radio
@@ -241,12 +246,12 @@
                                                             <span v-text="vehicleInfo.vehicleTypeName"></span>
                                                         </td>
                                                     </tr>
-                                                    <tr class="detailInfo">
+                                                    <!-- <tr class="detailInfo">
                                                         <td>
                                                             <span class="label">车辆颜色：</span><br />
                                                             <span v-text="vehicleInfo.vehicleColorName"></span>
                                                         </td>
-                                                    </tr>
+                                                    </tr> -->
                                                     <tr class="detailInfo">
                                                         <td>
                                                             <span class="label">车辆品牌：</span><br />
@@ -276,7 +281,7 @@
         </div>
 
         <script src="/airport/assets/js/vsplayer.min.js?v=13417234172"></script>
-        <script src="/airport/assets/js/LAB.min.js?v=3423841237481237"></script>
+        <script src="/airport/assets/js/LAB.min.js?v=1341234124"></script>
         <script>
             loadScript(MODUL + "module/playBack/liveVideo.min.js");
         </script>

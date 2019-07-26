@@ -61,15 +61,20 @@ li {
 table {
     border-collapse: collapse;
     .ivu-table-cell {
-        padding-left: 5px;
+        padding-left: 5px; 
         padding-right: 5px;
     }
 }
-
+ 
 .setBgColor(@percent: 20%) {
     background-color: fade(@color1, @percent);
 }
-
+.ivu-input-suffix {
+    width: 16px;
+}
+.ivu-input-with-suffix {
+    padding-right: 16px;
+}
 .request {
     color: red;
 }
@@ -257,12 +262,11 @@ table {
         left: 0;
         width: 100%;
         height: 100%;
+        min-width: 900px;
+        min-height: 680px;
         background: #464545;
         padding-top: 40px;
-        overflow-x: hidden;
-        overflow-y: auto;
-        -ms-overflow-x: hidden;
-        -ms-overflow-y: auto;
+        overflow: auto;
 
         .layout {
             padding: 0 10px 0 10px;
@@ -299,6 +303,8 @@ table {
                 font-size: 18px;
                 color: @mainFontColor;
                 height: 44px;
+                min-width: 500px;
+                overflow: hidden;
                 .label {
                     float: left;
                     line-height: 44px;
@@ -317,6 +323,7 @@ table {
                         color: #ed9b3e;
                     }
                 }
+                
             }
 
             .infoList {
@@ -455,10 +462,15 @@ table {
         }
 
         .copyRight {
+            position: absolute;
+            z-index: 1000;
+            width: 100%;
+            bottom: 0;
+            padding: 10px 0;
             text-align: center;
             color: #fff;
             font-size: 15px;
-            margin: 10px 0;
+            background-color: #464545;
         }
     }
 }
@@ -944,7 +956,6 @@ table {
         color: #fff;
         background-color: #2196F3;
     }
-
     .ivu-table-stripe {
         .ivu-table-body {
             tr {
@@ -1086,7 +1097,7 @@ table {
         .mousePosition {
             position: absolute;
             bottom: 8px;
-            left: 130px;
+            left: 180px;
             z-index: 200000;
             padding: 3px 8px;
             background-color: rgba(0, 60, 136, .3);
@@ -1215,7 +1226,7 @@ table {
     .ol-popup {
         display: none;
         position: absolute;
-        z-index: 0;
+        z-index: 30;
         background-color: white;
         -webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
         filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
@@ -1224,12 +1235,12 @@ table {
         border: 1px solid #cccccc;
         bottom: 12px;
         left: -50px;
-        min-width: 230px;
+        min-width: 250px;
 
         &.ol-vehicle {
+            z-index: 10;
             bottom: 50px;
-            min-width: 280px;
-
+            min-width: 300px;
             .trajectoryAction {
                 padding: 5px 0;
             }
@@ -1251,7 +1262,7 @@ table {
             border-width: 10px;
             left: 48px;
             margin-left: -10px;
-        }
+        } 
 
         &:before {
             border-top-color: #cccccc;
@@ -1264,7 +1275,7 @@ table {
             text-decoration: none;
             position: absolute;
             top: 2px;
-            right: 8px;
+            left: 12px;
 
             &:after {
                 content: "X";
@@ -1447,5 +1458,12 @@ table {
 
     table {
         width: 100%;
+    }
+}
+
+// 百度地图样式
+.baiduMap {
+    .BMap_Marker {
+
     }
 }

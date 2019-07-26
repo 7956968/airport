@@ -75,7 +75,7 @@
                 {
                     "title": { "CN": "操作", "EN": "State", "TW": "操作" }[language["language"]],
                     "key": "state",
-                    "width": 350,
+                    "width": 300,
                     "align": "center",
                     "render": function (h, params) {
                         return h('div', [
@@ -840,12 +840,6 @@
                         pageNum: self.userPageInfo.pageNum,
                         deptId: self.userPageInfo.deptId[self.userPageInfo.deptId.length-1],
                     },
-                    beforeSendCallback: function () {
-                        self.isTableLoading = true;
-                    },
-                    completeCallback: function () {
-                        self.isTableLoading = false;
-                    },
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.userList = data.data;
@@ -894,12 +888,12 @@
                         ids: self.selectRoleFunction.join(","), // 公司id
                         modifyUserId: userInfo["id"], // 修改用户的id
                     },
-                    beforeSendCallback: function () {
-                        self.isTableLoading = true;
-                    },
-                    completeCallback: function () {
-                        self.isTableLoading = false;
-                    },
+                    // beforeSendCallback: function () {
+                    //     self.isTableLoading = true;
+                    // },
+                    // completeCallback: function () {
+                    //     self.isTableLoading = false;
+                    // },
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.getRoleFunctionsDataList(true);
@@ -970,12 +964,12 @@
                     url: CONFIG.HOST + CONFIG.SERVICE.permissionService + "?action=" + CONFIG.ACTION.getRoleFunctionList,
                     actionUrl: CONFIG.SERVICE.permissionService,
                     dataObj: self.roleFunctionPageInfo,
-                    beforeSendCallback: function () {
-                        self.isTableLoading = true;
-                    },
-                    completeCallback: function () {
-                        self.isTableLoading = false;
-                    },
+                    // beforeSendCallback: function () {
+                    //     self.isTableLoading = true;
+                    // },
+                    // completeCallback: function () {
+                    //     self.isTableLoading = false;
+                    // },
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.roleFunctionList = data.data;
@@ -1045,12 +1039,12 @@
                     url: CONFIG.HOST + CONFIG.SERVICE.permissionService + "?action=" + CONFIG.ACTION.getFunctionTreeList,
                     actionUrl: CONFIG.SERVICE.permissionService,
                     dataObj: self.functionsPageInfo,
-                    beforeSendCallback: function () {
-                        self.isTableLoading = true;
-                    },
-                    completeCallback: function () {
-                        self.isTableLoading = false;
-                    },
+                    // beforeSendCallback: function () {
+                    //     self.isTableLoading = true;
+                    // },
+                    // completeCallback: function () {
+                    //     self.isTableLoading = false;
+                    // },
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.functionList = data.data;
@@ -1097,12 +1091,12 @@
                         "pageSize": 10000,
                         "companyId": self.userPageInfo.companyId, // 公司ID
                     },
-                    beforeSendCallback: function () {
-                        self.isTableLoading = true;
-                    },
-                    completeCallback: function () {
-                        self.isTableLoading = false;
-                    },
+                    // beforeSendCallback: function () {
+                    //     self.isTableLoading = true;
+                    // },
+                    // completeCallback: function () {
+                    //     self.isTableLoading = false;
+                    // },
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.superiorDepartmentList = [];
@@ -1122,12 +1116,12 @@
                     url: CONFIG.HOST + CONFIG.SERVICE.permissionService + "?action=" + CONFIG.ACTION.getUserGroupDataResList,
                     actionUrl: CONFIG.SERVICE.permissionService,
                     dataObj: self.roleDataGroupPageInfo,
-                    beforeSendCallback: function () {
-                        self.isTableLoading = true;
-                    },
-                    completeCallback: function () {
-                        self.isTableLoading = false;
-                    },
+                    // beforeSendCallback: function () {
+                    //     self.isTableLoading = true;
+                    // },
+                    // completeCallback: function () {
+                    //     self.isTableLoading = false;
+                    // },
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.roleDataGroupPageInfo.count = data.count;
@@ -1184,12 +1178,12 @@
                         ids: self.selectRoleDataGroup.join(","), // 公司id
                         modifyUserId: userInfo["id"], // 修改用户的id
                     },
-                    beforeSendCallback: function () {
-                        self.isTableLoading = true;
-                    },
-                    completeCallback: function () {
-                        self.isTableLoading = false;
-                    },
+                    // beforeSendCallback: function () {
+                    //     self.isTableLoading = true;
+                    // },
+                    // completeCallback: function () {
+                    //     self.isTableLoading = false;
+                    // },
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.getRoleDataGroupList(true);
@@ -1221,12 +1215,12 @@
                         pageSize: self.dataGroupPageInfo.pageSize,
                         companyId: self.roleDataGroupPageInfo.companyId
                     },
-                    beforeSendCallback: function () {
-                        self.isTableLoading = true;
-                    },
-                    completeCallback: function () {
-                        self.isTableLoading = false;
-                    },
+                    // beforeSendCallback: function () {
+                    //     self.isTableLoading = true;
+                    // },
+                    // completeCallback: function () {
+                    //     self.isTableLoading = false;
+                    // },
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.dataGroupPageInfo.count = data.count;

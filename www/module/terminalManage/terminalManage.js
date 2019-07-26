@@ -27,7 +27,7 @@
                 "providerId": "", // 供应商ID
                 "deviceCode": "", // 定位终端设备编号
                 "remark": "", // 车辆备注
-                "dataPeriod": "", // 数据上报周期(单位秒)
+                "dataPeriod": 30, // 数据上报周期(单位秒)
                 "versionName": "", // 系统软件版本名
                 "versionNum": "", // 系统软件版本号，如100
                 "deviceStatus": "", // 定位设备运行状态
@@ -185,7 +185,7 @@
                     "providerId": "", // 供应商ID
                     "deviceCode": "", // 定位终端设备编号
                     "remark": "", // 车辆备注
-                    "dataPeriod": "", // 数据上报周期(单位秒)
+                    "dataPeriod": 30, // 数据上报周期(单位秒)
                     "versionName": "", // 系统软件版本名
                     "versionNum": "", // 系统软件版本号，如100
                     "deviceStatus": "", // 定位设备运行状态
@@ -278,7 +278,7 @@
                         "companyId": self.itemInfo.companyId, // 所属公司ID，手动从公司列表选择
                         "providerId": self.itemInfo.providerId, // 供应商ID
                         "deviceCode": encodeURI(self.itemInfo.deviceCode), // 定位终端设备编号
-                        "dataPeriod": self.itemInfo.dataPeriod, // 数据上报周期(单位秒)
+                        "dataPeriod": self.itemInfo.dataPeriod || 30, // 数据上报周期(单位秒)
                         "versionName": encodeURI(self.itemInfo.versionName), // 系统软件版本名
                         "versionNum": self.itemInfo.versionNum, // 系统软件版本号，如100
                         "deviceStatus": self.itemInfo.deviceStatus, // 定位设备运行状态
@@ -305,7 +305,7 @@
                     self.dataList.push({
                         "providerId": self.terminalList[i]["providerName"], // 供应商ID
                         "deviceCode": decodeURI(self.terminalList[i]["deviceCode"]), // 定位终端设备编号
-                        "dataPeriod": self.terminalList[i]["dataPeriod"], // 数据上报周期(单位秒)
+                        "dataPeriod": self.terminalList[i]["dataPeriod"]||30, // 数据上报周期(单位秒)
                         "versionName": decodeURI(self.terminalList[i]["versionName"]), // 系统软件版本名
                         "versionNum": self.terminalList[i]["versionNum"], // 系统软件版本号，如100
                         "deviceCode": decodeURI(self.terminalList[i]["deviceCode"]), // 终端编号

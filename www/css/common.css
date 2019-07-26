@@ -8,7 +8,7 @@
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
-  background-color: #F5F5F5; 
+  background-color: #F5F5F5;
 }
 /*定义滚动条轨道 内阴影+圆角*/
 ::-webkit-scrollbar-track {
@@ -39,10 +39,16 @@ li {
 }
 table {
   border-collapse: collapse;
-}
+} 
 table .ivu-table-cell {
   padding-left: 5px;
   padding-right: 5px;
+}
+.ivu-input-suffix {
+  width: 16px;
+}
+.ivu-input-with-suffix {
+  padding-right: 16px;
 }
 .request {
   color: red;
@@ -205,12 +211,11 @@ table .ivu-table-cell {
   left: 0;
   width: 100%;
   height: 100%;
+  min-width: 900px;
+  min-height: 680px;
   background: #464545;
   padding-top: 40px;
-  overflow-x: hidden;
-  overflow-y: auto;
-  -ms-overflow-x: hidden;
-  -ms-overflow-y: auto;
+  overflow: auto;
 }
 .graphPage .welcomPage .layout {
   padding: 0 10px 0 10px;
@@ -243,6 +248,8 @@ table .ivu-table-cell {
   font-size: 18px;
   color: #777E8E;
   height: 44px;
+  min-width: 500px;
+  overflow: hidden;
 }
 .graphPage .welcomPage .layout .tile .label {
   float: left;
@@ -374,10 +381,15 @@ table .ivu-table-cell {
   background-color: transparent;
 }
 .graphPage .welcomPage .copyRight {
+  position: absolute;
+  z-index: 1000;
+  width: 100%;
+  bottom: 0;
+  padding: 10px 0;
   text-align: center;
   color: #fff;
   font-size: 15px;
-  margin: 10px 0;
+  background-color: #464545;
 }
 .index .header {
   position: fixed;
@@ -848,7 +860,7 @@ table .ivu-table-cell {
 .mapContainer .mapWrap .mousePosition {
   position: absolute;
   bottom: 8px;
-  left: 130px;
+  left: 180px;
   z-index: 200000;
   padding: 3px 8px;
   background-color: rgba(0, 60, 136, 0.3);
@@ -951,7 +963,7 @@ table .ivu-table-cell {
 .mapContainer .ol-popup {
   display: none;
   position: absolute;
-  z-index: 0;
+  z-index: 30;
   background-color: white;
   -webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
   filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
@@ -960,11 +972,12 @@ table .ivu-table-cell {
   border: 1px solid #cccccc;
   bottom: 12px;
   left: -50px;
-  min-width: 230px;
+  min-width: 250px;
 }
 .mapContainer .ol-popup.ol-vehicle {
+  z-index: 10;
   bottom: 50px;
-  min-width: 280px;
+  min-width: 300px;
 }
 .mapContainer .ol-popup.ol-vehicle .trajectoryAction {
   padding: 5px 0;
@@ -995,7 +1008,7 @@ table .ivu-table-cell {
   text-decoration: none;
   position: absolute;
   top: 2px;
-  right: 8px;
+  left: 12px;
 }
 .mapContainer .ol-popup .ol-popup-closer:after {
   content: "X";

@@ -18,9 +18,7 @@
             "companyList": [],
             "sexTypeList": bizParam["sexType"],
         },
-        "watch": {
-
-        },
+        "watch": {},
         "methods": {
             "reLogin": function() {
                 var self = this;
