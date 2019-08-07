@@ -39,7 +39,7 @@ li {
 }
 table {
   border-collapse: collapse;
-} 
+}
 table .ivu-table-cell {
   padding-left: 5px;
   padding-right: 5px;
@@ -83,7 +83,7 @@ table .ivu-table-cell {
 ._405 button.disabled span,
 ._406 button.disabled span,
 ._407 button.disabled span,
-._408 button.disabled span {
+._408 button.disabled span { 
   color: #827f7f;
 }
 ._401 button.backPlay span,
@@ -96,27 +96,51 @@ table .ivu-table-cell {
 ._408 button.backPlay span {
   color: #2d8cf0;
 }
+._401.info {
+  background-color: #fbd048;
+}
 ._401 span {
   color: #333;
   background-color: #fbd048;
 }
+._402.info {
+  background-color: #339a7b;
+}
 ._402 span {
   background-color: #339a7b;
 }
+._403.info {
+  background-color: #005ddc;
+}
 ._403 span {
-  background-color: #8958be;
+  background-color: #005ddc;
+}
+._404.info {
+  background-color: #ed9b3e;
 }
 ._404 span {
   background-color: #ed9b3e;
 }
+._405.info {
+  background-color: #e24251;
+}
 ._405 span {
   background-color: #e24251;
+}
+._406.info {
+  background-color: #f86568;
 }
 ._406 span {
   background-color: #f86568;
 }
+._407.info {
+  background-color: #5d81ca;
+}
 ._407 span {
   background-color: #5d81ca;
+}
+._408.info {
+  background-color: #767676;
 }
 ._408 span {
   background-color: #767676;
@@ -284,13 +308,13 @@ table .ivu-table-cell {
 }
 .graphPage .welcomPage .layout .infoList .infoItem .info .label {
   color: #fff;
-  padding: 24px 0;
+  padding: 10px 0 24px 0;
   font-size: 13px;
 }
 .graphPage .welcomPage .layout .infoList .infoItem .info .detail {
   position: relative;
   z-index: 0;
-  top: -10px;
+  top: -35px;
   font-size: 42px;
   color: #fff;
 }
@@ -756,7 +780,7 @@ table .ivu-table-cell {
   display: none;
 }
 .tableWrap .ivu-table th {
-  background-color: rgba(24, 38, 70, 0.6);
+  background-color: #3e4864;
   color: white;
   font-size: 13px;
 }
@@ -899,7 +923,7 @@ table .ivu-table-cell {
   width: 300px;
 }
 .mapContainer .mapWrap .overViewMap .ol-overviewmap-box {
-  border: 2px solid red;
+  border: 1px solid red;
 }
 .mapContainer .mapWrap .overViewMap.ol-collapsed .ol-overviewmap-map {
   display: none;
@@ -977,7 +1001,7 @@ table .ivu-table-cell {
 .mapContainer .ol-popup.ol-vehicle {
   z-index: 10;
   bottom: 50px;
-  min-width: 300px;
+  min-width: 320px;
 }
 .mapContainer .ol-popup.ol-vehicle .trajectoryAction {
   padding: 5px 0;
@@ -1035,6 +1059,30 @@ table .ivu-table-cell {
   opacity: 0;
 }
 .mapContainer .ivu-btn > .ivu-icon + span {
+  margin-left: 0;
+}
+.mapOpenInfo {
+  position: fixed;
+  z-index: 1000;
+}
+.mapOpenInfo .mapSearch {
+  padding: 5px 0 0 0;
+}
+.mapOpenInfo .mapSearch table {
+  width: 100%;
+}
+.mapOpenInfo .mapSearch table td {
+  line-height: 0;
+  padding: 5px;
+}
+.mapOpenInfo .mapSearch .btnList {
+  position: relative;
+  z-index: 0;
+}
+.mapOpenInfo .mapSearch .btnList i {
+  font-size: 16px;
+}
+.mapOpenInfo .mapSearch .btnList button span {
   margin-left: 0;
 }
 .mapModal .ivu-modal-body {

@@ -39,6 +39,7 @@
     var pageVue = new Vue({
         "el": "#js-vue",
         "data": {
+            "isBaiYun": true,
             "functionInfo": functionInfo,
             "language": !!language ? language["language"] : "CN",
             "isTableLoading": false,
@@ -91,7 +92,7 @@
                         var now = Date.parse(new Date());
                         var lastTime = Date.parse(params.row.lastGpsTime.replace("-", "/"));
                         var day = Math.floor((now - lastTime) / (24 * 3600 * 1000));
-                        if (day > 1) {
+                        if (day >= 1) {
                             classType = "overDay";
                         }
                         return h("div", [
@@ -545,6 +546,8 @@
         "created": function () {
             var self = this;
 
+            // self.isBaiYun = (userInfo.userName.indexOf("白云")!=-1);
+
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
             utility.isLogin(false);
 
@@ -552,7 +555,7 @@
             self.init();
 
             setInterval(function () {
-                self.init();
+                // self.init();
             }, 10000);
 
             // 当窗口变化时，重新调整高度

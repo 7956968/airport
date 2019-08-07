@@ -231,6 +231,7 @@
 
                 ]
             },
+            "videoInfo": [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
             "vehicleList": [
                 "22",
                 "民航-B3521",
@@ -559,7 +560,6 @@
             "playVideo": function (index, key, current) {
                 var self = this;
                 var video = $("#backVedio" + self.backPlay.channelInfo[key]["list"][index]["channel"]);
-                console.log(index, key, current);
                 $("body").find("#hidden" + current).val(index + "-" + key + "-" + current);
                 $("#backVedio").attr("src", "");
                 vsclientSession.stopReplay(video[0]);
@@ -575,6 +575,7 @@
                         codeType: self.codeType
                     });
                 }, 1000);
+                self.getVideoFrame(index, key);
             },
 
             // reStart
@@ -688,7 +689,41 @@
                 //         }, 1000);
                 //     }
                 // }
-            }
+            },
+            // getVideoFrame
+            "getVideoFrame": function (videoId, key) {
+                var self = this;
+                var lastCurrTime = 0;
+                var lastFrameCount = 0;
+                var fps = 0;
+                var index = self.backPlay.channelInfo[key]["list"][videoId]["channel"];
+                setInterval(function () {
+                    var currTime = $("#backVedio" + index)[0].currentTime;
+                    if(typeof currTime == 'undefined') {
+                        return;
+                    }
+                    var videoHeight = $("#backVedio" + index)[0].videoHeight;
+                    var videoWidth = $("#backVedio" + index)[0].videoWidth;
+                    var webkitDecodedFrameCount = $("#backVedio" + index)[0].webkitDecodedFrameCount;
+
+                    if (currTime == 0) {
+                        lastCurrTime = 0;
+                        lastFrameCount = 0;
+                    }
+                    if (currTime != 0) {
+                        fps = (webkitDecodedFrameCount - lastFrameCount) / (currTime - lastCurrTime);
+                        lastCurrTime = currTime;
+                        lastFrameCount = webkitDecodedFrameCount;
+                    }
+
+                    self.videoInfo[index] = {
+                        videoWidth: videoWidth,
+                        videoHeight: videoHeight,
+                        fps: fps.toFixed(0)
+                    };
+
+                }, 1000);
+            },
         },
         "mounted": function () {
             var self = this;

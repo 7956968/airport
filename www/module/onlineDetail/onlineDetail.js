@@ -20,8 +20,6 @@
             "pageInfo": {
                 "id": "", // 指定的维护记录ID
                 "count": 0,
-                "pageNum": 0,
-                "pageSize": 20,
                 "deptId": "", // 部门ID
                 "deptIds": "", // 部门ID
                 "companyId": "", // 所属公司ID
@@ -30,6 +28,10 @@
                 "licenseNumber": "",// 车牌号
                 "beginTime": "", // 开始时间
                 "endTime": "", // 结束时间
+            },
+            "page": {
+                "pageSize": 20,
+                "pageNum": 1,
             },
             "columnsList": [
                 {
@@ -102,7 +104,7 @@
             // 页数改变时的回调
             "pageSizeChange": function (value) {
                 var self = this;
-                self.pageInfo.pageNum = parseInt(value, 10);
+                self.page.pageNum = parseInt(value, 10);
                 setTimeout(function () {
                     self.getVehicleOnlineDetail(false);
                 }, 200);
@@ -110,7 +112,7 @@
             // 切换每页条数时的回调
             "pageRowChange": function (value) {
                 var self = this;
-                self.pageInfo.pageSize = parseInt(value, 10);
+                self.page.pageSize = parseInt(value, 10);
                 setTimeout(function () {
                     self.getVehicleOnlineDetail(false);
                 }, 200);
@@ -152,14 +154,14 @@
                 var self = this;
                 self.vehicleList = [];
                 if (bool == true) {
-                    self.pageInfo.pageNum = 0;
+                    self.page.pageNum = 0;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getVehicleOnlineDetail,
                     actionUrl: CONFIG.SERVICE.vehicleService,
                     dataObj: {
-                        "pageNum": self.pageInfo.pageNum,
-                        "pageSize": self.pageInfo.pageSize,
+                        "pageNum": self.page.pageNum,
+                        "pageSize": self.page.pageSize,
                         "deptId": self.pageInfo.deptId, // 部门ID
                         "companyId": self.pageInfo.companyId, // 所属公司ID
                         "statusType": self.pageInfo.statusType,  //上下线类型： -1：全部 0：下线 1：上线
@@ -178,7 +180,7 @@
                         if (data.code == 200) {
                             self.vehicleList = data.data;
                             self.pageInfo.count = data.count;
-                            utility.setSessionStorage("onlineStatItemInfo", null);
+                            // utility.setSessionStorage("onlineStatItemInfo", null);
                         }
                     }
                 });
@@ -264,6 +266,9 @@
                 self.getVehicleOnlineDetail(true);
                 self.getCompanyList();
                 self.getDepartmentList();
+                self.$watch('pageInfo', function () {
+                    self.getVehicleOnlineDetail(true);
+                }, { deep: true });
             }, 500);
         }
     });

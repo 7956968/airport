@@ -18,12 +18,14 @@
             "pageInfo": {
                 "id": 0,
                 "count": 0,
-                "pageNum": 1,
-                "pageSize": 20,
                 "deptName": "", // 查询关键字（部门名称）
                 "companyId": "", // 公司ID
                 "paraDeptId": "", // 上级部门ID
                 "paraDeptIds": [], // 上级部门ID
+            },
+            "page": {
+                "pageSize": 20,
+                "pageNum": 0,
             },
             "index": 0,
             "selectItem": null,
@@ -316,7 +318,7 @@
             // 页数改变时的回调
             "pageSizeChange": function (value) {
                 var self = this;
-                self.pageInfo.pageNum = parseInt(value, 10);
+                self.page.pageNum = parseInt(value, 10);
                 setTimeout(function () {
                     self.getDepartmentDataList(false);
                 }, 200);
@@ -324,7 +326,7 @@
             // 切换每页条数时的回调
             "pageRowChange": function (value) {
                 var self = this;
-                self.pageInfo.pageSize = parseInt(value, 10);
+                self.page.pageSize = parseInt(value, 10);
                 setTimeout(function () {
                     self.getDepartmentDataList(false);
                 }, 200);
@@ -364,12 +366,18 @@
                 // 如果是查询，则重新从第一页开始
                 if (bool == true) {
                     self.tableRowList = [];
-                    self.pageInfo.pageNum = 0;
+                    self.page.pageNum = 0;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.deptService + "?action=" + CONFIG.ACTION.getDeptList,
                     actionUrl: CONFIG.SERVICE.deptService,
-                    dataObj: self.pageInfo,
+                    dataObj: {
+                        "pageNum": self.page.pageNum,
+                        "pageSize": self.page.pageSize,
+                        "deptName": encodeURI(self.pageInfo.deptName), // 查询关键字（部门名称）
+                        "companyId": self.pageInfo.companyId, // 公司ID
+                        "paraDeptId": self.pageInfo.paraDeptId, // 上级部门ID
+                    },
                     beforeSendCallback: function () {
                         self.isTableLoading = true;
                     },
@@ -479,8 +487,11 @@
             utility.isLogin(false);
 
             setTimeout(function () {
-                self.getDepartmentDataList(false); // 获取部门列表
+                self.getDepartmentDataList(true); // 获取部门列表
                 self.getCompanyList();
+                self.$watch('pageInfo', function () {
+                    self.getDepartmentDataList(true);
+                }, { deep: true });
             }, 500);
         }
     });

@@ -137,6 +137,12 @@
                                                     <video playsinline  @dblclick="setFullScream('backVedio'+index)" muted poster="/airport/www/img/poster.png" :id="'backVedio'+index" preload="meta" loop
                                                     controls autoplay></video>
                                                     <div class="channelIndex">
+                                                        <template v-if="!!videoInfo[index]">
+                                                            <span>{{videoInfo[index]['videoWidth']||0}}</span>
+                                                            X
+                                                            <span>{{videoInfo[index]['videoHeight']||0}}</span>&nbsp;
+                                                            <span>{{videoInfo[index]['fps']||0}}fps</span>&nbsp;
+                                                        </template>
                                                         <span>{{(front.children[index]['name'])}}</span>
                                                         <span><Icon type="ios-videocam-outline" size="18" /></span>
                                                     </div>

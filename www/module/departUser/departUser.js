@@ -18,13 +18,15 @@
             "pageInfo": {
                 "id": 0,
                 "count": 0,
-                "pageNum": 1,
-                "pageSize": 20,
                 "userCode": "", // 查询关键字（用户账户名）
                 "userName": "", // 查询关键字（用户姓名）
                 "posiName": "", // 查询关键字（职位名称）
                 "companyId": "", // 公司ID
                 "deptIds": [], // 部门ID
+            },
+            "page": {
+                "pageSize": 20,
+                "pageNum": 0,
             },
             "index": 0,
             "selectItem": "",
@@ -254,7 +256,7 @@
             // 页数改变时的回调
             "pageSizeChange": function (value) {
                 var self = this;
-                self.pageInfo.pageNum = parseInt(value, 10);
+                self.page.pageNum = parseInt(value, 10);
                 setTimeout(function () {
                     self.getDepartUserDataList(false);
                 }, 200);
@@ -262,7 +264,7 @@
             // 切换每页条数时的回调
             "pageRowChange": function (value) {
                 var self = this;
-                self.pageInfo.pageSize = parseInt(value, 10);
+                self.page.pageSize = parseInt(value, 10);
                 setTimeout(function () {
                     self.getDepartUserDataList(false);
                 }, 200);
@@ -296,17 +298,17 @@
                 // 如果是查询，则重新从第一页开始
                 self.tableRowList = [];
                 if (bool == true) {
-                    self.pageInfo.pageNum = 1;
+                    self.page.pageNum = 1;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.deptUserService + "?action=" + CONFIG.ACTION.getDeptUserList,
                     actionUrl: CONFIG.SERVICE.deptUserService,
                     dataObj: {
-                        "pageNum": self.pageInfo.pageNum,
-                        "pageSize": self.pageInfo.pageSize,
+                        "pageNum": self.page.pageNum,
+                        "pageSize": self.page.pageSize,
                         "userCode": self.pageInfo.userCode, // 查询关键字（用户账户名）
-                        "userName": self.pageInfo.userName, // 查询关键字（用户姓名）
-                        "posiName": self.pageInfo.posiName, // 查询关键字（职位名称）
+                        "userName": encodeURI(self.pageInfo.userName), // 查询关键字（用户姓名）
+                        "posiName":encodeURI(self.pageInfo.posiName), // 查询关键字（职位名称）
                         "companyId": self.pageInfo.companyId, // 公司ID
                         "deptId": self.pageInfo.deptIds[self.pageInfo.deptIds.length-1] || 0, // 部门ID
                     },
@@ -425,7 +427,11 @@
             setTimeout(function () {
                 self.getDepartUserDataList(true);
                 self.getCompanyList();
-                self.getSuperiorDeprtList("pageInfo");
+                // self.getSuperiorDeprtList("pageInfo");
+
+                self.$watch('pageInfo', function () {
+                    self.getDepartUserDataList(true);
+                }, { deep: true });
             }, 500);
         }
     });

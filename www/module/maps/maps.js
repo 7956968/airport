@@ -4,7 +4,6 @@
     var userInfo = utility.getLocalStorage("userInfo");
     var bizParam = utility.getLocalStorage("bizParam");
     var userFuncList = utility.getLocalStorage("userFuncList");
-    var deviceList = userFuncList["menu_device"];
     var functionInfo = (function () {
         var info = {
             isViewVideo: false,
@@ -258,6 +257,7 @@
                 "licenseNumber": "", // 车牌号
                 "gpsDeviceCode": "", // 定位终端编号
             },
+            "vehicleAddressDetail": "",
             "trackItem": {
                 "coordinate": [],
                 "licenseNumber": ""
@@ -641,6 +641,23 @@
                 }
             ],
             "searchDatas": [],
+            "vehicleFeature": {
+                "circlePoint": new ol.style.Style({
+                    "image": new ol.style.Circle({
+                        "radius": 2,
+                        "stroke": new ol.style.Stroke({
+                            color: "rgb(32, 121, 109)",
+                            width: 2
+                        }),
+                        "fill": new ol.style.Fill({
+                            color: 'rgba(208, 219, 245, .3)',
+                        })
+                    })
+                }),
+                "trackFeature": {
+
+                }
+            },
             //#endregion
 
             // demoInfo
@@ -802,7 +819,8 @@
             },
             // countNewCoor
             "countNewCoordinate": function (coordinate) {
-                return [coordinate[0] + 0.005551, coordinate[1] - 0.002691];
+                return [coordinate[0] + 0.005511, coordinate[1] - 0.002568];
+                // return [coordinate[0] + 0.005551, coordinate[1] - 0.002691];
             },
             "transformLat": function (coordinate) {
                 var self = this;
@@ -1034,8 +1052,7 @@
                         "collapsed": false,
                         "view": new ol.View({
                             "center": self.airPort, // 地图初始化中心点
-                            "zoom": 25, // 地图初始化显示级别
-                            // "projection": "EPSG:4326"
+                            "zoom": 25 // 地图初始化显示级别
                         })
                     });
                 }
@@ -1060,12 +1077,6 @@
                 var defensFeature = null;
                 var currentFeature = null;
                 var coordinate = JSON.parse(item.areaRange)["coordinates"];
-                var flagCoordinate = [[]];
-                // for (var i = 0, len = coordinate.length; i < len; i++) {
-                //     console.log(coordinate[i]);
-                //     flagCoordinate[0].push(self.transformLat(coordinate[i]));
-                // }
-                // console.log(self.mapContainer.sourceInfo.defens);
                 if (!!self.mapContainer.sourceInfo.defens) {
                     currentFeature = self.mapContainer.sourceInfo.defens.getFeatureById("defens_" + item.id);
                 }
@@ -1739,7 +1750,6 @@
                 var vehicleFeature = null;
                 var coordinate = JSON.parse(item["lastPosition"])["coordinates"];
                 var iconSrc = "/airport/assets/img/success.gif";
-                var circleColor = "rgb(32, 121, 109)";
                 var vehicleType = (function () {
                     var type = {};
                     for (var i = 0, len = bizParam["vehicleType"].length; i < len; i++) {
@@ -1747,13 +1757,11 @@
                     }
                     return type;
                 }());
-                var vehicleIcon = (vehicleType[item.vehicleTypeName] + item.vehicleStatus) || "warning";
+                var vehicleIcon = (vehicleType[item.vehicleTypeName] + item.vehicleStatus) || item.vehicleStatus;
                 var scale = 0.2;
-                var radius = 4;
-                var width = 2;
                 var zoom = self.mapContainer.viewInfo.view.getZoom();
 
-                iconSrc = "/airport/assets/img/" + vehicleIcon + ".gif";
+                iconSrc = "/airport/assets/img/" + vehicleIcon + ".gif?v=" + Date.parse(new Date());
 
                 if (coordinate[0] == 0 && coordinate[1] == 0) {
                     return;
@@ -1789,36 +1797,27 @@
                     width = 2;
                 }
 
+                // console.log(iconSrc);
+
+                var vehiclePoint = new ol.style.Style({
+                    "image": new ol.style.Icon({
+                        "scale": scale,
+                        "src": iconSrc,
+                        "anchor": [0.5, 0.5],
+                        "anchorYUnits": "pixels",
+                        "anchorXUnits": "fraction",
+                        "offsetOrigin": "bottom-right",
+                        "anchorOrigin": "bottom-right",
+                    })
+                });
+
                 // 如果车辆已经存在 
                 if (self.mapContainer.featrueInfo.vehiclePoint[item["id"] + "Vehicle"]) {
-                    // self.mapContainer.featrueInfo.vehiclePoint[item["id"] + "Vehicle"].setCoordinates(self.transformLat(coordinate));
-                    // self.mapContainer.featrueInfo.circlePoint[item["id"] + "Circle"].setCoordinates(self.transformLat(coordinate));
                     self.mapContainer.featrueInfo.vehiclePoint[item["id"] + "Vehicle"].setCoordinates(self.transformLat(coordinate));
                     self.mapContainer.featrueInfo.circlePoint[item["id"] + "Circle"].setCoordinates(self.transformLat(coordinate));
                     if (self.mapContainer.sourceInfo.vehicle.getFeatureById([item["id"] + "--" + index])) {
-                        self.mapContainer.sourceInfo.vehicle.getFeatureById([item["id"] + "Circle"]).setStyle(new ol.style.Style({
-                            "image": new ol.style.Circle({
-                                "radius": radius,
-                                "stroke": new ol.style.Stroke({
-                                    color: circleColor,
-                                    width: width
-                                }),
-                                "fill": new ol.style.Fill({
-                                    color: 'rgba(208, 219, 245, .3)',
-                                })
-                            })
-                        }));
-                        self.mapContainer.sourceInfo.vehicle.getFeatureById([item["id"] + "--" + index]).setStyle(new ol.style.Style({
-                            "image": new ol.style.Icon({
-                                "scale": scale,
-                                "src": iconSrc,
-                                "anchor": [0.5, 0.5],
-                                "anchorYUnits": "pixels",
-                                "anchorXUnits": "fraction",
-                                "offsetOrigin": "bottom-right",
-                                "anchorOrigin": "bottom-right",
-                            })
-                        }));
+                        self.mapContainer.sourceInfo.vehicle.getFeatureById([item["id"] + "Circle"]).setStyle(self.vehicleFeature.circlePoint);
+                        self.mapContainer.sourceInfo.vehicle.getFeatureById([item["id"] + "--" + index]).setStyle(vehiclePoint);
                     }
                 } else {
                     if (self.isAddVehiclePosition == true) {
@@ -1827,35 +1826,13 @@
                             "name": "vehicle",
                             "geometry": self.mapContainer.featrueInfo.circlePoint[item["id"] + "Circle"],
                         });
-                        circleFeatrue.setStyle(new ol.style.Style({
-                            "image": new ol.style.Circle({
-                                "radius": 4,
-                                "scale": scale,
-                                "stroke": new ol.style.Stroke({
-                                    color: circleColor,
-                                    width: 2
-                                }),
-                                "fill": new ol.style.Fill({
-                                    color: 'rgba(208, 219, 245, .3)',
-                                })
-                            })
-                        }));
+                        circleFeatrue.setStyle(self.vehicleFeature.circlePoint);
                         self.mapContainer.featrueInfo.vehiclePoint[item["id"] + "Vehicle"] = new ol.geom.Point(self.transformLat(coordinate));
                         vehicleFeature = new ol.Feature({
                             "name": "vehicle",
                             "geometry": self.mapContainer.featrueInfo.vehiclePoint[item["id"] + "Vehicle"],
                         });
-                        vehicleFeature.setStyle(new ol.style.Style({
-                            "image": new ol.style.Icon({
-                                "scale": scale,
-                                "src": iconSrc,
-                                "anchor": [0.5, 0.5],
-                                "anchorYUnits": "pixels",
-                                "anchorXUnits": "fraction",
-                                "offsetOrigin": "bottom-right",
-                                "anchorOrigin": "bottom-right",
-                            })
-                        }));
+                        vehicleFeature.setStyle(vehiclePoint);
                         circleFeatrue.setId(item["id"] + "Circle");
                         vehicleFeature.setId(item["id"] + "--" + index);
                         self.mapContainer.sourceInfo.vehicle.addFeature(circleFeatrue);
@@ -1875,7 +1852,14 @@
                     self.mapContainer.overlayInfo["vehicle"].setPosition(undefined);
                 }
             },
-
+            // 
+            "setSingleVehicle": function () {
+                var self = this;
+                self.isTrackItem = true;
+                self.mapContainer.sourceInfo.vehicle.clear();
+                self.mapContainer.featrueInfo.vehiclePoint = {};
+                self.mapContainer.featrueInfo.circlePoint = {};
+            },
             // 通过选择显示实时车辆信息
             "setVehicleRowData": function (index, callback) {
                 var self = this;
@@ -1896,6 +1880,8 @@
                 self.singleVehiclePageInfo.vehicleCode = self.vehicleItemPop.vehicleCode;// 车辆编码
                 self.singleVehiclePageInfo.licenseNumber = self.vehicleItemPop.licenseNumber;// 车牌号
                 self.singleVehiclePageInfo.lastGpsTime = self.vehicleItemPop.lastGpsTime;// 车牌号
+                self.singleVehiclePageInfo.lastPosition = self.vehicleItemPop.lastPosition;// 车牌号
+                // self.singleVehiclePageInfo.address = "";// 车牌号
                 $("body").find("#ol-vehicle").show();
                 if (!!!self.mapContainer.overlayInfo["vehicle"]) {
                     self.mapContainer.overlayInfo["vehicle"] = new ol.Overlay({
@@ -1911,10 +1897,11 @@
                 if (view < 16) {
                     view = 16;
                 }
-                // self.getAdressDetail(coordinate, self.vehicleItemPop);
+                self.getAdressDetail(coordinate, self.singleVehiclePageInfo);
                 self.setAnimation(coordinate, view);
                 $("body").on("click", "#popup-closer--vehicle", function () {
                     $("body").find("#ol-vehicle").hide();
+                    self.isTrackItem = false;
                     self.mapContainer.overlayInfo["vehicle"].setPosition(undefined);
                 });
             },
@@ -1925,11 +1912,8 @@
                 self.vehicleItem = self.vehicleList[index];
                 self.vehicleItemPop = self.vehicleItem;
 
-                // self.createVehicleFeature(self.vehicleItem, index, function (coordinate) {
-                //     self.showVehicleOverLayer(coordinate);
-                // });
-
                 if (!!self.vehicleItemPop.lastPosition) {
+                    self.setSingleVehicle();
                     self.createVehicleFeature(self.vehiclePositionItem, index, function (coordinate) {
                         self.showVehicleOverLayer(coordinate);
                     });
@@ -1945,12 +1929,12 @@
                 self.vehiclePositionItem = self.vehiclePositionList[index];
                 self.vehicleItemPop = self.vehiclePositionItem;
                 self.trackItem = self.vehicleItemPop;
-                self.isTrackItem = true;
 
                 if (!!self.vehicleItemPop.lastPosition) {
                     if (JSON.parse(self.vehicleItemPop.lastPosition).coordinates[0] == 0 || JSON.parse(self.vehicleItemPop.lastPosition).coordinates[1] == 0) {
                         self.$Message.error("没有车辆定位数据");
                     } else {
+                        self.setSingleVehicle();
                         self.createVehicleFeature(self.vehiclePositionItem, index, function (coordinate) {
                             self.showVehicleOverLayer(coordinate);
                         });
@@ -1963,23 +1947,25 @@
             "drawAlVehicle": function () {
                 var self = this;
                 var targetItem = null;
-                for (var i = 0, len = self.vehiclePositionList.length; i < len; i++) {
-                    self.setVehicleRowData(i);
-                }
 
                 if (self.isTrackItem) {
                     for (var t = 0, tlen = self.vehiclePositionList.length; t < tlen; t++) {
                         if (self.trackItem.licenseNumber == self.vehiclePositionList[t]['licenseNumber']) {
-                            targetItem = self.vehiclePositionList[t];
+                            // targetItem =  self.vehiclePositionList[t];
+                            self.setVehicleRowData(t);
                             break;
                         }
                     }
                     if (targetItem) {
-                        var view = self.mapContainer.map.getView().getZoom();
-                        self.setAnimation(self.transformLat(JSON.parse(targetItem["lastPosition"])["coordinates"]), view);
-                        setTimeout(function () {
-                            self.showVehicleOverLayer(self.transformLat(JSON.parse(targetItem["lastPosition"])["coordinates"]));
-                        }, 1200);
+                        // var view = self.mapContainer.map.getView().getZoom();
+                        // self.setAnimation(self.transformLat(JSON.parse(targetItem["lastPosition"])["coordinates"]), view);
+                        // setTimeout(function () {
+                        //     self.showVehicleOverLayer(self.transformLat(JSON.parse(targetItem["lastPosition"])["coordinates"]));
+                        // }, 1200);
+                    }
+                } else {
+                    for (var i = 0, len = self.vehiclePositionList.length; i < len; i++) {
+                        self.setVehicleRowData(i);
                     }
                 }
 
@@ -2008,10 +1994,10 @@
                 }());
 
                 self.trackItem = self.vehicleItemPop;
-                self.isTrackItem = true;
 
                 if (self.vehicleItemPop) {
                     if (!!self.vehicleItemPop.lastPosition) {
+                        self.setSingleVehicle();
                         coordinate = JSON.parse(self.vehicleItemPop["lastPosition"])["coordinates"];
                         self.createVehicleFeature(self.vehicleItemPop, index, function () {
                             self.showVehicleOverLayer(self.transformLat(coordinate));
@@ -2137,12 +2123,25 @@
             "getBeginTime": function (value) {
                 var self = this;
                 self.dateTimeInfo.beginTime = value;
-                // self.singleVehiclePageInfo.beginTime = (!!self.dateTimeInfo.beginDate ? self.dateTimeInfo.beginDate : self.singleVehiclePageInfo.beginTime.split(" ")[0]) + " " + self.dateTimeInfo.beginTime;
             },
             "getEndTime": function (value) {
                 var self = this;
                 self.dateTimeInfo.endTime = value;
-                // self.singleVehiclePageInfo.endTime = (!!self.dateTimeInfo.endDate ? self.dateTimeInfo.endDate : self.singleVehiclePageInfo.endTime.split(" ")[0]) + " " + self.dateTimeInfo.endTime;
+            },
+            // 获取详细地址
+            "getAdressDetail": function (coordinate, target) {
+                var self = this;
+                if (!!target.lastPosition) {
+                    var convertor = new BMap.Convertor();
+                    target.sourceCoor = JSON.parse(target.lastPosition)['coordinates'];
+                    target.point = new BMap.Point(target.sourceCoor[0], target.sourceCoor[1]);
+                    convertor.translate([target.point], 1, 5, function (data) {
+                        target.gc = new BMap.Geocoder();
+                        target.gc.getLocation(data.points[0], function (rs) {
+                            target.address = rs.address;
+                        });
+                    });
+                }
             },
             // 格式化轨迹坐标数据
             "formatTrajectoryInfo": function () {
@@ -2278,9 +2277,8 @@
                                     }
                                 }, 3000);
                             } else {
-                                var endTime = self.singleVehiclePageInfo.endTime;
                                 self.$Message.destroy();
-                                self.$Message.error(self.singleVehiclePageInfo.beginTime + "  " + endTime.split(" ")[1] + "查询不到轨迹数据");
+                                self.$Message.error(self.singleVehiclePageInfo.beginTime + "  " + self.singleVehiclePageInfo.endTime + "查询不到轨迹数据");
                                 setTimeout(function () {
                                     self.$Message.destroy();
                                 }, 3000);
@@ -2455,7 +2453,7 @@
                 var self = this;
                 // self.cancelTrack();
                 self.stopVehicleAnimation(false);
-                self.mapContainer.sourceInfo.trajectory.clear();
+                // self.mapContainer.sourceInfo.trajectory.clear();
                 if (!!self.mapContainer.overlayInfo["trajectory"]) {
                     self.mapContainer.overlayInfo["trajectory"].setPosition(undefined)
                 }
@@ -2465,7 +2463,7 @@
                 var self = this;
                 var len = self.mapContainer.animationInfo.trajectoryInfo.length;
                 var flag = 5;
-                console.log(len);
+
                 if (len > 30000) {
                     flag = 500;
                 } else if (len > 20000) {
@@ -2481,6 +2479,7 @@
                 } else if (len > 2000) {
                     flag = 20;
                 }
+
                 for (var i = 0; i < len; i = i + flag) {
                     if (!!self.mapContainer.animationInfo.trajectoryInfo[i]) {
                         var pointFeature = new ol.Feature({
@@ -2489,18 +2488,7 @@
                         });
                         pointFeature.set("coordinate", self.mapContainer.animationInfo.trajectoryInfo[i]["coordinate"]);
                         pointFeature.setId("trajPoint-" + i);
-                        pointFeature.setStyle(new ol.style.Style({
-                            "image": new ol.style.Circle({
-                                "radius": 3,
-                                "stroke": new ol.style.Stroke({
-                                    color: 'rgba(0, 0, 255, .7)',
-                                    width: 2
-                                }),
-                                "file": new ol.style.Fill({
-                                    color: 'rgba(0, 0, 255, .7)',
-                                })
-                            })
-                        }));
+                        pointFeature.setStyle(self.vehicleFeature.circlePoint);
                         self.mapContainer.sourceInfo.trajectory.addFeature(pointFeature);
                     }
                 }
@@ -2527,9 +2515,10 @@
                 $("body").find("#popup").show();
                 self.mapContainer.overlayInfo["trajectory"].setPosition(coordinateInfo);
                 self.mapContainer.animationInfo.trajectoryItem = self.mapContainer.animationInfo.trajectoryInfo[index];
-                // self.getAdressDetail(coordinateInfo, self.mapContainer.animationInfo.trajectoryItem);
+                self.getAdressDetail(coordinateInfo, self.mapContainer.animationInfo.trajectoryItem);
                 $("body").on("click", "#popup-closer", function () {
                     $("body").find("#popup").hide();
+                    self.isTrackItem = false;
                     self.mapContainer.overlayInfo["trajectory"].setPosition(undefined);
                 });
             },
@@ -2748,16 +2737,62 @@
             setTimeout(function () {
                 self.initMap("vector"); // satellite
                 self.getVehicleList(true);
-                if (self.isShenZhen) {
+                if (self.functionInfo.isCamera) {
                     self.getCameraList(true); // 获取摄像机列表数据
                 }
-                self.getDefensAreaList(true); // 获取防区
+                if (self.functionInfo.isDefense) {
+                    self.getDefensAreaList(true); // 获取防区
+                }
+                
                 self.getCompanyList();// 获取公司
                 self.getAllVehiclePositonList(); // 获取所有实时车辆
 
-                // self.drawDemoPoint();
+                // $("body").find(".ol-overviewmap-map").on("click", function (event) {
+                //     var div = $("body").find(".ol-overviewmap-map").offset(); 
+                //     var x = event.pageX - div.left; // Get the horizontal coordinate 
+                //     var y = event.pageY - div.top; // Get the vertical coordinate 
+                //     var coor = "X coords: " + x + ", Y coords: " + y;
+                //     console.log(coor);
+                //     $("body").find(".ol-overlay-container").css("left", x);
+                //     $("body").find(".ol-overlay-container").css("top", y);
+                // });
 
-                // self.showModal("isSearch");
+                $("body").find(".ol-overviewmap-map").on("click", function (event) {
+                    // var dragEle = $("body").find(".ol-overviewmap-box");
+                    // var overviewmap = $("body").find(".ol-overviewmap-map").offset();
+                    // // var offsetX = event.offsetX;
+                    // // var offsetY = event.offsetY;
+                    // var overviewWidth = overviewmap.left;
+                    // var overviewmapHeight = overviewmap.top;
+                    // var map = self.mapContainer.map;
+                    // var dragingWidth = dragEle.width();
+                    // var dragingHeight = dragEle.height();
+                    // var dragingSize = [dragingWidth, dragingHeight];
+                    // var mapSize = map.getSize();
+                    // var xMove = overviewWidth * (Math.abs(mapSize[0] / dragingSize[0]));
+                    // var yMove = overviewmapHeight * (Math.abs(mapSize[1] / dragingSize[1]));
+                    // var bottomLeft = [xMove, yMove];
+                    // // var topRight = [mapSize[0] + xMove, yMove];
+                    // var coordinate = map.getCoordinateFromPixel(bottomLeft);
+                    // // var top = map.getCoordinateFromPixel(topRight);
+                    // // var extent = [left[0], left[1], top[0], top[1]];
+                    // // map.getView().fit(extent, map.getSize());
+                    // // map.getView().setResolution(c);
+
+                    // map.getView().setResolution(map.getView().getResolution());
+                    // self.setAnimation(coordinate, map.getView().getZoom());
+
+                    // var offsetX = event.offsetX;
+                    // var offsetY = event.offsetY;
+                    var map = self.mapContainer.map;
+                    var mapSize = map.getSize();
+                    var div = $("body").find(".ol-overviewmap-map").offset(); 
+                    var x = mapSize[0] - div.left; // Get the horizontal coordinate 
+                    var y = mapSize[1] - div.top; // Get the vertical coordinate 
+                    var coordinate = map.getCoordinateFromPixel([x, y]);
+                    map.getView().setResolution(map.getView().getResolution());
+                    self.setAnimation(coordinate, map.getView().getZoom());
+                });
 
                 timePosition = setInterval(function () {
                     self.getVehicleList(true);
@@ -2775,6 +2810,10 @@
                         }, 2000);
                     }
                 }, 100);
+
+                // self.mapContainer.controlsInfo.overviewMap.on("singleclick", function(event) {
+                //     console.log(event);
+                // });
 
                 // 点击地图
                 self.mapContainer.map.on("singleclick", function (event) {

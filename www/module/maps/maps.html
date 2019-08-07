@@ -47,7 +47,7 @@
     <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
     <link rel="stylesheet" href="/airport/assets/vender/openLayer/ol.min.css">
     <link rel="stylesheet" href="/airport/assets/vender/radar/radar.min.css">
-    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=2341231234" />
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=2313" />
 
 </head>
 
@@ -62,8 +62,6 @@
                 <div class="mousePositionLabel">[经度, 纬度]</div>
             </div>
         </div>
-
-
 
         <!-- 车辆轨迹点信息 -->
         <div id="popup" class="ol-popup popupLayer">
@@ -98,7 +96,7 @@
                 <div id="popup-content">
                     <p>{{{'CN':'公司名称','EN':'Company','TW':'公司名稱'}[language]}}：{{vehicleItemPop.companyName}}</p>
                     <p>{{{'CN':'部门名称','EN':'Department','TW':'部門名稱'}[language]}}：{{vehicleItemPop.deptName}}</p>
-                    <p v-if="vehicleItemPop.address">车辆位置：{{vehicleItemPop.address}}</p>
+                    <p v-if="singleVehiclePageInfo.address">车辆位置：{{singleVehiclePageInfo.address}}</p>
                     <p>{{{'CN':'车辆编码','EN':'Code','TW':'車輛編碼'}[language]}}：{{vehicleItemPop.vehicleCode}}</p>
                     <template v-if="vehicleItemPop.licenseNumber">
                         <p>
@@ -181,12 +179,12 @@
                                     </span>{{{'CN':'重置视图','EN':'Reset View','TW':'重置視圖'}[language]}}</i-button>
                             </div>
                         </template>
-                        <template v-if="isTrackItem==true">
+                        <!-- <template v-if="isTrackItem==true">
                             <div style="display: inline-block">
                                 <i-button @click="cancelTrack" size="large" type="default"><span>
                                         <Icon size="20" type="ios-bug" /></span>取消追踪</i-button>
                             </div>
-                        </template>
+                        </template> -->
                     </i-col>
                 </Row>
             </template>
@@ -332,7 +330,7 @@
                                 <td>
                                     <template>
                                         <div style="display: inline-block; width: 48%;">
-                                            <date-picker :value="dateTimeInfo.date" @on-change="getBeginDate"
+                                            <date-picker :value="dateTimeInfo.begiDate" @on-change="getBeginDate"
                                                 style="width: 100%;" type="date" format="yyyy-MM-dd" :confirm="false"
                                                 :placeholder="{'CN':'日期','EN':'Please Choose','TW':'請選擇'}[language]">
                                             </date-picker>
@@ -356,7 +354,7 @@
                                 <td>
                                     <template>
                                         <div style="display: inline-block; width: 48%;">
-                                            <date-picker v-model="dateTimeInfo.date" :value="singleVehiclePageInfo.date"
+                                            <date-picker v-model="dateTimeInfo.endDate" :value="singleVehiclePageInfo.date"
                                                 @on-change="getEndDate" style="width: 100%;" type="date"
                                                 format="yyyy-MM-dd" :confirm="false" style="width: 50%;"
                                                 :placeholder="{'CN':'日期','EN':'Please Choose','TW':'請選擇'}[language]">
@@ -406,7 +404,7 @@
                         <div style="padding: 10px; background-color: #f8f8f9;">
                             <p>{{{'CN':'公司名称','EN':'Company','TW':'公司名稱'}[language]}}：{{vehicleItemPop.companyName}}</p>
                             <p>{{{'CN':'部门名称','EN':'Department','TW':'部門名稱'}[language]}}：{{vehicleItemPop.deptName}}</p>
-                            <p v-if="vehicleItemPop.address">车辆位置：{{vehicleItemPop.address}}</p>
+                            <p v-if="singleVehiclePageInfo.address">车辆位置：{{singleVehiclePageInfo.address}}</p>
                             <p>{{{'CN':'车辆编码','EN':'Code','TW':'車輛編碼'}[language]}}：{{vehicleItemPop.vehicleCode}}</p>
                             <template v-if="vehicleItemPop.licenseNumber">
                                 <p>
@@ -1108,7 +1106,7 @@
                                             <template v-for="item in terminalStatusList">
                                                 <!-- 401、402、406 -->
                                                 <template
-                                                    v-if="!isShenZhen && (item.type==401 ||item.type==402||item.type==406)">
+                                                    v-if="item.type==401||item.type==402||item.type==403||item.type==406">
                                                     <i-option :value="item.type">{{item.name}}</i-option>
                                                 </template>
                                             </template>
@@ -1190,7 +1188,7 @@
                 <div class="modifiedWrap">
                     <div class="tableWrap">
                         <template>
-                            <i-table height="250" @on-row-click="showRowDataPosition" :loading="isSearchLoading"
+                            <i-table height="250" @on-row-click="showRowDataPosition"
                                 highlight-row :columns="searchColumns" :data="searchDatas" stripe="true" size="small">
                                 <!-- <template slot-scope="{row, index}" slot="action">
                                 <template v-if="row.licenseNumber && vehiclePositionList[index]['providerId']<100">
@@ -1216,7 +1214,7 @@
         </template>
 
     </div>
-    <script src="https://api.map.baidu.com/api?v=2.0&ak=UeypZu2DGde5MoU5qhlGRu9exqTwfpDA"></script>
+    <script src="https://api.map.baidu.com/api?v=2.0&ak=eCaU3zoABU2Ggtuc8vAoTrkc"></script>
     <script src="/airport/assets/js/LAB.min.js?v=3423841237481237"></script>
     <script src="/airport/assets/vender/openLayer/ol.min.js"></script>
     <script src="/airport/www/module/maps/loaMapType.js?v=3423841237481237"></script>

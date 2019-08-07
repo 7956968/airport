@@ -2,13 +2,49 @@
     var language = utility.getLocalStorage("language");
     var userInfo = utility.getLocalStorage("userInfo");
     var bizParam = utility.getLocalStorage("bizParam");
+    var userFuncList = utility.getLocalStorage("userFuncList");
+    var functionInfo = (function () {
+        var info = {
+            isViewVideo: false,
+            isSearch: false,
+            isTrack: false,
+            isOnlineDetail: false,
+        };
+        for (var key in userFuncList) {
+            if (userFuncList.hasOwnProperty(key)) {
+                for (var i = 0, len = userFuncList[key].length; i < len; i++) {
+                    if (userFuncList[key][i]["functionCode"] == "device_manage_view_video") {
+                        info.isViewVideo = true;
+                    }
+                    if (userFuncList[key][i]["functionCode"] == "map_query_live_vehicle") {
+                        info.isSearch = true;
+                    }
+                    if (userFuncList[key][i]["functionCode"] == "map_view_track") {
+                        info.isTrack = true;
+                    }
+                    if (userFuncList[key][i]["functionCode"] == "device_manage_secure_area") {
+                        info.isDefense = true;
+                    }
+                    if (userFuncList[key][i]["functionCode"] == "device_manage_camera") {
+                        info.isCamera = true;
+                    }
+                    if (userFuncList[key][i]["functionCode"] == "device_manage_view_online") {
+                        info.isOnlineDetail = true;
+                    }
+                }
+            }
+        }
+        return info;
+    }());
     var pageVue = new Vue({
         "el": "#js-vue",
         "data": {
+            "isBaiYun": true,
+            "functionInfo": functionInfo,
             "language": !!language ? language["language"] : "CN",
             "isTableLoading": false,
             "isLoading": true,
-            "innerHeight": window.innerHeight / 6,
+            "innerHeight": window.innerHeight / 2,
             "resizeTime": null,
             "copyRight": { "CN": "@copyRight 深圳市民贵科技有限公司", 'EN': "@copyRight Mingui Non-Powered Euipment Management System", 'TW': "@copyRight 民貴無動力管理系統" }[language["language"]],
             // 车辆信息
@@ -18,6 +54,7 @@
             },
             "terminalStatusList": bizParam["terminalStatus"],
             "vehicleTypeList": bizParam["vehicleType"],
+            "vehicleInfoStr": "",
             "vehicleTypeInfo": {},
             "vehiclePassType": {},
 
@@ -25,11 +62,12 @@
             "totalChartData": null,
             "colorList": ["#66CCCC", "#CCFF66", "#FF99CC", "#A0522D", "#FFFF00", "#336699", "#CC9933", "#339999"],
             "statuPageInfo": {
-                "online": 0,
+                "online": 2,
                 "daySpan": 0,
                 "pageNum": 1,
                 "pageSize": 10,
                 "count": 0,
+                "licenseNumber": ""
             },
             "isTableLoading": false,
             "showStatuDetail": false,
@@ -49,15 +87,12 @@
                 },
                 {
                     "title": "最后上线时间",
-                    "key": "lastGpsTime",
-                    // "sortable": true,
-                    // "sortType": "asc",
                     "render": function (h, params) {
                         var classType = "normalDay";
                         var now = Date.parse(new Date());
                         var lastTime = Date.parse(params.row.lastGpsTime.replace("-", "/"));
                         var day = Math.floor((now - lastTime) / (24 * 3600 * 1000));
-                        if (day > 3) {
+                        if (day >= 1) {
                             classType = "overDay";
                         }
                         return h("div", [
@@ -123,16 +158,19 @@
                 {
                     "title": "在线次数",
                     "key": "onlineCount",
+                    "sortable": true,
                     "align": "center",
                 },
                 {
                     "title": "离线次数",
                     "key": "offlineCount",
+                    "sortable": true,
                     "align": "center",
                 },
                 {
                     "title": "在线时长",
                     "key": "onlineDuration",
+                    "sortable": true,
                     "align": "center",
                     "render": function(h, params){
                         var text = (params.row.onlineDuration/3600).toFixed(2) + "小时"
@@ -169,7 +207,8 @@
             ],
             "onlineStatList": [],
             "onlineStatItemInfo": {},
-            "showOnlineDetail": false
+            "showOnlineDetail": false,
+            "current": 1
         },
         "methods": {
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
@@ -191,11 +230,18 @@
                 var legendLabel = [];
                 var totalChartDataList = self.totalChartData.reverse();
 
+                for (var key in self.vehicleTypeInfo) {
+                    self.vehicleTypeInfo[key]['list'] = new Array(self.totalChartData.length);
+                    for(var v = 0, vlen = self.totalChartData.length; v < vlen; v++) {
+                        self.vehicleTypeInfo[key]['list'][v] = 0;
+                    }
+                }
+
                 for (var i = 0, len = totalChartDataList.length; i < len; i++) {
                     category.push(totalChartDataList[i]["day"]);
                     for (var s = 0, slen = totalChartDataList[i]["useStat"].length; s < slen; s++) {
                         if(totalChartDataList[i]["useStat"][s]["vehicleTypeId"]) {
-                            self.vehicleTypeInfo["_" + totalChartDataList[i]["useStat"][s]["vehicleTypeId"]]["list"].push(totalChartDataList[i]["useStat"][s]["totalVehicleNum"]);
+                            self.vehicleTypeInfo["_" + totalChartDataList[i]["useStat"][s]["vehicleTypeId"]]["list"][i] = (totalChartDataList[i]["useStat"][s]["totalVehicleNum"]);
                         }
                     }
                 }
@@ -258,6 +304,7 @@
             // 重置
             "resetVehicleBizParamInfo": function () {
                 var self = this;
+                var vList = [];
                 self.vehicleTypeInfo = {};
                 self.vehiclePassType = {};
                 self.vehicleInfo = {
@@ -273,7 +320,10 @@
                             "color": self.colorList[i]
                         }
                     }
+                    vList.push(self.vehicleTypeList[i]['type']);
+                    
                 }
+                self.vehicleInfoStr = vList.join();
 
                 for (var j = 0, jlen = self.terminalStatusList.length; j < jlen; j++) {
                     self.vehicleInfo["_" + self.terminalStatusList[j]["type"]] = 0
@@ -355,7 +405,9 @@
                             self.vehicleInfo.list = data.data;
                             for (var i = 0, len = self.vehicleInfo.list.length; i < len; i++) {
                                 self.vehicleInfo["_" + self.vehicleInfo.list[i]["vehicleStatus"]] = self.vehicleInfo["_" + self.vehicleInfo.list[i]["vehicleStatus"]] + 1;
-                                self.vehicleTypeInfo["_" + self.vehicleInfo.list[i]["vehicleTypeId"]]["value"] = self.vehicleTypeInfo["_" + self.vehicleInfo.list[i]["vehicleTypeId"]]["value"] + 1;
+                                if(!!self.vehicleTypeInfo["_" + self.vehicleInfo.list[i]["vehicleTypeId"]]) {
+                                    self.vehicleTypeInfo["_" + self.vehicleInfo.list[i]["vehicleTypeId"]]["value"] = self.vehicleTypeInfo["_" + self.vehicleInfo.list[i]["vehicleTypeId"]]["value"] + 1;
+                                }
                             }
                         }
                     }
@@ -365,6 +417,7 @@
             // 页数改变时的回调
             "statuPageSizeChange": function (value) {
                 var self = this;
+                self.current = value;
                 self.statuPageInfo.pageNum = parseInt(value, 10);
                 setTimeout(function () {
                     self.getStatuVehicleList();
@@ -379,8 +432,12 @@
                 }, 200);
             },
             // 获取车辆不同天数的状态信息信息
-            "getStatuVehicleList": function () {
+            "getStatuVehicleList": function (bool) {
                 var self = this;
+                if(bool == true) {
+                    self.current = 1;
+                    self.statuPageInfo.pageNum = 1;
+                }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getVehicleList,
                     actionUrl: CONFIG.SERVICE.vehicleService,
@@ -390,6 +447,7 @@
                         daySpan: parseInt(self.statuPageInfo.daySpan),
                         pageSize: self.statuPageInfo.pageSize,
                         pageNum: self.statuPageInfo.pageNum,
+                        licenseNumber:  encodeURI($.trim(self.statuPageInfo.licenseNumber)),
                     },
                     beforeSendCallback: function () {
                         self.isTableLoading = true;
@@ -457,6 +515,14 @@
                     }
                 });
             },
+            "toOnlineDetail": function(onlineStatItemInfo) {
+                var self = this;
+                utility.setSessionStorage("onlineStatItemInfo", onlineStatItemInfo);
+                setTimeout(function () {
+                    $(window.parent.document).find("#nav_OnlineDetail").bind("click");
+                    $(window.parent.document).find("#nav_OnlineDetail").trigger("click");
+                }, 200);
+            },
             // 初始化
             "init": function () {
                 var self = this;
@@ -479,6 +545,8 @@
         },
         "created": function () {
             var self = this;
+
+            // self.isBaiYun = (userInfo.userName.indexOf("白云")!=-1);
 
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
             utility.isLogin(false);

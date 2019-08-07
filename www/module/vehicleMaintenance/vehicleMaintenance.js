@@ -47,8 +47,6 @@
             "pageInfo": {
                 "id": "", // 指定的维护记录ID
                 "count": 0,
-                "pageNum": 1,
-                "pageSize": 20,
                 "deptId": "", // 部门ID
                 "vehicleId": "", // 车辆ID
                 "vehicleName": "",// 车辆名称
@@ -61,6 +59,10 @@
                 "endRepairTime": "",// 查询结束时间，yyyy-MM-dd
                 "beginMiles": "",// 最小里程数
                 "endMiles": "",// 最大里程数
+            },
+            "page": {
+                "pageNum": 1,
+                "pageSize": 20,
             },
             "columnsList": [
                 {
@@ -215,10 +217,10 @@
                 var self = this;
                 utility.showMessageTip(self, function () {
                     self.itemInfo = JSON.parse(JSON.stringify(self.maintenanceList[self.index]));
-                    self.itemInfo.repairItemIds = (function(){
+                    self.itemInfo.repairItemIds = (function () {
                         var arr = [];
                         var ids = self.itemInfo.repairItemIds.split(",");
-                        for(var i = 0, len = ids.length; i < len; i++) {
+                        for (var i = 0, len = ids.length; i < len; i++) {
                             arr.push(parseInt(ids[i]));
                         }
                         return arr;
@@ -233,12 +235,12 @@
                 utility.showMessageTip(self, function () {
                     self.itemInfo = JSON.parse(JSON.stringify(self.maintenanceList[self.index]));
                     self.itemInfo.currMaintainTimeName = self.itemInfo.currMaintainTime.split("T")[0];
-                    self.itemInfo.repairItemIdName = (function(){
+                    self.itemInfo.repairItemIdName = (function () {
                         var arr = [];
                         var ids = self.maintenanceList[self.index].repairItemIds.split(",");
-                        for(var e = 0, elen = ids.length; e < elen; e++) {
-                            for(var r = 0, rlen = self.vehicleRepairTypeList.length; r < rlen; r++) {
-                                if(parseInt(ids[e]) == self.vehicleRepairTypeList[r]["type"]) {
+                        for (var e = 0, elen = ids.length; e < elen; e++) {
+                            for (var r = 0, rlen = self.vehicleRepairTypeList.length; r < rlen; r++) {
+                                if (parseInt(ids[e]) == self.vehicleRepairTypeList[r]["type"]) {
                                     arr.push(self.vehicleRepairTypeList[r]["name"]);
                                 }
                             }
@@ -254,7 +256,7 @@
                 self.$Modal.confirm({
                     "title": "确定删除？",
                     "width": 200,
-                    "onOk": function() {
+                    "onOk": function () {
                         self.itemInfo = self.maintenanceList[self.index];
                         utility.showMessageTip(self, function () {
                             utility.interactWithServer({
@@ -277,25 +279,25 @@
                         });
                     }
                 });
-                
+
             },
             // 时间变化
-            "beginRepairTime": function(value, item) {
+            "beginRepairTime": function (value, item) {
                 var self = this;
                 self.pageInfo.beginRepairTime = value;
             },
-            "endRepairTime": function(value, item) {
+            "endRepairTime": function (value, item) {
                 var self = this;
                 self.pageInfo.endRepairTime = value;
             },
-            "currMaintainTime": function(value, item) {
+            "currMaintainTime": function (value, item) {
                 var self = this;
                 self.itemInfo.currMaintainTime = value;
             },
             // 页数改变时的回调
             "pageSizeChange": function (value) {
                 var self = this;
-                self.pageInfo.pageNum = parseInt(value, 10);
+                self.page.pageNum = parseInt(value, 10);
                 setTimeout(function () {
                     self.getmaintenanceList(false);
                 }, 200);
@@ -303,7 +305,7 @@
             // 切换每页条数时的回调
             "pageRowChange": function (value) {
                 var self = this;
-                self.pageInfo.pageSize = parseInt(value, 10);
+                self.page.pageSize = parseInt(value, 10);
                 setTimeout(function () {
                     self.getmaintenanceList(false);
                 }, 200);
@@ -324,11 +326,11 @@
                         "id": self.itemInfo.id, // 车辆保养信息ID
                         "vehicleId": self.itemInfo.vehicleId,// 车辆ID
                         "lastMaintainUserId": self.itemInfo.lastMaintainUserId,// 本次保养责任人用户id
-                        "lastMaintainUserName": (function(){
+                        "lastMaintainUserName": (function () {
                             var name = encodeURI(self.itemInfo.lastMaintainUserName);
-                            if(self.itemInfo.lastMaintainUserId!="") {
-                                for(var i = 0, len = self.userList.length; i < len; i++){
-                                    if(self.itemInfo.lastMaintainUserId == self.userList[i]["id"]) {
+                            if (self.itemInfo.lastMaintainUserId != "") {
+                                for (var i = 0, len = self.userList.length; i < len; i++) {
+                                    if (self.itemInfo.lastMaintainUserId == self.userList[i]["id"]) {
                                         name = encodeURI(self.userList[i]["userName"]);
                                     }
                                 }
@@ -336,11 +338,11 @@
                             return name;
                         }()),// 本次保养责任人姓名
                         "lastMaintainDeptId": self.itemInfo.lastMaintainDeptId,// 本次保养责任单位ID
-                        "lastMaintainDeptName": (function(){
+                        "lastMaintainDeptName": (function () {
                             var name = encodeURI(self.itemInfo.lastMaintainDeptName);
-                            if(self.itemInfo.lastMaintainDeptId!="") {
-                                for(var i = 0, len = self.departmentList.length; i < len; i++){
-                                    if(self.itemInfo.lastMaintainDeptId == self.departmentList[i]["id"]) {
+                            if (self.itemInfo.lastMaintainDeptId != "") {
+                                for (var i = 0, len = self.departmentList.length; i < len; i++) {
+                                    if (self.itemInfo.lastMaintainDeptId == self.departmentList[i]["id"]) {
                                         name = encodeURI(self.departmentList[i]["deptName"]);
                                     }
                                 }
@@ -379,13 +381,13 @@
                         "companyName": decodeURI(self.maintenanceList[i]["companyName"]),// 公司名称
                         "vehicleName": decodeURI(self.maintenanceList[i]["vehicleName"]),// 车辆名称
                         "vehicleCode": decodeURI(self.maintenanceList[i]["vehicleCode"]), // 车辆编号
-                        "maintainRemark": (function(){
+                        "maintainRemark": (function () {
                             var arr = [];
                             var ids = self.maintenanceList[i].repairItemIds.split(",");
 
-                            for(var e = 0, elen = ids.length; e < elen; e++) {
-                                for(var r = 0, rlen = self.vehicleRepairTypeList.length; r < rlen; r++) {
-                                    if(parseInt(ids[e]) == self.vehicleRepairTypeList[r]["type"]) {
+                            for (var e = 0, elen = ids.length; e < elen; e++) {
+                                for (var r = 0, rlen = self.vehicleRepairTypeList.length; r < rlen; r++) {
+                                    if (parseInt(ids[e]) == self.vehicleRepairTypeList[r]["type"]) {
                                         arr.push(self.vehicleRepairTypeList[r]["name"]);
                                     }
                                 }
@@ -417,12 +419,26 @@
                 // 如果是查询，则重新从第一页开始
                 self.dataList = [];
                 if (bool == true) {
-                    self.pageInfo.pageNum = 1;
+                    self.page.pageNum = 1;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleRepairService + "?action=" + CONFIG.ACTION.getVehicleRepairList,
                     actionUrl: CONFIG.SERVICE.vehicleRepairService,
-                    dataObj: self.pageInfo,
+                    dataObj: {
+                        "pageNum": self.page.pageNum,
+                        "pageSize": self.page.pageSize,
+                        "vehicleId": self.pageInfo.vehicleId, // 车辆ID
+                        "vehicleName": self.pageInfo.vehicleName,// 车辆名称
+                        "vehicleCode": self.pageInfo.vehicleCode,// 车辆编码
+                        "vehicleColorId": self.pageInfo.vehicleColorId,// 所属公司ID
+                        "vehicleTypeId": self.pageInfo.vehicleTypeId,// 车辆颜色ID
+                        "vehicleBrandId": self.pageInfo.vehicleBrandId,// 车辆类型ID
+                        "vehicleTypeId": self.pageInfo.vehicleTypeId,// 车辆品牌ID
+                        "beginRepairTime": self.pageInfo.beginRepairTime,// 查询开始时间，yyyy-MM-dd
+                        "endRepairTime": self.pageInfo.endRepairTime,// 查询结束时间，yyyy-MM-dd
+                        "beginMiles": self.pageInfo.beginMiles,// 最小里程数
+                        "endMiles": self.pageInfo.endMiles,// 最大里程数
+                    },
                     beforeSendCallback: function () {
                         self.isTableLoading = true;
                     },
@@ -441,7 +457,7 @@
             // 获取车辆信息
             "getVehicleList": function (bool) {
                 var self = this;
-                
+
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getVehicleList,
                     actionUrl: CONFIG.SERVICE.vehicleService,
@@ -521,6 +537,10 @@
                 self.getVehicleList();
                 self.getDepartmentList();
                 self.getUserList();
+
+                self.$watch('pageInfo', function () {
+                    self.getmaintenanceList(true);
+                }, { deep: true });
             }, 500);
         }
     });

@@ -52,6 +52,7 @@
             }, {
                 value: '7-7'
             }],
+            "videoInfo": [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
             "isStop": false, // 是否开始了
             "offLine": false, // 是否开始了
             "timeOfflineOut": null,
@@ -952,7 +953,7 @@
                         self.pageNum = self.frontChildren.length > 8 ? 8 : self.frontChildren.length;
                         // 登录成功后马上开始播放视频
                         self.startVideo();
-                        self.listenVideoFrame();
+                        // self.listenVideoFrame();
                     },
                     // // 设备离线或上线
                     onOnOffline: function (front) {
@@ -1037,21 +1038,30 @@
             // getVideoFrame
             "getVideoFrame": function (videoId) {
                 var self = this;
-                var video = VideoFrame({
-                    id: videoId,
-                    frameRate: 29.97,
-                    callback: function (frame) {
-                        if (navigator.connection.downlink) {
-                            var speed = navigator.connection.downlink * 1024 / 8;
-                            if (speed / 1024 >= 1) {
-                                self.cNet = "当前网速:" + (speed / 1024) + "MB/s";
-                            } else {
-                                self.cNet = "当前网速:" + speed + "KB/s";
-                            }
+                var lastCurrTime = 0;
+                var lastFrameCount = 0;
+                var fps = 0;
+                setInterval(function() {
+                    var currTime = $("#video" + videoId)[0].currentTime;
+                        var videoHeight = $("#video" + videoId)[0].videoHeight;
+                        var videoWidth = $("#video" + videoId)[0].videoWidth;
+                        var webkitDecodedFrameCount = $("#video" + videoId)[0].webkitDecodedFrameCount;
+                        
+                        if (currTime == 0) {
+                            lastCurrTime = 0;
+                            lastFrameCount = 0;
                         }
-                    }
-                });
-                video.listen('frame');
+                        if (currTime != 0) {
+                            fps = (webkitDecodedFrameCount - lastFrameCount) / (currTime - lastCurrTime);
+                            lastCurrTime = currTime;
+                            lastFrameCount = webkitDecodedFrameCount;
+                        }
+                        self.videoInfo[videoId] = {
+                            videoWidth: videoWidth,
+                            videoHeight: videoHeight,
+                            fps: fps.toFixed(0)
+                        };
+                }, 1000);
             },
             // listenVideoFrame
             "listenVideoFrame": function () {
@@ -1123,7 +1133,7 @@
                         return;
                     }
                     curVideoWin.css({ "top": param[idx].top, "left": param[idx].left, "width": param[idx].width, "height": param[idx].height, "display": "block" });
-                    self.getVideoFrame("#video" + idx);
+                    self.getVideoFrame(idx);
                 }
 
                 self.splitNum = splitNum;

@@ -161,7 +161,10 @@
                                 </span>&nbsp;
                                 <!-- <span>{{cNet}}</span>&nbsp;&nbsp; -->
 
-                                <span v-if="FPS">FPS({{FPS}})</span>&nbsp;
+                                <span>{{!!videoInfo[index-1]['videoWidth']?videoInfo[index-1]['videoWidth']:0}}</span>
+                                X
+                                <span>{{!!videoInfo[index-1]['videoHeight']?videoInfo[index-1]['videoHeight']:0}}</span>&nbsp;
+                                <span>{{videoInfo[index-1]['fps']!='NaN'?videoInfo[index-1]['fps']:0}}fps</span>&nbsp;
                                 <template v-if="!!frontChildren[index-1]">
                                     <span>{{(frontChildren[index-1]['name'])}}</span>
                                 </template>

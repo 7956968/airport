@@ -217,7 +217,7 @@
 
 
         <template>
-            <Modal v-model="isShowDetail" :footer-hide="true" :styles="{top: '60px'}" width="25" title="查看详情">
+            <Modal v-model="isShowDetail" :footer-hide="true" :styles="{top: '60px'}" width="30" title="查看详情">
                 <div class="modifiedWrap">
                     <table>
                         <tbody>
@@ -225,14 +225,17 @@
                                 <td class="detailLabel"><span v-text="{'CN':'公司名称：','EN':'Company Name：','TW':'公司名稱：'}[language]"></span></td>
                                 <td><span v-text="itemInfo.companyName"></span></td>
                             </tr>
-                            
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span>绑定车辆：</span></td>
+                                <td><span v-text="itemInfo.vehicleName"></span></td>
+                            </tr>
                             <tr class="detailInfo">
                                 <td class="detailLabel"><span v-text="{'CN':'供应商：','EN':'Supplier：','TW':'供應商：'}[language]"></span></td>
                                 <td><span v-text="itemInfo.providerId"></span></td>
                             </tr>
                             <tr class="detailInfo">
                                 <td class="detailLabel"><span v-text="{'CN':'运行状态：','EN':'Working Condition：','TW':'運行狀態：'}[language]"></span></td>
-                                <td><span v-text="itemInfo.deviceStatus"></span></td>
+                                <td><span v-text="itemInfo.deviceStatusName"></span></td>
                             </tr>
                             <tr class="detailInfo">
                                 <td class="detailLabel"><span v-text="{'CN':'终端编号：','EN':'Terminal No.：','TW':'終端編號：'}[language]"></span></td>

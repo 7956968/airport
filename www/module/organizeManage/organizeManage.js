@@ -19,10 +19,12 @@
             "pageInfo": {
                 "id": 0,
                 "count": 0,
-                "pageNum": 1,
-                "pageSize": 20,
                 "companyName": "", // 查询关键字（公司名称）
                 "paraCompanyId": "", // 上级公司ID
+            },
+            "page": {
+                "pageSize": 20,
+                "pageNum": 1,
             },
             "index": 0,
             "selectItem": null,
@@ -53,7 +55,7 @@
             },
             "columnsList": [
                 {
-                    "type": "index", 
+                    "type": "index",
                     "width": 60,
                     "align": "center"
                 },
@@ -226,25 +228,25 @@
                 });
             },
             // 删除
-            "delItem": function() {
+            "delItem": function () {
                 var self = this;
                 self.$Modal.confirm({
                     "title": "确定删除？",
                     "width": 200,
-                    "onOk": function() {
+                    "onOk": function () {
                         self.itemInfo = self.companyList[self.index];
                         utility.showMessageTip(self, function () {
                             utility.interactWithServer({
-                                url: CONFIG.HOST + CONFIG.SERVICE.companyService + "?action=" + CONFIG.ACTION.delCompany+"&id="+self.itemInfo.id+"&modifyUserId="+userInfo["id"],
+                                url: CONFIG.HOST + CONFIG.SERVICE.companyService + "?action=" + CONFIG.ACTION.delCompany + "&id=" + self.itemInfo.id + "&modifyUserId=" + userInfo["id"],
                                 actionUrl: CONFIG.SERVICE.companyService,
-                                beforeSendCallback: function() {
+                                beforeSendCallback: function () {
                                     self.isTableLoading = true;
                                 },
-                                completeCallback: function() {
+                                completeCallback: function () {
                                     self.isTableLoading = false;
                                 },
-                                successCallback: function(data) {
-                                    if(data.code == 200) {
+                                successCallback: function (data) {
+                                    if (data.code == 200) {
                                         self.getCompanyList(true);
                                     } else {
                                         self.$Message.error(data.message);
@@ -264,23 +266,23 @@
                 }
             },
             // 页数改变时的回调
-            "pageSizeChange": function(value) {
+            "pageSizeChange": function (value) {
                 var self = this;
-                self.pageInfo.pageNum = parseInt(value, 10);
-                setTimeout(function() {
+                self.page.pageNum = parseInt(value, 10);
+                setTimeout(function () {
                     self.getCompanyList(false);
                 }, 200);
             },
             // 切换每页条数时的回调
-            "pageRowChange": function(value) {
+            "pageRowChange": function (value) {
                 var self = this;
-                self.pageInfo.pageSize = parseInt(value, 10);
-                setTimeout(function() {
+                self.page.pageSize = parseInt(value, 10);
+                setTimeout(function () {
                     self.getCompanyList(false);
                 }, 200);
             },
             // 验证所有输入
-            "validateInput": function() {
+            "validateInput": function () {
                 var self = this;
 
                 // 先判断公司名称
@@ -316,7 +318,7 @@
                         "createUserId": userInfo["id"], // 创建用户ID，新增时必传
                         "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传
                     },
-                    completeCallback: function() {
+                    completeCallback: function () {
                         self.isModalLoading = false;
                     },
                     successCallback: function (data) {
@@ -330,10 +332,10 @@
                 });
             },
             // 从获取回来的列表中，格式化出显示在表格上的内容
-            "formatTableList": function() {
+            "formatTableList": function () {
                 var self = this;
-                
-                for(var i = 0, len = self.companyList.length; i < len; i++) {
+
+                for (var i = 0, len = self.companyList.length; i < len; i++) {
                     self.tableRowList.push({
                         "companyName": decodeURI(self.companyList[i]["companyName"]), //"公司名称",
                         "companyEnName": self.companyList[i]["companyEnName"], //"外文名称",
@@ -341,10 +343,10 @@
                         "chargeManName": decodeURI(self.companyList[i]["chargeManName"]), //"负责人",
                         "business": decodeURI(self.companyList[i]["business"]), //"经营范围",
                         "remark": decodeURI(self.companyList[i]["remark"]), //"备注"
-                        "companyTypeId": (function(){
+                        "companyTypeId": (function () {
                             var nature = "";
-                            for(var c = 0, clen = self.companyTypeList.length; c < clen; c++) {
-                                if(self.companyTypeList[c]["type"] == self.companyList[i]["companyTypeId"]) {
+                            for (var c = 0, clen = self.companyTypeList.length; c < clen; c++) {
+                                if (self.companyTypeList[c]["type"] == self.companyList[i]["companyTypeId"]) {
                                     nature = self.companyTypeList[c]["name"];
                                     break;
                                 }
@@ -355,25 +357,30 @@
                 }
             },
             // 获取机构信息
-            "getCompanyList": function(bool) {
+            "getCompanyList": function (bool) {
                 var self = this;
                 // 如果是查询，则重新从第一页开始
                 self.tableRowList = [];
-                if(bool == true) {
+                if (bool == true) {
                     self.pageInfo.pageNum = 0;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.companyService + "?action=" + CONFIG.ACTION.getCompanyList,
                     actionUrl: CONFIG.SERVICE.companyService,
-                    dataObj: self.pageInfo,
-                    beforeSendCallback: function() {
+                    dataObj: {
+                        "pageNum": self.page.pageNum,
+                        "pageSize": self.page.pageSize,
+                        "companyName": encodeURI(self.pageInfo.companyName), // 查询关键字（公司名称）
+                        "paraCompanyId": self.pageInfo.paraCompanyId, // 上级公司ID
+                    },
+                    beforeSendCallback: function () {
                         self.isTableLoading = true;
                     },
-                    completeCallback: function() {
+                    completeCallback: function () {
                         self.isTableLoading = false;
                     },
-                    successCallback: function(data) {
-                        if(data.code == 200) {
+                    successCallback: function (data) {
+                        if (data.code == 200) {
                             self.companyList = data.data;
                             self.pageInfo.count = data.count;
 
@@ -387,7 +394,7 @@
             "getCityList": function () {
                 var self = this;
                 utility.interactWithServer({
-                    url: CONFIG.HOST + CONFIG.SERVICE.commonService + "?action=" + CONFIG.ACTION.getCityList + "&provinceId="+ self.itemInfo.provinceId,
+                    url: CONFIG.HOST + CONFIG.SERVICE.commonService + "?action=" + CONFIG.ACTION.getCityList + "&provinceId=" + self.itemInfo.provinceId,
                     actionUrl: CONFIG.SERVICE.commonService,
                     successCallback: function (data) {
                         if (data.code == 200) {
@@ -401,7 +408,7 @@
             "getDistrictList": function () {
                 var self = this;
                 utility.interactWithServer({
-                    url: CONFIG.HOST + CONFIG.SERVICE.commonService + "?action=" + CONFIG.ACTION.getDistrictList + "&cityId="+ self.itemInfo.cityId,
+                    url: CONFIG.HOST + CONFIG.SERVICE.commonService + "?action=" + CONFIG.ACTION.getDistrictList + "&cityId=" + self.itemInfo.cityId,
                     actionUrl: CONFIG.SERVICE.commonService,
                     successCallback: function (data) {
                         if (data.code == 200) {
@@ -413,12 +420,17 @@
         },
         "created": function () {
             var self = this;
+            var time = null;
 
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
             utility.isLogin(false);
 
             setTimeout(function () {
-                self.getCompanyList(false);
+                self.getCompanyList(true);
+
+                self.$watch('pageInfo', function () {
+                    self.getCompanyList(true);
+                }, { deep: true });
             }, 500);
         }
     });

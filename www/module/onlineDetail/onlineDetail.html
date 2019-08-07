@@ -45,7 +45,7 @@
     <!-- QQ应用模式 -->
     <meta name="x5-page-mode" content="app">
     <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
-    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=0303939" />
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css" />
 </head>
 
 <body class="innerPage">
@@ -85,7 +85,7 @@
                                         </template> -->
                                         <template>
                                             &nbsp;&nbsp;&nbsp;车牌号
-                                            <i-input v-model="pageInfo.licenseNumber" :placeholder="{'CN':'请输入','EN':'Input','TW':'請輸入'}[language]" style="width: 90px"></i-input>
+                                            <i-input v-model="pageInfo.licenseNumber" :clearable="true" :placeholder="{'CN':'请输入','EN':'Input','TW':'請輸入'}[language]" style="width: 90px"></i-input>
                                         </template>
                                         <template>
                                             &nbsp;&nbsp;&nbsp;&nbsp;{{{'CN':'时间','EN':'Time','TW':'時間'}[language]}}:

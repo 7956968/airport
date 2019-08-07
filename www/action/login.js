@@ -27,18 +27,22 @@
                 //     "label": "繁體",
                 // }
             ],
-            "airPort": "121.8019,31.1521",
+            "airPort": "113.310746,23.396745",
             "airPortList": [
                 {
                     "value": "0",
                     "label": "全部",
                 },
                 {
-                    "value": "121.3163,31.1958",
+                    "value": "113.310746,23.396745",
+                    "label": "广州白云机场",
+                },
+                {
+                    "value": "121.34210660807666,31.198845194982827",
                     "label": "上海虹桥国际机场",
                 },
                 {
-                    "value": "121.8019,31.1521",
+                    "value": "121.804854898899,31.151142510137117",
                     "label": "上海浦东国际机场",
                 }
             ],
@@ -81,7 +85,7 @@
             },
 
             // 重新格式化功能菜单
-            "formatFunMenu": function(data) {
+            "formatFunMenu": function (data) {
                 var self = this;
                 var funcInfo = {
                     "menu_map": [],
@@ -91,26 +95,26 @@
                     "menu_system": []
                 };
                 var funcList = data["userFuncList"];
-                for(var i = 0, len = funcList.length; i < len; i++) {
-                    if(funcList[i]["functionCode"].indexOf("map_")!=-1 || 
-                        funcList[i]["functionCode"] == 'device_manage_vehicle' || 
-                        funcList[i]["functionCode"] == 'device_view_secure_area' || 
-                        funcList[i]["functionCode"] == 'device_manage_secure_area' || 
-                        funcList[i]["functionCode"] == 'device_manage_camera' || 
+                for (var i = 0, len = funcList.length; i < len; i++) {
+                    if (funcList[i]["functionCode"].indexOf("map_") != -1 ||
+                        funcList[i]["functionCode"] == 'device_manage_vehicle' ||
+                        funcList[i]["functionCode"] == 'device_view_secure_area' ||
+                        funcList[i]["functionCode"] == 'device_manage_secure_area' ||
+                        funcList[i]["functionCode"] == 'device_manage_camera' ||
                         funcList[i]["functionCode"] == 'device_view_camera'
                     ) {
                         funcInfo["menu_map"].push(funcList[i]);
                     }
-                    if(funcList[i]["functionCode"].indexOf("org_manage_")!=-1) {
+                    if (funcList[i]["functionCode"].indexOf("org_manage_") != -1) {
                         funcInfo["menu_org"].push(funcList[i]);
                     }
-                    if(funcList[i]["functionCode"].indexOf("device_manage_")!=-1) {
+                    if (funcList[i]["functionCode"].indexOf("device_manage_") != -1) {
                         funcInfo["menu_device"].push(funcList[i]);
                     }
-                    if(funcList[i]["functionCode"].indexOf("report_")!=-1) {
+                    if (funcList[i]["functionCode"].indexOf("report_") != -1) {
                         funcInfo["menu_report"].push(funcList[i]);
                     }
-                    if(funcList[i]["functionCode"].indexOf("system_")!=-1) {
+                    if (funcList[i]["functionCode"].indexOf("system_") != -1) {
                         funcInfo["menu_system"].push(funcList[i]);
                     }
                 }
@@ -190,10 +194,10 @@
             // 获取省份数据
             self.getProvinceList();
 
-            document.onkeydown = function(e) {
+            document.onkeydown = function (e) {
                 var e = e || event;
                 var keyCode = e.keyCode || e.while || e.charCode;
-                if(keyCode == 13) {
+                if (keyCode == 13) {
                     self.loginAction();
                 }
             }

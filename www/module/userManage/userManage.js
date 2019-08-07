@@ -47,13 +47,15 @@
             "pageInfo": {
                 "id": 0,
                 "count": 0,
-                "pageNum": 1,
-                "pageSize": 20,
                 "userCode": "", // 查询关键字（角色名称）
                 "userName": "", // 查询关键字（用户名称）
                 "companyId": "", // 公司ID
                 "deptId": "",
                 "deptIds": [],
+            },
+            "page": {
+                "pageNum": 1,
+                "pageSize": 20,
             },
             "columnsList": [
                 {
@@ -325,7 +327,7 @@
             // 页数改变时的回调
             "pageSizeChange": function (value) {
                 var self = this;
-                self.pageInfo.pageNum = parseInt(value, 10);
+                self.page.pageNum = parseInt(value, 10);
                 setTimeout(function () {
                     self.getUserList(false);
                 }, 200);
@@ -333,7 +335,7 @@
             // 切换每页条数时的回调
             "pageRowChange": function (value) {
                 var self = this;
-                self.pageInfo.pageSize = parseInt(value, 10);
+                self.page.pageSize = parseInt(value, 10);
                 setTimeout(function () {
                     self.getUserList(false);
                 }, 200);
@@ -460,10 +462,10 @@
                     url: CONFIG.HOST + CONFIG.SERVICE.userService + "?action=" + CONFIG.ACTION.getUserList,
                     actionUrl: CONFIG.SERVICE.userService,
                     dataObj: {
-                        "pageNum": self.pageInfo.pageNum,
-                        "pageSize": self.pageInfo.pageSize,
-                        "userCode": self.pageInfo.userCode, // 查询关键字（角色名称）
-                        "userName": self.pageInfo.userName, // 查询关键字（用户名称）
+                        "pageNum": self.page.pageNum,
+                        "pageSize": self.page.pageSize,
+                        "userCode": encodeURI(self.pageInfo.userCode), // 查询关键字（角色名称）
+                        "userName": encodeURI(self.pageInfo.userName), // 查询关键字（用户名称）
                         "companyId": self.pageInfo.companyId, // 公司ID
                         "deptId": self.pageInfo.deptIds[self.pageInfo.deptIds.length-1],
                     },
@@ -580,9 +582,13 @@
             utility.isLogin(false);
 
             setTimeout(function () {
-                self.getUserList(false);
+                self.getUserList(true);
                 self.getCompanyList();
-                self.getSuperiorDeprtList("pageInfo");
+                // self.getSuperiorDeprtList("pageInfo");
+
+                self.$watch('pageInfo', function () {
+                    self.getUserList(true);
+                }, { deep: true });
             }, 500);
         }
     });

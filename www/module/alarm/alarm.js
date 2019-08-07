@@ -18,8 +18,6 @@
             "pageInfo": {
                 "id": 0,
                 "count": 0,
-                "pageNum": 1,
-                "pageSize": 20,
                 "companyId": "", // 公司ID
                 "deptIds": [], // 部门ID
                 "eventTypeId": "",
@@ -27,6 +25,10 @@
                 "vehicleName": "",
                 "beginTime": "",
                 "endTime": ""
+            },
+            "page": {
+                "pageSize": 20,
+                "pageNum": 1,
             },
             "index": 0,
             "selectItem": "",
@@ -213,7 +215,7 @@
             // 页数改变时的回调
             "pageSizeChange": function (value) {
                 var self = this;
-                self.pageInfo.pageNum = parseInt(value, 10);
+                self.page.pageNum = parseInt(value, 10);
                 setTimeout(function () {
                     self.getAlarmList(false);
                 }, 200);
@@ -221,7 +223,7 @@
             // 切换每页条数时的回调
             "pageRowChange": function (value) {
                 var self = this;
-                self.pageInfo.pageSize = parseInt(value, 10);
+                self.page.pageSize = parseInt(value, 10);
                 setTimeout(function () {
                     self.getAlarmList(false);
                 }, 200);
@@ -233,17 +235,18 @@
                 // 如果是查询，则重新从第一页开始
                 self.tableRowList = [];
                 if (bool == true) {
-                    self.pageInfo.pageNum = 1;
+                    self.page.pageNum = 1;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.alarmService + "?action=" + CONFIG.ACTION.getAlarmList,
                     actionUrl: CONFIG.SERVICE.alarmService,
                     dataObj: {
-                        "pageNum": self.pageInfo.pageNum,
-                        "pageSize": self.pageInfo.pageSize,
+                        "pageNum": self.page.pageNum,
+                        "pageSize": self.page.pageSize,
                         "alarmTypeId": self.pageInfo.alarmTypeId,
                         "eventTypeId": self.pageInfo.eventTypeId,
                         "dealFlag": self.pageInfo.dealFlag,
+                        "vehicleName": encodeURI(self.pageInfo.vehicleName),
                         "beginTime": self.pageInfo.beginTime,
                         "endTime": self.pageInfo.endTime,
                         "companyId": self.pageInfo.companyId, // 公司ID
@@ -364,7 +367,11 @@
             setTimeout(function () {
                 self.getAlarmList(true);
                 self.getCompanyList();
-                self.getSuperiorDeprtList("pageInfo");
+                // self.getSuperiorDeprtList("pageInfo");
+
+                self.$watch('pageInfo', function () {
+                    self.getAlarmList(true);
+                }, { deep: true });
             }, 500);
         }
     });

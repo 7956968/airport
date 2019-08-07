@@ -60,7 +60,7 @@
                                     <td>
                                         <template>
                                             {{{'CN':'归属公司','EN':'Ownership Company','TW':'歸屬公司'}[language]}}:
-                                            <i-select v-model="pageInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:150px;">
+                                            <i-select v-model="pageInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:200px;">
                                                 <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
                                                 <i-option v-for="item in companyList" :value="item.id">{{item.companyName}}</i-option>
                                             </i-select>

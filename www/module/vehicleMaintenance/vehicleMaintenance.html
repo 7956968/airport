@@ -60,47 +60,44 @@
                                     <td>
                                         <template>
                                             {{{'CN':'选择车辆','EN':'Vehicle','TW':'選擇車輛'}[language]}}:
-                                            <i-select v-model="pageInfo.vehicleId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:90px;">
+                                            <i-select v-model="pageInfo.vehicleId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:150px;">
                                                 <i-option value="0" v-text="{'CN':'全部','EN':'All','TW':'全部'}[language]"></i-option>
                                                 <i-option v-for="item in vehicleList" :value="item.id">{{item.vehicleName}}</i-option>
                                             </i-select>
                                         </template>
-                                        <template>
+                                        <!-- <template>
                                             &nbsp;{{{'CN':'车辆类型','EN':'Vehicle Type','TW':'車輛類型'}[language]}}:
                                             <i-select v-model="pageInfo.vehicleTypeId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:90px;">
                                                 <i-option value="0" v-text="{'CN':'全部','EN':'All','TW':'全部'}[language]"></i-option>
                                                 <i-option v-for="item in vehicleTypeList" :value="item.type">{{item.name}}</i-option>
                                             </i-select>
-                                        </template>
-                                        <template>
+                                        </template> -->
+                                        <!-- <template>
                                             &nbsp;{{{'CN':'车辆颜色','EN':'Vehicle Color','TW':'車輛颜色'}[language]}}:
                                             <i-select v-model="pageInfo.vehicleColorId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:90px;">
                                                 <i-option value="0" v-text="{'CN':'全部','EN':'All','TW':'全部'}[language]"></i-option>
                                                 <i-option v-for="item in vehicleColorList" :value="item.type">{{item.name}}</i-option>
                                             </i-select>
-                                        </template>
-                                        <template>
+                                        </template> -->
+                                        <!-- <template>
                                             &nbsp;{{{'CN':'车辆品牌','EN':'Vehicle Bland','TW':'車輛品牌'}[language]}}:
                                             <i-select v-model="pageInfo.vehicleBrandId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:90px;">
                                                 <i-option value="0" v-text="{'CN':'全部','EN':'All','TW':'全部'}[language]"></i-option>
                                                 <i-option v-for="item in vehicleBrandList" :value="item.type">{{item.name}}</i-option>
                                             </i-select>
-                                        </template>
+                                        </template> -->
                                         <template>
-                                            &nbsp;{{{'CN':'开始时间','EN':'Start Time','TW':'開始時間'}[language]}}:
-                                            <date-picker @on-change="beginRepairTime" type="date" confirm  :placeholder="{'CN':'请选择','EN':'Choose','TW':'請選擇'}[language]" style="width:105px;"></date-picker>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;{{{'CN':'保养时间','EN':'Start Time','TW':'開始時間'}[language]}}:
+                                            <date-picker @on-change="beginRepairTime" type="date" confirm  :placeholder="{'CN':'请选择','EN':'Choose','TW':'請選擇'}[language]" style="width:90px;"></date-picker>
                                             -
-                                            <date-picker @on-change="endRepairTime" type="date" confirm  :placeholder="{'CN':'请选择','EN':'Choose','TW':'請選擇'}[language]" style="width:105px;"></date-picker>
+                                            <date-picker @on-change="endRepairTime" type="date" confirm  :placeholder="{'CN':'请选择','EN':'Choose','TW':'請選擇'}[language]" style="width:90px;"></date-picker>
                                         </template>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="padding-top: 5px;">
+
                                         <template>
-                                            &nbsp;{{{'CN':'保养里程','EN':'mileage','TW':'保養里程'}[language]}}:
-                                            <Input-number v-model="pageInfo.beginMiles" style="width: 80px" :placeholder="{'CN':'请输入','EN':'Input','TW':'請輸入'}[language]"></Input-number>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;{{{'CN':'保养里程','EN':'mileage','TW':'保養里程'}[language]}}:
+                                            <Input-number v-model="pageInfo.beginMiles" style="width: 80px" :placeholder="{'CN':'请输入里程','EN':'Input','TW':'請輸入'}[language]"></Input-number>
                                             -
-                                            <Input-number v-model="pageInfo.endMiles" style="width: 80px" :placeholder="{'CN':'请输入','EN':'Input','TW':'請輸入'}[language]"></Input-number>
+                                            <Input-number v-model="pageInfo.endMiles" style="width: 80px" :placeholder="{'CN':'请输入里程','EN':'Input','TW':'請輸入'}[language]"></Input-number>
                                         </template>
 
                                         <template>
@@ -129,7 +126,7 @@
 
         <div class="tableWrap">
             <template>
-                <i-table :height="tableHeight-50" :loading="isTableLoading" highlight-row :columns="columnsList" :data="dataList" stripe="true"
+                <i-table :height="tableHeight" :loading="isTableLoading" highlight-row :columns="columnsList" :data="dataList" stripe="true"
                     size="small" @on-row-click="setCurrentRowData"></i-table>
             </template>
         </div>

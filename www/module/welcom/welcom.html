@@ -45,7 +45,7 @@
     <!-- QQ应用模式 -->
     <meta name="x5-page-mode" content="app">
     <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
-    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=456456" />
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=134132413" />
 </head>
 
 <body class="graphPage">
@@ -55,6 +55,143 @@
             <template>
 
                 <Row type="flex" justify="start" class-name="infoList" gutter="10">
+
+                    <!-- 测试环境 -->
+                    <!-- <i-col span="12" class-name="item">
+                        <Card bordered="false" style="width: 100%;" padding="0">
+                            <p slot="title" class="tile">
+                                <span class="label">车辆状态</span>
+                            </p>
+                            <div style="padding: 10px;">
+                                <Row type="flex" justify="start" gutter="10">
+                                    <i-col span="9" class-name="infoItem">
+                                        <template>
+                                            <Card bordered="false" style="width: 100%;" padding="0">
+                                                <div @click="toMapPage(406)" class="info _406"
+                                                    :style="{minHeight: '100px', height: (innerHeight-140)/2+'px'}">
+                                                    <Row>
+                                                        <i-col span="24">
+                                                            <p class="label" style="font-size: 16px;">
+                                                                {{{"CN":"离线","EN":"Offline","TW":"離綫"}[language]}}
+                                                            </p>
+                                                            <p class="detail" style="font-size: 64px;"
+                                                                v-text="vehicleInfo['_406']"></p>
+                                                        </i-col>
+                                                    </Row>
+                                                    <Row style="display: none">
+                                                        <i-col span="24">
+                                                            <Icon style="position: relative; z-index: 0; top: -30px;"
+                                                                type="ios-pulse-outline" color="rgb(140, 140, 140)"
+                                                                size="120" />
+                                                        </i-col>
+                                                    </Row>
+                                                </div>
+                                            </Card>
+                                        </template>
+                                        <template>
+                                            <Card bordered="false" style="width: 100%;" padding="0">
+                                                <div @click="toMapPage(403)" class="info _403"
+                                                    :style="{minHeight: '100px', height: (innerHeight-140)/2+'px'}">
+                                                    <Row>
+                                                        <i-col span="24">
+                                                            <p class="label" style="font-size: 16px;">
+                                                                休眠
+                                                            </p>
+                                                            <p class="detail" style="font-size: 64px;"
+                                                                v-text="vehicleInfo['_403']"></p>
+                                                        </i-col>
+                                                    </Row>
+                                                    <Row style="display: none">
+                                                        <i-col span="24">
+                                                            <Icon style="position: relative; z-index: 0; top: -30px;"
+                                                                type="ios-cloudy-night-outline"
+                                                                color="rgba(140, 140, 140, .5)" size="120" />
+                                                        </i-col>
+                                                    </Row>
+                                                </div>
+                                            </Card>
+                                        </template>
+                                    </i-col>
+                                    <i-col span="9" class-name="infoItem">
+                                        <template>
+                                            <Card bordered="false" style="width: 100%;" padding="0">
+                                                <div @click="toMapPage(401)" class="info _401"
+                                                    :style="{minHeight: '100px', height: (innerHeight-140)/2+'px'}">
+                                                    <Row>
+                                                        <i-col span="24">
+                                                            <p class="label" style="font-size: 16px;">
+                                                                {{{"CN":"静止","EN":"Rest","TW":"靜止"}[language]}}
+                                                            </p>
+                                                            <p class="detail" style="font-size: 64px;"
+                                                                v-text="vehicleInfo['_401']"></p>
+                                                        </i-col>
+                                                    </Row>
+                                                    <Row style="display: none">
+                                                        <i-col span="24">
+                                                            <Icon style="position: relative; z-index: 0; top: -20px;"
+                                                                type="logo-angular" color="rgba(162, 125, 112, .5)"
+                                                                size="120" />
+                                                        </i-col>
+                                                    </Row>
+                                                </div>
+                                            </Card>
+                                        </template>
+                                        <template>
+                                            <Card bordered="false" style="width: 100%;" padding="0">
+                                                <div @click="toMapPage(402)" class="info _402"
+                                                    :style="{minHeight: '100px', height: (innerHeight-140)/2+'px'}">
+                                                    <Row>
+                                                        <i-col span="24">
+                                                            <p class="label" style="font-size: 16px;">
+                                                                {{{"CN":"活动","EN":"Running","TW":"活動"}[language]}}
+                                                            </p>
+                                                            <p class="detail" style="font-size: 64px;"
+                                                                v-text="vehicleInfo['_402']"></p>
+                                                        </i-col>
+                                                    </Row>
+                                                    <Row style="display: none">
+                                                        <i-col span=24>
+                                                            <Icon style="position: relative; z-index: 0; top: -20px;"
+                                                                type="md-bulb" color="rgb(106, 206, 110)" size="120" />
+                                                        </i-col>
+                                                    </Row>
+                                                </div>
+                                            </Card>
+                                        </template>
+                                    </i-col>
+
+                                    <i-col span="6" class-name="infoItem">
+                                        <template>
+                                            <Card bordered="false" style="width: 100%;" padding="0">
+                                                <div @click="toMapPage('')" class="info"
+                                                    :style="{minHeight: '200px',height: (innerHeight-140)+'px'}"
+                                                    style="background-color: #0f375f;">
+                                                    <Row>
+                                                        <i-col span="24">
+                                                            <p class="label" style="font-size: 18px;">
+                                                                {{{"CN":"总数","EN":"Sum","TW":"總數"}[language]}}
+                                                            </p>
+                                                            <p class="detail" style="font-size: 64px;"
+                                                                v-text="vehicleInfo.count"></p>
+                                                        </i-col>
+                                                    </Row>
+                                                    <Row>
+                                                        <i-col span="24">
+                                                            <Icon style="position: relative; z-index: 0; top: -40px;"
+                                                                type="ios-car-outline" color="rgba(34, 91, 148, .5)"
+                                                                size="120" />
+                                                        </i-col>
+                                                    </Row>
+                                                </div>
+                                            </Card>
+                                        </template>
+                                    </i-col>
+                                </Row>
+                            </div>
+                        </Card>
+                    </i-col> -->
+
+                    <!-- 正式环境 -->
                     <i-col span="12" class-name="item">
                         <Card bordered="false" style="width: 100%;" padding="0">
                             <p slot="title" class="tile">
@@ -64,10 +201,57 @@
                                 <Row type="flex" justify="start" gutter="10">
                                     <i-col span="6" class-name="infoItem">
                                         <template>
+                                            <Card bordered="false" style="width: 100%; display: none;" padding="0">
+                                                <div @click="toMapPage(403)" class="info"
+                                                    :style="{minHeight: '100px', height: (innerHeight-140)+'px', backgroundColor: 'rgb(121, 85, 72)'}">
+                                                    <Row>
+                                                        <i-col span="24">
+                                                            <p class="label" style="font-size: 16px;">
+                                                                休眠
+                                                            </p>
+                                                            <p class="detail" style="font-size: 64px;"
+                                                                v-text="vehicleInfo['_403']"></p>
+                                                        </i-col>
+                                                    </Row>
+                                                    <Row>
+                                                        <i-col span="24">
+                                                            <Icon style="position: relative; z-index: 0; top: -30px;"
+                                                                type="ios-cloudy-night-outline"
+                                                                color="rgba(140, 140, 140, .5)" size="120" />
+                                                        </i-col>
+                                                    </Row>
+                                                </div>
+                                            </Card>
+                                        </template>
+                                        <template>
+                                            <Card bordered="false" style="width: 100%;" padding="0">
+                                                <div @click="toMapPage(401)" class="info"
+                                                    :style="{minHeight: '100px', height: (innerHeight-140)+'px', backgroundColor: 'rgb(121, 85, 72)'}">
+                                                    <Row>
+                                                        <i-col span="24">
+                                                            <p class="label" style="font-size: 16px;">
+                                                                {{{"CN":"静止","EN":"Rest","TW":"靜止"}[language]}}
+                                                            </p>
+                                                            <p class="detail" style="font-size: 64px;"
+                                                                v-text="vehicleInfo['_401']"></p>
+                                                        </i-col>
+                                                    </Row>
+                                                    <Row>
+                                                        <i-col span="24">
+                                                            <Icon style="position: relative; z-index: 0; top: -20px;"
+                                                                type="logo-angular" color="rgba(162, 125, 112, .5)"
+                                                                size="120" />
+                                                        </i-col>
+                                                    </Row>
+                                                </div>
+                                            </Card>
+                                        </template>
+                                    </i-col>
+                                    <i-col span="6" class-name="infoItem">
+                                        <template>
                                             <Card bordered="false" style="width: 100%;" padding="0">
                                                 <div @click="toMapPage(406)" class="info"
-                                                    :style="{height: (innerHeight-140)+'px'}"
-                                                    style="background-color: rgb(147, 154, 161);">
+                                                    :style="{minHeight: '100px', height: (innerHeight-140)+'px', backgroundColor: 'rgb(147, 154, 161)'}">
                                                     <Row>
                                                         <i-col span="24">
                                                             <p class="label" style="font-size: 16px;">
@@ -92,8 +276,7 @@
                                         <template>
                                             <Card bordered="false" style="width: 100%;" padding="0">
                                                 <div @click="toMapPage(402)" class="info"
-                                                    :style="{height: (innerHeight-140)+'px'}"
-                                                    style="background-color: #4CAF50;">
+                                                    :style="{minHeight: '100px', height: (innerHeight-140)+'px', backgroundColor: 'rgb(76, 175, 80)'}">
                                                     <Row>
                                                         <i-col span="24">
                                                             <p class="label" style="font-size: 16px;">
@@ -113,37 +296,12 @@
                                             </Card>
                                         </template>
                                     </i-col>
-                                    <i-col span="6" class-name="infoItem">
-                                        <template>
-                                            <Card bordered="false" style="width: 100%;" padding="0">
-                                                <div @click="toMapPage(401)" class="info"
-                                                    :style="{height: (innerHeight-140)+'px'}"
-                                                    style="background-color: #795548;">
-                                                    <Row>
-                                                        <i-col span="24">
-                                                            <p class="label" style="font-size: 16px;">
-                                                                {{{"CN":"静止","EN":"Rest","TW":"靜止"}[language]}}
-                                                            </p>
-                                                            <p class="detail" style="font-size: 64px;"
-                                                                v-text="vehicleInfo['_401']"></p>
-                                                        </i-col>
-                                                    </Row>
-                                                    <Row>
-                                                        <i-col span="24">
-                                                            <Icon style="position: relative; z-index: 0; top: -20px;"
-                                                                type="logo-angular" color="rgba(162, 125, 112, .5)"
-                                                                size="120" />
-                                                        </i-col>
-                                                    </Row>
-                                                </div>
-                                            </Card>
-                                        </template>
-                                    </i-col>
+
                                     <i-col span="6" class-name="infoItem">
                                         <template>
                                             <Card bordered="false" style="width: 100%;" padding="0">
                                                 <div @click="toMapPage('')" class="info"
-                                                    :style="{height: (innerHeight-140)+'px'}"
+                                                    :style="{minHeight: '200px', height: (innerHeight-140)+'px'}"
                                                     style="background-color: #0f375f;">
                                                     <Row>
                                                         <i-col span="24">
@@ -156,13 +314,11 @@
                                                     </Row>
                                                     <Row>
                                                         <i-col span="24">
-                                                            <Icon style="position: relative; z-index: 0; top: -20px;"
+                                                            <Icon style="position: relative; z-index: 0; top: -40px;"
                                                                 type="ios-car-outline" color="rgba(34, 91, 148, .5)"
                                                                 size="120" />
                                                         </i-col>
                                                     </Row>
-                                                    <!-- <Icon class="totalIcon" style="left: -20px;" type="ios-car-outline"
-                                                        color="rgba(34, 91, 148, .5)" size="180" /> -->
                                                 </div>
                                             </Card>
                                         </template>
@@ -171,6 +327,7 @@
                             </div>
                         </Card>
                     </i-col>
+
                     <i-col span="12" class-name="item">
                         <Row type="flex" justify="start" class-name="infoList">
                             <Card bordered="false" style="width: 100%;" padding="0">
@@ -178,9 +335,10 @@
                                     <span class="label">数据总汇</span><i class="subLabel">(车辆使用频率)</i>
                                 </p>
                                 <div class="chart" style="position: relative;"
-                                    :style="{height: (innerHeight-118)+'px'}">
+                                    :style="{minHeight: '224px',height: (innerHeight-118)+'px'}">
                                     <!-- <div id="totalEchart" :style="{height: (innerHeight*2.55)+'px'}"></div> -->
-                                    <div id="totalEchart" :style="{height: (innerHeight-118)+'px'}"></div>
+                                    <div id="totalEchart" :style="{minHeight: '180px',height: (innerHeight-118)+'px'}">
+                                    </div>
                                     <template v-if="isLoading">
                                         <div style="position: absolute; width: 100%; left: 0; top: 0;"
                                             :style="{height: (innerHeight-118)+'px'}">
@@ -224,11 +382,13 @@
                                         </template>
 
                                     </div>
-                                    <div class="msList welcomTable" :style="{height: (innerHeight-80)+'px'}">
+                                    <div class="msList welcomTable"
+                                        :style="{minHeight: '257px',height: (innerHeight-80)+'px'}">
                                         <template>
-                                            <i-table :height="innerHeight-130" no-data-text="......" highlight-row
+                                            <i-table :height="innerHeight-120" no-data-text="......" highlight-row
                                                 :columns="onlineStatColumns" :data="onlineStatList" stripe="true"
-                                                size="small"></i-table>
+                                                size="small">
+                                            </i-table>
                                         </template>
                                         <div class="pageTable">
                                             <template>
@@ -301,9 +461,10 @@
                                             </div>
                                         </template> -->
                                     </div>
-                                    <div class="msList welcomTable" :style="{height: (innerHeight-80)+'px'}">
+                                    <div class="msList welcomTable"
+                                        :style="{minHeight: '257px', height: (innerHeight-80)+'px'}">
                                         <template>
-                                            <i-table :height="innerHeight-130" :loading="isTableLoading"
+                                            <i-table :height="innerHeight-120" :loading="isTableLoading"
                                                 no-data-text="......" highlight-row :columns="statuColumns"
                                                 :data="statuDataList" stripe="true" size="small"></i-table>
                                         </template>
@@ -389,7 +550,7 @@
                                         <td>
                                             <i-button @click="toOnlineDetail(onlineStatItemInfo)" size="small"
                                                 type="info">
-                                                查看详情</i-button>
+                                                查看上下线明细</i-button>
                                         </td>
                                     </tr>
                                 </template>
@@ -459,7 +620,7 @@
                                         <td></td>
                                         <td>
                                             <i-button @click="toOnlineDetail(statuItemInfo)" size="small" type="info">
-                                                查看详情</i-button>
+                                                查看上下线明细</i-button>
                                         </td>
                                     </tr>
                                 </template>

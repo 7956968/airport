@@ -110,42 +110,66 @@ table {
 }
 
 ._401 {
+    &.info {
+        background-color: #fbd048;
+    }
     span {
         color: #333;
         background-color: #fbd048;
     }
 }
 ._402 {
+    &.info {
+        background-color: #339a7b;
+    }
     span {
         background-color: #339a7b;
     }
 }
 ._403 {
+    &.info {
+        background-color: #005ddc;
+    }
     span {
-        background-color: #8958be;
+        background-color: #005ddc;
     }
 }
 ._404 {
+    &.info {
+        background-color: #ed9b3e;
+    }
     span {
         background-color: #ed9b3e;
     }
 }
 ._405 {
+    &.info {
+        background-color: #e24251;
+    }
     span {
         background-color: #e24251;
     }
 }
 ._406 {
+    &.info {
+        background-color: #f86568;
+    }
     span {
         background-color: #f86568;
     }
 }
 ._407 {
+    &.info {
+        background-color: #5d81ca;
+    }
     span {
         background-color: #5d81ca;
     }
 }
 ._408 {
+    &.info {
+        background-color: #767676;
+    }
     span {
         background-color: #767676;
     }
@@ -343,14 +367,14 @@ table {
 
                         .label {
                             color: #fff;
-                            padding: 24px 0;
+                            padding: 10px 0 24px 0;
                             font-size: 13px;
                         }
 
                         .detail {
                             position: relative;
                             z-index: 0;
-                            top: -10px;
+                            top: -35px;
                             font-size: 42px;
                             color: #fff;
                         }
@@ -942,7 +966,7 @@ table {
         }
 
         th {
-            .setBgColor(60%);
+            background-color: #3e4864;
             color: white;
             font-size: 13px;
         }
@@ -1142,7 +1166,7 @@ table {
             }
 
             .ol-overviewmap-box {
-                border: 2px solid red;
+                border: 1px solid red;
             }
 
             &.ol-collapsed {
@@ -1240,7 +1264,7 @@ table {
         &.ol-vehicle {
             z-index: 10;
             bottom: 50px;
-            min-width: 300px;
+            min-width: 320px;
             .trajectoryAction {
                 padding: 5px 0;
             }
@@ -1308,6 +1332,43 @@ table {
 
     .ivu-btn>.ivu-icon+span {
         margin-left: 0;
+    }
+}
+.mapOpenInfo {
+    // position: absolute;
+    // z-index: 1000;
+    // left: 0;
+    // right: 0;
+    // top: 0;
+    // bottom: 0;
+    position: fixed;
+    z-index: 1000;
+    .mapSearch {
+        padding: 5px 0 0 0;
+
+        table {
+            width: 100%;
+
+            td {
+                line-height: 0;
+                padding: 5px;
+            }
+        }
+ 
+        .btnList {
+            position: relative;
+            z-index: 0;
+
+            i {
+                font-size: 16px;
+            }
+
+            button {
+                span {
+                    margin-left: 0;
+                }
+            }
+        }
     }
 }
 
