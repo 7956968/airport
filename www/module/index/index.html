@@ -73,7 +73,7 @@
                                         <Icon type="ios-home-outline" /></span>
                                     <span v-text="{'CN':'欢迎首页','EN':'WelcomePage','TW':'歡迎首頁'}[language]"></span>
                                 </p>
-                                <p @click="setTabItem('/airport/www/module/maps/maps.html', 'Maps', $event)"
+                                <p @click="setTabItem('/airport/www/module/baiduMap/maps.html', 'Maps', $event)"
                                     id="nav_Maps">
                                     <span>
                                         <Icon type="ios-globe" /></span>
@@ -330,7 +330,7 @@
                     </li>
 
                     <!-- 测试百度地图 -->
-                    <li>
+                    <!-- <li>
                         <div class="navIcon">
                             <span class="icon">
                                 <Icon type="md-person" /></span>
@@ -346,7 +346,8 @@
                                 <span>测试百度地图</span>
                             </p>
                         </div>
-                    </li>
+                    </li> -->
+					
                 </ul>
             </div>
             <div class="userInfo">
@@ -374,7 +375,7 @@
             <template v-for="(value, key) in iframeList">
                 <template v-if="!!value">
                     <iframe v-if="!value.isDelete" :class="{active: value.isActive}" frameborder="0" :id="'iframe_'+key"
-                        :src="value.src+'?v='+Date.parse(new Date())"></iframe>
+                        :src="value.src"></iframe>
                 </template>
             </template>
         </div>

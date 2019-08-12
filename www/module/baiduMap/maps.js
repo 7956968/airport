@@ -143,7 +143,7 @@
                 "gpsDeviceCode": "",
             },
             "vehiclePositonPageInfo": {
-                "span": 1000, // 距离查询中间点的距离（密），不指定则默认为100米。 // 通过centerPosition+ span两个参数可以联合查询距离中心点多少米内的车辆最近位置
+                "span": 10, // 距离查询中间点的距离（密），不指定则默认为100米。 // 通过centerPosition+ span两个参数可以联合查询距离中心点多少米内的车辆最近位置
                 "count": 0,
                 "pageNum": 1,
                 "deptId": "", // 部门ID
@@ -1630,6 +1630,9 @@
             // 画车辆
             "createVehicleByBaidu": function (item, callback) {
                 var self = this;
+				if(!item["lastPosition"]) {
+					return;
+				}
                 var coordinate = JSON.parse(item["lastPosition"])["coordinates"];
                 var iconSrc = CONFIG.HOST + "/airport/assets/car/success.gif";
                 var vehicleType = (function () {
@@ -1642,7 +1645,7 @@
                 var vehicleIcon = (vehicleType[item.vehicleTypeName] + item.vehicleStatus) || item.vehicleStatus;
 
                 iconSrc = CONFIG.HOST + "/airport/assets/car/" + vehicleIcon + ".gif?v=" + Date.parse(new Date());
-
+				
                 self.convertorByBaidu(coordinate, function (point, lng, lat) {
                     if (!!self.baiduMapInfo.vehicleMarkers["_" + item.id]) {
                         if (!(self.baiduMapInfo.vehicleMarkers["_" + item.id].position.lng - lng == 0 && self.baiduMapInfo.vehicleMarkers["_" + item.id].position.lat - lat == 0)) {
@@ -1761,7 +1764,7 @@
                     } else {
                         self.setAnimationByBaidu(coordinates);
 
-                        self.openInfoWidth = 0;
+                        self.openInfoWidth = 360;
                         self.openInfoHeight = 0;
 
                         setTimeout(function () {
@@ -1976,6 +1979,12 @@
                 duration: 3
             });
             self.showModal("isLayer");
+			
+			self.$watch('vehiclePositonPageInfo', function () {
+			    clearInterval(self.timePosition);
+			    self.getAllVehiclePositonList();
+				self.getAllVehicleInterval();
+			}, { deep: true });
         },
         mouted: function () {
             var self = this;

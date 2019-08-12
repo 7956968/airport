@@ -175,7 +175,7 @@
                 };
                 
                 self.iframeList[id] = {
-                    "src": src,
+                    "src": src+"?v=" + Date.parse(new Date()),
                     "isActive": true,
                     "isDelete": false,
                 };

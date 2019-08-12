@@ -2757,42 +2757,42 @@
                 //     $("body").find(".ol-overlay-container").css("top", y);
                 // });
 
-                $("body").find(".ol-overviewmap-map").on("click", function (event) {
-                    // var dragEle = $("body").find(".ol-overviewmap-box");
-                    // var overviewmap = $("body").find(".ol-overviewmap-map").offset();
-                    // // var offsetX = event.offsetX;
-                    // // var offsetY = event.offsetY;
-                    // var overviewWidth = overviewmap.left;
-                    // var overviewmapHeight = overviewmap.top;
-                    // var map = self.mapContainer.map;
-                    // var dragingWidth = dragEle.width();
-                    // var dragingHeight = dragEle.height();
-                    // var dragingSize = [dragingWidth, dragingHeight];
-                    // var mapSize = map.getSize();
-                    // var xMove = overviewWidth * (Math.abs(mapSize[0] / dragingSize[0]));
-                    // var yMove = overviewmapHeight * (Math.abs(mapSize[1] / dragingSize[1]));
-                    // var bottomLeft = [xMove, yMove];
-                    // // var topRight = [mapSize[0] + xMove, yMove];
-                    // var coordinate = map.getCoordinateFromPixel(bottomLeft);
-                    // // var top = map.getCoordinateFromPixel(topRight);
-                    // // var extent = [left[0], left[1], top[0], top[1]];
-                    // // map.getView().fit(extent, map.getSize());
-                    // // map.getView().setResolution(c);
-
-                    // map.getView().setResolution(map.getView().getResolution());
-                    // self.setAnimation(coordinate, map.getView().getZoom());
-
-                    // var offsetX = event.offsetX;
-                    // var offsetY = event.offsetY;
-                    var map = self.mapContainer.map;
-                    var mapSize = map.getSize();
-                    var div = $("body").find(".ol-overviewmap-map").offset(); 
-                    var x = mapSize[0] - div.left; // Get the horizontal coordinate 
-                    var y = mapSize[1] - div.top; // Get the vertical coordinate 
-                    var coordinate = map.getCoordinateFromPixel([x, y]);
-                    map.getView().setResolution(map.getView().getResolution());
-                    self.setAnimation(coordinate, map.getView().getZoom());
-                });
+//                 $("body").find(".ol-overviewmap-map").on("click", function (event) {
+//                     // var dragEle = $("body").find(".ol-overviewmap-box");
+//                     // var overviewmap = $("body").find(".ol-overviewmap-map").offset();
+//                     // // var offsetX = event.offsetX;
+//                     // // var offsetY = event.offsetY;
+//                     // var overviewWidth = overviewmap.left;
+//                     // var overviewmapHeight = overviewmap.top;
+//                     // var map = self.mapContainer.map;
+//                     // var dragingWidth = dragEle.width();
+//                     // var dragingHeight = dragEle.height();
+//                     // var dragingSize = [dragingWidth, dragingHeight];
+//                     // var mapSize = map.getSize();
+//                     // var xMove = overviewWidth * (Math.abs(mapSize[0] / dragingSize[0]));
+//                     // var yMove = overviewmapHeight * (Math.abs(mapSize[1] / dragingSize[1]));
+//                     // var bottomLeft = [xMove, yMove];
+//                     // // var topRight = [mapSize[0] + xMove, yMove];
+//                     // var coordinate = map.getCoordinateFromPixel(bottomLeft);
+//                     // // var top = map.getCoordinateFromPixel(topRight);
+//                     // // var extent = [left[0], left[1], top[0], top[1]];
+//                     // // map.getView().fit(extent, map.getSize());
+//                     // // map.getView().setResolution(c);
+// 
+//                     // map.getView().setResolution(map.getView().getResolution());
+//                     // self.setAnimation(coordinate, map.getView().getZoom());
+// 
+//                     // var offsetX = event.offsetX;
+//                     // var offsetY = event.offsetY;
+//                     var map = self.mapContainer.map;
+//                     var mapSize = map.getSize();
+//                     var div = $("body").find(".ol-overviewmap-map").offset(); 
+//                     var x = mapSize[0] - div.left; // Get the horizontal coordinate 
+//                     var y = mapSize[1] - div.top; // Get the vertical coordinate 
+//                     var coordinate = map.getCoordinateFromPixel([x, y]);
+//                     map.getView().setResolution(map.getView().getResolution());
+//                     self.setAnimation(coordinate, map.getView().getZoom());
+//                 });
 
                 timePosition = setInterval(function () {
                     self.getVehicleList(true);

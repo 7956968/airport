@@ -1,6 +1,8 @@
 (function () {
     var language = utility.getLocalStorage("language");
     var userInfo = utility.getLocalStorage("userInfo");
+    var remember = utility.getLocalStorage("remember");
+	console.log(remember);
     var pageVue = new Vue({
         "el": "#js-vue",
         "data": {
@@ -9,23 +11,15 @@
             "isShowTips": false,
             "message": "",
             "loginInfo": {
-                "userCode": !!userInfo && !!userInfo["userCode"] ? userInfo["userCode"] : "",
-                "userPwd": !!userInfo && !!userInfo["userPwd"] ? userInfo["userPwd"] : "",
+                "userCode": !!remember && !!remember["remember"]["userCode"] ? remember["remember"]["userCode"] : "",
+                "userPwd": !!remember && !!remember["remember"]["userPwd"] ? remember["remember"]["userPwd"] : "",
                 "remember": true
             },
             "languageList": [
                 {
                     "value": "CN",
                     "label": "中文",
-                },
-                // {
-                //     "value": "EN",
-                //     "label": "English",
-                // },
-                // {
-                //     "value": "TW",
-                //     "label": "繁體",
-                // }
+                }
             ],
             "airPort": "113.310746,23.396745",
             "airPortList": [
@@ -46,7 +40,7 @@
                     "label": "上海浦东国际机场",
                 }
             ],
-            "title": "民贵车辆管理系统"
+            "title": { "CN": "特种车辆音视频可视化系统", 'EN': "Mingui Non-Powered Euipment Management System", 'TW': "民貴無動力管理系統" }
         },
         "watch": {
             "language": function (value) {
@@ -85,7 +79,7 @@
             },
 
             // 重新格式化功能菜单
-            "formatFunMenu": function(data) {
+            "formatFunMenu": function (data) {
                 var self = this;
                 var funcInfo = {
                     "menu_map": [],
@@ -95,26 +89,26 @@
                     "menu_system": []
                 };
                 var funcList = data["userFuncList"];
-                for(var i = 0, len = funcList.length; i < len; i++) {
-                    if(funcList[i]["functionCode"].indexOf("map_")!=-1 || 
-                        funcList[i]["functionCode"] == 'device_manage_vehicle' || 
-                        funcList[i]["functionCode"] == 'device_view_secure_area' || 
-                        funcList[i]["functionCode"] == 'device_manage_secure_area' || 
-                        funcList[i]["functionCode"] == 'device_manage_camera' || 
+                for (var i = 0, len = funcList.length; i < len; i++) {
+                    if (funcList[i]["functionCode"].indexOf("map_") != -1 ||
+                        funcList[i]["functionCode"] == 'device_manage_vehicle' ||
+                        funcList[i]["functionCode"] == 'device_view_secure_area' ||
+                        funcList[i]["functionCode"] == 'device_manage_secure_area' ||
+                        funcList[i]["functionCode"] == 'device_manage_camera' ||
                         funcList[i]["functionCode"] == 'device_view_camera'
                     ) {
                         funcInfo["menu_map"].push(funcList[i]);
                     }
-                    if(funcList[i]["functionCode"].indexOf("org_manage_")!=-1) {
+                    if (funcList[i]["functionCode"].indexOf("org_manage_") != -1) {
                         funcInfo["menu_org"].push(funcList[i]);
                     }
-                    if(funcList[i]["functionCode"].indexOf("device_manage_")!=-1) {
+                    if (funcList[i]["functionCode"].indexOf("device_manage_") != -1) {
                         funcInfo["menu_device"].push(funcList[i]);
                     }
-                    if(funcList[i]["functionCode"].indexOf("report_")!=-1) {
+                    if (funcList[i]["functionCode"].indexOf("report_") != -1) {
                         funcInfo["menu_report"].push(funcList[i]);
                     }
-                    if(funcList[i]["functionCode"].indexOf("system_")!=-1) {
+                    if (funcList[i]["functionCode"].indexOf("system_") != -1) {
                         funcInfo["menu_system"].push(funcList[i]);
                     }
                 }
@@ -140,16 +134,17 @@
                         completeCallback: function () {
                             self.loading = false;
                         },
-                        successCallback: function (data) { 
+                        successCallback: function (data) {
                             if (data.code == 200) {
                                 utility.setLocalStorage("userInfo", data.data);
                                 utility.setLocalStorage("language", { "language": self.language });
                                 utility.setLocalStorage("airPort", { "airPort": self.airPort });
-                                utility.setLocalStorage("demo", { "demo": true });
+                                utility.setLocalStorage("remember", { "remember": self.loginInfo});
+                                utility.setLocalStorage("isPhone", { "isPhone": true});
                                 self.formatFunMenu(data.data);
 
                                 setTimeout(function () {
-                                    window.location.href = "/airport/www/module/indexMg/index.html";
+                                    window.location.href = "/airport/www/module/mapPhone/maps.html";
                                 }, 500);
                             } else {
                                 self.$Message.error(data.message);
@@ -185,8 +180,10 @@
         },
         "created": function () {
             var self = this;
+			
+			utility.setLocalStorage("isPhone", { "isPhone": true});
 
-            // document.title = self.title[self.language];
+            document.title = self.title[self.language];
 
             // 获取枚举值
             self.getBizParam();
@@ -194,10 +191,10 @@
             // 获取省份数据
             self.getProvinceList();
 
-            document.onkeydown = function(e) {
+            document.onkeydown = function (e) {
                 var e = e || event;
                 var keyCode = e.keyCode || e.while || e.charCode;
-                if(keyCode == 13) {
+                if (keyCode == 13) {
                     self.loginAction();
                 }
             }

@@ -222,6 +222,7 @@ window.utility = (function (utility) {
     utility.interactWithServer = function (options) {
         var timestamp = Date.parse(new Date());
         var userInfo = utility.getLocalStorage("userInfo");
+        var isPhone = utility.getLocalStorage("isPhone");
         var language = { "CN": "cn", "EN": "en", "TW": "hk" };
         var languageVer = !!utility.getLocalStorage("language") ? language[utility.getLocalStorage("language")["language"]] : "cn";
         
@@ -255,19 +256,24 @@ window.utility = (function (utility) {
                     clearTimeout(window.clearLogin);
                     window.clearLogin = setTimeout(function () {
                         alert("登录令牌失效,请重新登录!");
-                        if (!!isParent) {
-                            if (window.parent.window.location.href.indexOf("indexMg") != -1) {
-                                window.parent.window.location.href = "/airport/www/indexMg.html";
-                            } else {
-                                window.parent.window.location.href = "/airport/www/login.html";
-                            }
-                        } else {
-                            if (window.location.href.indexOf("indexMg") != -1) {
-                                window.location.href = "/airport/www/indexMg.html";
-                            } else {
-                                window.location.href = "/airport/www/login.html";
-                            }
-                        }
+						if(!!isPhone) {
+							window.location.href = "/airport/www/loginPhone.html";
+						} else {
+							if (!!isParent) {
+							    if (window.parent.window.location.href.indexOf("indexMg") != -1) {
+							        window.parent.window.location.href = "/airport/www/indexMg.html";
+							    } else {
+							        window.parent.window.location.href = "/airport/www/login.html";
+							    }
+							} else {
+							    if (window.location.href.indexOf("indexMg") != -1) {
+							        window.location.href = "/airport/www/indexMg.html";
+							    } else {
+							        window.location.href = "/airport/www/login.html";
+							    }
+							}
+						}
+                        
                     }, 500);
                 }
                 options.successCallback && options.successCallback(data);
