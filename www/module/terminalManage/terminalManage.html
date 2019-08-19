@@ -12,11 +12,11 @@
     <!-- 启用360浏览器的极速模式(webkit) -->
     <meta name="renderer" content="webkit">
     <!-- 微软的老式浏览器 -->
-    <meta name="MobileOptimized" content="320">
+    <meta name="MobileOptimized" content="320"> 
 
     <!-- 关键字描述 -->
     <meta name="keywords" content="">
-    <meta name="description" content="">
+    <meta name="description" content=""> 
 
     <!-- 设置移动端视图 -->
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
@@ -108,6 +108,7 @@
                             <i-buttonGroup>
                                 <i-button @click="refresh" size="small" icon="ios-refresh">{{{'CN':'刷新','EN':'Refresh','TW':'刷新'}[language]}}</i-button>
                                 <i-button @click="addItem" size="small" type="success" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
+                                <i-button @click="downLoadExcel" size="small" type="info" icon="md-download">下载Excel</i-button>
                                 <!-- <i-button @click="editItem" size="small" type="warning" icon="ios-paper-outline">{{{'CN':'编辑','EN':'Edit','TW':'編輯'}[language]}}</i-button>
                                 <i-button @click="delItem" size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button> -->
                             </i-buttonGroup>
@@ -231,7 +232,7 @@
                             </tr>
                             <tr class="detailInfo">
                                 <td class="detailLabel"><span v-text="{'CN':'供应商：','EN':'Supplier：','TW':'供應商：'}[language]"></span></td>
-                                <td><span v-text="itemInfo.providerId"></span></td>
+                                <td><span v-text="itemInfo.providerName"></span></td>
                             </tr>
                             <tr class="detailInfo">
                                 <td class="detailLabel"><span v-text="{'CN':'运行状态：','EN':'Working Condition：','TW':'運行狀態：'}[language]"></span></td>
@@ -244,6 +245,14 @@
                             <tr class="detailInfo">
                                 <td class="detailLabel"><span v-text="{'CN':'上报周期：','EN':'Reporting Cycle：','TW':'上報周期：'}[language]"></span></td>
                                 <td><span v-text="itemInfo.dataPeriod"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'当前速度：','EN':'Reporting Cycle：','TW':'上報周期：'}[language]"></span></td>
+                                <td><span v-text="itemInfo.speed+'公里/小时'"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel"><span v-text="{'CN':'电量：','EN':'Reporting Cycle：','TW':'上報周期：'}[language]"></span></td>
+                                <td><span v-text="'99%'"></span></td>
                             </tr>
                             <tr class="detailInfo">
                                 <td class="detailLabel"><span v-text="{'CN':'系统版本名：','EN':'System Version：','TW':'系統版本：'}[language]"></span></td>

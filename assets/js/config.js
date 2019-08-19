@@ -4,8 +4,8 @@
 var CONFIG = (function (CONFIG) {
     // 服务器信息配置
     // CONFIG.HOST = LOCATION;
-    CONFIG.HOST = "https://www.minguicloud.com";
-    // CONFIG.HOST = "https://test2.cityeasyplay.com";
+    // CONFIG.HOST = "https://www.minguicloud.com";
+    CONFIG.HOST = "https://test2.cityeasyplay.com";
     
     // 接口服务
     CONFIG.SERVICE = {
@@ -113,6 +113,7 @@ var CONFIG = (function (CONFIG) {
         "saveCamera": "saveCamera", // 新增修改摄像机信息接口
         "getCameraList": "getCameraList", // 获取摄像头列表数据接口
         "getDeviceList": "getDeviceList", // 获取定位设备列表数据接口
+        "downloadDeviceList": "downloadDeviceList", // 下载定位设备列表excel接口 
 
         // areaService：防区服务
         "delPoi": "delPoi", // 删除POI地图标记接口

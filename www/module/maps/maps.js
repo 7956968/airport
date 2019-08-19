@@ -2803,7 +2803,7 @@
                     var fromInfo = utility.getSessionStorage("fromInfo") || null;
                     // 初始化时显示实时查询模块
                     if (!!fromInfo) {
-                        // self.showModal(fromInfo.type);
+                        self.showModal(fromInfo.type);
                         self.vehiclePositonPageInfo.vehicleStatus = fromInfo.vehicleStatus;
                         setTimeout(function () {
                             utility.cleanSessionStorage();

@@ -188,6 +188,8 @@
 
             // document.title = self.title[self.language];
 
+            utility.setLocalStorage("isPhone", null);
+
             // 获取枚举值
             self.getBizParam();
 

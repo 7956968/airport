@@ -11,72 +11,77 @@
 *,
 *:before,
 *:after {
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 ::-webkit-scrollbar {
-	width: 8px;
-	height: 8px;
-	background-color: #f5f5f5;
+    width: 8px;
+    height: 8px;
+    background-color: #f5f5f5;
 }
 
 /*定义滚动条轨道 内阴影+圆角*/
 
 ::-webkit-scrollbar-track {
-	box-shadow: inset 0 0 6px rgba(208, 219, 245, 0.1);
-	border-radius: 10px;
-	background-color: #f5f5f5;
+    box-shadow: inset 0 0 6px rgba(208, 219, 245, 0.1);
+    border-radius: 10px;
+    background-color: #f5f5f5;
 }
 
 /*定义滑块 内阴影+圆角*/
 
 ::-webkit-scrollbar-thumb {
-	border-radius: 10px;
-	box-shadow: inset 0 0 6px rgba(208, 219, 245, 0.1);
-	background-color: #999;
+    border-radius: 10px;
+    box-shadow: inset 0 0 6px rgba(208, 219, 245, 0.1);
+    background-color: #999;
 }
 
 html {
-	font-family: 'Helvetica Neue', Helvetica, '微软雅黑', STHeiTi, sans-serif;
-	color: @mainFontColor;
-	font-size: 20px;
-	overflow-x: hidden;
+    font-family: 'Helvetica Neue', Helvetica, '微软雅黑', STHeiTi, sans-serif;
+    color: @mainFontColor;
+    font-size: 20px;
+    overflow-x: hidden;
 }
 
 .innerPage {
-	background-color: @bgColor;
+    background-color: @bgColor;
 }
 
 .clear {
-	clear: both;
+    clear: both;
 }
 
 li {
-	list-style: none;
+    list-style: none;
 }
 
 table {
-	border-collapse: collapse;
-	.ivu-table-cell {
-		padding-left: 5px;
-		padding-right: 5px;
-	}
+    border-collapse: collapse;
+
+    .ivu-table-cell {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
 }
 
 .setBgColor(@percent: 20%) {
-	background-color: fade(@color1, @percent);
+    background-color: fade(@color1, @percent);
 }
+
 .ivu-input-suffix {
-	width: 16px;
+    width: 16px;
 }
+
 .ivu-input-with-suffix {
-	padding-right: 16px;
+    padding-right: 16px;
 }
+
 .request {
-	color: red;
+    color: red;
 }
+
 ._401,
 ._402,
 ._403,
@@ -85,1543 +90,1661 @@ table {
 ._406,
 ._407,
 ._408 {
-	span {
-		display: inline-block;
-		padding: 2px 5px;
-		color: #fff;
-	}
-	button {
-		span {
-			color: #fff;
-			background-color: transparent;
-		}
-		&.disabled {
-			span {
-				color: #827f7f;
-			}
-		}
-		&.backPlay {
-			span {
-				color: #2d8cf0;
-			}
-		}
-	}
+    span {
+        display: inline-block;
+        padding: 2px 5px;
+        color: #fff;
+    }
+
+    button {
+        span {
+            color: #fff;
+            background-color: transparent;
+        }
+
+        &.disabled {
+            span {
+                color: #827f7f;
+            }
+        }
+
+        &.backPlay {
+            span {
+                color: #2d8cf0;
+            }
+        }
+    }
 }
 
 ._401 {
-	&.info {
-		background-color: #fbd048;
-	}
-	span {
-		color: #333;
-		background-color: #fbd048;
-	}
+    &.info {
+        background-color: #fbd048;
+    }
+
+    span {
+        color: #333;
+        background-color: #fbd048;
+    }
 }
+
 ._402 {
-	&.info {
-		background-color: #339a7b;
-	}
-	span {
-		background-color: #339a7b;
-	}
+    &.info {
+        background-color: #339a7b;
+    }
+
+    span {
+        background-color: #339a7b;
+    }
 }
+
 ._403 {
-	&.info {
-		background-color: #005ddc;
-	}
-	span {
-		background-color: #005ddc;
-	}
+    &.info {
+        background-color: #005ddc;
+    }
+
+    span {
+        background-color: #005ddc;
+    }
 }
+
 ._404 {
-	&.info {
-		background-color: #ed9b3e;
-	}
-	span {
-		background-color: #ed9b3e;
-	}
+    &.info {
+        background-color: #ed9b3e;
+    }
+
+    span {
+        background-color: #ed9b3e;
+    }
 }
+
 ._405 {
-	&.info {
-		background-color: #e24251;
-	}
-	span {
-		background-color: #e24251;
-	}
+    &.info {
+        background-color: #e24251;
+    }
+
+    span {
+        background-color: #e24251;
+    }
 }
+
 ._406 {
-	&.info {
-		background-color: #f86568;
-	}
-	span {
-		background-color: #f86568;
-	}
+    &.info {
+        background-color: #f86568;
+    }
+
+    span {
+        background-color: #f86568;
+    }
 }
+
 ._407 {
-	&.info {
-		background-color: #5d81ca;
-	}
-	span {
-		background-color: #5d81ca;
-	}
+    &.info {
+        background-color: #5d81ca;
+    }
+
+    span {
+        background-color: #5d81ca;
+    }
 }
+
 ._408 {
-	&.info {
-		background-color: #767676;
-	}
-	span {
-		background-color: #767676;
-	}
+    &.info {
+        background-color: #767676;
+    }
+
+    span {
+        background-color: #767676;
+    }
 }
 
 // 登录页面样式
 .loginPage {
-	.login {
-		position: absolute;
-		z-index: 0;
-		left: 0;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		width: 100%;
-		height: 100%;
-		background: url('/airport/www/img/login.jpg') no-repeat left center;
-		background-size: 100%;
+    .login {
+        position: absolute;
+        z-index: 0;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        background: url('/airport/www/img/login.jpg') no-repeat left center;
+        background-size: 100%;
 
-		&.loginPhone {
-			background: url(/airport/www/img/poster.png) no-repeat center center;
-			background-size: cover;
-			.wrap {
-				background-image: none;
-			}
-			.header {
-				padding: 50px 0 20px 0;
-				img {
-					width: 72px;
-					height: 72px;
-				}
-				.label {
-					display: block;
-					font-size: 24px;
-					top: auto;
-					left: auto;
-				}
-			}
-			.inputInfo {
-				position: absolute;
-				z-index: 10000000;
-				top: auto;
-				left: 5%;
-				width: 90%;
-				padding: 10px;
-				margin: 0;
-				border: 1px solid #fff;
-				background-color: rgba(255, 255, 255, 0.4);
-			}
-			.copyRight {
-				background-color: transparent;
-				color: #464545;
-			}
-		}
+        &.loginPhone {
+            background: url(/airport/www/img/poster.png) no-repeat center center;
+            background-size: cover;
 
-		.wrap {
-			position: absolute;
-			z-index: 0;
-			left: 0;
-			top: 0;
-			right: 0;
-			bottom: 0;
-			width: 100%;
-			height: 100%;
-			background: url('/airport/www/img/bg.png') no-repeat left center;
-			background-size: 100%;
-		}
+            .wrap {
+                background-image: none;
+            }
 
-		.header {
-			text-align: center;
-			padding-top: 10%;
+            .header {
+                padding: 50px 0 20px 0;
 
-			img {
-				width: 62px;
-				height: 62px;
-			}
+                img {
+                    width: 72px;
+                    height: 72px;
+                }
 
-			.label {
-				font-size: 36px;
-				color: #005ddc;
-				font-weight: bold;
-				position: relative;
-				z-index: 0;
-				top: -15px;
-				left: 10px;
-			}
-		}
+                .label {
+                    display: block;
+                    font-size: 24px;
+                    top: auto;
+                    left: auto;
+                }
+            }
 
-		.inputInfo {
-			position: absolute;
-			z-index: 10000000;
-			top: 30%;
-			width: 450px;
-			left: 50%;
-			margin-left: -225px;
-			padding: 30px 50px;
-			border-radius: 5px;
-			border: 1px solid rgba(185, 185, 185, 0.5);
-			background-color: rgba(255, 255, 255, 0.7);
+            .inputInfo {
+                position: absolute;
+                z-index: 10000000;
+                top: auto;
+                left: 5%;
+                width: 90%;
+                padding: 10px;
+                margin: 0;
+                border: 1px solid #fff;
+                background-color: rgba(255, 255, 255, 0.4);
+            }
 
-			label {
-				display: block;
-				padding: 10px 0;
+            .copyRight {
+                background-color: transparent;
+                color: #464545;
+            }
+        }
 
-				&.ivu-checkbox-wrapper {
-					padding-top: 0;
-				}
+        .wrap {
+            position: absolute;
+            z-index: 0;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            background: url('/airport/www/img/bg.png') no-repeat left center;
+            background-size: 100%;
+        }
 
-				.ivu-input-prefix {
-					width: 40px;
-				}
+        .header {
+            text-align: center;
+            padding-top: 10%;
 
-				.ivu-input-with-prefix {
-					padding-left: 40px;
-				}
+            img {
+                width: 62px;
+                height: 62px;
+            }
 
-				.ivu-input-prefix i {
-					font-size: 28px;
-				}
+            .label {
+                font-size: 36px;
+                color: #005ddc;
+                font-weight: bold;
+                position: relative;
+                z-index: 0;
+                top: -15px;
+                left: 10px;
+            }
+        }
 
-				select {
-					display: block;
-					width: 100%;
-					height: 36px;
-				}
+        .inputInfo {
+            position: absolute;
+            z-index: 10000000;
+            top: 30%;
+            width: 450px;
+            left: 50%;
+            margin-left: -225px;
+            padding: 30px 50px;
+            border-radius: 5px;
+            border: 1px solid rgba(185, 185, 185, 0.5);
+            background-color: rgba(255, 255, 255, 0.7);
 
-				.ivu-poptip {
-					display: block;
-					width: 100%;
+            label {
+                display: block;
+                padding: 10px 0;
 
-					.ivu-poptip-rel {
-						display: block;
-					}
-				}
-			}
-		}
-	}
+                &.ivu-checkbox-wrapper {
+                    padding-top: 0;
+                }
+
+                .ivu-input-prefix {
+                    width: 40px;
+                }
+
+                .ivu-input-with-prefix {
+                    padding-left: 40px;
+                }
+
+                .ivu-input-prefix i {
+                    font-size: 28px;
+                }
+
+                select {
+                    display: block;
+                    width: 100%;
+                    height: 36px;
+                }
+
+                .ivu-poptip {
+                    display: block;
+                    width: 100%;
+
+                    .ivu-poptip-rel {
+                        display: block;
+                    }
+                }
+            }
+        }
+    }
 }
 
 .graphPage {
-	// background-color: @color1; // 首页样式
-	// 欢迎页样式
-	.welcomPage {
-		position: absolute;
-		z-index: 10;
-		top: 0;
-		bottom: 0;
-		right: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		min-width: 900px;
-		min-height: 680px;
-		background: #464545;
-		padding-top: 40px;
-		overflow: auto;
 
-		.layout {
-			padding: 0 10px 0 10px;
+    // background-color: @color1; // 首页样式
+    // 欢迎页样式
+    .welcomPage {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        min-width: 900px;
+        min-height: 680px;
+        background: #464545;
+        padding-top: 40px;
+        overflow: auto;
 
-			.ivu-card {
-				border-radius: 2px;
-				transition: none;
-				background-color: rgb(15, 55, 95);
+        .layout {
+            padding: 0 10px 0 10px;
 
-				&:hover {
-					box-shadow: none;
-				}
+            .ivu-card {
+                border-radius: 2px;
+                transition: none;
+                background-color: rgb(15, 55, 95);
 
-				&.ivu-card-bordered {
-					border-color: rgba(109, 106, 106, 0.7);
-				}
+                &:hover {
+                    box-shadow: none;
+                }
 
-				.ivu-card-head {
-					padding: 0 16px;
-					border-bottom: 1px solid rgba(109, 106, 106, 0.5);
-					.subLabel {
-						display: inline-block;
-						padding-top: 13px;
-						font-style: normal;
-						font-size: 14px;
-					}
-				}
-			}
-			.ivu-spin-fix {
-				background-color: transparent;
-			}
+                &.ivu-card-bordered {
+                    border-color: rgba(109, 106, 106, 0.7);
+                }
 
-			.tile {
-				font-size: 18px;
-				color: @mainFontColor;
-				height: 44px;
-				min-width: 500px;
-				overflow: hidden;
-				.label {
-					float: left;
-					line-height: 44px;
-				}
-				.select {
-					float: right;
-					width: auto;
-					height: auto;
-					line-height: 1;
-					font-size: 14px;
-					padding-top: 10px;
-					padding-left: 10px;
-					.count {
-						padding-left: 10px;
-						font-size: 18px;
-						color: #ed9b3e;
-					}
-				}
-			}
+                .ivu-card-head {
+                    padding: 0 16px;
+                    border-bottom: 1px solid rgba(109, 106, 106, 0.5);
 
-			.infoList {
-				padding-bottom: 3px;
+                    .subLabel {
+                        display: inline-block;
+                        padding-top: 13px;
+                        font-style: normal;
+                        font-size: 14px;
+                    }
+                }
+            }
 
-				.infoItem {
-					.info {
-						height: 90px;
-						text-align: center;
-						overflow: hidden;
-						cursor: pointer;
+            .ivu-spin-fix {
+                background-color: transparent;
+            }
 
-						p {
-							margin: 0;
-							padding: 0;
-						}
+            .tile {
+                font-size: 18px;
+                color: @mainFontColor;
+                height: 44px;
+                min-width: 500px;
+                overflow: hidden;
 
-						.label {
-							color: #fff;
-							padding: 10px 0 24px 0;
-							font-size: 13px;
-						}
+                .label {
+                    float: left;
+                    line-height: 44px;
+                }
 
-						.detail {
-							position: relative;
-							z-index: 0;
-							top: -35px;
-							font-size: 42px;
-							color: #fff;
-						}
+                .select {
+                    float: right;
+                    width: auto;
+                    height: auto;
+                    line-height: 1;
+                    font-size: 14px;
+                    padding-top: 10px;
+                    padding-left: 10px;
 
-						&.totalNum {
-							position: relative;
-							z-index: 0;
+                    .count {
+                        padding-left: 10px;
+                        font-size: 18px;
+                        color: #ed9b3e;
+                    }
+                }
+            }
 
-							.label {
-								padding-top: 20px;
-								font-size: 24px;
-								color: #fff;
-							}
+            .infoList {
+                padding-bottom: 3px;
 
-							.detail {
-								position: relative;
-								z-index: 0;
-								top: -20px;
-								font-size: 86px;
-								color: #fff;
-							}
+                .infoItem {
+                    .info {
+                        height: 90px;
+                        text-align: center;
+                        overflow: hidden;
+                        cursor: pointer;
 
-							.totalRow {
-								position: relative;
-								z-index: 10;
-							}
+                        p {
+                            margin: 0;
+                            padding: 0;
+                        }
 
-							.totalIcon {
-								position: absolute;
-								z-index: 0;
-								left: 10px;
-								top: 0;
-							}
-						}
-					}
-				}
-			}
-		}
+                        .label {
+                            color: #fff;
+                            padding: 10px 0 24px 0;
+                            font-size: 13px;
+                        }
 
-		.welcomTable {
-			position: relative;
-			z-index: 0;
-			.ivu-table,
-			.ivu-table td,
-			.ivu-table-stripe .ivu-table-body tr.ivu-table-row-hover td,
-			.ivu-table-stripe .ivu-table-fixed-body tr.ivu-table-row-hover td,
-			.ivu-table-stripe .ivu-table-body tr:nth-child(2n) td,
-			.ivu-table-stripe .ivu-table-fixed-body tr:nth-child(2n) td,
-			.ivu-table:before,
-			.ivu-table:after,
-			.ivu-spin-fix {
-				background-color: transparent;
-				color: #fff;
-			}
+                        .detail {
+                            position: relative;
+                            z-index: 0;
+                            top: -35px;
+                            font-size: 42px;
+                            color: #fff;
+                        }
 
-			.ivu-table-stripe .ivu-table-body tr:nth-child(2n + 1) td,
-			.ivu-table-stripe .ivu-table-fixed-body tr:nth-child(2n + 1) td {
-				background-color: #18416b;
-			}
+                        &.totalNum {
+                            position: relative;
+                            z-index: 0;
 
-			.ivu-table-wrapper,
-			.ivu-table td,
-			.ivu-table th,
-			.ivu-table-wrapper > .ivu-spin-fix {
-				border: none;
-			}
+                            .label {
+                                padding-top: 20px;
+                                font-size: 24px;
+                                color: #fff;
+                            }
 
-			.ivu-table th {
-				background-color: #061a2d;
-			}
+                            .detail {
+                                position: relative;
+                                z-index: 0;
+                                top: -20px;
+                                font-size: 86px;
+                                color: #fff;
+                            }
 
-			.ivu-table-fixed-body {
-				.ivu-table-row {
-					background-color: #0f375f;
-				}
+                            .totalRow {
+                                position: relative;
+                                z-index: 10;
+                            }
 
-				.ivu-table-cell {
-					padding-left: 10px;
-					padding-right: 5px;
-				}
-			}
-			.overDay {
-				// padding: 5px;
-				color: #061a2d;
-				background-color: #fbd048;
-			}
+                            .totalIcon {
+                                position: absolute;
+                                z-index: 0;
+                                left: 10px;
+                                top: 0;
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-			.pageTable {
-				position: absolute;
-				z-index: 10;
-				left: 0;
-				bottom: 0;
-				width: 100%;
-				background-color: #0f375f;
-				height: 40px;
-				line-height: 40px;
-				.ivu-page-next,
-				.ivu-page-prev {
-					color: #fff;
-					background-color: transparent;
-				}
-				.ivu-page-simple .ivu-page-simple-pager input {
-					border: none;
-					color: #fff;
-					background-color: transparent;
-				}
-			}
-		}
-	}
+        .welcomTable {
+            position: relative;
+            z-index: 0;
+
+            .ivu-table,
+            .ivu-table td,
+            .ivu-table-stripe .ivu-table-body tr.ivu-table-row-hover td,
+            .ivu-table-stripe .ivu-table-fixed-body tr.ivu-table-row-hover td,
+            .ivu-table-stripe .ivu-table-body tr:nth-child(2n) td,
+            .ivu-table-stripe .ivu-table-fixed-body tr:nth-child(2n) td,
+            .ivu-table:before,
+            .ivu-table:after,
+            .ivu-spin-fix {
+                background-color: transparent;
+                color: #fff;
+            }
+
+            .ivu-table-stripe .ivu-table-body tr:nth-child(2n + 1) td,
+            .ivu-table-stripe .ivu-table-fixed-body tr:nth-child(2n + 1) td {
+                background-color: #18416b;
+            }
+
+            .ivu-table-wrapper,
+            .ivu-table td,
+            .ivu-table th,
+            .ivu-table-wrapper>.ivu-spin-fix {
+                border: none;
+            }
+
+            .ivu-table th {
+                background-color: #061a2d;
+            }
+
+            .ivu-table-fixed-body {
+                .ivu-table-row {
+                    background-color: #0f375f;
+                }
+
+                .ivu-table-cell {
+                    padding-left: 10px;
+                    padding-right: 5px;
+                }
+            }
+
+            .overDay {
+                // padding: 5px;
+                color: #061a2d;
+                background-color: #fbd048;
+            }
+
+            .pageTable {
+                position: absolute;
+                z-index: 10;
+                left: 0;
+                bottom: 0;
+                width: 100%;
+                background-color: #0f375f;
+                height: 40px;
+                line-height: 40px;
+
+                .ivu-page-next,
+                .ivu-page-prev {
+                    color: #fff;
+                    background-color: transparent;
+                }
+
+                .ivu-page-simple .ivu-page-simple-pager input {
+                    border: none;
+                    color: #fff;
+                    background-color: transparent;
+                }
+            }
+        }
+    }
 }
+
 .copyRight {
-	position: absolute;
-	z-index: 1000;
-	width: 100%;
-	bottom: 0;
-	padding: 10px 0;
-	text-align: center;
-	color: #fff;
-	font-size: 15px;
-	background-color: #464545;
+    position: absolute;
+    z-index: 1000;
+    width: 100%;
+    bottom: 0;
+    padding: 10px 0;
+    text-align: center;
+    color: #fff;
+    font-size: 15px;
+    background-color: #464545;
 }
 
 
 .index {
-	// 头部样式
-	.header {
-		position: fixed;
-		z-index: 100000000000;
-		left: 0;
-		top: 0;
-		bottom: 0;
-		width: 110px;
-		height: 100%;
-		background-color: @color1;
 
-		.logo {
-			padding: 10px 0 20px 0;
-			text-align: center;
-			background-color: #0f375f;
+    // 头部样式
+    .header {
+        position: fixed;
+        z-index: 100000000000;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 110px;
+        height: 100%;
+        background-color: @color1;
 
-			img {
-				width: 62px;
-				height: 62px;
-			}
+        .logo {
+            padding: 10px 0 20px 0;
+            text-align: center;
+            background-color: #0f375f;
 
-			p {
-				color: #fff;
-				text-align: center;
-				font-size: 16px;
-			}
-		}
+            img {
+                width: 62px;
+                height: 62px;
+            }
 
-		.navWrap {
-			ul {
-				li {
-					position: relative;
-					z-index: 0;
-					height: 48px;
-					line-height: 48px;
-					color: @fontColor;
-					border-top: 1px solid rgba(255, 255, 255, 0.3);
-					border-left: none;
-					border-right: none;
-					padding: 0 0 0 5px;
-					font-size: 13px;
-					cursor: pointer;
+            p {
+                color: #fff;
+                text-align: center;
+                font-size: 16px;
+            }
+        }
 
-					&:last-child {
-						border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-					}
+        .navWrap {
+            ul {
+                li {
+                    position: relative;
+                    z-index: 0;
+                    height: 48px;
+                    line-height: 48px;
+                    color: @fontColor;
+                    border-top: 1px solid rgba(255, 255, 255, 0.3);
+                    border-left: none;
+                    border-right: none;
+                    padding: 0 0 0 5px;
+                    font-size: 13px;
+                    cursor: pointer;
 
-					.navIcon {
-						position: relative;
-						z-index: 0;
+                    &:last-child {
+                        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+                    }
 
-						i {
-							font-size: 18px;
-						}
+                    .navIcon {
+                        position: relative;
+                        z-index: 0;
 
-						.icon {
-							position: relative;
-							z-index: 0;
-							top: -2px;
-						}
+                        i {
+                            font-size: 18px;
+                        }
 
-						.arrow {
-							float: right;
-							margin-right: 5px;
+                        .icon {
+                            position: relative;
+                            z-index: 0;
+                            top: -2px;
+                        }
 
-							i {
-								color: fade(@bgColor, 40%);
-							}
-						}
-					}
+                        .arrow {
+                            float: right;
+                            margin-right: 5px;
 
-					.subNav {
-						display: none;
-						position: absolute;
-						z-index: 1000000;
-						top: -1px;
-						left: 100%;
-						width: 130%;
-						color: #fff;
-						border: 1px solid rgba(255, 255, 255, 0.5);
-						border-left: none;
-						background-color: rgb(15, 55, 95);
+                            i {
+                                color: fade(@bgColor, 40%);
+                            }
+                        }
+                    }
 
-						p {
-							height: 47px;
-							line-height: 47px;
-							padding: 0 0 0 10px;
-							margin: 0;
+                    .subNav {
+                        display: none;
+                        position: absolute;
+                        z-index: 1000000;
+                        top: -1px;
+                        left: 100%;
+                        width: 130%;
+                        color: #fff;
+                        border: 1px solid rgba(255, 255, 255, 0.5);
+                        border-left: none;
+                        background-color: rgb(15, 55, 95);
 
-							&:nth-child(2n) {
-								background-color: rgba(208, 219, 245, 0.5);
-							}
+                        p {
+                            height: 47px;
+                            line-height: 47px;
+                            padding: 0 0 0 10px;
+                            margin: 0;
 
-							i {
-								font-size: 16px;
-								margin-right: 3px;
-							}
+                            &:nth-child(2n) {
+                                background-color: rgba(208, 219, 245, 0.5);
+                            }
 
-							&:hover {
-								background-color: rgba(208, 219, 245, 0.8);
-							}
-						}
-					}
+                            i {
+                                font-size: 16px;
+                                margin-right: 3px;
+                            }
 
-					&:hover {
-						height: 49px;
-						line-height: 49px;
-						border: 1px solid rgba(208, 219, 245, 0.7);
-						border-left: none;
-						border-right: none;
-						background-color: rgb(15, 55, 95);
+                            &:hover {
+                                background-color: rgba(208, 219, 245, 0.8);
+                            }
+                        }
+                    }
 
-						.navIcon {
-							.arrow {
-								i {
-									transform: rotate(180deg);
-								}
-							}
-						}
+                    &:hover {
+                        height: 49px;
+                        line-height: 49px;
+                        border: 1px solid rgba(208, 219, 245, 0.7);
+                        border-left: none;
+                        border-right: none;
+                        background-color: rgb(15, 55, 95);
 
-						.subNav {
-							display: block;
-						}
-					}
-				}
-			}
-		}
+                        .navIcon {
+                            .arrow {
+                                i {
+                                    transform: rotate(180deg);
+                                }
+                            }
+                        }
 
-		.userInfo {
-			position: fixed;
-			z-index: 0;
-			bottom: 0;
-			font-size: 13px;
-			width: 110px;
-			height: @headerHeight;
-			line-height: @headerHeight;
-			color: @fontColor;
-			cursor: pointer;
+                        .subNav {
+                            display: block;
+                        }
+                    }
+                }
+            }
+        }
 
-			i {
-				font-size: 28px;
-				margin-right: 5px;
-			}
+        .userInfo {
+            position: fixed;
+            z-index: 0;
+            bottom: 0;
+            font-size: 13px;
+            width: 110px;
+            height: @headerHeight;
+            line-height: @headerHeight;
+            color: @fontColor;
+            cursor: pointer;
 
-			.logout {
-				text-align: center;
-				cursor: pointer;
-				height: @headerHeight;
-				padding: 0 10px;
-				background-color: @logoutColor;
-			}
-		}
-	}
+            i {
+                font-size: 28px;
+                margin-right: 5px;
+            }
 
-	// 固定导航
-	.fixedNav {
-		position: fixed;
-		z-index: 1000;
-		top: 0;
-		left: 110px;
-		right: 0;
-		height: 30px;
-		background-color: rgba(15, 55, 95, 0.4);
-		box-shadow: 0 1px 5px rgba(62, 84, 130, 0.2);
+            .logout {
+                text-align: center;
+                cursor: pointer;
+                height: @headerHeight;
+                padding: 0 10px;
+                background-color: @logoutColor;
+            }
+        }
+    }
 
-		.fixedNavWrap {
-			width: 100%;
-			overflow-x: auto;
-			overflow-y: hidden;
-			-ms-overflow-x: auto;
-			-ms-overflow-y: hidden;
+    // 固定导航
+    .fixedNav {
+        position: fixed;
+        z-index: 1000;
+        top: 0;
+        left: 110px;
+        right: 0;
+        height: 30px;
+        background-color: rgba(15, 55, 95, 0.4);
+        box-shadow: 0 1px 5px rgba(62, 84, 130, 0.2);
 
-			.fixedNavBox {
-				height: 30px;
-				line-height: 30px;
-				display: flex;
-				.tabItem {
-					flex-shrink: 0;
-				}
-			}
-		}
+        .fixedNavWrap {
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -ms-overflow-x: auto;
+            -ms-overflow-y: hidden;
 
-		i {
-			position: relative;
-			z-index: 0;
-			top: -1px;
-			font-size: 18px;
-			margin-right: 3px;
-		}
+            .fixedNavBox {
+                height: 30px;
+                line-height: 30px;
+                display: flex;
 
-		.tabItem,
-		.modifyPass {
-			position: relative;
-			z-index: 0;
-			float: left;
-			height: 30px;
-			line-height: 30px;
-			padding: 0 30px 0 10px;
-			color: #fff;
-			cursor: pointer;
-			border-left: 1px solid fade(@color1, 30%);
+                .tabItem {
+                    flex-shrink: 0;
+                }
+            }
+        }
 
-			&:first-child {
-				padding: 0 10px;
-				border-left: none;
-			}
+        i {
+            position: relative;
+            z-index: 0;
+            top: -1px;
+            font-size: 18px;
+            margin-right: 3px;
+        }
 
-			&:last-child {
-				border-right: 1px solid fade(@color1, 30%);
-			}
+        .tabItem,
+        .modifyPass {
+            position: relative;
+            z-index: 0;
+            float: left;
+            height: 30px;
+            line-height: 30px;
+            padding: 0 30px 0 10px;
+            color: #fff;
+            cursor: pointer;
+            border-left: 1px solid fade(@color1, 30%);
 
-			.item {
-				position: relative;
-				z-index: 0;
-			}
+            &:first-child {
+                padding: 0 10px;
+                border-left: none;
+            }
 
-			.close {
-				position: absolute;
-				z-index: 10000;
-				top: 0;
-				right: 0;
-				width: 30px;
-				height: 30px;
-				line-height: 30px;
+            &:last-child {
+                border-right: 1px solid fade(@color1, 30%);
+            }
 
-				i {
-					display: inline-block;
-					width: 15px;
-					height: 15px;
-					line-height: 15px;
-					margin-left: 5px;
-					font-size: 12px;
-					text-align: center;
-					font-style: normal;
-					border-radius: 50%;
-					color: fade(@mainFontColor, 20%);
-					background-color: fade(@color1, 10%);
-				}
-			}
+            .item {
+                position: relative;
+                z-index: 0;
+            }
 
-			&.active {
-				color: #0f375f;
-				background-color: white;
+            .close {
+                position: absolute;
+                z-index: 10000;
+                top: 0;
+                right: 0;
+                width: 30px;
+                height: 30px;
+                line-height: 30px;
 
-				.close {
-					i {
-						color: fade(@mainFontColor, 50%);
-						background-color: fade(@color1, 30%);
-					}
-				}
+                i {
+                    display: inline-block;
+                    width: 15px;
+                    height: 15px;
+                    line-height: 15px;
+                    margin-left: 5px;
+                    font-size: 12px;
+                    text-align: center;
+                    font-style: normal;
+                    border-radius: 50%;
+                    color: fade(@mainFontColor, 20%);
+                    background-color: fade(@color1, 10%);
+                }
+            }
 
-				&:hover {
-					.close {
-						i {
-							color: fade(@mainFontColor, 50%);
-							background-color: fade(@color1, 30%);
-						}
-					}
-				}
-			}
+            &.active {
+                color: #0f375f;
+                background-color: white;
 
-			&:hover {
-				.close {
-					i {
-						color: fade(@mainFontColor, 50%);
-						background-color: #fff;
-					}
-				}
-			}
+                .close {
+                    i {
+                        color: fade(@mainFontColor, 50%);
+                        background-color: fade(@color1, 30%);
+                    }
+                }
 
-			&.modifyPassWrap {
-				position: absolute;
-				z-index: 1000;
-				right: 0;
-				top: 0;
-			}
-		}
-	}
+                &:hover {
+                    .close {
+                        i {
+                            color: fade(@mainFontColor, 50%);
+                            background-color: fade(@color1, 30%);
+                        }
+                    }
+                }
+            }
 
-	.mainWrap {
-		position: fixed;
-		z-index: 10;
-		top: 0;
-		left: 110px;
-		right: 0;
-		bottom: 0;
-		&.mainWrapMg {
-			iframe {
-				// display: block;
-				z-index: 100000;
-				opacity: 1;
-			}
-		}
+            &:hover {
+                .close {
+                    i {
+                        color: fade(@mainFontColor, 50%);
+                        background-color: #fff;
+                    }
+                }
+            }
 
-		iframe {
-			position: absolute;
-			z-index: 0;
-			top: 0;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			width: 100%;
-			height: 100%;
-			opacity: 0;
-			&.active {
-				// display: block;
-				z-index: 100000;
-				opacity: 1;
-			}
-		}
-	}
+            &.modifyPassWrap {
+                position: absolute;
+                z-index: 1000;
+                right: 0;
+                top: 0;
+            }
+        }
+    }
+
+    .mainWrap {
+        position: fixed;
+        z-index: 10;
+        top: 0;
+        left: 110px;
+        right: 0;
+        bottom: 0;
+
+        &.mainWrapMg {
+            iframe {
+                // display: block;
+                z-index: 100000;
+                opacity: 1;
+            }
+        }
+
+        iframe {
+            position: absolute;
+            z-index: 0;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+
+            &.active {
+                // display: block;
+                z-index: 100000;
+                opacity: 1;
+            }
+        }
+    }
 }
 
 .top {
-	padding: 5px;
+    padding: 5px;
 
-	.actionWrap {
-		position: relative;
-		z-index: 0;
-		top: 2px;
-		text-align: right;
-	}
+    .actionWrap {
+        position: relative;
+        z-index: 0;
+        top: 2px;
+        text-align: right;
+    }
 
-	button {
-		i {
-			font-size: 17px;
-		}
+    button {
+        i {
+            font-size: 17px;
+        }
 
-		span {
-			margin-left: 0;
-			margin-right: 4px;
-		}
-	}
+        span {
+            margin-left: 0;
+            margin-right: 4px;
+        }
+    }
 }
 
 .searchWrap {
-	.ivu-input-group {
-		.ivu-input {
-			left: -2px;
-		}
-	}
+    .ivu-input-group {
+        .ivu-input {
+            left: -2px;
+        }
+    }
 }
 
 .menuWrap {
-	border-right: 1px solid @borderColor;
+    border-right: 1px solid @borderColor;
 
-	.ivu-menu-vertical.ivu-menu-light:after {
-		display: none;
-	}
+    .ivu-menu-vertical.ivu-menu-light:after {
+        display: none;
+    }
 
-	.icon {
-		i {
-			font-size: 24px;
-		}
-	}
+    .icon {
+        i {
+            font-size: 24px;
+        }
+    }
 }
 
 .logWrap {
-	padding-left: 20px;
+    padding-left: 20px;
 }
 
 // 内容页样式
 .tableContainer {
-	position: absolute;
-	z-index: 100;
-	top: 40px;
-	bottom: 10px;
-	left: 10px;
-	right: 10px;
-	border-radius: 3px; // box-shadow: 0 0 20px rgba(0, 0, 0, .4);
-	background-color: white;
+    position: absolute;
+    z-index: 100;
+    top: 40px;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    border-radius: 3px; // box-shadow: 0 0 20px rgba(0, 0, 0, .4);
+    background-color: white;
 }
 
 .treeModel {
-	.ivu-modal-body {
-		padding: 0;
+    .ivu-modal-body {
+        padding: 0;
 
-		.treeWrap {
-			padding: 5px;
-			border-right: 1px solid @borderColor;
+        .treeWrap {
+            padding: 5px;
+            border-right: 1px solid @borderColor;
 
-			.ivu-tree {
-				ul {
-					li {
-						margin: 0;
+            .ivu-tree {
+                ul {
+                    li {
+                        margin: 0;
 
-						ul {
-							li {
-								margin: 8px 0;
-							}
-						}
-					}
-				}
-			}
-		}
+                        ul {
+                            li {
+                                margin: 8px 0;
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-		.search {
-			padding: 10px 10px 0 0;
-		}
+        .search {
+            padding: 10px 10px 0 0;
+        }
 
-		.memberWrap {
-			padding: 0 10px 10px 0;
-			margin-top: 10px;
+        .memberWrap {
+            padding: 0 10px 10px 0;
+            margin-top: 10px;
 
-			.memberList {
-				.memberItem {
-					margin-bottom: 10px;
-					cursor: pointer;
+            .memberList {
+                .memberItem {
+                    margin-bottom: 10px;
+                    cursor: pointer;
 
-					.ivu-card {
-						overflow: hidden;
-					}
+                    .ivu-card {
+                        overflow: hidden;
+                    }
 
-					.left {
-						background-color: fade(@color1, 20%);
+                    .left {
+                        background-color: fade(@color1, 20%);
 
-						.head {
-							font-size: 32px;
-							text-align: center;
+                        .head {
+                            font-size: 32px;
+                            text-align: center;
 
-							i {
-								position: relative;
-								z-index: 0;
-								top: 5px;
-							}
-						}
-					}
+                            i {
+                                position: relative;
+                                z-index: 0;
+                                top: 5px;
+                            }
+                        }
+                    }
 
-					.info {
-						padding: 5px;
+                    .info {
+                        padding: 5px;
 
-						p {
-							font-size: 12px;
-						}
-					}
-				}
-			}
-		}
-	}
+                        p {
+                            font-size: 12px;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 .echartWrap {
-	border-top: 1px solid #ddd;
+    border-top: 1px solid #ddd;
 }
 
 .tableWrap {
-	padding-left: 2px;
-	padding-right: 1px;
+    padding-left: 2px;
+    padding-right: 1px;
 
-	.ivu-table-wrapper {
-		border: none;
-	}
+    .ivu-table-wrapper {
+        border: none;
+    }
 
-	.ivu-table {
-		border: none;
+    .ivu-table {
+        border: none;
 
-		&::before {
-			background-color: rgba(214, 212, 212, 0.5);
-		}
+        &::before {
+            background-color: rgba(214, 212, 212, 0.5);
+        }
 
-		&:after {
-			display: none;
-		}
+        &:after {
+            display: none;
+        }
 
-		th {
-			background-color: #3e4864;
-			color: white;
-			font-size: 13px;
-		}
+        th {
+            background-color: #3e4864;
+            color: white;
+            font-size: 13px;
+        }
 
-		i {
-			font-size: 18px;
-		}
-	}
+        i {
+            font-size: 18px;
+        }
+    }
 
-	.ivu-table-stripe .ivu-table-fixed-body tr.ivu-table-row-highlight:nth-child(2n) td {
-		color: #fff;
-		background-color: #2196f3;
-	}
-	.ivu-table-stripe {
-		.ivu-table-body {
-			tr {
-				&.ivu-table-row-highlight:nth-child(2n) {
-					td {
-						color: #fff;
-						background-color: #2196f3;
-					}
-				}
-			}
-		}
-	}
+    .ivu-table-stripe .ivu-table-fixed-body tr.ivu-table-row-highlight:nth-child(2n) td {
+        color: #fff;
+        background-color: #2196f3;
+    }
 
-	tr {
-		&.ivu-table-row-highlight {
-			&.ivu-table-row-hover {
-				td {
-					color: #fff;
-					background-color: #2196f3;
-				}
-			}
-		}
-	}
+    .ivu-table-stripe {
+        .ivu-table-body {
+            tr {
+                &.ivu-table-row-highlight:nth-child(2n) {
+                    td {
+                        color: #fff;
+                        background-color: #2196f3;
+                    }
+                }
+            }
+        }
+    }
 
-	.ivu-table-row-highlight {
-		td {
-			color: #fff;
-			background-color: #2196f3;
-		}
-	}
+    tr {
+        &.ivu-table-row-highlight {
+            &.ivu-table-row-hover {
+                td {
+                    color: #fff;
+                    background-color: #2196f3;
+                }
+            }
+        }
+    }
+
+    .ivu-table-row-highlight {
+        td {
+            color: #fff;
+            background-color: #2196f3;
+        }
+    }
 }
 
 .hasActionList {
-	.ivu-modal-body {
-		padding: 0;
-	}
+    .ivu-modal-body {
+        padding: 0;
+    }
 }
 
 // 弹出窗体内容样式
 .modifiedWrap {
-	.pageWrap {
-		padding: 5px 15px;
-	}
+    .pageWrap {
+        padding: 5px 15px;
+    }
 
-	.detailInfo {
-		line-height: 1.5;
+    .detailInfo {
+        line-height: 1.5;
 
-		span {
-			display: inline-block;
-			font-size: 14px;
-		}
+        span {
+            display: inline-block;
+            font-size: 14px;
+        }
 
-		.detailLabel {
-			min-width: 100px;
-			text-align: right;
-		}
-	}
-	.overDay {
-		text-align: center;
-		padding-bottom: 5px;
-		span {
-			padding: 5px 10px;
-			background-color: #fbd048;
-		}
-	}
+        .detailLabel {
+            min-width: 100px;
+            text-align: right;
+        }
+    }
 
-	table {
-		width: 100%;
+    .overDay {
+        text-align: center;
+        padding-bottom: 5px;
 
-		td {
-			padding: 5px;
+        span {
+            padding: 5px 10px;
+            background-color: #fbd048;
+        }
+    }
 
-			&.label {
-				min-width: 50px;
-				text-align: right;
-				padding: 5px 0;
-			}
+    table {
+        width: 100%;
 
-			.ivu-date-picker {
-				display: block;
-			}
+        td {
+            padding: 5px;
 
-			.addressWrap {
-				.select {
-					float: left;
-					width: 70%;
-				}
+            &.label {
+                min-width: 50px;
+                text-align: right;
+                padding: 5px 0;
+            }
 
-				.input {
-					float: left;
-					width: 30%;
-				}
-			}
-		}
-	}
+            .ivu-date-picker {
+                display: block;
+            }
 
-	.top {
-		.actionWrap {
-			top: 0;
-		}
+            .addressWrap {
+                .select {
+                    float: left;
+                    width: 70%;
+                }
 
-		table {
-			td {
-				padding: 0 5px;
-			}
-		}
-	}
+                .input {
+                    float: left;
+                    width: 30%;
+                }
+            }
+        }
+    }
+
+    .top {
+        .actionWrap {
+            top: 0;
+        }
+
+        table {
+            td {
+                padding: 0 5px;
+            }
+        }
+    }
 }
 
 .pageWrap {
-	padding: 5px;
+    padding: 5px;
 
-	.ivu-page-item-active {
-		background-color: @pageActiveColor;
+    .ivu-page-item-active {
+        background-color: @pageActiveColor;
 
-		a {
-			color: white;
-		}
-	}
+        a {
+            color: white;
+        }
+    }
 }
 
 // 地图页面样式
 .mapContainer {
-	position: fixed;
-	z-index: 5;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	
-	&.mapContainerPhone {
-		.menuWrap {
-			width: 110px;
-			top: 20%;
-			background: rgba(255,255,255,.8);
-			ul {
-				height: auto;
-				line-height: auto;
-				border-radius: 0;
-				border: none;;
-			}
-			.radioGroup {
-				padding: 10px 5px 0px;
-				background: rgba(255,255,255,.8);
-			}
-			.swipeWrap {
-				position: absolute;
-				z-index: 10000;
-				width: 30px;
-				right: 0;
-				bottom: 0;
-				height: 100%;
-				.swipeIcon {
-					position: relative;
-					z-index: 10;
-					top: 150px;
-				}
-			}
-		}
-		.searchWrap {
-			position: fixed;
-			z-index: 100000000000;
-			top: 10px;
-			left: 10px;
-			right: 0;
-			width: 270px;
-		}
-	}
+    position: fixed;
+    z-index: 5;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 
-	.mapWrap {
-		position: fixed;
-		z-index: 5;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
+    &.mapContainerPhone {
+        .menuWrap {
+            width: 110px;
+            top: 20%;
+            background: rgba(255, 255, 255, .8);
 
-		.mousePosition {
-			position: absolute;
-			bottom: 8px;
-			left: 180px;
-			z-index: 200000;
-			padding: 3px 8px;
-			background-color: rgba(0, 60, 136, 0.3);
-			border-radius: 3px;
-			overflow: hidden;
-			color: #fff;
-			font-size: 12px;
-			font-family: '微软雅黑';
-			border: 1px solid #fff;
-			border-top: none;
+            ul {
+                height: auto;
+                line-height: auto;
+                border-radius: 0;
+                border: none;
+                ;
+            }
 
-			.mousePositionLabel {
-				float: left;
-			}
+            .radioGroup {
+                padding: 10px 5px 0px;
+                background: rgba(255, 255, 255, .8);
+            }
 
-			.mousePositionInner {
-				margin-left: 10px;
-				float: left;
-			}
-		}
+            .swipeWrap {
+                position: absolute;
+                z-index: 10000;
+                width: 45px;
+                right: -25px;
+                top: 120px;
+                height: 45px;
+                line-height: 45px;
+                text-align: center;
+                border-radius: 50%;
+                border: 4px solid #fff;
+                background-color: #fff;
+                box-shadow: 0 0 6px rgba(0,0,0,.4);
+                overflow: hidden;
+                .swipeIcon {
+                    position: relative;
+                    z-index: 10;
+                    top: -6px;
+                    left: -13px;
+                }
+            }
+        }
 
-		.overViewMap {
-			bottom: auto;
-			left: auto;
-			right: 10px;
-			bottom: 5px;
+        .searchWrap {
+            position: fixed;
+            z-index: 100000000000;
+            top: 10px;
+            left: 10px;
+            right: 0;
+            width: 270px;
+        }
 
-			&:not(.ol-collapsed) {
-				border: 4px solid rgba(0, 0, 0, 0.2);
+        .radar {
+            height: 20em;
+            width: 28em;
 
-				button {
-					bottom: auto;
-					left: auto;
-					right: 1px;
-					top: 1px;
-				}
-			}
+            .scanning-circle {
+                .radar-scanner {
+                    width: 20em;
+                }
+            }
+        }
+        .eareFind {
+            position: fixed;
+            z-index: 10000;
+            left: 10px;
+            top: 60px; 
+            width: 100%;
+            .label {
+                span {
+                    padding: 5px 10px;
+                    color: #769995;
+                    background-color: #f5f3f0;
+                }
+            }
+        }
 
-			.ol-overviewmap-map {
-				border: none;
-				width: 300px;
-			}
+        .faskMenu {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            width: 30px;
+            left: 0;
+            top: 120px;
 
-			.ol-overviewmap-box {
-				border: 1px solid red;
-			}
+            .swipeIcon {
+                position: relative;
+                z-index: 10;
+                top: 150px;
+            }
+        }
 
-			&.ol-collapsed {
-				.ol-overviewmap-map {
-					display: none;
-				}
-			}
-		}
+        .myPosition {
+            position: fixed;
+            z-index: 10000;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            left: 10px;
+            bottom: 40px;
+            border-radius: 50%;
+            background-color: #fff;
+            box-shadow: 0 0 6px rgba(0,0,0,.2);
+        }
 
-		.ol-full-screen {
-			top: auto;
-			bottom: 30px;
-		}
+    }
 
-		.ol-zoom {
-			top: 2.5rem;
-		}
+    .mapWrap {
+        position: fixed;
+        z-index: 5;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
 
-		&.cursorMouse {
-			cursor: url('/airport/assets/img/camera.png');
-		}
+        .mousePosition {
+            position: absolute;
+            bottom: 8px;
+            left: 180px;
+            z-index: 200000;
+            padding: 3px 8px;
+            background-color: rgba(0, 60, 136, 0.3);
+            border-radius: 3px;
+            overflow: hidden;
+            color: #fff;
+            font-size: 12px;
+            font-family: '微软雅黑';
+            border: 1px solid #fff;
+            border-top: none;
 
-		.ol-zoomslider {
-			top: 90px;
-		}
-	}
+            .mousePositionLabel {
+                float: left;
+            }
 
-	.searchWrap {
-		position: absolute;
-		z-index: 100000000000;
-		top: 50px;
-		left: 50px;
-		width: 40%;
+            .mousePositionInner {
+                margin-left: 10px;
+                float: left;
+            }
+        }
 
-		.ivu-btn {
-			position: relative;
-			z-index: 10;
-			top: 3px;
-			padding: 5px;
-			font-size: 13px;
-		}
+        .overViewMap {
+            bottom: auto;
+            left: auto;
+            right: 10px;
+            bottom: 5px;
 
-		.ivu-input-group {
-			.ivu-input {
-				left: 0;
-				background-color: rgba(255, 255, 255, 0.8);
-			}
-		}
-	}
+            &:not(.ol-collapsed) {
+                border: 4px solid rgba(0, 0, 0, 0.2);
 
-	.menuWrap {
-		position: absolute;
-		z-index: 100000000;
-		top: 50px;
-		right: 0;
+                button {
+                    bottom: auto;
+                    left: auto;
+                    right: 1px;
+                    top: 1px;
+                }
+            }
 
-		ul {
-			height: 40px;
-			line-height: 40px;
-			border-radius: 25px 0 0 25px;
-			border: 1px solid @borderColor;
-			border-right: none;
-			border-bottom: none;
-			overflow: hidden;
+            .ol-overviewmap-map {
+                border: none;
+                width: 300px;
+            }
 
-			&.ivu-menu-light {
-				padding-right: 10px;
-				background-color: rgba(255, 255, 255, 0.8);
-			}
+            .ol-overviewmap-box {
+                border: 1px solid red;
+            }
 
-			.ivu-menu-item {
-				padding: 0 5px;
-			}
-		}
+            &.ol-collapsed {
+                .ol-overviewmap-map {
+                    display: none;
+                }
+            }
+        }
 
-		i {
-			font-size: 24px;
-		}
-	}
+        .ol-full-screen {
+            top: auto;
+            bottom: 30px;
+        }
 
-	.ol-popup {
-		display: none;
-		position: absolute;
-		z-index: 30;
-		background-color: white;
-		-webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
-		filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
-		padding: 15px;
-		border-radius: 10px;
-		border: 1px solid #cccccc;
-		bottom: 12px;
-		left: -50px;
-		min-width: 250px;
+        .ol-zoom {
+            top: 2.5rem;
+        }
 
-		&.ol-vehicle {
-			z-index: 10;
-			bottom: 50px;
-			min-width: 320px;
-			.trajectoryAction {
-				padding: 5px 0;
-			}
-		}
+        &.cursorMouse {
+            cursor: url('/airport/assets/img/camera.png');
+        }
 
-		&:after,
-		&:before {
-			top: 100%;
-			border: solid transparent;
-			content: ' ';
-			height: 0;
-			width: 0;
-			position: absolute;
-			pointer-events: none;
-		}
+        .ol-zoomslider {
+            top: 90px;
+        }
+    }
 
-		&:after {
-			border-top-color: white;
-			border-width: 10px;
-			left: 48px;
-			margin-left: -10px;
-		}
+    .searchWrap {
+        position: absolute;
+        z-index: 100000000000;
+        top: 50px;
+        left: 50px;
+        width: 40%;
 
-		&:before {
-			border-top-color: #cccccc;
-			border-width: 11px;
-			left: 48px;
-			margin-left: -11px;
-		}
+        .ivu-btn {
+            position: relative;
+            z-index: 10;
+            top: 3px;
+            padding: 5px;
+            font-size: 13px;
+        }
 
-		.ol-popup-closer {
-			text-decoration: none;
-			position: absolute;
-			top: 2px;
-			left: 12px;
+        .ivu-input-group {
+            .ivu-input {
+                left: 0;
+                background-color: rgba(255, 255, 255, 0.8);
+            }
+        }
+    }
 
-			&:after {
-				content: 'X';
-				cursor: pointer;
-			}
-		}
-	}
+    .menuWrap {
+        position: absolute;
+        z-index: 100000000;
+        top: 50px;
+        right: 0;
 
-	.moveVehicle,
-	.searchVehicle {
-		position: absolute;
-		display: none;
-		z-index: 0;
-		width: 40px;
-		height: 60px;
-		bottom: -8px;
-		left: -10px;
-		background-size: 100%;
-	}
+        ul {
+            height: 40px;
+            line-height: 40px;
+            border-radius: 25px 0 0 25px;
+            border: 1px solid @borderColor;
+            border-right: none;
+            border-bottom: none;
+            overflow: hidden;
 
-	.searchVehicle {
-		display: block;
-		z-index: 100000;
-		width: 144px;
-		height: 120px;
-		bottom: 120px;
-		left: -300px;
-		opacity: 0;
-	}
+            &.ivu-menu-light {
+                padding-right: 10px;
+                background-color: rgba(255, 255, 255, 0.8);
+            }
 
-	.ivu-btn > .ivu-icon + span {
-		margin-left: 0;
-	}
+            .ivu-menu-item {
+                padding: 0 5px;
+            }
+        }
+
+        i {
+            font-size: 24px;
+        }
+    }
+
+    .ol-popup {
+        display: none;
+        position: absolute;
+        z-index: 30;
+        background-color: white;
+        -webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+        filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid #cccccc;
+        bottom: 12px;
+        left: -50px;
+        min-width: 250px;
+
+        &.ol-vehicle {
+            z-index: 10;
+            bottom: 50px;
+            min-width: 320px;
+
+            .trajectoryAction {
+                padding: 5px 0;
+            }
+        }
+
+        &:after,
+        &:before {
+            top: 100%;
+            border: solid transparent;
+            content: ' ';
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none;
+        }
+
+        &:after {
+            border-top-color: white;
+            border-width: 10px;
+            left: 48px;
+            margin-left: -10px;
+        }
+
+        &:before {
+            border-top-color: #cccccc;
+            border-width: 11px;
+            left: 48px;
+            margin-left: -11px;
+        }
+
+        .ol-popup-closer {
+            text-decoration: none;
+            position: absolute;
+            top: 2px;
+            left: 12px;
+
+            &:after {
+                content: 'X';
+                cursor: pointer;
+            }
+        }
+    }
+
+    .moveVehicle,
+    .searchVehicle {
+        position: absolute;
+        display: none;
+        z-index: 0;
+        width: 40px;
+        height: 60px;
+        bottom: -8px;
+        left: -10px;
+        background-size: 100%;
+    }
+
+    .searchVehicle {
+        display: block;
+        z-index: 100000;
+        width: 72px;
+        height: 60px;
+        bottom: 120px;
+        left: -300px;
+        opacity: 0;
+    }
+
+    .ivu-btn>.ivu-icon+span {
+        margin-left: 0;
+    }
 }
+
 .mapOpenInfo {
-	// position: absolute;
-	// z-index: 1000;
-	// left: 0;
-	// right: 0;
-	// top: 0;
-	// bottom: 0;
-	position: fixed;
-	z-index: 1000;
-	.mapSearch {
-		padding: 5px 0 0 0;
+    // position: absolute;
+    // z-index: 1000;
+    // left: 0;
+    // right: 0;
+    // top: 0;
+    // bottom: 0;
+    position: fixed;
+    z-index: 1000;
 
-		table {
-			width: 100%;
+    .mapSearch {
+        padding: 5px 0 0 0;
 
-			td {
-				line-height: 0;
-				padding: 5px;
-			}
-		}
+        table {
+            width: 100%;
 
-		.btnList {
-			position: relative;
-			z-index: 0;
+            td {
+                line-height: 0;
+                padding: 5px;
+            }
+        }
 
-			i {
-				font-size: 16px;
-			}
+        .btnList {
+            position: relative;
+            z-index: 0;
 
-			button {
-				span {
-					margin-left: 0;
-				}
-			}
-		}
-	}
+            i {
+                font-size: 16px;
+            }
+
+            button {
+                span {
+                    margin-left: 0;
+                }
+            }
+        }
+    }
 }
 
 .mapModal {
-	&.mapModalPhone {
-		.mapSearch {
-			padding: 0;
-		}
-		.tableWrap {
-			padding: 0;
-		}
-		.pageWrap {
-			padding: 0;
-		}
-		.ivu-modal-header {
-			padding: 10px 5px;
-		}
-		.ivu-modal-content {
-			border-radius: 0;
-			background-color: rgba(255, 255, 255, .9);
-			.ivu-modal-close {
-				right: 0;
-				top:  -7px;
-			}
-		}
-		
-	}
-	.ivu-modal-body {
-		padding: 0;
-	}
+    &.mapModalPhone {
+        .mapSearch {
+            padding: 0;
+        }
 
-	.ivu-modal-content {
-		background-color: rgba(255, 255, 255, 0.7);
-	}
+        .tableWrap {
+            padding: 0;
+        }
 
-	.ivu-modal-header {
-		border-bottom-color: fade(@color1, 50%);
-	}
+        .pageWrap {
+            padding: 0;
+        }
 
-	.tip {
-		color: red;
-		text-align: center;
-		font-size: 12px;
-		padding-bottom: 5px;
-	}
+        .ivu-modal-header {
+            padding: 10px 5px;
+        }
 
-	.modalTitle {
-		.icon {
-			i {
-				font-size: 24px;
-			}
-		}
+        .ivu-modal-content {
+            border-radius: 0;
+            background-color: rgba(255, 255, 255, .9);
 
-		.label {
-			position: relative;
-			z-index: 0;
-			top: 3px;
-			font-size: 16px;
-		}
+            .ivu-modal-close {
+                right: 0;
+                top: -7px;
+            }
+        }
 
-		.areaTip {
-			color: #fff;
-			font-size: 12px;
-			background-color: #607d8b;
-			padding: 3px;
-		}
-	}
+    }
 
-	.mapSearch {
-		padding: 10px 10px 5px 10px;
+    .ivu-modal-body {
+        padding: 0;
+    }
 
-		table {
-			width: 100%;
+    .ivu-modal-content {
+        background-color: rgba(255, 255, 255, 0.7);
+    }
 
-			td {
-				line-height: 0;
-				padding: 5px;
-			}
-		}
+    .ivu-modal-header {
+        border-bottom-color: fade(@color1, 50%);
+    }
 
-		.btnList {
-			position: relative;
-			z-index: 0;
+    .tip {
+        color: red;
+        text-align: center;
+        font-size: 12px;
+        padding-bottom: 5px;
+    }
 
-			i {
-				font-size: 16px;
-			}
+    .modalTitle {
+        .icon {
+            i {
+                font-size: 24px;
+            }
+        }
 
-			button {
-				span {
-					margin-left: 0;
-				}
-			}
-		}
-	}
+        .label {
+            position: relative;
+            z-index: 0;
+            top: 3px;
+            font-size: 16px;
+        }
 
-	.tableWrap {
-		padding: 5px 10px 10px 10px;
+        .areaTip {
+            color: #fff;
+            font-size: 12px;
+            background-color: #607d8b;
+            padding: 3px;
+        }
+    }
 
-		.ivu-table-wrapper {
-			border: none;
-		}
+    .mapSearch {
+        padding: 10px 10px 5px 10px;
 
-		.ivu-table {
-			background-color: transparent;
+        table {
+            width: 100%;
 
-			thead {
-				tr {
-					background-color: white;
-				}
-			}
-		}
-	}
+            td {
+                line-height: 0;
+                padding: 5px;
+            }
+        }
 
-	.sliderWrap {
-		padding: 20px 20px 50px 20px;
-	}
+        .btnList {
+            position: relative;
+            z-index: 0;
 
-	.pageWrap {
-		padding: 0 10px 10px 10px;
-	}
+            i {
+                font-size: 16px;
+            }
 
-	.layerWrap {
-		.ivu-menu-light {
-			background-color: transparent;
-		}
+            button {
+                span {
+                    margin-left: 0;
+                }
+            }
+        }
+    }
 
-		.layerMenu {
-			border-right: 1px solid @borderColor;
+    .tableWrap {
+        padding: 5px 10px 10px 10px;
 
-			ul {
-				position: relative;
-				z-index: 0;
-				height: 100%;
+        .ivu-table-wrapper {
+            border: none;
+        }
 
-				&.ivu-menu-vertical.ivu-menu-light:after {
-					display: none;
-				}
+        .ivu-table {
+            background-color: transparent;
 
-				&.ivu-menu-vertical {
-					.ivu-menu-item {
-						padding: 0;
+            thead {
+                tr {
+                    background-color: white;
+                }
+            }
+        }
+    }
 
-						label {
-							display: block;
-							padding: 14px 24px;
-						}
-					}
-				}
-			}
-		}
-	}
+    .sliderWrap {
+        padding: 20px 20px 50px 20px;
+    }
 
-	&.detailInfoModal {
-		.ivu-poptip {
-			text-align: left;
-			width: 100%;
+    .pageWrap {
+        padding: 0 10px 10px 10px;
+    }
 
-			.ivu-poptip-rel {
-				width: 100%;
-			}
-		}
-	}
+    .layerWrap {
+        .ivu-menu-light {
+            background-color: transparent;
+        }
+
+        .layerMenu {
+            border-right: 1px solid @borderColor;
+
+            ul {
+                position: relative;
+                z-index: 0;
+                height: 100%;
+
+                &.ivu-menu-vertical.ivu-menu-light:after {
+                    display: none;
+                }
+
+                &.ivu-menu-vertical {
+                    .ivu-menu-item {
+                        padding: 0;
+
+                        label {
+                            display: block;
+                            padding: 14px 24px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    &.detailInfoModal {
+        .ivu-poptip {
+            text-align: left;
+            width: 100%;
+
+            .ivu-poptip-rel {
+                width: 100%;
+            }
+        }
+    }
 }
+
 @media (max-width: 768px) {
-	.ivu-modal {
-		width: auto;
-		margin: 0;
-	}
+    .ivu-modal {
+        width: auto;
+        margin: 0;
+    }
 }
+
 .modifyPassPop {
-	width: 50%;
-	background: #fff;
-	padding: 20px 10px;
-	border-radius: 15px;
+    width: 50%;
+    background: #fff;
+    padding: 20px 10px;
+    border-radius: 15px;
 
-	table {
-		width: 100%;
-	}
+    table {
+        width: 100%;
+    }
 }
-
-// 百度地图样式
-.baiduMap {
-	.BMap_Marker {
-	}
+.ivu-modal-mask {
+    background-color: transparent;
 }

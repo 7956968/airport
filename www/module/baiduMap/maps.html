@@ -26,7 +26,7 @@
     <div id="js-vue" class="mapContainer">
 
         <baidu-map class="baiduMap mapWrap bm-view" :double-click-zoom="false" :scroll-wheel-zoom="true"
-            :continuous-zoom="true" :map-type="baiduMapInfo.mapType" :center="baiduMapInfo.center"
+            :continuous-zoom="true" :map-click="false" :map-type="baiduMapInfo.mapType" :center="baiduMapInfo.center"
             :zoom="baiduMapInfo.zoom" @ready="baiduMapHandle" @click="baiduMapClick" @dblclick="dbClickBaiduMap">
 
             <bm-context-menu>
@@ -73,7 +73,7 @@
                             <p>{{{'CN':'终端设备','EN':'Termina','TW':'終端設備'}[language]}}：{{vehicleItemPop.gpsDeviceCode}}
                             </p>
                             <p>{{{'CN':'车辆速度','EN':'Speed','TW':'車輛速度'}[language]}}：{{vehicleItemPop.speed}} 公里/小时</p>
-                            <p>最新GPS时间：<span><span>{{vehicleItemPop.lastGpsTime}}</span></span></p>
+                            <p>最新GPS时间：<span :style="{background: vehicleItemPop.isOverTime?'#fbd048':''}"><span>{{vehicleItemPop.lastGpsTime}} {{vehicleItemPop.isOverTime?'超过24小时未上线':''}}</span></span></p>
                             <p>{{{'CN':'运动状态','EN':'State','TW':'車輛狀態'}[language]}}：<span
                                     :class="'_'+vehicleItemPop.vehicleStatus"><span>{{vehicleItemPop.vehicleStatusName}}</span></span>
                             </p>
@@ -503,7 +503,7 @@
             </bm-info-window>
 
             <!-- 比例尺控件 -->
-            <bm-scale anchor="BMAP_ANCHOR_BOTTOM_LEFT" :offset="{width: 90, height: 25}"></bm-scale>
+            <bm-scale anchor="BMAP_ANCHOR_BOTTOM_LEFT" :offset="{width: 10, height: 5}"></bm-scale>
             <!-- 缩放控件 -->
             <bm-navigation anchor="BMAP_ANCHOR_TOP_LEFT" :offset="{width: 5, height: 50}"></bm-navigation>
             <!-- 缩略图控件 -->
@@ -513,25 +513,32 @@
             <bml-marker-clusterer :averageCenter="true" :minClusterSize="2">
                 <!-- 摄像机 -->
                 <template v-if="baiduMapInfo.layersInfo.isCamera==true">
-                    <bm-marker v-for="(marker, index) of baiduMapInfo.cameraMarkers" :icon="marker.icon"
-                        :dragging="true" :position="marker.position" @dragend="dragendCamera(index, $event)"
-                        @click="cameraOpenPop(marker, $event)">
-                    </bm-marker>
+                    <template v-for="(marker, index) of baiduMapInfo.cameraMarkers">
+                        <bm-marker :key="index" :icon="marker.icon"
+                            :dragging="true" :position="marker.position" @dragend="dragendCamera(index, $event)"
+                            @click="cameraOpenPop(marker, $event)">
+                        </bm-marker>
+                    </template>
                 </template>
+
                 <!-- 车辆 -->
                 <template v-if="baiduMapInfo.layersInfo.isVehicle==true">
-                    <bm-marker v-for="(marker, key) of baiduMapInfo.vehicleMarkers" :icon="marker.icon"
-                        :position="marker.position" :animation="marker.animation"
-                        @mouseover="setVehicleTop(marker, $event)" :top="marker.top" :zIndex="marker.zIndex"
-                        @mouseout="cancelVehicleTop(marker, $event)" @click="vehicleOpenPop(marker, $event)">
-                    </bm-marker>
+                    <template v-for="(marker, key) of baiduMapInfo.vehicleMarkers">
+                        <bm-marker
+                            :key="key"
+                            :icon="marker.icon"
+                            :position="marker.position" :animation="marker.animation"
+                            @mouseover="setVehicleTop(marker, $event)" :top="marker.top" :zIndex="marker.zIndex"
+                            @mouseout="cancelVehicleTop(marker, $event)" @click="vehicleOpenPop(marker, $event)">
+                        </bm-marker>
+                    </template>
                 </template>
             </bml-marker-clusterer>
 
             <!-- 防区 -->
             <template v-if="baiduMapInfo.layersInfo.isDefense==true">
-                <template v-for="polygon in baiduMapInfo.defensList">
-                    <bm-polygon :path="polygon.paths" stroke-style="polygon.style" :stroke-color="polygon.stroke"
+                <template v-for="(polygon, index) in baiduMapInfo.defensList">
+                    <bm-polygon :key="index" :path="polygon.paths" stroke-style="polygon.style" :stroke-color="polygon.stroke"
                         :fill-color="polygon.fill" :stroke-weight="3" :editing="polygon.canEdit"
                         @click="showDefensPop(polygon.item, $event)" :clicking="true"
                         @lineupdate="updateDefensPath(polygon.item, $event)">
@@ -544,7 +551,7 @@
                 <!-- 折线 -->
                 <bm-polyline :path="baiduMapInfo.defensPath" stroke-style="dashed" stroke-style="dashed"
                     :stroke-color="defensAreaDetailInfo.stroke" :fill-color="defensAreaDetailInfo.fill"
-                    :stroke-weight="3" :editing="baiduMapInfo.defensPathEdit"
+                    :stroke-weight="3" :editing="false"
                     @click="showDefensPop(defensAreaDetailInfo, $event)"
                     @lineupdate="updateDefensPath(defensAreaDetailInfo, $event)"></bm-polyline>
             </template>
@@ -552,8 +559,9 @@
                 <!-- 多边形 -->
                 <bm-polygon :path="baiduMapInfo.defensPath" :stroke-color="defensAreaDetailInfo.stroke"
                     :fill-color="defensAreaDetailInfo.fill" stroke-style="dashed" :stroke-weight="3"
-                    :editing="baiduMapInfo.defensPathEdit" @click="showDefensPop(defensAreaDetailInfo, $event)"
+                    :editing="false" @click="showDefensPop(defensAreaDetailInfo, $event)"
                     @lineupdate="updateDefensPath(defensAreaDetailInfo, $event)" />
+                    <!-- baiduMapInfo.defensPathEdit -->
             </template>
 
             <!-- 轨迹线 -->
@@ -565,12 +573,25 @@
             <!-- 轨迹点 -->
             <template v-if="baiduMapInfo.animationInfo.pointInfo.length>0">
                 <bm-point-collection :points="baiduMapInfo.animationInfo.pointInfo" shape="BMAP_POINT_SHAPE_CIRCLE"
-                    color="red" size="BMAP_POINT_SIZE_SMALL" @click="showTrackPointInfo"></bm-point-collection>
+                    color="blue" size="BMAP_POINT_SIZE_SMALLER" @click="showTrackPointInfo"></bm-point-collection>
+
+                <template v-if="baiduMapInfo.animationInfo.pointInfo.length>5">
+                        <bm-marker
+                        top="true"
+                        :icon="baiduMapInfo.animationInfo.startPoint"
+                        :position="baiduMapInfo.animationInfo.pointInfo[0]" @click="showTrackPointInfo">
+                    </bm-marker>
+                    <bm-marker
+                    top="true"
+                        :icon="baiduMapInfo.animationInfo.endPoint"
+                        :position="baiduMapInfo.animationInfo.pointInfo[baiduMapInfo.animationInfo.pointInfo.length-1]" @click="showTrackPointInfo">
+                    </bm-marker>
+                </template>
             </template>
 
             <!-- 运动车辆 -->
             <template v-if="!!baiduMapInfo.animationInfo.moveVehicle">
-                <bm-marker :icon="baiduMapInfo.animationInfo.moveVehicle.icon"
+                <bm-marker top="true" :icon="baiduMapInfo.animationInfo.moveVehicle.icon"
                     :position="baiduMapInfo.animationInfo.moveVehicle.position">
                 </bm-marker>
             </template>
@@ -705,7 +726,7 @@
                                 <td>
                                     <template>
                                         <div style="display: inline-block; width: 48%;">
-                                            <date-picker :value="dateTimeInfo.beginDate" @on-change="getBeginDate"
+                                            <date-picker :options="disabledDate" :editable="false" :value="dateTimeInfo.beginDate" @on-change="getBeginDate"
                                                 style="width: 100%;" type="date" format="yyyy-MM-dd" :confirm="false"
                                                 :placeholder="{'CN':'日期','EN':'Please Choose','TW':'請選擇'}[language]">
                                             </date-picker>
@@ -713,7 +734,7 @@
                                     </template>
                                     <template>
                                         <div style="display: inline-block; width: 48%;">
-                                            <time-picker v-model="dateTimeInfo.beginTime" @on-change="getBeginTime"
+                                            <time-picker :editable="false" v-model="dateTimeInfo.beginTime" @on-change="getBeginTime"
                                                 type="time" placement="bottom-end" placeholder="时间"
                                                 style="width: 100%;"></time-picker>
                                         </div>
@@ -728,7 +749,7 @@
                                 <td>
                                     <template>
                                         <div style="display: inline-block; width: 48%;">
-                                            <date-picker :value="dateTimeInfo.endDate" @on-change="getEndDate"
+                                            <date-picker :options="disabledDate" :editable="false" :value="dateTimeInfo.endDate" @on-change="getEndDate"
                                                 style="width: 100%;" type="date" format="yyyy-MM-dd" :confirm="false"
                                                 :placeholder="{'CN':'日期','EN':'Please Choose','TW':'請選擇'}[language]">
                                             </date-picker>
@@ -736,7 +757,7 @@
                                     </template>
                                     <template>
                                         <div style="display: inline-block; width: 48%;">
-                                            <time-picker v-model="dateTimeInfo.endTime" @on-change="getEndTime"
+                                            <time-picker :editable="false" v-model="dateTimeInfo.endTime" @on-change="getEndTime"
                                                 type="time" placement="bottom-end" placeholder="时间"
                                                 style="width: 100%;"></time-picker>
                                         </div>
@@ -1258,7 +1279,7 @@
     <script src="/airport/assets/js/baiduMap.min.js?v=123413"></script>
     <script src="/airport/assets/js/gcoord.min.js?v=123413"></script>
     <script>
-        loadScript(MODUL + "module/baiduMap/maps.min.js");
+        loadScript(MODUL + "module/baiduMap/maps.js");
     </script>
 </body>
 

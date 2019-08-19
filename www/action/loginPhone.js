@@ -2,7 +2,6 @@
     var language = utility.getLocalStorage("language");
     var userInfo = utility.getLocalStorage("userInfo");
     var remember = utility.getLocalStorage("remember");
-	console.log(remember);
     var pageVue = new Vue({
         "el": "#js-vue",
         "data": {

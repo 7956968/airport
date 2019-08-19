@@ -65,17 +65,23 @@
                 BMap: null,
                 map: null,
                 mapType: "BMAP_NORMAL_MAP", // 此地图类型展示卫星视图: BMAP_SATELLITE_MAP 此地图类型展示卫星和路网的混合视图: BMAP_HYBRID_MAP
-                center: { lng: 0, lat: 0 },
+                center: {
+                    lng: 0,
+                    lat: 0
+                },
                 zoom: 18,
                 overviewMapControl: null,
-                speed: 90,
+                speed: 60,
                 vehicleMarkers: {},
                 markerClusterer: null,
                 openInfoWindow: {
                     type: "",
                     show: false,
                     show: false,
-                    position: { lng: 0, lat: 0 },
+                    position: {
+                        lng: 0,
+                        lat: 0
+                    },
                 },
                 animationInfo: {
                     timeInterval: null,
@@ -83,13 +89,30 @@
                     trajectoryInfo: [],
                     curveInfo: [], // 轨迹线
                     pointInfo: [], // 轨迹点
+                    startPoint: {
+                        url: CONFIG.HOST + "/airport/assets/img/start.png",
+                        size: {
+                            width: 30,
+                            height: 42
+                        }
+                    },
+                    endPoint: {
+                        url: CONFIG.HOST + "/airport/assets/img/end.png",
+                        size: {
+                            width: 30,
+                            height: 42
+                        }
+                    },
                     moveVehicle: null,
                     speed: 90,
                     trajectoryItem: {
                         "time": "",
                         "speed": "",
                         "coordinate": [],
-                        "position": { lng: 0, lat: 0 },
+                        "position": {
+                            lng: 0,
+                            lat: 0
+                        },
                         "vehicleCode": "",
                         "companyName": "",
                         "deptName": "",
@@ -189,21 +212,36 @@
             "vehicleTypeList": bizParam["vehicleType"], // 车辆类型
             "vehicleBrandList": bizParam["vehicleBrand"], // 车辆品牌
             "secureAreaLimitTypeList": bizParam["secureAreaLimitType"], // 车辆品牌
-            "vehicleColumns": [
-                {
-                    "title": { "CN": "名称", "EN": "Name", "TW": "名稱" }[language["language"]],
+            "vehicleColumns": [{
+                    "title": {
+                        "CN": "名称",
+                        "EN": "Name",
+                        "TW": "名稱"
+                    } [language["language"]],
                     "key": "vehicleName"
                 },
                 {
-                    "title": { "CN": "类型", "EN": "Type", "TW": "類型" }[language["language"]],
+                    "title": {
+                        "CN": "类型",
+                        "EN": "Type",
+                        "TW": "類型"
+                    } [language["language"]],
                     "key": "vehicleTypeId"
                 },
                 {
-                    "title": { "CN": "编码", "EN": "Code", "TW": "編碼" }[language["language"]],
+                    "title": {
+                        "CN": "编码",
+                        "EN": "Code",
+                        "TW": "編碼"
+                    } [language["language"]],
                     "key": "vehicleCode"
                 },
                 {
-                    "title": { "CN": "状态", "EN": "State", "TW": "狀態" }[language["language"]],
+                    "title": {
+                        "CN": "状态",
+                        "EN": "State",
+                        "TW": "狀態"
+                    } [language["language"]],
                     "key": "vehicleStatus"
                 }
             ],
@@ -299,35 +337,58 @@
                 "createUserId": userInfo["id"], // 创建用户ID，新增时必传
                 "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传
             },
-            "defensColumns": [
-                {
-                    "title": { "CN": "名称", "EN": "Name", "TW": "名稱" }[language["language"]],
+            "defensColumns": [{
+                    "title": {
+                        "CN": "名称",
+                        "EN": "Name",
+                        "TW": "名稱"
+                    } [language["language"]],
                     "key": "areaName",
                     "fixed": "left",
                     "width": 120
                 },
                 {
-                    "title": { "CN": "编码", "EN": "Code", "TW": "編碼" }[language["language"]],
+                    "title": {
+                        "CN": "编码",
+                        "EN": "Code",
+                        "TW": "編碼"
+                    } [language["language"]],
                     "key": "areaCode",
                     "width": 120
                 },
                 {
-                    "title": { "CN": "状态", "EN": "Status", "TW": "狀態" }[language["language"]],
+                    "title": {
+                        "CN": "状态",
+                        "EN": "Status",
+                        "TW": "狀態"
+                    } [language["language"]],
                     "key": "secureStatus",
                     "width": 120
                 },
                 {
-                    "title": { "CN": "速度上限", "EN": "Speed Limit", "TW": "速度上限" }[language["language"]],
+                    "title": {
+                        "CN": "速度上限",
+                        "EN": "Speed Limit",
+                        "TW": "速度上限"
+                    } [language["language"]],
                     "key": "speedLimit",
                     "width": 120
                 },
                 {
-                    "title": { "CN": "停留时长", "EN": "Length Of Stay", "TW": "停留時長" }[language["language"]],
+                    "title": {
+                        "CN": "停留时长",
+                        "EN": "Length Of Stay",
+                        "TW": "停留時長"
+                    } [language["language"]],
                     "key": "staySecond",
                     "width": 120
                 },
                 {
-                    "title": { "CN": "操作", "EN": "Operation", "TW": "操作" }[language["language"]],
+                    "title": {
+                        "CN": "操作",
+                        "EN": "Operation",
+                        "TW": "操作"
+                    } [language["language"]],
                     "key": "operation",
                     "fixed": "right",
                     "width": 80,
@@ -336,9 +397,17 @@
                         var label = "";
                         // 如果是管理防区
                         if (func.indexOf("device_manage_secure_area") != -1) {
-                            label = { "CN": "删除", "EN": "Delete", "TW": "删除" }[language["language"]]
+                            label = {
+                                "CN": "删除",
+                                "EN": "Delete",
+                                "TW": "删除"
+                            } [language["language"]]
                         } else {
-                            label = { "CN": "查看", "EN": "View", "TW": "查看" }[language["language"]]
+                            label = {
+                                "CN": "查看",
+                                "EN": "View",
+                                "TW": "查看"
+                            } [language["language"]]
                         }
                         return h("div", [
                             h("Button", {
@@ -413,55 +482,94 @@
                 "createUserId": userInfo["id"], // 创建用户ID，新增时必传
                 "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传
             },
-            "cameraColumns": [
-                {
-                    "title": { "CN": "名称", "EN": "Name", "TW": "名稱" }[language["language"]],
+            "cameraColumns": [{
+                    "title": {
+                        "CN": "名称",
+                        "EN": "Name",
+                        "TW": "名稱"
+                    } [language["language"]],
                     "key": "cameraName",
                     "fixed": "left",
                     "width": 100
                 },
                 {
-                    "title": { "CN": "状态", "EN": "State", "TW": "狀態" }[language["language"]],
+                    "title": {
+                        "CN": "状态",
+                        "EN": "State",
+                        "TW": "狀態"
+                    } [language["language"]],
                     "key": "monitorStatus",
                     "width": 100
                 },
                 {
-                    "title": { "CN": "公司", "EN": "Company", "TW": "公司" }[language["language"]],
+                    "title": {
+                        "CN": "公司",
+                        "EN": "Company",
+                        "TW": "公司"
+                    } [language["language"]],
                     "key": "companyName",
                     "width": 150
                 },
                 {
-                    "title": { "CN": "编码", "EN": "Code", "TW": "編碼" }[language["language"]],
+                    "title": {
+                        "CN": "编码",
+                        "EN": "Code",
+                        "TW": "編碼"
+                    } [language["language"]],
                     "key": "cameraCode",
                     "width": 150
                 },
                 {
-                    "title": { "CN": "描述", "EN": "Describe", "TW": "描述" }[language["language"]],
+                    "title": {
+                        "CN": "描述",
+                        "EN": "Describe",
+                        "TW": "描述"
+                    } [language["language"]],
                     "key": "cameraDesc",
                     "width": 150
                 },
                 {
-                    "title": { "CN": "Rtsp直播地址", "EN": "Live URL", "TW": "Rtsp直播地址" }[language["language"]],
+                    "title": {
+                        "CN": "Rtsp直播地址",
+                        "EN": "Live URL",
+                        "TW": "Rtsp直播地址"
+                    } [language["language"]],
                     "key": "rtspLiveUrl",
                     "width": 150
                 },
                 {
-                    "title": { "CN": "Rtsp录播地址", "EN": "Delayed URL", "TW": "Rtsp錄播地址" }[language["language"]],
+                    "title": {
+                        "CN": "Rtsp录播地址",
+                        "EN": "Delayed URL",
+                        "TW": "Rtsp錄播地址"
+                    } [language["language"]],
                     "key": "rtspHisUrl",
                     "width": 150
                 },
                 {
-                    "title": { "CN": "视野角度", "EN": "Angle", "TW": "視野角度" }[language["language"]],
+                    "title": {
+                        "CN": "视野角度",
+                        "EN": "Angle",
+                        "TW": "視野角度"
+                    } [language["language"]],
                     "key": "angle",
                     "width": 100
                 },
                 {
-                    "title": { "CN": "半径", "EN": "Radius", "TW": "半徑" }[language["language"]],
+                    "title": {
+                        "CN": "半径",
+                        "EN": "Radius",
+                        "TW": "半徑"
+                    } [language["language"]],
                     "key": "radius",
                     "width": 100
                 },
                 {
-                    "title": { "CN": "操作", "EN": "Operation", "TW": "操作" }[language["language"]],
+                    "title": {
+                        "CN": "操作",
+                        "EN": "Operation",
+                        "TW": "操作"
+                    } [language["language"]],
                     "key": "operation",
                     "width": 80,
                     "fixed": "right",
@@ -470,9 +578,17 @@
                         var label = "";
                         // 如果是管理防区
                         if (pageVue.functionInfo.isDefense) {
-                            label = { "CN": "删除", "EN": "Delete", "TW": "删除" }[language["language"]]
+                            label = {
+                                "CN": "删除",
+                                "EN": "Delete",
+                                "TW": "删除"
+                            } [language["language"]]
                         } else {
-                            label = { "CN": "查看", "EN": "View", "TW": "查看" }[language["language"]]
+                            label = {
+                                "CN": "查看",
+                                "EN": "View",
+                                "TW": "查看"
+                            } [language["language"]]
                         }
                         return h("div", [
                             h("Button", {
@@ -502,31 +618,57 @@
             //#region 车辆查询
             "isSearchLoading": false,
             "vehicleUseStatusList": bizParam["vehicleUseStatus"], // 车辆使用状态
-            "searchColumns": [
-                {
-                    "title": { "CN": "车牌号", "EN": "Plate No.", "TW": "車牌號" }[language["language"]],
+            "vehicleTypeInfo": (function () {
+                var type = {};
+                for (var i = 0, len = bizParam["vehicleType"].length; i < len; i++) {
+                    type[bizParam["vehicleType"][i]["name"]] = bizParam["vehicleType"][i]["type"] + "";
+                }
+                return type;
+            }()),
+            "searchColumns": [{
+                    "title": {
+                        "CN": "车牌号",
+                        "EN": "Plate No.",
+                        "TW": "車牌號"
+                    } [language["language"]],
                     "key": "licenseNumber",
                     "fixed": "left",
                     "width": 130
                 },
                 {
-                    "title": { "CN": "运动状态", "EN": "Vehicle State", "TW": "車輛狀態" }[language["language"]],
+                    "title": {
+                        "CN": "运动状态",
+                        "EN": "Vehicle State",
+                        "TW": "車輛狀態"
+                    } [language["language"]],
                     "key": "vehicleStatus",
                     "align": "center",
                     "width": 100
                 },
                 {
-                    "title": { "CN": "车辆名称", "EN": "Vehicle Name", "TW": "車輛名稱" }[language["language"]],
+                    "title": {
+                        "CN": "车辆名称",
+                        "EN": "Vehicle Name",
+                        "TW": "車輛名稱"
+                    } [language["language"]],
                     "key": "vehicleName",
                     "width": 130
                 },
                 {
-                    "title": { "CN": "车辆编号", "EN": "Vehicle Number", "TW": "車輛編號" }[language["language"]],
+                    "title": {
+                        "CN": "车辆编号",
+                        "EN": "Vehicle Number",
+                        "TW": "車輛編號"
+                    } [language["language"]],
                     "key": "vehicleCode",
                     "width": 130
                 },
                 {
-                    "title": { "CN": "操作", "EN": "Operation", "TW": "操作" }[language["language"]],
+                    "title": {
+                        "CN": "操作",
+                        "EN": "Operation",
+                        "TW": "操作"
+                    } [language["language"]],
                     "key": "operation",
                     "width": functionInfo.isViewVideo ? 120 : 80,
                     "fixed": "right",
@@ -535,7 +677,11 @@
                             "props": {
                                 "size": "small",
                             }
-                        }, { "CN": "详情", "EN": "Detail", "TW": "詳情" }[language["language"]]);
+                        }, {
+                            "CN": "详情",
+                            "EN": "Detail",
+                            "TW": "詳情"
+                        } [language["language"]]);
                         var backVideoBtn = null;
 
                         if (functionInfo.isViewVideo) {
@@ -580,8 +726,13 @@
                     }
                 }
             ],
-            "searchDatas": []
+            "searchDatas": [],
             //#endregion
+            "disabledDate": {
+                disabledDate(date) {
+                    return date && date.valueOf() > Date.now();
+                }
+            },
         },
         //#endregion
 
@@ -699,15 +850,92 @@
                 });
             },
 
+            // 判断一个点是否在一个区域内
+            isInsidePolygon: function (point, polygon) {
+                if (!(point instanceof BMap.Point) || !(polygon instanceof BMap.Polygon)) {
+                    return false;
+                }
+                var polygonBounds = polygon.getBounds();
+                if (!polygonBounds.containsPoint(point)) {
+                    return false;
+                }
+
+                var pts = polygon.getPath();
+
+                var N = pts.length;
+                var boundOrVertex = true;
+                var intersectCount = 0;
+                var precision = 2e-10;
+                var p1, p2; //neighbour bound vertices
+                var p = point;
+
+                p1 = pts[0]; //left vertex       
+                //check all rays  
+                for (var i = 1; i <= N; ++i) {
+                    if (p.equals(p1)) {
+                        return boundOrVertex; //p is an vertex
+                    }
+                    p2 = pts[i % N]; //right vertex            
+                    //ray is outside of our interests 
+                    if (p.lat < Math.min(p1.lat, p2.lat) || p.lat > Math.max(p1.lat, p2.lat)) {
+                        p1 = p2;
+                        continue; //next ray left point
+                    }
+
+                    if (p.lat > Math.min(p1.lat, p2.lat) && p.lat < Math.max(p1.lat, p2.lat)) {
+                        if (p.lng <= Math.max(p1.lng, p2.lng)) {
+                            if (p1.lat == p2.lat && p.lng >= Math.min(p1.lng, p2.lng)) {
+                                return boundOrVertex;
+                            }
+
+                            if (p1.lng == p2.lng) {
+                                if (p1.lng == p.lng) {
+                                    return boundOrVertex;
+                                } else {
+                                    ++intersectCount;
+                                }
+                            } else {
+                                var xinters = (p.lat - p1.lat) * (p2.lng - p1.lng) / (p2.lat - p1.lat) + p1.lng;
+                                if (Math.abs(p.lng - xinters) < precision) {
+                                    return boundOrVertex;
+                                }
+
+                                if (p.lng < xinters) {
+                                    ++intersectCount;
+                                }
+                            }
+                        }
+                    } else {
+                        if (p.lat == p2.lat && p.lng <= p2.lng) {
+                            var p3 = pts[(i + 1) % N]; //next vertex                    
+                            if (p.lat >= Math.min(p1.lat, p3.lat) && p.lat <= Math.max(p1.lat, p3.lat)) {
+                                ++intersectCount;
+                            } else {
+                                intersectCount += 2;
+                            }
+                        }
+                    }
+                    p1 = p2; //next ray left point
+                }
+
+                if (intersectCount % 2 == 0) { //偶数在多边形外
+                    return false;
+                } else { //奇数在多边形内
+                    return true;
+                }
+            },
+
             // 关闭POP
             "openInfoWindowClose": function () {
                 var self = this;
                 self.baiduMapInfo.openInfoWindow.show = false;
                 self.baiduMapInfo.openInfoWindow.type = "";
-                self.isTrackItem = false;
                 self.openInfoWidth = 0;
                 self.openInfoHeight = 0;
-                self.drawAlVehicleByBaidu();
+                if (self.baiduMapInfo.animationInfo.pointInfo.length == 0) {
+                    self.isTrackItem = false;
+                    self.drawAlVehicleByBaidu();
+                }
             },
 
             // 切换地图类型
@@ -720,10 +948,21 @@
                 self.baiduMapInfo.mapType = "BMAP_HYBRID_MAP";
             },
 
+            // 隐藏版权信息
+            "hindBaiduCopyRight": function () {
+                $("body").find(".anchorBL").css({
+                    display: "none"
+                });
+                $("body").find(".BMap_scaleCtrl").css({
+                    display: "block"
+                });
+            },
+
             //#region 地图操作
             // 当地图可用的时候
             "baiduMapHandle": function (baiduMap) {
                 var self = this;
+                self.hindBaiduCopyRight();
                 self.baiduMapInfo.center.lng = self.airPort[0];
                 self.baiduMapInfo.center.lat = self.airPort[1];
                 self.baiduMapInfo.zoom = 16;
@@ -732,7 +971,7 @@
                 BMap = baiduMap.BMap;
 
                 self.getAllVehiclePositonList(); // 获取所有实时车辆
-                self.getCompanyList();// 获取公司
+                self.getCompanyList(); // 获取公司
                 if (self.functionInfo.isCamera) {
                     self.getCameraList(true); // 获取摄像机列表数据
                 }
@@ -749,13 +988,17 @@
                 self.baiduMapInfo.map.addControl(self.baiduMapInfo.overviewMapControl);
 
                 if ($('.radar')[0]) {
-                    new Radar($('.radar')[0]).init({ scanSpeed: 2 });  // 扫描的速度，单位为deg，必须为360的约数
+                    new Radar($('.radar')[0]).init({
+                        scanSpeed: 2
+                    }); // 扫描的速度，单位为deg，必须为360的约数
                 }
             },
 
             // 点击地图
             "baiduMapClick": function (option) {
                 var self = this;
+
+                console.log(option);
 
                 if (option.overlay == null) {
                     // 如果是画摄像机
@@ -776,7 +1019,9 @@
                             "cameraName": "", // 摄像机名称
                             "cameraCode": "", // 摄像机编码
                             "cameraDesc": "", // 摄像机描述
-                            "cameraPosition": JSON.stringify({ "coordinates": [option.point.lng, option.point.lat] }),
+                            "cameraPosition": JSON.stringify({
+                                "coordinates": [option.point.lng, option.point.lat]
+                            }),
                             "cameraPositionStr": option.point.lng + "," + option.point.lat, // 位置坐标
                             "radius": "", // 摄像头监控半径（单位米）
                             "angle": "", // 视野角度
@@ -849,6 +1094,8 @@
                             pathArr.push(pathArr[0]);
                             self.defensAreaDetailInfo.areaRangeStr = pathArr.join(";");
                         }
+                    } else {
+                        return false;
                     }
                 }
             },
@@ -1097,7 +1344,9 @@
             "deleteDefensAction": function () {
                 var self = this;
                 self.isAddDefensAction = false;
-                self.showDefensPop(self.defensAreaDetailInfo, { point: self.baiduMapInfo.defensPath[0] });
+                self.showDefensPop(self.defensAreaDetailInfo, {
+                    point: self.baiduMapInfo.defensPath[0]
+                });
             },
             // 删除防区
             "deleteDefensArea": function () {
@@ -1260,7 +1509,10 @@
                 self.baiduMapInfo.cameraMarkers.push({
                     icon: {
                         url: CONFIG.HOST + "/airport/assets/img/camera.png?v=" + Date.parse(new Date()),
-                        size: { width: 50, height: 50 }
+                        size: {
+                            width: 50,
+                            height: 50
+                        }
                     },
                     position: {
                         lng: coordinate[0],
@@ -1276,8 +1528,10 @@
                 var self = this;
                 var point = event.point;
                 self.cameraDetailInfo = self.baiduMapInfo.cameraMarkers[index].item;
-                self.cameraDetailInfo.cameraPosition = JSON.stringify({ "coordinates": [point.lng, point.lat] });
-                self.cameraDetailInfo.cameraPositionStr = point.lng + "," + point.lat;// 位置坐标
+                self.cameraDetailInfo.cameraPosition = JSON.stringify({
+                    "coordinates": [point.lng, point.lat]
+                });
+                self.cameraDetailInfo.cameraPositionStr = point.lng + "," + point.lat; // 位置坐标
                 self.baiduMapInfo.cameraMarkers[index]["position"] = {
                     lng: point.lng,
                     lat: point.lat,
@@ -1508,7 +1762,6 @@
                             if (!vehicleStatusNameList || vehicleStatusNameList.length == 0) {
                                 return "--";
                             }
-
                             return vehicleStatusNameList[0]["name"];
                         })(), //self.vehiclePositionList[i]["vehicleStatus"], //"",
                         "useStatus": self.vehiclePositionList[i]["useStatusName"], //self.vehiclePositionList[i]["vehicleStatus"], //"",
@@ -1559,8 +1812,7 @@
                         target.address = rs.surroundingPois[0]["address"] + "(" + rs.surroundingPois[0]["title"] + ")";
                     } else {
                         target.address = rs.address;
-                    }
-                    !!callback && callback();
+                    }!!callback && callback();
                 });
             },
 
@@ -1630,22 +1882,24 @@
             // 画车辆
             "createVehicleByBaidu": function (item, callback) {
                 var self = this;
-				if(!item["lastPosition"]) {
-					return;
-				}
+                if (!item["lastPosition"]) {
+                    return;
+                }
                 var coordinate = JSON.parse(item["lastPosition"])["coordinates"];
                 var iconSrc = CONFIG.HOST + "/airport/assets/car/success.gif";
-                var vehicleType = (function () {
-                    var type = {};
-                    for (var i = 0, len = bizParam["vehicleType"].length; i < len; i++) {
-                        type[bizParam["vehicleType"][i]["name"]] = bizParam["vehicleType"][i]["type"] + "";
-                    }
-                    return type;
-                }());
-                var vehicleIcon = (vehicleType[item.vehicleTypeName] + item.vehicleStatus) || item.vehicleStatus;
+                var vehicleIcon = (self.vehicleTypeInfo[item.vehicleTypeName] + item.vehicleStatus) || item.vehicleStatus;
+                var now = Date.parse(new Date());
+                var lastTime = Date.parse(item.lastGpsTime.replace("-", "/"));
+                var day = Math.floor((now - lastTime) / (24 * 3600 * 1000));
+                item['isOverTime'] = false;
+                if (day >= 1) {
+                    vehicleIcon = self.vehicleTypeInfo[item.vehicleTypeName] + 406 || 406;
+                    isOverTime = true;
+                    item['isOverTime'] = true;
+                }
 
                 iconSrc = CONFIG.HOST + "/airport/assets/car/" + vehicleIcon + ".gif?v=" + Date.parse(new Date());
-				
+
                 self.convertorByBaidu(coordinate, function (point, lng, lat) {
                     if (!!self.baiduMapInfo.vehicleMarkers["_" + item.id]) {
                         if (!(self.baiduMapInfo.vehicleMarkers["_" + item.id].position.lng - lng == 0 && self.baiduMapInfo.vehicleMarkers["_" + item.id].position.lat - lat == 0)) {
@@ -1661,8 +1915,12 @@
                             id: "_" + item.id,
                             icon: {
                                 url: iconSrc,
-                                size: { width: 28, height: 35 }
+                                size: {
+                                    width: 28,
+                                    height: 35
+                                }
                             },
+                            point: new BMap.Point(lng, lat),
                             position: {
                                 lng: lng,
                                 lat: lat,
@@ -1704,6 +1962,8 @@
             "vehicleOpenPop": function (marker, event) {
                 var self = this;
 
+                // console.log(marker);
+
                 self.baiduMapInfo.openInfoWindow.show = false;
                 self.baiduMapInfo.openInfoWindow.type = "";
                 self.isTrackItem = true;
@@ -1720,7 +1980,7 @@
                         self.baiduMapInfo.map.panTo(new BMap.Point(marker.position.lng, marker.position.lat));
                         self.drawAlVehicleByBaidu();
                     });
-                }, 250);
+                }, 200);
 
             },
 
@@ -1734,7 +1994,10 @@
                         if (self.trackItem.licenseNumber == self.vehiclePositionList[t]['licenseNumber']) {
                             self.createVehicleByBaidu(self.vehiclePositionList[t], function (lng, lat) {
                                 if (self.baiduMapInfo.openInfoWindow.type == "isVehiclePopInfo") {
-                                    self.baiduMapInfo.openInfoWindow.position = { lng: lng, lat: lat };
+                                    self.baiduMapInfo.openInfoWindow.position = {
+                                        lng: lng,
+                                        lat: lat
+                                    };
                                 }
                             });
                             break;
@@ -1795,8 +2058,10 @@
                 self.baiduMapInfo.animationInfo.curveInfo = [];
                 self.baiduMapInfo.animationInfo.pointInfo = [];
                 self.baiduMapInfo.animationInfo.moveVehicle = null;
-                // self.openInfoWindowClose();
+                self.isTrackItem = false;
+                self.trackItem.licenseNumber = "";
                 clearInterval(self.baiduMapInfo.animationInfo.timeInterval);
+                self.drawAlVehicleByBaidu();
             },
 
             // 显示轨迹点信息
@@ -1804,8 +2069,8 @@
                 var self = this;
                 var index = 0;
 
-                for (var i = 0, len = self.baiduMapInfo.animationInfo.coordinates.length; i < len; i++) {
-                    if (event.point.lng == self.baiduMapInfo.animationInfo.coordinates[i]["lng"] && event.point.lng == self.baiduMapInfo.animationInfo.coordinates[i]["lat"]) {
+                for (var i = 0, len = self.baiduMapInfo.animationInfo.pointInfo.length; i < len; i++) {
+                    if (JSON.stringify(event.point) == JSON.stringify(self.baiduMapInfo.animationInfo.pointInfo[i])) {
                         index = i;
                         break;
                     }
@@ -1828,6 +2093,9 @@
             // 获取单台车的轨迹
             "getSingleVehicleTrackByBaidu": function () {
                 var self = this;
+
+                // 先清空原有轨迹
+                self.clearTrackByBaidu();
 
                 if (self.dateTimeInfo.beginDate.length == 0) {
                     self.dateTimeInfo.beginDate = (function () {
@@ -1856,8 +2124,6 @@
 
                 timeDiff = utility.timeDiff(self.singleVehiclePageInfo.beginTime, self.singleVehiclePageInfo.endTime);
 
-                // 先清空原有轨迹
-                self.clearTrackByBaidu();
                 self.$Message.destroy();
 
                 if (timeDiff.isOver == false) {
@@ -1891,7 +2157,8 @@
                             // 如果轨迹信息
                             if (self.singleVehicleItem.track) {
                                 self.formatTrajectoryInfo(); // 格式化轨迹数据
-
+                                self.isTrackItem = true;
+                                self.trackItem.licenseNumber = self.singleVehiclePageInfo.licenseNumber;
                             } else {
                                 self.$Message.destroy();
                                 self.$Message.error(self.singleVehiclePageInfo.beginTime + "  " + self.singleVehiclePageInfo.endTime + "查询不到轨迹数据");
@@ -1917,21 +2184,22 @@
             // 轨迹回放
             "playBackByBaidu": function () {
                 var self = this;
+                if (self.baiduMapInfo.animationInfo.pointInfo.length == 0) {
+                    self.$Message.destroy();
+                    self.$Message.error("没有回放轨迹");
+                    return;
+                }
                 var index = 0;
                 var item = self.vehicleItemPop;
                 var coordinates = self.baiduMapInfo.animationInfo.coordinates;
-                var vehicleType = (function () {
-                    var type = {};
-                    for (var i = 0, len = bizParam["vehicleType"].length; i < len; i++) {
-                        type[bizParam["vehicleType"][i]["name"]] = bizParam["vehicleType"][i]["type"] + "";
-                    }
-                    return type;
-                }());
-                var vehicleIcon = (vehicleType[item.vehicleTypeName] + item.vehicleStatus) || item.vehicleStatus;
+                var vehicleIcon = (self.vehicleTypeInfo[item.vehicleTypeName] + item.vehicleStatus) || item.vehicleStatus;
                 self.baiduMapInfo.animationInfo.moveVehicle = {
                     icon: {
                         url: CONFIG.HOST + "/airport/assets/car/" + vehicleIcon + ".gif?v=" + Date.parse(new Date()),
-                        size: { width: 28, height: 35 }
+                        size: {
+                            width: 28,
+                            height: 35
+                        }
                     },
                     position: {
                         lng: coordinates[index].lng,
@@ -1970,6 +2238,7 @@
         },
         "created": function () {
             var self = this;
+            var fromInfoTime = null;
 
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
             utility.isLogin(false);
@@ -1979,12 +2248,29 @@
                 duration: 3
             });
             self.showModal("isLayer");
-			
-			self.$watch('vehiclePositonPageInfo', function () {
-			    clearInterval(self.timePosition);
-			    self.getAllVehiclePositonList();
-				self.getAllVehicleInterval();
-			}, { deep: true });
+
+            fromInfoTime = setInterval(function () {
+                var fromInfo = utility.getSessionStorage("fromInfo") || null;
+                self.hindBaiduCopyRight();
+                // 初始化时显示实时查询模块
+                if (!!fromInfo) {
+                    self.showModal(fromInfo.type);
+                    self.vehiclePositonPageInfo.vehicleStatus = fromInfo.vehicleStatus;
+                    setTimeout(function () {
+                        utility.cleanSessionStorage();
+                        clearInterval(fromInfoTime);
+                    }, 2000);
+                }
+            }, 100);
+
+            self.$watch('vehiclePositonPageInfo', function () {
+                clearInterval(self.timePosition);
+                self.getAllVehiclePositonList();
+                self.getAllVehicleInterval();
+            }, {
+                deep: true
+            });
+
         },
         mouted: function () {
             var self = this;

@@ -57,56 +57,96 @@
                 "pageNum": 1,
                 "pageSize": 20,
             },
-            "columnsList": [
-                // {
-                //     "type": "index",
-                //     "width": 60,
-                //     "align": "center"
-                // },
-                {
-                    "title": { "CN": "公司", "EN": "Company", "TW": "公司" }[language["language"]],
+            "columnsList": [{
+                    "title": {
+                        "CN": "公司",
+                        "EN": "Company",
+                        "TW": "公司"
+                    } [language["language"]],
                     "key": "companyId",
                     "width": 200
                 },
                 {
                     "title": "绑定车辆",
-                    "key": "vehicleName",
-                    "width": 150
+                    "key": "vehicleCode",
+                    "width": 150,
+                    "sortable": true,
                 },
                 {
-                    "title": { "CN": "运行状态", "EN": "Working Condition", "TW": "運行狀態" }[language["language"]],
+                    "title": {
+                        "CN": "运行状态",
+                        "EN": "Working Condition",
+                        "TW": "運行狀態"
+                    } [language["language"]],
                     "key": "deviceStatus"
                 },
                 {
-                    "title": { "CN": "供应商", "EN": "Supplier", "TW": "廠家名稱" }[language["language"]],
+                    "title": {
+                        "CN": "供应商",
+                        "EN": "Supplier",
+                        "TW": "廠家名稱"
+                    } [language["language"]],
                     "key": "providerId"
                 },
                 {
-                    "title": { "CN": "终端编号", "EN": "No.", "TW": "終端編號" }[language["language"]],
+                    "title": {
+                        "CN": "终端编号",
+                        "EN": "No.",
+                        "TW": "終端編號"
+                    } [language["language"]],
                     "key": "deviceCode"
                 },
                 {
-                    "title": { "CN": "上报周期", "EN": "Reporting Cycle", "TW": "上報周期" }[language["language"]],
+                    "title": {
+                        "CN": "上报周期",
+                        "EN": "Reporting Cycle",
+                        "TW": "上報周期"
+                    } [language["language"]],
                     "key": "dataPeriod"
                 },
                 {
-                    "title": { "CN": "系统版本", "EN": "System Version", "TW": "系統版本" }[language["language"]],
+                    "title": {
+                        "CN": "系统版本",
+                        "EN": "System Version",
+                        "TW": "系統版本"
+                    } [language["language"]],
                     "key": "versionName"
                 },
                 {
-                    "title": { "CN": "系统版本号", "EN": "System Version No.", "TW": "系統版本號" }[language["language"]],
+                    "title": {
+                        "CN": "系统版本号",
+                        "EN": "System Version No.",
+                        "TW": "系統版本號"
+                    } [language["language"]],
                     "key": "versionNum"
                 },
                 {
-                    "title": { "CN": "当前速度", "EN": "Speed", "TW": "當前速度" }[language["language"]],
+                    "title": {
+                        "CN": "当前速度",
+                        "EN": "Speed",
+                        "TW": "當前速度"
+                    } [language["language"]],
                     "key": "speed"
                 },
                 {
-                    "title": { "CN": "电量", "EN": "Power", "TW": "電量" }[language["language"]],
-                    "key": "power"
+                    "title": {
+                        "CN": "电量",
+                        "EN": "Power",
+                        "TW": "電量"
+                    } [language["language"]],
+                    "key": "power",
+                    "render": function (h, params) {
+                        return h("div", [
+                            h("span", {}, "99%")
+                        ]);
+                    }
                 },
                 {
-                    "title": { "CN": "操作", "EN": "Operation", "TW": "操作" }[language["language"]],
+                    "title": {
+                        "CN": "操作",
+                        "EN": "Operation",
+                        "TW": "操作"
+                    } [language["language"]],
                     "key": "operation",
                     "width": 180,
                     "render": function (h, params) {
@@ -126,7 +166,11 @@
                                         pageVue.showDetail();
                                     }
                                 }
-                            }, { "CN": "详情", "EN": "Detail", "TW": "詳情" }[language["language"]]),
+                            }, {
+                                "CN": "详情",
+                                "EN": "Detail",
+                                "TW": "詳情"
+                            } [language["language"]]),
                             h("Button", {
                                 "props": {
                                     "type": "warning",
@@ -142,7 +186,11 @@
                                         pageVue.editItem();
                                     }
                                 }
-                            }, { "CN": "编辑", "EN": "Edite", "TW": "編輯" }[language["language"]]),
+                            }, {
+                                "CN": "编辑",
+                                "EN": "Edite",
+                                "TW": "編輯"
+                            } [language["language"]]),
                             h("Button", {
                                 "props": {
                                     "type": "error",
@@ -155,7 +203,11 @@
                                         pageVue.delItem();
                                     }
                                 }
-                            }, { "CN": "删除", "EN": "Delete", "TW": "刪除" }[language["language"]])
+                            }, {
+                                "CN": "删除",
+                                "EN": "Delete",
+                                "TW": "刪除"
+                            } [language["language"]])
                         ]);
                     }
                 }
@@ -185,7 +237,11 @@
                 var self = this;
                 self.isShowModal = true;
                 self.isModalLoading = true;
-                self.modalTitle = { "CN": "新增", "EN": "Add", "TW": "新增" }[self.language];
+                self.modalTitle = {
+                    "CN": "新增",
+                    "EN": "Add",
+                    "TW": "新增"
+                } [self.language];
                 self.itemInfo = {
                     "id": "", // 车辆ID
                     "companyId": "", // 所属公司ID
@@ -211,7 +267,11 @@
                 utility.showMessageTip(self, function () {
                     self.itemInfo = self.terminalList[self.index];
                     self.isShowModal = true;
-                    self.modalTitle = { "CN": "修改", "EN": "Edit", "TW": "修改" }[self.language];
+                    self.modalTitle = {
+                        "CN": "修改",
+                        "EN": "Edit",
+                        "TW": "修改"
+                    } [self.language];
                 });
             },
             // 修改
@@ -318,6 +378,7 @@
                         "versionNum": self.terminalList[i]["versionNum"], // 系统软件版本号，如100
                         "deviceCode": decodeURI(self.terminalList[i]["deviceCode"]), // 终端编号
                         "vehicleName": decodeURI(self.terminalList[i]["vehicleName"]), // 终端编号
+                        "vehicleCode": self.terminalList[i]["vehicleCode"], // 当前速度（米/秒）
                         "speed": self.terminalList[i]["speed"], // 当前速度（米/秒）
                         "power": self.terminalList[i]["power"], //  终端电量（百分比）
                         "lastPosition": self.terminalList[i]["lastPosition"], // 当前经纬度坐标
@@ -343,13 +404,9 @@
                         "pageNum": self.page.pageNum,
                         "pageSize": self.page.pageSize,
                         "companyId": self.pageInfo.companyId, // 所属公司ID，手动从公司列表选择
-                        "deptId": self.pageInfo.deptId, // 部门ID，可选
                         "providerId": self.pageInfo.providerId, // 供应商ID
                         "deviceStatus": self.pageInfo.deviceStatus, // 定位设备运行状态
                         "deviceCode": encodeURI(self.pageInfo.deviceCode), // 定位终端设备编号
-                        "dataPeriod": self.pageInfo.dataPeriod, // 数据上报周期(单位秒)
-                        "versionName": encodeURI(self.pageInfo.versionName), // 系统软件版本名
-                        "versionNum": encodeURI(self.pageInfo.versionNum), // 系统软件版本号，如100
                         "bindFlag": self.pageInfo.bindFlag, // 是否被绑定到车辆：
                         "createUserId": userInfo["id"], // 创建用户ID，新增时必传
                         "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传 
@@ -385,11 +442,40 @@
                         }
                     }
                 });
-            }
+            },
+            // 下载Excel
+            "downLoadExcel": function () {
+                var self = this;
+                var timestamp = Date.parse(new Date());
+
+                var info = {
+                    "companyId": self.pageInfo.companyId, // 所属公司ID，手动从公司列表选择
+                    "providerId": self.pageInfo.providerId, // 供应商ID
+                    "deviceStatus": self.pageInfo.deviceStatus, // 定位设备运行状态
+                    "deviceCode": encodeURI(self.pageInfo.deviceCode), // 定位终端设备编号
+                    "bindFlag": self.pageInfo.bindFlag, // 是否被绑定到车辆：
+                    "version": 100, // 默认100
+                    "timestamp": timestamp,
+                    "languageVer": 'cn', // cn：中文简体 en：英语 hk：中文繁体
+                    "appType": 2, // 请求来源类型：1:H5 2:WWW 3:android app 4: ios app
+                    "actionUrl": CONFIG.SERVICE.deviceService, // 使用接口URL(注意：不包含http://ip:port的服务器域名/IP+端口这部分)
+                    "userId": !!userInfo ? userInfo["id"] : "",
+                    "userToken": !!userInfo ? userInfo["userToken"] : "", // 登陆后会有，如无则为空字符串
+                    "signStr": md5((!!userInfo ? userInfo["userToken"] : "") + (!!userInfo ? userInfo["id"] : "") + timestamp + "100").toUpperCase() // 算法：MD5(userToken + userid+ timestamp+languageVer +version)，安全Key由系统设定
+                };
+                var params = "";
+                var url = CONFIG.HOST + CONFIG.SERVICE.deviceService + "?action=" + CONFIG.ACTION.downloadDeviceList;
+
+                for (var key in info) {
+                    if (info.hasOwnProperty(key)) {
+                        params = params + ("&" + key + "=" + info[key]);
+                    }
+                }
+                window.open(url + params);
+            },
         },
         "created": function () {
             var self = this;
-
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
             utility.isLogin(false);
 
@@ -398,7 +484,9 @@
                 self.getCompanyList();
                 self.$watch('pageInfo', function () {
                     self.getTerminalList(true);
-                }, { deep: true });
+                }, {
+                    deep: true
+                });
             }, 500);
         }
     });

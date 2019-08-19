@@ -186,6 +186,8 @@
         "created": function () {
             var self = this;
 
+            utility.setLocalStorage("isPhone", null);
+
             document.title = self.title[self.language];
 
             // 获取枚举值

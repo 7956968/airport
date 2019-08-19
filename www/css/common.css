@@ -926,15 +926,23 @@ table .ivu-table-cell {
 .mapContainer.mapContainerPhone .menuWrap .swipeWrap {
   position: absolute;
   z-index: 10000;
-  width: 30px;
-  right: 0;
-  bottom: 0;
-  height: 100%;
+  width: 45px;
+  right: -25px;
+  top: 120px;
+  height: 45px;
+  line-height: 45px;
+  text-align: center;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  background-color: #fff;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
 }
 .mapContainer.mapContainerPhone .menuWrap .swipeWrap .swipeIcon {
   position: relative;
-  z-index: 10;
-  top: 150px;
+  z-index: 10; 
+  top: -6px;
+  left: -13px;
 }
 .mapContainer.mapContainerPhone .searchWrap {
   position: fixed;
@@ -943,6 +951,51 @@ table .ivu-table-cell {
   left: 10px;
   right: 0;
   width: 270px;
+}
+.mapContainer.mapContainerPhone .radar {
+  height: 20em;
+  width: 28em;
+}
+.mapContainer.mapContainerPhone .radar .scanning-circle .radar-scanner {
+  width: 20em;
+}
+.mapContainer.mapContainerPhone .eareFind {
+  position: fixed;
+  z-index: 10000;
+  left: 10px;
+  top: 60px;
+  width: 100%;
+}
+.mapContainer.mapContainerPhone .eareFind .label span {
+  padding: 5px 10px;
+  color: #769995;
+  background-color: #f5f3f0;
+}
+.mapContainer.mapContainerPhone .faskMenu {
+  display: none;
+  position: fixed;
+  z-index: 10000;
+  width: 30px;
+  left: 0;
+  top: 120px;
+}
+.mapContainer.mapContainerPhone .faskMenu .swipeIcon {
+  position: relative;
+  z-index: 10;
+  top: 150px;
+}
+.mapContainer.mapContainerPhone .myPosition {
+  position: fixed;
+  z-index: 10000;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  left: 10px;
+  bottom: 40px;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
 }
 .mapContainer .mapWrap {
   position: fixed;
@@ -1123,8 +1176,8 @@ table .ivu-table-cell {
 .mapContainer .searchVehicle {
   display: block;
   z-index: 100000;
-  width: 144px;
-  height: 120px;
+  width: 72px;
+  height: 60px;
   bottom: 120px;
   left: -300px;
   opacity: 0;
@@ -1286,4 +1339,7 @@ table .ivu-table-cell {
 }
 .modifyPassPop table {
   width: 100%;
+}
+.ivu-modal-mask {
+  background-color: transparent;
 }

@@ -124,7 +124,7 @@
                                         var now = Date.parse(new Date());
                                         var lastTime = Date.parse(params.row.lastGpsTime.replace("-", "/"));
                                         var day = Math.floor((now - lastTime) / (24 * 3600 * 1000));
-                                        if (day > 3) {
+                                        if (day >= 1) {
                                             pageVue.statuItemInfo.overDay = true;
                                         }
                                     }
