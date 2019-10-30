@@ -20,26 +20,31 @@
                     "label": "中文",
                 }
             ],
-            "airPort": "113.310746,23.396745",
+            // "airPort": "113.310746,23.396745",
+            "airPort": "116.5924,40.0791",
             "airPortList": [
+                // {
+                //     "value": "0",
+                //     "label": "全部",
+                // },
+                // {
+                //     "value": "113.310746,23.396745",
+                //     "label": "广州白云机场",
+                // },
+                // {
+                //     "value": "121.34210660807666,31.198845194982827",
+                //     "label": "上海虹桥国际机场",
+                // },
+                // {
+                //     "value": "121.804854898899,31.151142510137117",
+                //     "label": "上海浦东国际机场",
+                // }
                 {
-                    "value": "0",
-                    "label": "全部",
-                },
-                {
-                    "value": "113.310746,23.396745",
-                    "label": "广州白云机场",
-                },
-                {
-                    "value": "121.34210660807666,31.198845194982827",
-                    "label": "上海虹桥国际机场",
-                },
-                {
-                    "value": "121.804854898899,31.151142510137117",
-                    "label": "上海浦东国际机场",
+                    "value": "116.5924,40.0791",
+                    "label": "北京首都机场",
                 }
             ],
-            "title": { "CN": "特种车辆音视频可视化系统", 'EN': "Mingui Non-Powered Euipment Management System", 'TW': "民貴無動力管理系統" }
+            "title": "北京空港航空地面服务特种车辆管理系统"
         },
         "watch": {
             "language": function (value) {
@@ -125,6 +130,7 @@
                 // 先验证输入 
                 if (self.validateInput()) {
                     utility.interactWithServer({
+                        appType: 1,
                         url: CONFIG.HOST + CONFIG.SERVICE.userService + "?action=" + CONFIG.ACTION.userLogin + "&userCode=" + self.loginInfo.userCode + "&userPwd=" + md5(self.loginInfo.userPwd).toUpperCase(),
                         actionUrl: CONFIG.SERVICE.userService,
                         beforeSendCallback: function () {
@@ -135,6 +141,8 @@
                         },
                         successCallback: function (data) {
                             if (data.code == 200) {
+                                // utility.cleanSessionStorage();
+                                // utility.cleanLocalStorage();
                                 utility.setLocalStorage("userInfo", data.data);
                                 utility.setLocalStorage("language", { "language": self.language });
                                 utility.setLocalStorage("airPort", { "airPort": self.airPort });
@@ -155,6 +163,7 @@
             // 获取枚举值保存在本地
             "getBizParam": function () {
                 utility.interactWithServer({
+                    appType: 1,
                     url: CONFIG.HOST + CONFIG.SERVICE.commonService + "?action=" + CONFIG.ACTION.getBizParam,
                     actionUrl: CONFIG.SERVICE.commonService,
                     successCallback: function (data) {
@@ -167,6 +176,7 @@
             // 获取省份数据
             "getProvinceList": function () {
                 utility.interactWithServer({
+                    appType: 1,
                     url: CONFIG.HOST + CONFIG.SERVICE.commonService + "?action=" + CONFIG.ACTION.getProvinceList,
                     actionUrl: CONFIG.SERVICE.commonService,
                     successCallback: function (data) {
@@ -182,13 +192,11 @@
 			
 			utility.setLocalStorage("isPhone", { "isPhone": true});
 
-            document.title = self.title[self.language];
-
             // 获取枚举值
             self.getBizParam();
 
             // 获取省份数据
-            self.getProvinceList();
+            // self.getProvinceList();
 
             document.onkeydown = function (e) {
                 var e = e || event;

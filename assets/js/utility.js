@@ -141,7 +141,7 @@ window.utility = (function (utility) {
         var year = nowDate.getFullYear(); // 年
         var month = nowDate.getMonth(); // 月
         var date = nowDate.getDate(); // 日
-        var day = nowDate.getDay();	// 星期
+        var day = nowDate.getDay(); // 星期
         var hour = nowDate.getHours(); // 时
         var min = nowDate.getMinutes(); // 分
         var second = nowDate.getSeconds(); // 秒
@@ -157,30 +157,31 @@ window.utility = (function (utility) {
             "weekDay": weekDay[day]
         };
     };
-    
-    utility.timeDiff = function(date1, date2) {
-		var time1 = date1 ? new Date(date1.replace(/\-/g, "/")).getTime() : new Date().getTime();
-		var time2 = date2 ? new Date(date2.replace(/\-/g, "/")).getTime() : new Date().getTime();
-		var timediff = Math.abs(time1 - time2);
-		var days = Math.floor(timediff / (24 * 3600 * 1000)); // //计算出相差天数
 
-		var leave1 = timediff % (24 * 3600 * 1000) //计算天数后剩余的毫秒数
-		var hours = Math.floor(leave1 / (3600 * 1000)); // //计算出小时数
+    utility.timeDiff = function (date1, date2) {
+        var time1 = date1 ? new Date(date1.replace(/\-/g, "/")).getTime() : new Date().getTime();
+        var time2 = date2 ? new Date(date2.replace(/\-/g, "/")).getTime() : new Date().getTime();
+        var timediff = Math.abs(time1 - time2);
+        var days = Math.floor(timediff / (24 * 3600 * 1000)); // //计算出相差天数
 
-		var leave2 = leave1 % (3600 * 1000); //计算小时数后剩余的毫秒数
-		var minutes = Math.floor(leave2 / (60 * 1000));
-		//计算相差秒数
-		var leave3 = leave2 % (60 * 1000) //计算分钟数后剩余的毫秒数
-		var seconds = Math.round(leave3 / 1000);
+        var leave1 = timediff % (24 * 3600 * 1000) //计算天数后剩余的毫秒数
+        var hours = Math.floor(leave1 / (3600 * 1000)); // //计算出小时数
 
-		return {
-			"isOver": time1 < time2,
-			"day": days,
-			"hour": hours,
-			"minute": minutes,
-			"second": seconds,
-		}
-	};
+        var leave2 = leave1 % (3600 * 1000); //计算小时数后剩余的毫秒数
+        var minutes = Math.floor(leave2 / (60 * 1000));
+        //计算相差秒数
+        var leave3 = leave2 % (60 * 1000) //计算分钟数后剩余的毫秒数
+        var seconds = Math.round(leave3 / 1000);
+
+        return {
+            "timeStamp": timediff,
+            "isOver": time1 < time2,
+            "day": days,
+            "hour": hours,
+            "minute": minutes,
+            "second": seconds,
+        }
+    };
 
     // 把图片转换成
     utility.convertImgToBase64 = function (url, callback, outputFormat) {
@@ -223,9 +224,13 @@ window.utility = (function (utility) {
         var timestamp = Date.parse(new Date());
         var userInfo = utility.getLocalStorage("userInfo");
         var isPhone = utility.getLocalStorage("isPhone");
-        var language = { "CN": "cn", "EN": "en", "TW": "hk" };
+        var language = {
+            "CN": "cn",
+            "EN": "en",
+            "TW": "hk"
+        };
         var languageVer = !!utility.getLocalStorage("language") ? language[utility.getLocalStorage("language")["language"]] : "cn";
-        
+
         $.ajax({
             dataType: "json",
             url: options.url,
@@ -256,24 +261,24 @@ window.utility = (function (utility) {
                     clearTimeout(window.clearLogin);
                     window.clearLogin = setTimeout(function () {
                         alert("登录令牌失效,请重新登录!");
-						if(!!isPhone) {
-							window.location.href = "/airport/www/loginPhone.html";
-						} else {
-							if (!!isParent) {
-							    if (window.parent.window.location.href.indexOf("indexMg") != -1) {
-							        window.parent.window.location.href = "/airport/www/indexMg.html";
-							    } else {
-							        window.parent.window.location.href = "/airport/www/login.html";
-							    }
-							} else {
-							    if (window.location.href.indexOf("indexMg") != -1) {
-							        window.location.href = "/airport/www/indexMg.html";
-							    } else {
-							        window.location.href = "/airport/www/login.html";
-							    }
-							}
-						}
-                        
+                        if (!!isPhone) {
+                            window.location.href = "/airport/www/loginPhone.html";
+                        } else {
+                            if (!!isParent) {
+                                if (window.parent.window.location.href.indexOf("indexMg") != -1) {
+                                    window.parent.window.location.href = "/airport/www/indexMg.html";
+                                } else {
+                                    window.parent.window.location.href = "/airport/www/login.html";
+                                }
+                            } else {
+                                if (window.location.href.indexOf("indexMg") != -1) {
+                                    window.location.href = "/airport/www/indexMg.html";
+                                } else {
+                                    window.location.href = "/airport/www/login.html";
+                                }
+                            }
+                        }
+
                     }, 500);
                 }
                 options.successCallback && options.successCallback(data);
@@ -307,8 +312,8 @@ window.utility = (function (utility) {
             }, function (error) {
                 options.errorCallback && options.errorCallback();
             }, {
-                    enableHighAccuracy: true,
-                });
+                enableHighAccuracy: true,
+            });
         } else {
             options.errorCallback && options.errorCallback();
         }
@@ -339,12 +344,40 @@ window.utility = (function (utility) {
                 duration: 3
             });
             self.$Message.error({
-                "content": { "CN": "请选择一条数据", "EN": "Please select a Data", "TW": "請選擇一條數據" }[self.language]
+                "content": {
+                    "CN": "请选择一条数据",
+                    "EN": "Please select a Data",
+                    "TW": "請選擇一條數據"
+                } [self.language]
             });
             return;
         }
         self.isModalLoading = true;
         !!callback && callback();
+    };
+
+    // 转换成百度坐标
+    utility.convertorByBaidu = function (coordinate, gcoord, BMap, callback) {
+        var result = gcoord.transform([parseFloat(coordinate[0]), parseFloat(coordinate[1])], gcoord.WGS84, gcoord.BD09);
+        var point = new BMap.Point(result[0], result[1]);
+
+        !!callback && callback(point, result[0], result[1]);
+        return result;
+    };
+
+    // 根据坐标获取详细地址
+    utility.getAdressDetail = function (coordinate, BMap, callback) {
+        var gc = new BMap.Geocoder();
+        var point = new BMap.Point(coordinate[0], coordinate[1]);
+        var address = "";
+        gc.getLocation(point, function (rs) {
+            if (rs.surroundingPois.length > 0) {
+                address = rs.surroundingPois[0]["address"] + "(" + rs.surroundingPois[0]["title"] + ")";
+            } else {
+                address = rs.address;
+            }
+            !!callback && callback(address);
+        });
     };
 
     return utility;

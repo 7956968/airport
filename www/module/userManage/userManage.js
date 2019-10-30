@@ -59,6 +59,13 @@
             },
             "columnsList": [
                 {
+                    "type": "index",
+                    "width": 60,
+                    "align": "center",
+                    "title": "序号",
+                    "fixed": "left"
+                },
+                {
                     "title": "公司",
                     "key": "companyName",
                     "fixed": "left",

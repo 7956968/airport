@@ -1,6 +1,7 @@
 (function () {
     var language = utility.getLocalStorage("language");
     var userInfo = utility.getLocalStorage("userInfo");
+    var filterUserList = [];
     var pageVue = new Vue({
         "el": "#js-vue",
         "data": {
@@ -27,31 +28,45 @@
                 {
                     "type": "index",
                     "width": 60,
+                    "title": "序号",
                     "align": "center"
                 },
                 {
                     "title": { "CN": "操作时间", "EN": "Message Time", "TW": "操作時間" }[language["language"]],
-                    "key": "createTime"
+                    "key": "createTime",
+                    "align": "center",
+                    "sortable": true,
+                    "sortType": "des"
                 },
                 {
                     "title": { "CN": "操作用户", "EN": "Operating User", "TW": "操作用戶" }[language["language"]],
-                    "key": "userCode"
+                    "key": "userCode",
+                    "align": "center",
+                    "filters": filterUserList,
+                    "filterMultiple": false,
+                    "filterRemote"(value, row) {
+                        pageVue.pageInfo.userCode = value;
+                    },
                 },
                 {
                     "title": { "CN": "IP地址", "EN": "IP Address", "TW": "車輛名稱" }[language["language"]],
-                    "key": "fromIp"
+                    "key": "fromIp",
+                    "align": "center"
                 },
                 {
                     "title": { "CN": "系统功能", "EN": "System Function", "TW": "系統功能" }[language["language"]],
-                    "key": "opTypeDesc"
+                    "key": "opTypeDesc",
+                    "align": "center"
                 },
                 {
                     "title": { "CN": "操作类型", "EN": "Operation Type", "TW": "操作類型" }[language["language"]],
-                    "key": "opFunctionDesc"
+                    "key": "opFunctionDesc",
+                    "align": "center"
                 },
                 {
                     "title": { "CN": "执行结果", "EN": "Execution Result", "TW": "執行結果" }[language["language"]],
-                    "key": "opResult"
+                    "key": "opResult",
+                    "align": "center"
                 }
             ],
             "dataList": [],
@@ -126,6 +141,29 @@
                     }
                 });
             },
+            "getUserList": function (bool) {
+                var self = this;
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.userService + "?action=" + CONFIG.ACTION.getUserList,
+                    actionUrl: CONFIG.SERVICE.userService,
+                    dataObj: {
+                        "pageNum": 1,
+                        "pageSize": 10000,
+                        "companyId": 0, // 公司ID
+                        "deptId": 0,
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            for(var i = 0, len = data.data.length; i < len; i++) {
+                                filterUserList.push({
+                                    label: data.data[i]["userCode"],
+                                    value: data.data[i]["userCode"],
+                                });
+                            }
+                        }
+                    }
+                });
+            },
         },
         "created": function () {
             var self = this;
@@ -135,8 +173,15 @@
 
             setTimeout(function () {
                 self.isTableLoading = false;
+                self.getUserList();
                 self.getUserLogList(true);
             }, 500);
+
+            self.$watch('pageInfo', function () {
+                self.getUserLogList(true);
+            }, {
+                deep: true
+            });
         }
     });
 

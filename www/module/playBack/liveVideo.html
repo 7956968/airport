@@ -88,33 +88,35 @@
                                                     </template>
                                                 </i-select>
                                             </template>&nbsp;&nbsp;&nbsp;&nbsp; -->
-                                        <!-- </i-col>
+                                            <!-- </i-col>
                                         <i-col span="4"> -->
                                             <span class="label">日期</span>
                                             <template>
                                                 <date-picker type="date" @on-change="dateChange" v-model="backPlay.date"
                                                     placeholder="请选择日期" style="width: 110px;"></date-picker>
                                             </template>&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <!-- </i-col>
+                                            <!-- </i-col>
                                         <i-col span="4"> -->
                                             <span class="label">开始时间</span>
                                             <time-picker type="time" v-model="backPlay.beginTime"
                                                 @on-change="beginTimeChange" placeholder="请选择开始时间"
                                                 style="width: 100px;">
                                             </time-picker>&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <!-- </i-col>
+                                            <!-- </i-col>
                                         <i-col span="4"> -->
                                             <span class="label">结束时间</span>
                                             <time-picker type="time" v-model="backPlay.endTime"
                                                 @on-change="endTimeChange" placeholder="请选择结束时间" style="width: 100px;">
                                             </time-picker>&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <!-- </i-col>
+                                            <!-- </i-col>
                                         <i-col span="4"> -->
                                             <i-button class="btnAction" type="primary" @click="getReplayVedio">
-                                                <span><Icon type="ios-search" size="16" /></span> 获取视频
+                                                <span>
+                                                    <Icon type="ios-search" size="16" /></span> 获取视频
                                             </i-button>
                                             &nbsp;&nbsp;&nbsp;&nbsp;<i-button type="warning" @click="reStart">
-                                                <span><Icon type="ios-git-compare" size="16" /></span> 重新连接
+                                                <span>
+                                                    <Icon type="ios-git-compare" size="16" /></span> 重新连接
                                             </i-button>
                                         </i-col>
                                         <!-- <i-col span="4"></i-col> <Icon type="ios-git-compare" /><Icon type="ios-search" />-->
@@ -122,37 +124,80 @@
                                 </div>
                                 <div style="position: relative; padding: 0 10px 10px 10px; height: calc(100% - 60px);">
                                     <template v-if="backPlay.channelTotal==0">
-                                        <div class="videoItem noData" :style="{height: (innerHeight-109) + 'px', lineHeight: (innerHeight-200) + 'px'}">
+                                        <div class="videoItem noData"
+                                            :style="{height: (innerHeight-109) + 'px', lineHeight: (innerHeight-200) + 'px'}">
                                             {{msgInfo}}
                                         </div>
                                     </template>
                                     <template v-else>
                                         {{'count_'+backPlay.channelTotal}}
-                                        <template v-for="(item, index) in videoWinSplit['count_'+backPlay.channelTotal]">
+                                        <template
+                                            v-for="(item, index) in videoWinSplit['count_'+backPlay.channelTotal]">
                                             <div class="videoItem"
                                                 :style="{display: 'block', top: item.top, left: item.left, width: item.width, height: item.height}"
                                                 draggable="true" @drop="drop($event)" @dragend="dragEnd($event)"
                                                 @dragover="dragOver($event)">
                                                 <div class="innerItem">
-                                                    <video playsinline  @dblclick="setFullScream('backVedio'+index)" muted poster="/airport/www/img/poster.png" :id="'backVedio'+index" preload="meta" loop
-                                                    controls autoplay></video>
+                                                    <video playsinline @dblclick="setFullScream('backVedio'+index)"
+                                                        muted poster="/airport/www/img/poster.png"
+                                                        :id="'backVedio'+index" preload="meta" loop controls
+                                                        autoplay></video>
                                                     <div class="channelIndex">
-                                                        <template v-if="!!videoInfo[index]">
-                                                            <span>{{videoInfo[index]['videoWidth']||0}}</span>
-                                                            X
-                                                            <span>{{videoInfo[index]['videoHeight']||0}}</span>&nbsp;
-                                                            <span>{{videoInfo[index]['fps']||0}}fps</span>&nbsp;
-                                                        </template>
-                                                        <span>{{(front.children[index]['name'])}}</span>
-                                                        <span><Icon type="ios-videocam-outline" size="18" /></span>
+                                                        <div class="channelIndex">
+                                                            <!-- <template v-if="typeof hd[index] !='undefined'">
+                                                                <span>硬盘({{hd[index]==0?'正常':'故障'}})</span>
+                                                            </template>
+                                                            <template v-else>
+                                                                <span>硬盘(-)</span>
+                                                            </template>
+                                                            <template v-if="typeof hd[index] !='undefined'">
+                                                                <span>SD卡({{sd[index]==0?'正常':'故障'}})</span>
+                                                            </template>
+                                                            <template v-else>
+                                                                <span>SD卡(-)</span>
+                                                            </template> -->
+
+                                                            <span>
+                                                                <!-- 25-32：优； 18-25：良；10-17是一般；2-9是差；0-1是没有 <template v-if="netnSignal"> -->
+                                                                <template v-if="netnSignal">
+                                                                    网络(
+                                                                    <template
+                                                                        v-if="netnSignal && (netnSignal==0)">{{netnSignal}}-无数据</template>
+                                                                    <template
+                                                                        v-if="netnSignal && (netnSignal==1)">{{netnSignal}}-无信号</template>
+                                                                    <template
+                                                                        v-if="netnSignal && (netnSignal>=2&&netnSignal<=9)">{{netnSignal}}-差</template>
+                                                                    <template
+                                                                        v-if="netnSignal && (netnSignal>=10&&netnSignal<=17)">{{netnSignal}}-一般</template>
+                                                                    <template
+                                                                        v-if="netnSignal && (netnSignal>=18&&netnSignal<=25)">{{netnSignal}}-良</template>
+                                                                    <template
+                                                                        v-if="netnSignal && (netnSignal>=25&&netnSignal<=32)">{{netnSignal}}-优</template>
+                                                                    )
+                                                                </template>
+
+                                                            </span>
+                                                            <template v-if="!!videoInfo[index]">
+                                                                <span>{{videoInfo[index]['videoWidth']||0}}</span>
+                                                                X
+                                                                <span>{{videoInfo[index]['videoHeight']||0}}</span>&nbsp;
+                                                                <span>{{videoInfo[index]['fps']||0}}fps</span>&nbsp;
+                                                            </template>
+                                                            <span>{{(front.children[index]['name'])}}</span>
+                                                            <span>
+                                                                <Icon type="ios-videocam-outline" size="18" /></span>
+                                                        </div>
+                                                    </div>
+                                                    <input type="hidden" :id="'hidden'+index" />
+                                                    <div class="noDowload"></div>
+                                                    <div class="playPause  playPauseLive"
+                                                        @click="playSigleVideo('hidden'+index)">
+                                                        <div class="play">
+                                                            <Icon type="md-arrow-dropright-circle" color="#fff"
+                                                                size="32" />
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <input type="hidden" :id="'hidden'+index"/>
-                                                <div class="noDowload"></div>
-                                                <div class="playPause" @click="playSigleVideo('hidden'+index)" >
-                                                    <div class="play"><Icon type="ios-close-circle-outline" color="#fff"  size="32" /></div>
-                                                </div>
-                                            </div>
                                         </template>
                                     </template>
                                 </div>
@@ -168,9 +213,11 @@
                                                 <Collapse v-model="backPlay.channel" simple accordion id="js-Collapse">
                                                     <template v-for="(value, key) in backPlay.channelInfo">
                                                         <template v-if="value.isChannel">
-                                                            <Panel :name="key"
-                                                                :id="'channel'+value.channel">
-                                                                {{((front.children[value.channel]['name']))}} <span class="totalVideo">( {{value.list.length + '个'}} )</span> <span class="playNum">当前播放第<span :id="key">{{parseInt(value.radioIndex,10)+1}}</span>个视频</span>
+                                                            <Panel :name="key" :id="'channel'+value.channel">
+                                                                {{((front.children[value.channel]['name']))}} <span
+                                                                    class="totalVideo">( {{value.list.length + '个'}}
+                                                                    )</span> <span class="playNum">当前播放第<span
+                                                                        :id="key">{{parseInt(value.radioIndex,10)+1}}</span>个视频</span>
                                                                 <div slot="content">
                                                                     <div class="collapseWrap"
                                                                         :style="{maxHeight: (innerHeight-(backPlay.channelTotal*48)-112) + 'px'}">
@@ -181,8 +228,7 @@
                                                                                     @click="playVideo(channelIndex, key, value.channel)">
                                                                                     <span
                                                                                         class="num">{{channelIndex+1}}</span>
-                                                                                    <Radio
-                                                                                        :label="channelIndex"
+                                                                                    <Radio :label="channelIndex"
                                                                                         vertical>
                                                                                         <span
                                                                                             class="tItem">{{channelItem.date}}</span>
@@ -285,9 +331,37 @@
             </div>
 
         </div>
+        <script>
+            var sMsgSN = 1;
 
-        <script src="/airport/assets/js/vsplayer.min.js?v=13417234172"></script>
+            function GetNextMsgSn() {
+                var result = sMsgSN;
+                sMsgSN += 1;
+                return result;
+            }
+            //判断当前系统
+            var IOS = false
+
+            function OSnow() {
+                var agent = navigator.userAgent.toLowerCase();
+                var isMac = /macintosh|mac os x/i.test(navigator.userAgent);
+                if (agent.indexOf("win32") >= 0 || agent.indexOf("wow32") >= 0) {
+                    console.log("这是windows32位系统");
+                }
+                if (agent.indexOf("win64") >= 0 || agent.indexOf("wow64") >= 0) {
+                    console.log("这是windows64位系统");
+
+                }
+                if (isMac) {
+                    console.log("这是mac系统");
+                    IOS = true;
+                }
+            }
+            OSnow();
+        </script>
         <script src="/airport/assets/js/LAB.min.js?v=1341234124"></script>
+        <script src="./Player.js?v=1341234124"></script>
+        <script src="./VSClientSession.js?v=1341234124"></script>
         <script>
             loadScript(MODUL + "module/playBack/liveVideo.min.js");
         </script>

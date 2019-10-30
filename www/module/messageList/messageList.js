@@ -23,6 +23,12 @@
             "msgTableList": [],
             "msgColumList": [
                 {
+                    "type": "index",
+                    "width": 60,
+                    "title": "序号",
+                    "align": "center"
+                },
+                {
                     "title": { "CN": "防区", "EN": "Defens", "TW": "防區" }[language["language"]],
                     "key": "areaName"
                 },

@@ -52,15 +52,15 @@
     <div id="js-vue" class="tableContainer">
         <div class="top">
             <Row type="flex" justify="start" gutter="10">
-                <i-col span="18">
+                <i-col span="19">
                     <div class="searchWrap">
                         <table>
                             <tbody>
                                 <tr>
                                     <td>
                                         <template>
-                                            {{{'CN':'选择车辆','EN':'Vehicle','TW':'選擇車輛'}[language]}}:
-                                            <i-select v-model="pageInfo.vehicleId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:150px;">
+                                            {{{'CN':'车辆','EN':'Vehicle','TW':'選擇車輛'}[language]}}:
+                                            <i-select v-model="pageInfo.vehicleId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:140px;">
                                                 <i-option value="0" v-text="{'CN':'全部','EN':'All','TW':'全部'}[language]"></i-option>
                                                 <i-option v-for="item in vehicleList" :value="item.id">{{item.vehicleName}}</i-option>
                                             </i-select>
@@ -87,17 +87,17 @@
                                             </i-select>
                                         </template> -->
                                         <template>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;{{{'CN':'保养时间','EN':'Start Time','TW':'開始時間'}[language]}}:
-                                            <date-picker @on-change="beginRepairTime" type="date" confirm  :placeholder="{'CN':'请选择','EN':'Choose','TW':'請選擇'}[language]" style="width:90px;"></date-picker>
+                                            &nbsp;&nbsp;{{{'CN':'保养时间','EN':'Start Time','TW':'開始時間'}[language]}}:
+                                            <date-picker @on-change="beginRepairTime" type="date" confirm  :placeholder="{'CN':'请选择','EN':'Choose','TW':'請選擇'}[language]" style="width:120px;"></date-picker>
                                             -
-                                            <date-picker @on-change="endRepairTime" type="date" confirm  :placeholder="{'CN':'请选择','EN':'Choose','TW':'請選擇'}[language]" style="width:90px;"></date-picker>
+                                            <date-picker @on-change="endRepairTime" type="date" confirm  :placeholder="{'CN':'请选择','EN':'Choose','TW':'請選擇'}[language]" style="width:120px;"></date-picker>
                                         </template>
 
                                         <template>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;{{{'CN':'保养里程','EN':'mileage','TW':'保養里程'}[language]}}:
-                                            <Input-number v-model="pageInfo.beginMiles" style="width: 80px" :placeholder="{'CN':'请输入里程','EN':'Input','TW':'請輸入'}[language]"></Input-number>
+                                            &nbsp;&nbsp;{{{'CN':'保养里程','EN':'mileage','TW':'保養里程'}[language]}}:
+                                            <Input-number v-model="pageInfo.beginMiles" style="width: 90px" :placeholder="{'CN':'请输入','EN':'Input','TW':'請輸入'}[language]"></Input-number>
                                             -
-                                            <Input-number v-model="pageInfo.endMiles" style="width: 80px" :placeholder="{'CN':'请输入里程','EN':'Input','TW':'請輸入'}[language]"></Input-number>
+                                            <Input-number v-model="pageInfo.endMiles" style="width: 90px" :placeholder="{'CN':'请输入','EN':'Input','TW':'請輸入'}[language]"></Input-number>
                                         </template>
 
                                         <template>
@@ -109,7 +109,7 @@
                         </table>
                     </div>
                 </i-col>
-                <i-col span="6">
+                <i-col span="5">
                     <div class="actionWrap">
                         <template>
                             <i-buttonGroup>

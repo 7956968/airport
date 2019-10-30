@@ -60,9 +60,10 @@
                                     <td>
                                         <template>
                                             &nbsp;&nbsp;{{{'CN':'穿越类型','EN':'CrossType','TW':'穿越類型'}[language]}}:
-                                            <i-select v-model="pageInfo.crossTypeId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100px;">
+                                            <i-select v-model="pageInfo.crossTypeId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:150px;">
+                                                <i-option :value="-1">全部</i-option>
                                                 <template v-for="item in vehiclePassType">
-                                                    <i-option v-if="item.type>=504" :value="item.type">{{item.name}}</i-option>
+                                                    <i-option :value="item.type">{{item.name}}</i-option>
                                                 </template>
                                             </i-select>
                                         </template>
@@ -71,16 +72,8 @@
                                             <i-input v-model="pageInfo.areaName" :placeholder="{'CN':'请输入','EN':'Please Input Query Key','TW':'請輸入'}[language]" style="width: 100px"></i-input>
                                         </template>
                                         <template>
-                                            &nbsp;&nbsp;{{{'CN':'防区名称','EN':'areaName Code','TW':'防區編碼'}[language]}}:
-                                            <i-input v-model="pageInfo.areaCode" :placeholder="{'CN':'请输入','EN':'Please Input Query Key','TW':'請輸入'}[language]" style="width: 100px"></i-input>
-                                        </template>
-                                        <template>
                                             &nbsp;&nbsp;{{{'CN':'车辆名称','EN':'Vehicle Name','TW':'車輛名稱'}[language]}}:
                                             <i-input v-model="pageInfo.vehicleName" :placeholder="{'CN':'请输入','EN':'Please Input Query Key','TW':'請輸入'}[language]" style="width: 100px"></i-input>
-                                        </template>
-                                        <template>
-                                            &nbsp;&nbsp;{{{'CN':'车辆编码','EN':'Vehicle Code','TW':'車輛編碼'}[language]}}:
-                                            <i-input v-model="pageInfo.vehicleCode" :placeholder="{'CN':'请输入','EN':'Please Input Query Key','TW':'請輸入'}[language]" style="width: 100px"></i-input>
                                         </template>
                                         <template>
                                             <i-button @click="getCrossAreaList(true)" size="small" type="primary" icon="ios-search-outline">{{{'CN':'查询','EN':'Search','TW':'查詢'}[language]}}</i-button>
@@ -115,6 +108,8 @@
     </div>
     
     <script src="/airport/assets/js/LAB.min.js?v=3423841237481237"></script>
+    <script src="/airport/assets/js/gcoord.min.js?v=123412341"></script>
+    <script src="https://api.map.baidu.com/api?v=2.0&ak=eCaU3zoABU2Ggtuc8vAoTrkc"></script>
     <script>
         loadScript(MODUL+"module/violationStatistics/violationStatistics.min.js");
     </script>

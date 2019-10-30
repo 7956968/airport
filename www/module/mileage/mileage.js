@@ -38,6 +38,7 @@
                 {
                     "type": "index",
                     "width": 60,
+                    "title": "序号",
                     "align": "center"
                 },
                 {
@@ -233,7 +234,7 @@
                         "pageSize": 10000000, //20,
                         "deptId": self.pageInfo.deptId, // 部门ID
                         "companyId": self.pageInfo.companyId, // 所属公司ID
-                        "vehicleCode": self.pageInfo.vehicleCode,// 车辆编码
+                        "vehicleCode": encodeURI(self.pageInfo.vehicleCode),// 车辆编码
                         "vehicleColorId": self.pageInfo.vehicleColorId,// 所属公司ID
                         "vehicleTypeId": self.pageInfo.vehicleTypeId,// 车辆颜色ID
                         "vehicleBrandId": self.pageInfo.vehicleBrandId,// 车辆类型ID
@@ -326,7 +327,7 @@
             "getDataBySearch": function() {
                 var self = this;
                 self.getVehicleMilesReport(true);
-                self.getAllVehicleList();
+                // self.getAllVehicleList();
             },
         },
         "created": function () {
@@ -340,6 +341,12 @@
                 self.getDepartmentList();
                 self.getCompanyList();
                 self.getAllVehicleList();
+
+                self.$watch('pageInfo', function () {
+                    self.getVehicleMilesReport(true);
+                }, {
+                    deep: true
+                });
             }, 500);
         }
     });

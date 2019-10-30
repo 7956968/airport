@@ -13,8 +13,7 @@
                 "userPwd": !!userInfo && !!userInfo["userPwd"] ? userInfo["userPwd"] : "",
                 "remember": true
             },
-            "languageList": [
-                {
+            "languageList": [{
                     "value": "CN",
                     "label": "中文",
                 },
@@ -27,32 +26,38 @@
                 //     "label": "繁體",
                 // }
             ],
-            "airPort": "113.310746,23.396745",
+            "airPort": "116.5924,40.0791",
             "airPortList": [
+                // {
+                //     "value": "0",
+                //     "label": "全部",
+                // },
+                // {
+                //     "value": "113.310746,23.396745",
+                //     "label": "广州白云机场",
+                // },
+                // {
+                //     "value": "121.34210660807666,31.198845194982827",
+                //     "label": "上海虹桥国际机场",
+                // },
+                // {
+                //     "value": "121.804854898899,31.151142510137117",
+                //     "label": "上海浦东国际机场",
+                // },
                 {
-                    "value": "0",
-                    "label": "全部",
-                },
-                {
-                    "value": "113.310746,23.396745",
-                    "label": "广州白云机场",
-                },
-                {
-                    "value": "121.34210660807666,31.198845194982827",
-                    "label": "上海虹桥国际机场",
-                },
-                {
-                    "value": "121.804854898899,31.151142510137117",
-                    "label": "上海浦东国际机场",
+                    "value": "116.5924,40.0791",
+                    "label": "北京首都机场",
                 }
             ],
-            "title": "民贵车辆管理系统"
+            "title": "北京空港航空地面服务特种车辆管理系统"
         },
         "watch": {
             "language": function (value) {
                 var self = this;
                 document.title = self.title[value];
-                utility.setLocalStorage("language", { "language": value });
+                utility.setLocalStorage("language", {
+                    "language": value
+                });
                 setTimeout(function () {
                     self.getBizParam();
                 }, 500);
@@ -71,13 +76,21 @@
 
                 // 验证用户名
                 if (utility.checkLen(self.loginInfo.userCode, 0)) {
-                    self.$Message.error({ "CN": "请输入用户名", "EN": "Please Enter userCode", "TW": "請輸入用戶名" }[self.language]);
+                    self.$Message.error({
+                        "CN": "请输入用户名",
+                        "EN": "Please Enter userCode",
+                        "TW": "請輸入用戶名"
+                    } [self.language]);
                     return false;
                 }
 
                 // 验证密码
                 if (utility.checkLen(self.loginInfo.userPwd, 0)) {
-                    self.$Message.error({ "CN": "请输入密码", "EN": "Please Enter Password", "TW": "請輸入密碼" }[self.language]);
+                    self.$Message.error({
+                        "CN": "请输入密码",
+                        "EN": "Please Enter Password",
+                        "TW": "請輸入密碼"
+                    } [self.language]);
                     return false;
                 }
 
@@ -85,7 +98,7 @@
             },
 
             // 重新格式化功能菜单
-            "formatFunMenu": function(data) {
+            "formatFunMenu": function (data) {
                 var self = this;
                 var funcInfo = {
                     "menu_map": [],
@@ -95,26 +108,26 @@
                     "menu_system": []
                 };
                 var funcList = data["userFuncList"];
-                for(var i = 0, len = funcList.length; i < len; i++) {
-                    if(funcList[i]["functionCode"].indexOf("map_")!=-1 || 
-                        funcList[i]["functionCode"] == 'device_manage_vehicle' || 
-                        funcList[i]["functionCode"] == 'device_view_secure_area' || 
-                        funcList[i]["functionCode"] == 'device_manage_secure_area' || 
-                        funcList[i]["functionCode"] == 'device_manage_camera' || 
+                for (var i = 0, len = funcList.length; i < len; i++) {
+                    if (funcList[i]["functionCode"].indexOf("map_") != -1 ||
+                        funcList[i]["functionCode"] == 'device_manage_vehicle' ||
+                        funcList[i]["functionCode"] == 'device_view_secure_area' ||
+                        funcList[i]["functionCode"] == 'device_manage_secure_area' ||
+                        funcList[i]["functionCode"] == 'device_manage_camera' ||
                         funcList[i]["functionCode"] == 'device_view_camera'
                     ) {
                         funcInfo["menu_map"].push(funcList[i]);
                     }
-                    if(funcList[i]["functionCode"].indexOf("org_manage_")!=-1) {
+                    if (funcList[i]["functionCode"].indexOf("org_manage_") != -1) {
                         funcInfo["menu_org"].push(funcList[i]);
                     }
-                    if(funcList[i]["functionCode"].indexOf("device_manage_")!=-1) {
+                    if (funcList[i]["functionCode"].indexOf("device_manage_") != -1) {
                         funcInfo["menu_device"].push(funcList[i]);
                     }
-                    if(funcList[i]["functionCode"].indexOf("report_")!=-1) {
+                    if (funcList[i]["functionCode"].indexOf("report_") != -1) {
                         funcInfo["menu_report"].push(funcList[i]);
                     }
-                    if(funcList[i]["functionCode"].indexOf("system_")!=-1) {
+                    if (funcList[i]["functionCode"].indexOf("system_") != -1) {
                         funcInfo["menu_system"].push(funcList[i]);
                     }
                 }
@@ -140,12 +153,20 @@
                         completeCallback: function () {
                             self.loading = false;
                         },
-                        successCallback: function (data) { 
+                        successCallback: function (data) {
                             if (data.code == 200) {
+                                utility.cleanSessionStorage();
+                                utility.cleanLocalStorage();
                                 utility.setLocalStorage("userInfo", data.data);
-                                utility.setLocalStorage("language", { "language": self.language });
-                                utility.setLocalStorage("airPort", { "airPort": self.airPort });
-                                utility.setLocalStorage("demo", { "demo": true });
+                                utility.setLocalStorage("language", {
+                                    "language": self.language
+                                });
+                                utility.setLocalStorage("airPort", {
+                                    "airPort": self.airPort
+                                });
+                                utility.setLocalStorage("demo", {
+                                    "demo": true
+                                });
                                 self.formatFunMenu(data.data);
 
                                 setTimeout(function () {
@@ -193,13 +214,10 @@
             // 获取枚举值
             self.getBizParam();
 
-            // 获取省份数据
-            self.getProvinceList();
-
-            document.onkeydown = function(e) {
+            document.onkeydown = function (e) {
                 var e = e || event;
                 var keyCode = e.keyCode || e.while || e.charCode;
-                if(keyCode == 13) {
+                if (keyCode == 13) {
                     self.loginAction();
                 }
             }

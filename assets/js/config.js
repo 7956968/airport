@@ -4,9 +4,9 @@
 var CONFIG = (function (CONFIG) {
     // 服务器信息配置
     // CONFIG.HOST = LOCATION;
-    // CONFIG.HOST = "https://www.minguicloud.com";
-    CONFIG.HOST = "https://test2.cityeasyplay.com";
-    
+    CONFIG.HOST = "https://www.minguicloud.com";
+    // CONFIG.HOST = "https://test2.cityeasyplay.com";
+    // 
     // 接口服务
     CONFIG.SERVICE = {
         "userService": "/airportCore/base/userService", // 用户服务

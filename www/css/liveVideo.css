@@ -8,7 +8,7 @@
   box-shadow: inset 0 0 6px rgba(208, 219, 245, 0.3);
   border-radius: 10px;
   background-color: #F5F5F5;
-} 
+}
 /*定义滑块 内阴影+圆角*/
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
@@ -16,7 +16,7 @@
   background-color: #555;
 }
 .video_main {
-  position: absolute;
+  position: absolute; 
   border: 0px;
   margin: 0px;
   padding: 0px;
@@ -148,8 +148,13 @@
   cursor: pointer;
   display: none;
 }
+.videoItem .playPauseLive {
+  left: 10px;
+  top: 0;
+}
 .videoItem:hover .playPause,
-.videoItem:hover .noDowload {
+.videoItem:hover .noDowload,
+.videoItem:hover .playPauseLive {
   display: inline-block;
 }
 .playPause {

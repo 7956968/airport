@@ -37,6 +37,7 @@
                 {
                     "type": "index",
                     "width": 60,
+                    "title": "序号",
                     "align": "center"
                 },
                 {
@@ -61,7 +62,7 @@
                     "sortable": true,
                     "render": function(h, params){
                         return h("div", [
-                            h("span", {}, params.row.miles+"（公里）"),
+                            h("span", {}, params.row.miles+"公里"),
                         ]);
                     }
                 },

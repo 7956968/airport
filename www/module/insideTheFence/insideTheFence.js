@@ -33,16 +33,17 @@
                 {
                     "type": "index",
                     "width": 60,
+                    "title": "序号",
                     "align": "center"
                 },
                 {
                     "title": { "CN": "防区名称", "EN": "Defense Name", "TW": "防區名稱" }[language["language"]],
                     "key": "areaName"
                 },
-                {
-                    "title": { "CN": "防区编码", "EN": "Defense Code", "TW": "防區編碼" }[language["language"]],
-                    "key": "areaCode"
-                },
+                // {
+                //     "title": { "CN": "防区编码", "EN": "Defense Code", "TW": "防區編碼" }[language["language"]],
+                //     "key": "areaCode"
+                // },
                 {
                     "title": { "CN": "车辆名称", "EN": "Vehicle Name", "TW": "車輛名稱" }[language["language"]],
                     "key": "vehicleName"
@@ -53,7 +54,8 @@
                 },
                 {
                     "title": { "CN": "防区类型", "EN": "Defense Type", "TW": "防區類型" }[language["language"]],
-                    "key": "crossTypeName"
+                    "key": "crossTypeName",
+                    "align": "center"
                 },
                 {
                     "title": { "CN": "行驶速度", "EN": "Speed", "TW": "行駛速度" }[language["language"]],
@@ -71,13 +73,18 @@
                     "width": 160,
                 },
                 {
-                    "title": { "CN": "坐标位置", "EN": "Coordinate", "TW": "座標位置" }[language["language"]],
+                    "title": "坐标",
                     "key": "currPosition",
-                    "width": 250,
+                    "width": 160,
                     "render": function (h, params) {
                         var coordinates = JSON.parse(pageVue.dataList[params.index]["currPosition"])["coordinates"].join(",");
                         return h("div", coordinates);
                     }
+                },
+                {
+                    "title": "地址",
+                    "key": "lastAddress",
+                    "width": 300
                 }
             ],
             "dataList": [],
@@ -142,8 +149,33 @@
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
-                            self.dataList = data.data;
+                            var list = [];
+
                             self.pageInfo.count = data.count;
+                            for (var i = 0, len = data.data.length; i < len; i++) {
+                                list.push(data.data[i]);
+                                list[i]["lastAddress"] = "";
+                            }
+                            self.dataList = list;
+
+                            for (var a = 0; a < data.data.length; a++) {
+                                (function (a) {
+                                    if (!!data.data[a].currPosition) {
+                                        var position = JSON.parse(data.data[a].currPosition)["coordinates"];
+                                        if (position[0] != 0 && position[1] != 0) {
+                                            utility.convertorByBaidu(position, gcoord, BMap, function (point, lng, lat) {
+                                                utility.getAdressDetail([lng, lat], BMap, function (address) {
+                                                    self.dataList[a]["lastAddress"] = address;
+                                                });
+                                            });
+                                        } else {
+                                            self.dataList[a]["lastAddress"] = "--";
+                                        }
+                                    } else {
+                                        self.dataList[a]["lastAddress"] = "--";
+                                    }
+                                }(a));
+                            }
                         }
                     }
                 });

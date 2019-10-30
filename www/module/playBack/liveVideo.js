@@ -4,13 +4,21 @@
         "data": {
             "isShowDetail": true,
             "vehicleInfo": JSON.parse(decodeURI(utility.getQueryParams().vehicleInfo)),
+            // "vehicleInfo": {
+            //     "licenseNumber": "民航-B3090"
+            // },
             "queryInfo": utility.getQueryParams(),
             "mIP": "220.231.225.7", // socket登录IP
+            // "mIP": "120.79.197.241", // socket登录IP
             "mPort": 7668, // socket登录端口
+            // "mUserName": "test1", // 登录用户名
             "mUserName": "mgkj", // 登录用户名
             "mPwd": "888888", // socket密码
             "msgInfo": "",
             "codeType": true,
+            "netnSignal": "",
+            "hd": [],
+            "sd": [],
             "dragAndDrop": {
                 "sourceEle": null,
                 "targetEle": null,
@@ -140,6 +148,38 @@
                         height: 'calc(50% - 4px)'
                     }
                 ],
+                "count_5": [
+                    {
+                        top: '0px',
+                        left: '0px',
+                        width: 'calc(70% - 4px)',
+                        height: 'calc(100% - 4px)'
+                    },
+                    {
+                        top: '0px',
+                        left: '70%',
+                        width: 'calc(30% - 4px)',
+                        height: 'calc(25% - 4px)'
+                    },
+                    {
+                        top: '25%',
+                        left: '70%',
+                        width: 'calc(30% - 4px)',
+                        height: 'calc(25% - 4px)'
+                    },
+                    {
+                        top: '50%',
+                        left: '70%',
+                        width: 'calc(30% - 4px)',
+                        height: 'calc(25% - 4px)'
+                    },
+                    {
+                        top: '75%',
+                        left: '70%',
+                        width: 'calc(30% - 4px)',
+                        height: 'calc(25% - 4px)'
+                    }
+                ],
                 "count_6": [
                     {
                         top: '0px',
@@ -177,6 +217,52 @@
                         width: 'calc(33.333% - 4px)',
                         height: 'calc(50% - 4px)'
                     }
+                ],
+                "count_7": [
+                    {
+                        top: '0px',
+                        left: '0px',
+                        width: 'calc(100% / 4 * 3 - 6px)',
+                        height: 'calc(100% / 4 * 3 - 8px)'
+                    },//大屏
+                    {
+                        top: '0px',
+                        left: 'calc(100% / 4 * 3 - 2px)',
+                        width: 'calc(100% / 4 * 1 - 4px)',
+                        height: 'calc(100% / 4 * 1 - 6px)'
+                    },//右上1
+                    {
+                        top: 'calc(100% / 4 * 1 - 2px)',
+                        left: 'calc(100% / 4 * 3 - 2px)',
+                        width: 'calc(100% / 4 * 1 - 4px)',
+                        height: 'calc(100% / 4 * 1 - 6px)'
+                    },//右上2
+
+                    {
+                        top: 'calc(100% / 4 * 2 - 4px)',
+                        left: 'calc(100% / 4 * 3 - 2px)',
+                        width: 'calc(100% / 4 * 1 - 4px)',
+                        height: 'calc(100% / 4 * 1 - 4px)'
+                    },//右上3
+                    {
+                        top: 'calc(100% / 4 * 3 - 4px)',
+                        left: '0px',
+                        width: 'calc(100% / 4 * 1 - 4px)',
+                        height: 'calc(100% / 4 * 1)'
+                    },//左下3
+                    {
+                        top: 'calc(100% / 4 * 3 - 4px)',
+                        left: 'calc(100% / 4 * 1 - 0px)',
+                        width: 'calc(100% / 4 * 1 - 6px)',
+                        height: 'calc(100% / 4 * 1)'
+                    },//右上4
+                    {
+                        top: 'calc(100% / 4 * 3 - 4px)',
+                        left: 'calc(100% / 4 * 2 - 2px)',
+                        width: 'calc(100% / 4 * 1 - 4px)',
+                        height: 'calc(100% / 4 * 1)'
+                    },//左下1
+
                 ],
                 "count_8": [
                     {
@@ -252,11 +338,31 @@
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
             "init": function (options) {
                 var self = this;
-                self.connectNet();
+                self.logout();
+
+                if(!self.vehicleInfo.licenseNumber) {
+                    self.backPlay.channelTotal = 0;
+                    self.msgInfo = "请输入车牌号";
+                    return;
+                }
+                setTimeout(function(){
+                    self.connectNet();
+                }, 1000);
             },
             "onTimeChange": function (value) {
                 var self = this;
                 self.timeLen = parseInt(value, 10);
+            },
+            "logout": function () {
+                var self = this;
+                // console.log(vsclientSession);
+                if (typeof vsclientSession != "undefined") {
+                    if (vsclientSession) {
+                        vsclientSession.logout();
+                        vsclientSession = null;
+                        self.backPlay.channelTotal = 0;
+                    }
+                }
             },
             // 设置当前选中视频样式
             "setCurrentStyle": function (id) {
@@ -309,7 +415,8 @@
                 self.$Message.loading({
                     "content": "正在获取视频......",
                 });
-                vsclientSession.connection.send(JSON.stringify(msg));
+                // vsclientSession.connection.send(JSON.stringify(msg));
+                vsclientSession.sendMsg(msg);
             },
 
             // 链接 socket 服务器
@@ -325,8 +432,15 @@
                             vsclientSession.login(self.mUserName, self.mPwd, self.mIP, self.mPort);
                         }, 3000);
                     },
+                    //连接成功
+                    onConnectSuccess: function () {
+
+                    },
+                    onVehicleInfo: function (vehicleInfo) {
+
+                    },
                     // 登录成功
-                    onlogon: function (info) {
+                    onlogin: function (info) {
                         var front = vsclientSession.findFrontByName(self.vehicleInfo.licenseNumber);
                         self.front = front;
                         self.$Message.destroy();
@@ -361,14 +475,19 @@
                     },
                     // 但 socket 服务链接断开
                     onServerConnectionLost: function () {
-                        self.$Message.destroy();
-                        self.msgType = "error";
-                        self.msgInfo = "车辆【 " + self.vehicleInfo.licenseNumber + " 】连接失败";
-                        self.backPlay.connectError = true;
+                        // self.$Message.destroy();
+                        // self.msgType = "error";
+                        // self.msgInfo = "车辆【 " + self.vehicleInfo.licenseNumber + " 】连接失败";
+                        // self.backPlay.connectError = true;
                     },
                     // 数据流状态
                     onStreamPlayStatus: function (status) {
                         console.log(status);
+                    },
+                    onGpsData: function (frontGpsData) { //车辆信息+GPS信
+                        self.netnSignal = frontGpsData.gps.net_signal;
+                        self.hd = frontGpsData.gps.storage.hd;
+                        self.sd = frontGpsData.gps.storage.sd;
                     },
                     onReplayVideoList: function (listInfo) {
                         self.$Message.destroy();
@@ -429,8 +548,7 @@
                             };
                             for (var i = 0, len = listInfo.length; i < len; i++) {
                                 if (listInfo[i]["channel"] >= 0) {
-                                    console.log("data_type=" + listInfo[i]["data_type"]);
-                                    if (listInfo[i]["data_type"] == 0 || listInfo[i]["data_type"] == 2) {
+                                    if (listInfo[i]["data_type"] == 0) {
                                         self.backPlay.videoCount = self.backPlay.videoCount + 1;
                                         self.backPlay.channelInfo["channel" + (listInfo[i]["channel"])] = {
                                             "channel": listInfo[i]["channel"],
@@ -449,7 +567,7 @@
                                     }
                                     for (var c = 0, clen = listInfo.length; c < clen; c++) {
                                         if ((listInfo[c]["channel"] == self.backPlay.channelInfo[key]["channel"])) {
-                                            if (listInfo[c]["data_type"] == 0 || listInfo[c]["data_type"] == 2) {
+                                            if (listInfo[c]["data_type"] == 0) {
                                                 self.backPlay.channelInfo[key]["list"].push({
                                                     channel: parseInt(listInfo[c]["channel"], 10),
                                                     date: (function () {
@@ -475,6 +593,8 @@
                                     }
                                 }
                             }
+
+                            // console.log(JSON.stringify(self.backPlay.channelInfo));
 
                             setTimeout(function () {
                                 self.backPlay.channel = "";
@@ -561,19 +681,16 @@
                 var self = this;
                 var video = $("#backVedio" + self.backPlay.channelInfo[key]["list"][index]["channel"]);
                 $("body").find("#hidden" + current).val(index + "-" + key + "-" + current);
-                $("#backVedio").attr("src", "");
                 vsclientSession.stopReplay(video[0]);
-                self.backPlay.channelInfo[key]["radioIndex"] = index;
-                if (self.backPlay.connectError == true) {
-                    self.reStart();
-                }
                 setTimeout(function () {
-                    vsclientSession.startReplay({
-                        name: self.vehicleInfo.licenseNumber,
-                        videoCtrl: video[0],
-                        info: self.backPlay.channelInfo[key]["list"][index]["source"],
-                        codeType: self.codeType
-                    });
+                    // vsclientSession.startReplay({
+                    //     name: self.vehicleInfo.licenseNumber,
+                    //     videoCtrl: video[0],
+                    //     info: self.backPlay.channelInfo[key]["list"][index]["source"],
+                    //     codeType: self.codeType
+                    // });
+                    self.backPlay.channelInfo[key]["radioIndex"] = index;
+                    vsclientSession.startReplay(self.vehicleInfo.licenseNumber, current, video[0], self.backPlay.channelInfo[key]["list"][index]["source"]);
                 }, 1000);
                 self.getVideoFrame(index, key);
             },
@@ -658,37 +775,6 @@
                 var playInfo = $("#" + info).val().split("-");
                 var video = $("#backVedio" + playInfo[2]);
                 vsclientSession.stopReplay(video[0]);
-                setTimeout(function () {
-                    vsclientSession.stopReplay(video[0]);
-                    video[0].src = "";
-                }, 1000);
-                setTimeout(function () {
-                    vsclientSession.stopReplay(video[0]);
-                    video[0].src = "";
-                }, 2000);
-                setTimeout(function () {
-                    vsclientSession.stopReplay(video[0]);
-                    video[0].src = "";
-                }, 3000);
-                setTimeout(function () {
-                    vsclientSession.stopReplay(video[0]);
-                    video[0].src = "";
-                }, 4000);
-                setTimeout(function () {
-                    vsclientSession.stopReplay(video[0]);
-                    video[0].src = "";
-                }, 5000);
-                // if (playInfo) {
-                //     var video = $("#backVedio" + playInfo[2]);
-                //     if (video.attr("src").indexOf("blob") == -1) {
-                //         self.playVideo(playInfo[0], playInfo[1], playInfo[2]);
-                //     } else {
-                //         vsclientSession.stopReplay(video[0]);
-                //         setTimeout(function () {
-                //             video.attr("src", "");
-                //         }, 1000);
-                //     }
-                // }
             },
             // getVideoFrame
             "getVideoFrame": function (videoId, key) {

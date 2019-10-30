@@ -59,49 +59,63 @@
             "columnsList": [
                 {
                     "type": "index",
+                    "align": "center",
+                    "title": "序号",
                     "width": 60,
-                    "align": "center"
-                },
+                    "fixed": "left",
+                }, 
                 {
                     "title": { "CN": "公司", "EN": "Company", "TW": "公司" }[language["language"]],
-                    "key": "companyName"
+                    "key": "companyName",
+                    "width": 180,
+                    "fixed": "left",
                 },
                 {
                     "title": { "CN": "名称", "EN": "Name", "TW": "名稱" }[language["language"]],
-                    "key": "cameraName"
+                    "key": "cameraName",
+                    "width": 140,
                 },
                 {
                     "title": { "CN": "名称", "EN": "Name", "TW": "名稱" }[language["language"]],
-                    "key": "cameraCode"
+                    "key": "cameraCode",
+                    "width": 140,
                 },
                 {
                     "title": { "CN": "描述", "EN": "Describe", "TW": "描述" }[language["language"]],
-                    "key": "cameraDesc"
+                    "key": "cameraDesc",
+                    "width": 140,
                 },
                 {
                     "title": { "CN": "Rtsp直播地址", "EN": "Live URL", "TW": "Rtsp直播地址" }[language["language"]],
-                    "key": "rtspLiveUrl"
+                    "key": "rtspLiveUrl",
+                    "width": 140,
                 },
                 {
                     "title": { "CN": "Rtsp录播地址", "EN": "Delayed URL", "TW": "Rtsp錄播地址" }[language["language"]],
-                    "key": "rtspHisUrl"
+                    "key": "rtspHisUrl",
+                    "width": 140,
                 },
                 {
                     "title": { "CN": "半径", "EN": "Radius", "TW": "半徑" }[language["language"]],
-                    "key": "radius"
+                    "key": "radius",
+                    "width": 140,
                 },
                 {
                     "title": { "CN": "视野角度", "EN": "Angle Of View", "TW": "視野角度" }[language["language"]],
-                    "key": "angle"
+                    "key": "angle",
+                    "width": 140,
                 },
                 {
                     "title": { "CN": "状态", "EN": "State", "TW": "狀態" }[language["language"]],
-                    "key": "monitorStatus"
+                    "key": "monitorStatus",
+                    "width": 140,
                 },
                 {
                     "title": { "CN": "操作", "EN": "Operation", "TW": "操作" }[language["language"]],
                     "key": "operation",
                     "width": 180,
+                    "align": "center",
+                    "fixed": "right",
                     "render": function (h, params) {
                         var func = JSON.stringify(userFuncList["menu_map"]);
                         var label = "";

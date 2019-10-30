@@ -56,12 +56,14 @@
             "columnsList": [
                 {
                     "type": "index",
+                    "align": "center",
+                    "title": "序号",
                     "width": 60,
-                    "align": "center"
-                },
+                }, 
                 {
                     "title": { "CN": "公司", "EN": "Company", "TW": "公司" }[language["language"]],
-                    "key": "companyName"
+                    "key": "companyName",
+                    "width": 180,
                 },
                 {
                     "title": { "CN": "名称", "EN": "Name", "TW": "名稱" }[language["language"]],
@@ -86,10 +88,13 @@
                 {
                     "title": { "CN": "操作", "EN": "Operation", "TW": "操作" }[language["language"]],
                     "key": "operation",
+                    "width": 240,
                     "render": function (h, params) {
                         var func = JSON.stringify(userFuncList["menu_map"]);
                         var label = "";
                         var deleteAction = null;
+                        var defensMap = null;
+
                         // 如果是管理防区
                         if (func.indexOf("device_manage_secure_area") != -1) {
                             label = { "CN": "编辑", "EN": "Edite", "TW": "編輯" }[language["language"]];
@@ -105,10 +110,26 @@
                                         pageVue.delItem();
                                     }
                                 }
-                            }, { "CN": "删除", "EN": "Delete", "TW": "刪除" }[language["language"]])
+                            }, { "CN": "删除", "EN": "Delete", "TW": "刪除" }[language["language"]]);
                         } else {
                             label = { "CN": "查看", "EN": "View", "TW": "查看" }[language["language"]]
                         }
+                        defensMap = h("Button", {
+                            "props": {
+                                "type": "info",
+                                "size": "small",
+                            },
+                            "style": {
+                                "marginRight": '5px'
+                            },
+                            "on": {
+                                "click": function () {
+                                    pageVue.index = params.index;
+                                    pageVue.selectItem = params.row;
+                                    pageVue.toMapPageDefense(params.row);
+                                }
+                            }
+                        }, "查看地图");
                         return h("div", [
                             h("Button", {
                                 "props": {
@@ -142,6 +163,7 @@
                                     }
                                 }
                             }, label),
+                            defensMap,
                             deleteAction
                         ]);
                     }
@@ -350,6 +372,7 @@
                         "canEnter": self.defensList[i]["canEnter"] || 720,
                         "canExit": self.defensList[i]["canExit"] || 720,
                         "canStay": self.defensList[i]["canStay"] || 720,
+                        "areaRange": self.defensList[i]["areaRange"],
                         "secureStatus": (function () {
                             var status = "";
                             for (var d = 0, dlen = self.secureAreaStatusList.length; d < dlen; d++) {
@@ -417,6 +440,20 @@
                 utility.setSessionStorage("fromInfo", {
                     type: "isDefense",
                     vehicleStatus: ""
+                });
+                setTimeout(function () {
+                    $(window.parent.document).find("#nav_Maps").bind("click");
+                    $(window.parent.document).find("#nav_Maps").trigger("click");
+                }, 200);
+            },
+            // 跳转到地图页面
+            "toMapPageDefense": function (item) {
+                var self = this;
+                var coordinates = JSON.parse(item.areaRange)["coordinates"][0];
+                utility.setSessionStorage("fromInfo", {
+                    type: "isDefense",
+                    areaName: item.areaName,
+                    coordinate: coordinates[0]
                 });
                 setTimeout(function () {
                     $(window.parent.document).find("#nav_Maps").bind("click");

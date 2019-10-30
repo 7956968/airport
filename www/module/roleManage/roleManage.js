@@ -49,32 +49,35 @@
                 {
                     "type": "index",
                     "width": 60,
-                    "align": "center"
+                    "align": "center",
+                    "title": "序号"
                 },
                 {
-                    "title": { "CN": "公司名称", "EN": "Company Name", "TW": "公司名称" }[language["language"]],
+                    "title": { "CN": "公司", "EN": "Company Name", "TW": "公司名称" }[language["language"]],
                     "key": "companyName",
-                    "width": 200,
+                },
+                // {
+                //     "title": { "CN": "角色编号", "EN": "Role Number", "TW": "角色編號" }[language["language"]],
+                //     "key": "roleCode"
+                // },
+                {
+                    "title": { "CN": "角色", "EN": "Role Name", "TW": "角色名稱" }[language["language"]],
+                    "key": "roleName",
                 },
                 {
-                    "title": { "CN": "角色编号", "EN": "Role Number", "TW": "角色編號" }[language["language"]],
-                    "key": "roleCode"
+                    "title": { "CN": "是否公共角色", "EN": "Public", "TW": "公共" }[language["language"]],
+                    "key": "isPublic",
+                    "align": "center",
                 },
                 {
-                    "title": { "CN": "角色名称", "EN": "Role Name", "TW": "角色名稱" }[language["language"]],
-                    "key": "roleName"
-                },
-                {
-                    "title": { "CN": "公共", "EN": "Public", "TW": "公共" }[language["language"]],
-                    "key": "isPublic"
-                },
-                {
-                    "title": { "CN": "有效", "EN": "Effective", "TW": "有效" }[language["language"]],
-                    "key": "isValid"
-                }, {
-                    "title": { "CN": "角色描述", "EN": "Role Description", "TW": "角色描述" }[language["language"]],
-                    "key": "roleDesc"
-                },
+                    "title": { "CN": "是否有效", "EN": "Effective", "TW": "有效" }[language["language"]],
+                    "key": "isValid",
+                    "align": "center",
+                }, 
+                // {
+                //     "title": { "CN": "角色描述", "EN": "Role Description", "TW": "角色描述" }[language["language"]],
+                //     "key": "roleDesc"
+                // },
                 {
                     "title": { "CN": "操作", "EN": "State", "TW": "操作" }[language["language"]],
                     "key": "state",
@@ -212,7 +215,11 @@
                     "key": "roleName"
                 },
                 {
-                    "title": { "CN": "下属姓名", "EN": "Subordinate Name", "TW": "下屬姓名" }[language["language"]],
+                    "title": { "CN": "用户账号", "EN": "Subordinate Name", "TW": "下屬姓名" }[language["language"]],
+                    "key": "userCode"
+                },
+                {
+                    "title": { "CN": "用户名", "EN": "Subordinate Name", "TW": "下屬姓名" }[language["language"]],
                     "key": "userName"
                 }
             ],
@@ -542,6 +549,7 @@
                         "roleName": decodeURI(self.roleMemberList[i]["roleName"]), //"角色名称",
                         "companyName": decodeURI(self.roleMemberList[i]["companyName"]), //"公司名称",
                         "userName": decodeURI(self.roleMemberList[i]["userName"]), //"下属姓名",
+                        "userCode": decodeURI(self.roleMemberList[i]["userCode"]), //"下属姓名",
                     });
                 }
             },

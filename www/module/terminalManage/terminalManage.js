@@ -2,6 +2,7 @@
     var language = utility.getLocalStorage("language");
     var userInfo = utility.getLocalStorage("userInfo");
     var bizParam = utility.getLocalStorage("bizParam");
+    var filterCompany = [];
     var pageVue = new Vue({
         "el": "#js-vue",
         "data": {
@@ -30,7 +31,7 @@
                 "dataPeriod": 30, // 数据上报周期(单位秒)
                 "versionName": "", // 系统软件版本名
                 "versionNum": "", // 系统软件版本号，如100
-                "deviceStatus": "", // 定位设备运行状态
+                "deviceStatus": 406, // 定位设备运行状态
                 "deptId": "", // 部门名称
                 "deptName": "", // 部门名称
                 "speed": "", // 当前速度（米/秒）
@@ -58,97 +59,149 @@
                 "pageSize": 20,
             },
             "columnsList": [{
-                    "title": {
-                        "CN": "公司",
-                        "EN": "Company",
-                        "TW": "公司"
-                    } [language["language"]],
+                    "type": "index",
+                    "align": "center",
+                    "title": "序号",
+                    "width": 60,
+                    // "fixed": "left"
+                }, {
+                    "title": "公司",
                     "key": "companyId",
-                    "width": 200
+                    "width": 200,
+                    // "fixed": "left",
+                    "filters": filterCompany,
+                    "filterMultiple": false,
+                    "filterRemote"(value, row) {
+                        pageVue.pageInfo.companyId = value;
+                    }
                 },
                 {
                     "title": "绑定车辆",
                     "key": "vehicleCode",
-                    "width": 150,
+                    // "width": 150,
+                },
+                {
+                    "title": "运行状态",
+                    "key": "deviceStatus",
+                    // "width": 150,
+                    "filters": (function () {
+                        var arr = [];
+                        var terminalStatus = bizParam["terminalStatus"];
+
+                        for (var i = 0, len = terminalStatus.length; i < len; i++) {
+                            if (terminalStatus[i]["type"] == 401 || terminalStatus[i]["type"] == 402 || terminalStatus[i]["type"] == 403 || terminalStatus[i]["type"] == 406) {
+                                arr.push({
+                                    label: terminalStatus[i]["name"],
+                                    value: terminalStatus[i]["type"]
+                                });
+                            }
+                        }
+                        return arr;
+                    }()),
+                    "filterMultiple": false,
+                    "filterRemote"(value, row) {
+                        pageVue.pageInfo.deviceStatus = value;
+                    }
+                },
+                {
+                    "title": "供应商",
+                    "key": "providerId",
+                    // "width": 120,
+                    "filters": (function () {
+                        var arr = [];
+                        var terminalStatus = bizParam["deviceProviderId"];
+
+                        for (var i = 0, len = terminalStatus.length; i < len; i++) {
+                            arr.push({
+                                label: terminalStatus[i]["name"],
+                                value: terminalStatus[i]["type"]
+                            });
+                        }
+                        return arr;
+                    }()),
+                    "filterMultiple": false,
+                    "filterRemote"(value, row) {
+                        pageVue.pageInfo.providerId = value;
+                    }
+                },
+                {
+                    "title": "终端编号",
+                    "key": "deviceCode",
+                    // "width": 150,
+                },
+                {
+                    "title": "上报周期",
+                    "key": "dataPeriod",
+                    "align": "center",
+                    // "width": 120,
                     "sortable": true,
-                },
-                {
-                    "title": {
-                        "CN": "运行状态",
-                        "EN": "Working Condition",
-                        "TW": "運行狀態"
-                    } [language["language"]],
-                    "key": "deviceStatus"
-                },
-                {
-                    "title": {
-                        "CN": "供应商",
-                        "EN": "Supplier",
-                        "TW": "廠家名稱"
-                    } [language["language"]],
-                    "key": "providerId"
-                },
-                {
-                    "title": {
-                        "CN": "终端编号",
-                        "EN": "No.",
-                        "TW": "終端編號"
-                    } [language["language"]],
-                    "key": "deviceCode"
-                },
-                {
-                    "title": {
-                        "CN": "上报周期",
-                        "EN": "Reporting Cycle",
-                        "TW": "上報周期"
-                    } [language["language"]],
-                    "key": "dataPeriod"
-                },
-                {
-                    "title": {
-                        "CN": "系统版本",
-                        "EN": "System Version",
-                        "TW": "系統版本"
-                    } [language["language"]],
-                    "key": "versionName"
-                },
-                {
-                    "title": {
-                        "CN": "系统版本号",
-                        "EN": "System Version No.",
-                        "TW": "系統版本號"
-                    } [language["language"]],
-                    "key": "versionNum"
-                },
-                {
-                    "title": {
-                        "CN": "当前速度",
-                        "EN": "Speed",
-                        "TW": "當前速度"
-                    } [language["language"]],
-                    "key": "speed"
-                },
-                {
-                    "title": {
-                        "CN": "电量",
-                        "EN": "Power",
-                        "TW": "電量"
-                    } [language["language"]],
-                    "key": "power",
+                    "sortType": "des",
                     "render": function (h, params) {
                         return h("div", [
-                            h("span", {}, "99%")
+                            h("span", {}, params.row.dataPeriod + " 秒")
+                        ]);
+                    }
+                },
+                // {
+                //     "title": "系统版本",
+                //     "key": "versionName",
+                //     "width": 120,
+                // },
+                // {
+                //     "title": "系统版本号",
+                //     "key": "versionNum",
+                //     "width": 120,
+                // },
+                {
+                    "title": "当前速度",
+                    "key": "speed",
+                    // "width": 120,
+                    "sortable": true,
+                    "sortType": "des",
+                    "render": function (h, params) {
+                        return h("div", [
+                            h("span", {}, params.row.speed + " 公里/小时")
                         ]);
                     }
                 },
                 {
-                    "title": {
-                        "CN": "操作",
-                        "EN": "Operation",
-                        "TW": "操作"
-                    } [language["language"]],
+                    "title": "电量",
+                    "key": "power",
+                    "align": "center",
+                    // "width": 120,
+                    "sortable": true,
+                    "sortType": "des",
+                    "render": function (h, params) {
+                        var nom = {
+                            "_18600000026": "93",
+                            "_18600000016": "98",
+                            "_18600000019": "98",
+                            "_18600000021": "98",
+                            "_18600000027": "94",
+                            "_18600000031": "95",
+                            "_18600000014": "97",
+                            "_18600000032": "94",
+                            "_18600000010": "98",
+                            "_18600000008": "99",
+                            "_18600000001": "84",
+                            "_18600000017": "100",
+                            "_18600000030": "100",
+                            "_18600000007": "100",
+                            "_18600000033": "100",
+                        };
+
+                        // console.log(params.row.deviceCode);
+                        return h("div", [
+                            h("span", {}, (nom["_" + params.row.deviceCode] || params.row.power) + "%")
+                        ]);
+                    }
+                },
+                {
+                    "title": "操作",
                     "key": "operation",
                     "width": 180,
+                    "align": "center",
+                    // "fixed": "right",
                     "render": function (h, params) {
                         return h("div", [
                             h("Button", {
@@ -252,7 +305,7 @@
                     "dataPeriod": 30, // 数据上报周期(单位秒)
                     "versionName": "", // 系统软件版本名
                     "versionNum": "", // 系统软件版本号，如100
-                    "deviceStatus": "", // 定位设备运行状态
+                    "deviceStatus": 406, // 定位设备运行状态
                     "deptId": "", // 部门名称
                     "deptName": "", // 部门名称
                     "speed": "", // 当前速度（米/秒）
@@ -439,6 +492,12 @@
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.companyList = data.data;
+                            for (var i = 0, len = self.companyList.length; i < len; i++) {
+                                filterCompany.push({
+                                    label: self.companyList[i]["companyName"],
+                                    value: self.companyList[i]["id"]
+                                });
+                            }
                         }
                     }
                 });

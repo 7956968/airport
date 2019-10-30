@@ -50,7 +50,20 @@
 
 <body class="innerPage">
     <div id="js-vue" class="tableContainer">
-        <div class="top">
+        
+
+        <div class="echartWrap" style="border: none;">
+            <Row>
+                <i-col span="12">
+                    <div :style="{height: tableHeight/2+'px'}" id="illegaInfo"></div>
+                </i-col>
+                <i-col span="12">
+                    <div :style="{height: tableHeight/2+'px'}" id="milleInfo"></div>
+                </i-col>
+            </Row>
+        </div>
+
+        <div class="top" style="background-color: #f2f2f2;">
             <Row type="flex" justify="start" gutter="0">
                 <i-col span="24">
                     <div class="searchWrap">
@@ -62,17 +75,17 @@
                                             &nbsp;&nbsp;{{{'CN':'半径范围','EN':'Radius','TW':'半徑範圍'}[language]}}
                                             <i-input v-model="vehiclePositonPageInfo.span" :placeholder="{'CN':'半径(单位/米)','EN':'Radius(unit/m)','TW':'半徑(單位/米)'}[language]" style="width:100px;"></i-input>
                                         </template>
-                                        <template>
+                                        <!-- <template>
                                             &nbsp;&nbsp;{{{'CN':'车辆名称','EN':'Vehicle Name','TW':'車輛名稱'}[language]}}
                                             <i-input v-model="vehiclePositonPageInfo.vehicleName" :placeholder="{'CN':'车辆名称','EN':'Vehicle Name','TW':'車輛名稱'}[language]" style="width:100px;"></i-input>
-                                        </template>
+                                        </template> -->
                                         <template>
-                                            &nbsp;&nbsp;{{{'CN':'车辆编号','EN':'Vehicle Number','TW':'車輛編號'}[language]}}
-                                            <i-input v-model="vehiclePositonPageInfo.vehicleCode" :placeholder="{'CN':'车辆编号','EN':'Vehicle Number','TW':'車輛編號'}[language]" style="width:80px;"></i-input>
+                                            &nbsp;&nbsp;{{{'CN':'车牌号','EN':'Vehicle Number','TW':'車輛編號'}[language]}}
+                                            <i-input v-model="vehiclePositonPageInfo.licenseNumber" :placeholder="{'CN':'车辆编号','EN':'Vehicle Number','TW':'車輛編號'}[language]" style="width:120px;"></i-input>
                                         </template>
                                         <template>
                                             &nbsp;&nbsp;{{{'CN':'车辆状态','EN':'Vehicle Statu','TW':'車輛狀態'}[language]}}
-                                            <i-select v-model="vehiclePositonPageInfo.vehicleStatus" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:80px;">
+                                            <i-select v-model="vehiclePositonPageInfo.vehicleStatus" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:120px;">
                                                 <i-option v-text="{'CN':'全部','EN':'All','TW':'全部'}[language]"></i-option>
                                                 <i-option v-for="item in terminalStatusList" :value="item.type">{{item.name}}</i-option>
                                             </i-select>
@@ -80,13 +93,13 @@
                                     
                                         <template>
                                             &nbsp;&nbsp;{{{'CN':'车辆类型','EN':'Vehicle Type','TW':'車輛類型'}[language]}}
-                                            <i-select v-model="vehiclePositonPageInfo.vehicleTypeId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:80px;">
+                                            <i-select v-model="vehiclePositonPageInfo.vehicleTypeId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:120px;">
                                                 <i-option v-text="{'CN':'全部','EN':'All','TW':'全部'}[language]"></i-option>
                                                 <i-option v-for="item in vehicleTypeList" :value="item.type">{{item.name}}</i-option>
                                             </i-select>
                                         </template>
                                     
-                                        <template>
+                                        <!-- <template>
                                             &nbsp;&nbsp;{{{'CN':'车辆颜色','EN':'Vehicle Color','TW':'車輛顔色'}[language]}}
                                             <i-select v-model="vehiclePositonPageInfo.vehicleColorId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:80px;">
                                                 <i-option v-text="{'CN':'全部','EN':'All','TW':'全部'}[language]"></i-option>
@@ -99,7 +112,7 @@
                                                 <i-option v-text="{'CN':'全部','EN':'All','TW':'全部'}[language]"></i-option>
                                                 <i-option v-for="item in vehicleBrandList" :value="item.type">{{item.name}}</i-option>
                                             </i-select>
-                                        </template>
+                                        </template> -->
                                         <template>
                                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i-button @click="getDataBySearch" size="small" type="primary" icon="ios-search-outline">{{{'CN':'查询','EN':'Search','TW':'查詢'}[language]}}</i-button>
                                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i-button @click="refresh" size="small" icon="ios-refresh">{{{'CN':'刷新','EN':'Refresh','TW':'刷新'}[language]}}</i-button>
@@ -109,17 +122,6 @@
                             </tbody>
                         </table>
                     </div>
-                </i-col>
-            </Row>
-        </div>
-
-        <div class="echartWrap">
-            <Row>
-                <i-col span="12">
-                    <div :style="{height: tableHeight/2+'px'}" id="illegaInfo"></div>
-                </i-col>
-                <i-col span="12">
-                    <div :style="{height: tableHeight/2+'px'}" id="milleInfo"></div>
                 </i-col>
             </Row>
         </div>
@@ -141,6 +143,8 @@
     
     <script src="/airport/assets/js/LAB.min.js?v=3423841237481237"></script>
     <script src="/airport/assets/js/echarts.min.js?v=173412347"></script>
+    <script src="/airport/assets/js/gcoord.min.js?v=123412341"></script>
+    <script src="https://api.map.baidu.com/api?v=2.0&ak=eCaU3zoABU2Ggtuc8vAoTrkc"></script>
     <script>
         loadScript(MODUL+"module/usageStatistics/usageStatistics.min.js");
     </script>

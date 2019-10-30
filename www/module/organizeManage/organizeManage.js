@@ -57,40 +57,46 @@
                 {
                     "type": "index",
                     "width": 60,
-                    "align": "center"
+                    "align": "center",
+                    "title": "序号"
                 },
                 {
                     "title": { "CN": "公司名称", "EN": "Company name", "TW": "公司名稱" }[language["language"]],
-                    "key": "companyName"
+                    "key": "companyName",
+                    "width": 240
                 },
-                {
-                    "title": { "CN": "外文名称", "EN": "companyEnName Name", "TW": "外文名稱" }[language["language"]],
-                    "key": "companyEnName"
-                },
+                // {
+                //     "title": { "CN": "外文名称", "EN": "companyEnName Name", "TW": "外文名稱" }[language["language"]],
+                //     "key": "companyEnName"
+                // },
                 {
                     "title": { "CN": "公司性质", "EN": "Company Nature", "TW": "公司性質" }[language["language"]],
-                    "key": "companyTypeId"
+                    "key": "companyTypeId",
+                    "align": "center",
                 },
                 {
                     "title": { "CN": "成立时间", "EN": "Founding Time", "TW": "成立時間" }[language["language"]],
-                    "key": "openTime"
+                    "key": "openTime",
+                    "align": "center",
                 },
                 {
                     "title": { "CN": "负责人", "EN": "Head", "TW": "負責人" }[language["language"]],
-                    "key": "chargeManName"
+                    "key": "chargeManName",
+                    "align": "center"
                 },
-                {
-                    "title": { "CN": "经营范围", "EN": "Management Scope", "TW": "經營範圍" }[language["language"]],
-                    "key": "business"
-                },
-                {
-                    "title": { "CN": "备注", "EN": "Remarks", "TW": "備註" }[language["language"]],
-                    "key": "remark"
-                },
+                // {
+                //     "title": { "CN": "经营范围", "EN": "Management Scope", "TW": "經營範圍" }[language["language"]],
+                //     "key": "business"
+                // },
+                // {
+                //     "title": { "CN": "备注", "EN": "Remarks", "TW": "備註" }[language["language"]],
+                //     "key": "remark"
+                // },
                 {
                     "title": { "CN": "操作", "EN": "Operation", "TW": "操作" }[language["language"]],
                     "key": "operation",
                     "width": 180,
+                    "align": "center",
                     "render": function (h, params) {
                         return h("div", [
                             h("Button", {

@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh">
-
 <head>
-    <title></title>
+    <title>北京空港航空地面服务特种车辆管理系统</title>
 
     <!-- 页面字符编码 -->
     <meta charset="utf-8">
@@ -46,15 +45,16 @@
     <meta name="x5-page-mode" content="app">
     <link rel="icon" href="/airport/assets/img/favicon.ico">
     <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
-    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=1234123" />
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=1233244aeqwer" />
 </head>
 
 <body class="loginPage">
     <div id="js-vue" class="login loginPhone">
         <div class="wrap">
             <div class="header">
-                <img src="/airport/assets/img/logo.png" />
-                <span class="label">特种车辆音视频可视化系统</span>
+                <!-- <img src="/airport/assets/img/logo.png" /> -->
+                <img src="https://www.minguicloud.com/airport/assets/img/logoDemo.png" />
+                <span class="label">北京空港航空地面服务特种车辆管理系统</span>
             </div>
 			
             <div class="inputInfo">
@@ -76,7 +76,7 @@
                         </template>
                     </label>
                     <Checkbox v-model="loginInfo.remember">{{{'CN':'记住我','EN':'Remember Me','TW':'記住我'}[language]}}</Checkbox>
-                    <label>
+        `            <label>
                         <i-button @click="loginAction" type="primary" size="large" :loading="loading" long>
                             <span v-if="!loading" v-text="{'CN':'登录','EN':'Login','TW':'登錄'}[language]"></span>
                             <span v-else>Loading...</span>

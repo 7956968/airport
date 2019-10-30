@@ -52,7 +52,7 @@
     <div id="js-vue" class="tableContainer">
         <div class="top">
             <Row type="flex" justify="start" gutter="10">
-                <i-col span="20">
+                <i-col span="19">
                     <div class="searchWrap">
                         <table>
                             <tbody>
@@ -62,7 +62,7 @@
                                             公司:
                                             <i-select @on-change="getSuperiorDeprtList('pageInfo')"
                                                 v-model="pageInfo.companyId" clearable placeholder="请选择公司"
-                                                style="width:200px;">
+                                                style="width:150px;">
                                                 <i-option value="0">全部
                                                 </i-option>
                                                 <i-option v-for="item in companyList" :value="item.id">
@@ -70,34 +70,34 @@
                                             </i-select>
                                         </template>
                                     <td>
-                                        <template>&nbsp;&nbsp;部门:</template>
+                                        <template>&nbsp;部门:</template>
                                     </td>
                                     <td>
                                         <template>
                                             <Cascader :data="superiorDepartmentList" v-model="pageInfo.deptIds"
-                                                trigger="click" :change-on-select="true" style="width:180px;">
+                                                trigger="click" :change-on-select="true" style="width:140px;">
                                             </Cascader>
                                         </template>
                                     </td>
                                     <td>
                                         <template>
-                                            &nbsp;&nbsp;用户账号:
+                                            &nbsp;账号:
                                             <i-input v-model="pageInfo.userCode" placeholder="请输入用户账"
-                                                style="width: 120px">
+                                                style="width: 80px">
                                             </i-input>
                                         </template>
                                     </td>
                                     <td>
                                         <template>
-                                            &nbsp;&nbsp;用户名:
+                                            &nbsp;用户名:
                                             <i-input v-model="pageInfo.userName" placeholder="请输入用户名"
-                                                style="width: 120px">
+                                                style="width: 100px">
                                             </i-input>
                                         </template>
                                     </td>
                                     <td>
                                         <template>
-                                            &nbsp;&nbsp;&nbsp;
+                                            &nbsp;
                                             <i-button @click="getUserList(true)" size="small" type="primary"
                                                 icon="ios-search-outline">
                                                 {{{'CN':'查询','EN':'Search','TW':'查詢'}[language]}}</i-button>
@@ -108,7 +108,7 @@
                         </table>
                     </div>
                 </i-col>
-                <i-col span="4">
+                <i-col span="5">
                     <div class="actionWrap">
                         <template>
                             <i-buttonGroup>

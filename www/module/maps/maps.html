@@ -330,7 +330,7 @@
                                 <td>
                                     <template>
                                         <div style="display: inline-block; width: 48%;">
-                                            <date-picker :value="dateTimeInfo.begiDate" @on-change="getBeginDate"
+                                            <date-picker :options="disabledDate" :editable="false" :value="dateTimeInfo.beginDate" @on-change="getBeginDate"
                                                 style="width: 100%;" type="date" format="yyyy-MM-dd" :confirm="false"
                                                 :placeholder="{'CN':'日期','EN':'Please Choose','TW':'請選擇'}[language]">
                                             </date-picker>
@@ -354,9 +354,8 @@
                                 <td>
                                     <template>
                                         <div style="display: inline-block; width: 48%;">
-                                            <date-picker v-model="dateTimeInfo.endDate" :value="singleVehiclePageInfo.date"
-                                                @on-change="getEndDate" style="width: 100%;" type="date"
-                                                format="yyyy-MM-dd" :confirm="false" style="width: 50%;"
+                                            <date-picker :options="disabledDate" :editable="false" :value="dateTimeInfo.endDate" @on-change="getEndDate"
+                                                style="width: 100%;" type="date" format="yyyy-MM-dd" :confirm="false"
                                                 :placeholder="{'CN':'日期','EN':'Please Choose','TW':'請選擇'}[language]">
                                             </date-picker>
                                         </div>
@@ -1217,6 +1216,7 @@
     <script src="https://api.map.baidu.com/api?v=2.0&ak=eCaU3zoABU2Ggtuc8vAoTrkc"></script>
     <script src="/airport/assets/js/LAB.min.js?v=3423841237481237"></script>
     <script src="/airport/assets/vender/openLayer/ol.min.js"></script>
+    <script src="/airport/assets/js/gcoord.min.js?v=123413"></script>
     <script src="/airport/www/module/maps/loaMapType.js?v=3423841237481237"></script>
     <script src="/airport/assets/vender/radar/radar.min.js?v=4123471829347"></script>
     <script>

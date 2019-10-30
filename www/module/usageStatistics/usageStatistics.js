@@ -29,6 +29,7 @@
                 "vihecleId": "", // 车辆ID
                 "vehicleName": "", // 车辆名称
                 "vehicleCode": "", // 车辆编码
+                "licenseNumber": "", // 车辆编码
                 "gpsDeviceCode": "", // 定位终端编号
                 "vehicleTypeId": "", // 车辆类型ID
                 "vehicleStatus": "", // 车辆运行状态
@@ -36,64 +37,86 @@
                 "vehicleBrandId": "", // 车辆品牌ID
                 "centerPosition": "", // 查询中心点坐标，格式为：经度,纬度
             },
-            "columnsList": [
-                {
-                    "title": { "CN": "公司", "EN": "Company", "TW": "公司" }[language["language"]],
-                    "key": "companyName"
+            "columnsList": [{
+                    "type": "index",
+                    "align": "center",
+                    "title": "序号",
+                    "width": 60,
+                    "fixed": "left"
+                }, {
+                    "title": "公司",
+                    "key": "companyName",
+                    "width": 180,
+                    "fixed": "left"
                 },
                 {
-                    "title": { "CN": "部门", "EN": "Department", "TW": "部門" }[language["language"]],
-                    "key": "deptName"
+                    "title": "部门",
+                    "key": "deptName",
+                    "width": 180,
                 },
                 {
-                    "title": { "CN": "车辆", "EN": "Name", "TW": "車輛" }[language["language"]],
-                    "key": "vehicleName"
+                    "title": "车牌号",
+                    "key": "licenseNumber",
+                    "width": 120,
                 },
                 {
-                    "title": { "CN": "类型", "EN": "Type", "TW": "類型" }[language["language"]],
-                    "key": "vehicleTypeName"
+                    "title": "终端",
+                    "key": "gpsDeviceCode",
+                    "width": 150,
                 },
                 {
-                    "title": { "CN": "颜色", "EN": "Color", "TW": "顔色" }[language["language"]],
-                    "key": "vehicleColorName"
-                },
-                {
-                    "title": { "CN": "品牌", "EN": "Brand", "TW": "品牌" }[language["language"]],
-                    "key": "vehicleBrandName"
-                },
-                {
-                    "title": { "CN": "终端", "EN": "Terminal", "TW": "終端" }[language["language"]],
-                    "key": "gpsDeviceCode"
-                },
-                {
-                    "title": { "CN": "违规", "EN": "Violation", "TW": "違規" }[language["language"]],
-                    "key": "illegalNum"
-                },
-                {
-                    "title": { "CN": "里程", "EN": "Mileage(km)", "TW": "里程(km)" }[language["language"]],
-                    "key": "currMiles",
-                    "sortable": true,
-                    "width": 110,
-                    "render": function(h, params){
+                    "title": "违规",
+                    "key": "illegalNum",
+                    "width": 60,
+                    "render": function (h, params) {
                         return h("div", [
-                            h("span", {}, params.row.currMiles+"（公里）"),
+                            h("span", {}, params.row.illegalNum + "次"),
                         ]);
                     }
                 },
                 {
-                    "title": { "CN": "时间", "EN": "Time", "TW": "時間" }[language["language"]],
-                    "key": "modifyTime",
-                    "width": 150,
+                    "title": "里程",
+                    "key": "currMiles",
+                    "width": 120,
+                    "sortable": true,
+                    "render": function (h, params) {
+                        return h("div", [
+                            h("span", {}, params.row.currMiles + "（公里）"),
+                        ]);
+                    }
                 },
                 {
-                    "title": { "CN": "坐标", "EN": "Coordinate", "TW": "座標" }[language["language"]],
-                    "key": "currPosition",
-                    "width": 250,
+                    "title": "时间",
+                    "width": 150,
+                    "key": "modifyTime",
+                },
+                {
+                    "title": "坐标",
+                    "width": 150,
                     "render": function (h, params) {
-                        var coordinates = JSON.parse(pageVue.dataList[params.index]["lastPosition"])["coordinates"].join(",");
+                        var coordinates = "";
+                        if (!pageVue.dataList[params.index]["lastPosition"]) {
+                            coordinates = "";
+                        } else {
+                            var position = JSON.parse(pageVue.dataList[params.index]["lastPosition"])["coordinates"];
+                            if (position[0] != 0 && position[1] != 0) {
+                                coordinates = position.join(",");
+                            } else {
+                                coordinates = "";
+                            }
+                        }
                         return h("div", coordinates);
                     }
-                }
+                },
+                {
+                    "title": "地点",
+                    "width": 450,
+                    "render": function (h, params) {
+                        return h("div", [
+                            h("span", {}, pageVue.dataList[params.index]["lastAddress"]),
+                        ]);
+                    }
+                },
             ],
             "dataList": [],
             "allVehicleList": [],
@@ -142,11 +165,11 @@
             "getVehicleList": function (bool) {
                 var self = this;
                 self.vehiclePositionList = [];
-                 if (bool == true) {
-                     self.vehiclePositonPageInfo.pageNum = 1;
-                 }
+                if (bool == true) {
+                    self.vehiclePositonPageInfo.pageNum = 1;
+                }
                 utility.interactWithServer({
-                    url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getAllVehiclePositonList,
+                    url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getVehicleList,
                     actionUrl: CONFIG.SERVICE.vehicleService,
                     dataObj: {
                         "span": self.vehiclePositonPageInfo.span, //"", // 距离查询中间点的距离（密），不指定则默认为100米。 // 通过centerPosition+ span两个参数可以联合查询距离中心点多少米内的车辆最近位置
@@ -163,6 +186,7 @@
                         "centerPosition": self.vehiclePositonPageInfo.centerPosition, //"", // 查询中心点坐标，格式为：经度,纬度
                         "vehicleName": encodeURI(self.vehiclePositonPageInfo.vehicleName), //"", // 车辆名称
                         "vehicleCode": encodeURI(self.vehiclePositonPageInfo.vehicleCode), //"", // 车辆编码
+                        "licenseNumber": encodeURI(self.vehiclePositonPageInfo.licenseNumber), //"", // 车辆编码
                     },
                     beforeSendCallback: function () {
                         self.isTableLoading = true;
@@ -172,14 +196,39 @@
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
-                            self.dataList = data.data;
+                            var list = [];
+
                             self.vehiclePositonPageInfo.count = data.count;
+                            for (var i = 0, len = data.data.length; i < len; i++) {
+                                list.push(data.data[i]);
+                                list[i]["lastAddress"] = "";
+                            }
+                            self.dataList = list;
+
+                            for (var a = 0; a < data.data.length; a++) {
+                                (function (a) {
+                                    if (!!data.data[a].lastPosition) {
+                                        var position = JSON.parse(data.data[a].lastPosition)["coordinates"];
+                                        if (position[0] != 0 && position[1] != 0) {
+                                            utility.convertorByBaidu(position, gcoord, BMap, function (point, lng, lat) {
+                                                utility.getAdressDetail([lng, lat], BMap, function (address) {
+                                                    self.dataList[a]["lastAddress"] = address;
+                                                });
+                                            });
+                                        } else {
+                                            self.dataList[a]["lastAddress"] = "--";
+                                        }
+                                    } else {
+                                        self.dataList[a]["lastAddress"] = "--";
+                                    }
+                                }(a));
+                            }
                         }
                     }
                 });
             },
             // 画违章图表
-            "drawVehicle": function(options) {
+            "drawVehicle": function (options) {
                 var self = this;
                 var myChart = echarts.init(document.getElementById(options.id));
 
@@ -193,12 +242,12 @@
                         }
                     },
                     color: [options.color],
-                    tooltip : {
+                    tooltip: {
                         trigger: 'axis',
                         textStyle: {
                             fontSize: 13
                         },
-                        formatter: function(params) {
+                        formatter: function (params) {
                             var key = params[0]["axisValue"];
                             var info = self.vehicleInfo[key]["info"];
                             var strArr = [];
@@ -219,60 +268,54 @@
                         bottom: '3%',
                         containLabel: true
                     },
-                    xAxis : [
-                        {
-                            type : 'category',
-                            data : options.data.xAxisData,
-                            axisTick: {
-                                alignWithLabel: true
-                            }
+                    xAxis: [{
+                        type: 'category',
+                        data: options.data.xAxisData,
+                        axisTick: {
+                            alignWithLabel: true
                         }
-                    ],
-                    yAxis : [
-                        {
-                            type : 'value'
-                        }
-                    ],
-                    series : [
-                        {
-                            name:'',
-                            type:'bar',
-                            barWidth: '60%',
-                            data: options.data.seriesData,
-                        }
-                    ]
+                    }],
+                    yAxis: [{
+                        type: 'value'
+                    }],
+                    series: [{
+                        name: '',
+                        type: 'bar',
+                        barWidth: '60%',
+                        data: options.data.seriesData,
+                    }]
                 };
                 myChart.setOption(option);
             },
             // 格式化车辆信息
-            "formatVehicle": function() {
+            "formatVehicle": function () {
                 var self = this;
                 var vehicleCodeInfo = {};
-                for(var i = 0, len = self.allVehicleList.length; i < len; i++) {
+                for (var i = 0, len = self.allVehicleList.length; i < len; i++) {
                     vehicleCodeInfo[self.allVehicleList[i]["vehicleCode"]] = {
                         info: self.allVehicleList[i],
                         list: []
                     };
                 }
 
-                for(var key in vehicleCodeInfo) {
-                    if(vehicleCodeInfo.hasOwnProperty(key)) {
-                        for(var s = 0, slen = self.allVehicleList.length; s < slen; s++) {
-                            if(self.allVehicleList[s]["vehicleCode"] == key) {
+                for (var key in vehicleCodeInfo) {
+                    if (vehicleCodeInfo.hasOwnProperty(key)) {
+                        for (var s = 0, slen = self.allVehicleList.length; s < slen; s++) {
+                            if (self.allVehicleList[s]["vehicleCode"] == key) {
                                 vehicleCodeInfo[key]["list"].push(self.allVehicleList[s]);
                             }
                         }
                     }
                 }
 
-                for(var type in vehicleCodeInfo) {
-                    if(vehicleCodeInfo.hasOwnProperty(type)) {
+                for (var type in vehicleCodeInfo) {
+                    if (vehicleCodeInfo.hasOwnProperty(type)) {
                         var errTime = 0;
                         var mill = 0;
                         self.errInfo.xAxisData.push(type);
                         self.mileInfo.xAxisData.push(type);
 
-                        for(var t = 0, tlen = vehicleCodeInfo[type]["list"].length; t < tlen; t++) {
+                        for (var t = 0, tlen = vehicleCodeInfo[type]["list"].length; t < tlen; t++) {
                             errTime = errTime + vehicleCodeInfo[type]["list"][t]["illegalNum"];
                             mill = mill + vehicleCodeInfo[type]["list"][t]["currMiles"];
                         }
@@ -293,24 +336,25 @@
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getAllVehiclePositonList,
                     actionUrl: CONFIG.SERVICE.vehicleService,
                     dataObj: {
-                        "pageNum": 1, //0,
-                        "pageSize": 10000000, //20,
-                        "span": self.vehiclePositonPageInfo.span, //"", // 距离查询中间点的距离（密），不指定则默认为100米。 // 通过centerPosition+ span两个参数可以联合查询距离中心点多少米内的车辆最近位置
-                        "deptId": self.vehiclePositonPageInfo.deptId, //"", // 部门ID
-                        "vihecleId": self.vehiclePositonPageInfo.vihecleId, //"", // 车辆ID
-                        "companyId": self.vehiclePositonPageInfo.companyId, //"", // 所属公司ID
-                        "gpsDeviceCode": self.vehiclePositonPageInfo.gpsDeviceCode, //"", // 定位终端编号
-                        "vehicleTypeId": self.vehiclePositonPageInfo.vehicleTypeId, //"", // 车辆类型ID
-                        "vehicleStatus": self.vehiclePositonPageInfo.vehicleStatus, //"", // 车辆运行状态
-                        "vehicleColorId": self.vehiclePositonPageInfo.vehicleColorId, //"", // 车辆颜色ID
-                        "vehicleBrandId": self.vehiclePositonPageInfo.vehicleBrandId, //"", // 车辆品牌ID
-                        "centerPosition": self.vehiclePositonPageInfo.centerPosition, //"", // 查询中心点坐标，格式为：经度,纬度
-                        "vehicleName": encodeURI(self.vehiclePositonPageInfo.vehicleName), //"", // 车辆名称
-                        "vehicleCode": encodeURI(self.vehiclePositonPageInfo.vehicleCode), //"", // 车辆编码
+                        // "pageNum": 1, //0,
+                        // "pageSize": 10000000, //20,
+                        // "span": self.vehiclePositonPageInfo.span, //"", // 距离查询中间点的距离（密），不指定则默认为100米。 // 通过centerPosition+ span两个参数可以联合查询距离中心点多少米内的车辆最近位置
+                        // "deptId": self.vehiclePositonPageInfo.deptId, //"", // 部门ID
+                        // "vihecleId": self.vehiclePositonPageInfo.vihecleId, //"", // 车辆ID
+                        // "companyId": self.vehiclePositonPageInfo.companyId, //"", // 所属公司ID
+                        // "gpsDeviceCode": self.vehiclePositonPageInfo.gpsDeviceCode, //"", // 定位终端编号
+                        // "vehicleTypeId": self.vehiclePositonPageInfo.vehicleTypeId, //"", // 车辆类型ID
+                        // "vehicleStatus": self.vehiclePositonPageInfo.vehicleStatus, //"", // 车辆运行状态
+                        // "vehicleColorId": self.vehiclePositonPageInfo.vehicleColorId, //"", // 车辆颜色ID
+                        // "vehicleBrandId": self.vehiclePositonPageInfo.vehicleBrandId, //"", // 车辆品牌ID
+                        // "centerPosition": self.vehiclePositonPageInfo.centerPosition, //"", // 查询中心点坐标，格式为：经度,纬度
+                        // "vehicleName": encodeURI(self.vehiclePositonPageInfo.vehicleName), //"", // 车辆名称
+                        // "vehicleCode": encodeURI(self.vehiclePositonPageInfo.vehicleCode), //"", // 车辆编码
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.allVehicleList = data.data;
+
                             self.formatVehicle();
                             self.drawVehicle({
                                 "id": "illegaInfo",
@@ -329,7 +373,7 @@
                 });
             },
             // 通过查询获取数据
-            "getDataBySearch": function() {
+            "getDataBySearch": function () {
                 var self = this;
                 self.getVehicleList(true);
                 self.getAllVehicleList();
@@ -345,6 +389,10 @@
                 self.getVehicleList(true);
                 self.getAllVehicleList();
             }, 500);
+
+            self.$watch('vehiclePositonPageInfo', function () {
+                self.getVehicleList(true);
+            }, { deep: true });
         }
     });
 

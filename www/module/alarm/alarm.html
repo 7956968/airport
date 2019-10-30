@@ -52,7 +52,7 @@
     <div id="js-vue" class="tableContainer">
         <div class="top">
             <Row type="flex" justify="start" gutter="10">
-                <i-col span="20">
+                <i-col span="22">
                     <div class="searchWrap">
                         <table>
                             <tbody>
@@ -86,7 +86,7 @@
                                             &nbsp;车辆名称
                                             <i-input v-model="pageInfo.vehicleName"
                                                 :placeholder="{'CN':'请输入','EN':'Input','TW':'請輸入'}[language]"
-                                                style="width: 90px"></i-input>
+                                                style="width: 100px"></i-input>
                                         </template>
                                     </td>
                                     <td>
@@ -94,12 +94,27 @@
                                             &nbsp;事件:
                                             <i-select v-model="pageInfo.eventTypeId" clearable
                                                 :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"
-                                                style="width:80px;">
+                                                style="width:100px;">
                                                 <i-option value="">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}
                                                 </i-option>
                                                 <i-option value="1">拆卸</i-option>
                                                 <i-option value="2">超速</i-option>
                                                 <i-option value="3">电量低</i-option>
+                                                <i-option value="501">进入防区</i-option>
+                                                <i-option value="502">离开防区</i-option>
+                                                <i-option value="503">防区内停留</i-option>
+                                                <i-option value="504">防区内行驶</i-option>
+                                                <i-option value="505">防区内超速</i-option>
+                                                <!-- 
+                                                    1：拆卸
+                                                    2：超速
+                                                    3：电量低
+                                                    501：进入防区
+                                                    502：离开防区
+                                                    503：防区内停留
+                                                    504：防区内行驶
+                                                    505：防区内超速 
+                                                -->
                                             </i-select>
                                         </template>
                                         <template>
@@ -137,7 +152,7 @@
                         </table>
                     </div>
                 </i-col>
-                <i-col span="4">
+                <i-col span="2">
                     <div class="actionWrap">
                         <template>
                             <i-buttonGroup>
@@ -268,6 +283,8 @@
         </template>
     </div>
     <script src="/airport/assets/js/LAB.min.js?v=3423841237481237"></script>
+    <script src="/airport/assets/js/gcoord.min.js?v=123413"></script>
+    <script src="https://api.map.baidu.com/api?v=2.0&ak=eCaU3zoABU2Ggtuc8vAoTrkc"></script>
     <script>
         loadScript(MODUL + "module/alarm/alarm.min.js");
     </script>

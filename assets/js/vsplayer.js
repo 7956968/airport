@@ -63,6 +63,7 @@ VSClientSession.prototype.onFailedToConnectToServer = function () {
 VSClientSession.prototype.onServerConnectionLost = function () {
     this.hasLogon = false;
     this.callback.onServerConnectionLost();
+    console.log('onServerConnectionLost');
 }
 
 
@@ -106,6 +107,7 @@ VSClientSession.prototype.handleMessage = function(msg) {
         }else if (msgType === "resp") {
             if(msg.resp === "query_record"){
                 var list = msg.record_entries;
+                console.log(list);
                 this.callback.onReplayVideoList(list);
             }
         }

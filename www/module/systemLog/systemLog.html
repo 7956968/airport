@@ -87,15 +87,15 @@
                                         <table>
                                             <tbody>
                                                 <tr>
-                                                    <td>
+                                                    <!-- <td>
                                                         <template>
                                                             查询条件：
                                                             <i-input :placeholder="{'CN':'请输入查询关键字','EN':'Please Input Query Key','TW':'請輸入查詢關鍵字'}[language]" style="width: 200px"></i-input>
                                                         </template>
-                                                    </td>
+                                                    </td> -->
                                                     <td>
                                                         <template>
-                                                            &nbsp;&nbsp;&nbsp;&nbsp;{{{'CN':'时间','EN':'Time','TW':'時間'}[language]}}:
+                                                            操作时间:
                                                             <date-picker @on-change="beginTimeChange" type="date" confirm  :placeholder="{'CN':'请选择','EN':'Choose','TW':'請選擇'}[language]" style="width:120px;"></date-picker>
                                                             -
                                                             <date-picker @on-change="endTimeChange" type="date" confirm  :placeholder="{'CN':'请选择','EN':'Choose','TW':'請選擇'}[language]" style="width:120px;"></date-picker>
@@ -117,8 +117,8 @@
                                         <template>
                                             <i-buttonGroup>
                                                 <i-button @click="refresh" size="small" icon="ios-refresh">{{{'CN':'刷新','EN':'Refresh','TW':'刷新'}[language]}}</i-button>
-                                                <i-button size="small" type="primary" icon="ios-loading">{{{'CN':'清空','EN':'Cleaned Out','TW':'清空'}[language]}}</i-button>
-                                                <i-button size="small" type="info" icon="ios-open-outline">{{{'CN':'导出','EN':'Export','TW':'導出'}[language]}}</i-button>
+                                                <!-- <i-button size="small" type="primary" icon="ios-loading">{{{'CN':'清空','EN':'Cleaned Out','TW':'清空'}[language]}}</i-button>
+                                                <i-button size="small" type="info" icon="ios-open-outline">{{{'CN':'导出','EN':'Export','TW':'導出'}[language]}}</i-button> -->
                                             </i-buttonGroup>
                                         </template>
                                     </div>

@@ -14,6 +14,7 @@
         return bool;
     }());
     var filterCompany = [];
+    var filterDepart = [];
     var pageVue = new Vue({
         "el": "#js-vue",
         "data": {
@@ -79,67 +80,74 @@
                 "pageNum": 1,
             },
             "vehicleList": [],
-            "columnsList": [
+            "columnsList": [{
+                    "type": "index",
+                    "width": 60,
+                    "align": "center",
+                    "title": "序号",
+                    "fixed": "left",
+                },
                 {
-                    "title": { "CN": "公司", "EN": "Company", "TW": "公司" }[language["language"]],
+                    "title": "公司",
                     "key": "companyId",
                     "fixed": "left",
                     "width": 200,
-                    // "filters": filterCompany,
-                    // "filterMultiple": false,
-                    // "filterRemote" (value, row) {
-                    //     console.log(value);
-                    //     pageVue.pageInfo.companyId = value;
-                    // },
+                    "filters": filterCompany,
+                    "filterMultiple": false,
+                    "filterRemote"(value, row) {
+                        pageVue.pageInfo.companyId = value;
+                        pageVue.getDepartmentList();
+                    }
                 },
                 {
-                    "title": { "CN": "部门", "EN": "Department", "TW": "部門" }[language["language"]],
+                    "title": "部门",
                     "key": "deptId",
-                    "width": 200
+                    "width": 180,
+                    "fixed": "left",
+                    "filters": filterDepart,
+                    "filterMultiple": false,
+                    "filterRemote"(value, row) {
+                        pageVue.pageInfo.deptIds = value;
+                    },
                 },
                 {
-                    "title": { "CN": "车辆名称", "EN": "Vehicle Name", "TW": "車輛名稱" }[language["language"]],
+                    "title": "车辆名称",
                     "key": "vehicleName",
                     "width": 150
                 },
                 {
-                    "title": { "CN": "车牌号", "EN": "Plate No.", "TW": "車牌號" }[language["language"]],
+                    "title": "车牌号",
                     "key": "licenseNumber",
                     "width": 140
                 },
                 {
-                    "title": { "CN": "运动状态", "EN": "Move State", "TW": "運動狀態" }[language["language"]],
+                    "title": "运动状态",
                     "key": "vehicleStatus",
                     "width": isViewVideo ? 240 : 120,
-                    // "filters": [
-                    //     {
-                    //         label: '活动',
-                    //         value: 402
-                    //     },
-                    //     {
-                    //         label: '静止',
-                    //         value: 401
-                    //     },
-                    //     {
-                    //         label: '离线',
-                    //         value: 406
-                    //     },
-                    //     {
-                    //         label: '休眠',
-                    //         value: 403
-                    //     }
-                    // ],
-                    // "filterMultiple": false,
-                    // "filterRemote" (value, row) {
-                    //     pageVue.pageInfo.vehicleStatus = value;
-                    //     // pageVue.getVehicleList(true);
-                    // },
+                    "filters": (function () {
+                        var arr = [];
+                        var terminalStatus = bizParam["terminalStatus"];
+
+                        for (var i = 0, len = terminalStatus.length; i < len; i++) {
+                            if (terminalStatus[i]["type"] == 401 || terminalStatus[i]["type"] == 402 || terminalStatus[i]["type"] == 403 || terminalStatus[i]["type"] == 406) {
+                                arr.push({
+                                    label: terminalStatus[i]["name"],
+                                    value: terminalStatus[i]["type"]
+                                });
+                            }
+                        }
+                        return arr;
+                    }()),
+                    "filterMultiple": false,
+                    "filterRemote"(value, row) {
+                        pageVue.pageInfo.vehicleStatus = value;
+                    },
                     "render": function (h, params) {
                         var liveButton = null;
                         var backButton = null;
 
                         if (isViewVideo) {
-                            if (pageVue.vehicleList[params.index]['licenseNumber'] && pageVue.vehicleList[params.index]['providerId'] < 100) {
+                            if (!!(pageVue.vehicleList[params.index] && pageVue.vehicleList[params.index]['licenseNumber']) && pageVue.vehicleList[params.index]['providerId'] < 100) {
                                 if (pageVue.vehicleList[params.index]['vehicleStatus'] == 401 || pageVue.vehicleList[params.index]['vehicleStatus'] == 402) {
                                     liveButton = h("Button", {
                                         "props": {
@@ -250,17 +258,17 @@
                     }
                 },
                 {
-                    "title": { "CN": "车辆编码", "EN": "Vehicle Code", "TW": "車輛編碼" }[language["language"]],
+                    "title": "车辆编码",
                     "key": "vehicleCode",
                     "width": 150
                 },
                 {
-                    "title": { "CN": "绑定终端", "EN": "Terminal", "TW": "綁定終端" }[language["language"]],
+                    "title": "绑定终端",
                     "key": "gpsDeviceId",
                     "width": 250
                 },
                 {
-                    "title": { "CN": "车辆类型", "EN": "Vehicle Type", "TW": "車輛類型" }[language["language"]],
+                    "title": "车辆类型",
                     "key": "vehicleTypeId",
                     "width": 120
                 },
@@ -270,18 +278,33 @@
                 //     "width": 120
                 // },
                 {
-                    "title": { "CN": "品牌", "EN": "Brand", "TW": "品牌" }[language["language"]],
+                    "title": "品牌",
                     "key": "vehicleBrandId",
                     "width": 120
                 },
                 {
-                    "title": { "CN": "操作", "EN": "Operation", "TW": "操作" }[language["language"]],
+                    "title": "操作",
                     "key": "operation",
                     "fixed": "right",
                     "align": "center",
-                    "width": 160,
+                    "width": 200,
                     "render": function (h, params) {
                         return h("div", [
+                            h("Button", {
+                                "props": {
+                                    "icon": "md-pin",
+                                    "type": "info", // md-pin
+                                    "size": "small",
+                                },
+                                "style": {
+                                    "marginRight": '5px'
+                                },
+                                "on": {
+                                    "click": function () {
+                                        pageVue.toMapCoordinates(pageVue.vehicleList[params.index]);
+                                    }
+                                }
+                            }, ""),
                             h("Button", {
                                 "props": {
                                     "size": "small",
@@ -361,9 +384,8 @@
                 "pageNum": 0,
                 "vehicleId": "",
             },
-            "userRecordcolumns": [
-                {
-                    "title": { "CN": "运动状态", "EN": "Move State", "TW": "運動狀態" }[language["language"]],
+            "userRecordcolumns": [{
+                    "title": "运动状态",
                     "key": "vehicleStatusName",
                 },
                 // {
@@ -371,12 +393,12 @@
                 //     "key": "lastUseStatusName"
                 // },
                 {
-                    "title": { "CN": "开始使用时间", "EN": "User State", "TW": "使用狀態" }[language["language"]],
+                    "title": "开始使用时间",
                     "key": "lastCreateTime",
                     "width": 150
                 },
                 {
-                    "title": { "CN": "结束使用时间", "EN": "User State", "TW": "使用狀態" }[language["language"]],
+                    "title": "结束使用时间",
                     "key": "lastFinishTime",
                     "width": 150
                 },
@@ -395,7 +417,11 @@
                 var self = this;
                 self.isShowModal = true;
                 self.isModalLoading = true;
-                self.modalTitle = { "CN": "新增", "EN": "Add", "TW": "新增" }[self.language];
+                self.modalTitle = {
+                    "CN": "新增",
+                    "EN": "Add",
+                    "TW": "新增"
+                } [self.language];
                 self.itemInfo = {
                     "id": "", // 车辆ID
                     "companyId": "", // 所属公司ID
@@ -422,8 +448,12 @@
                 utility.showMessageTip(self, function () {
                     self.itemInfo = self.vehicleList[self.index];
                     self.isShowModal = true;
-                    self.modalTitle = { "CN": "修改", "EN": "Edit", "TW": "修改" }[self.language];
-                    self.getDepartmentList("itemInfo");
+                    self.modalTitle = {
+                        "CN": "修改",
+                        "EN": "Edit",
+                        "TW": "修改"
+                    } [self.language];
+                    self.getDepartmentTreeList("itemInfo");
                 });
             },
             // 查看详情
@@ -464,7 +494,6 @@
             "pageSizeChange": function (value) {
                 var self = this;
                 self.page.pageNum = parseInt(value, 10);
-                console.log(self.page.pageNum);
                 setTimeout(function () {
                     self.getVehicleList(false);
                 }, 200);
@@ -483,7 +512,7 @@
                 self.index = index;
                 self.selectItem = item;
             },
-            "toOnlineDetail": function(onlineStatItemInfo) {
+            "toOnlineDetail": function (onlineStatItemInfo) {
                 var self = this;
                 utility.setSessionStorage("onlineStatItemInfo", onlineStatItemInfo);
                 setTimeout(function () {
@@ -543,7 +572,7 @@
                         "deptId": self.vehicleList[i]["deptName"], // 部门ID，可选
                         "vehicleName": decodeURI(self.vehicleList[i]["vehicleName"]), // 车辆名称
                         "vehicleCode": decodeURI(self.vehicleList[i]["vehicleCode"]), // 车辆编码
-                        "licenseNumber": decodeURI(self.vehicleList[i]["licenseNumber"]), // 车牌号
+                        "licenseNumber": decodeURI(self.vehicleList[i]["licenseNumber"] || ""), // 车牌号
                         "gpsDeviceId": self.vehicleList[i]["gpsDeviceCode"], // 
                         "useStatus": self.vehicleList[i]["useStatusName"], // 
                         "vehicleColorId": (function () {
@@ -576,7 +605,7 @@
                             }
                             return label;
                         }()), // self.vehicleList[i]["vehicleBrandName"], // 
-                        "vehicleStatus": self.vehicleList[i]["vehicleStatusName"],// 
+                        "vehicleStatus": self.vehicleList[i]["vehicleStatusName"], // 
                         "cellClassName": {
                             "vehicleStatus": "_" + self.vehicleList[i]["vehicleStatus"]
                         }
@@ -586,8 +615,10 @@
             // 获取车辆信息
             "getVehicleList": function (bool) {
                 var self = this;
+                self.vehicleList = [];
                 // 如果是查询，则重新从第一页开始
                 if (bool == true) {
+                    // self.dataList = [];
                     self.pageInfo.pageNum = 1;
                 }
                 utility.interactWithServer({
@@ -620,7 +651,7 @@
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.dataList = [];
-                            self.vehicleList = data.data.sort(function(a, b){
+                            self.vehicleList = data.data.sort(function (a, b) {
                                 return a.vehicleStatus - b.vehicleStatus;
                             });
                             self.pageInfo.count = data.count;
@@ -642,14 +673,12 @@
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.companyList = data.data;
-                            for(var i = 0, len = self.companyList.length; i < len; i++) {
+                            for (var i = 0, len = self.companyList.length; i < len; i++) {
                                 filterCompany.push({
                                     label: self.companyList[i]["companyName"],
                                     value: self.companyList[i]["id"]
                                 });
                             }
-
-                            console.log(filterCompany);
                         }
                     }
                 });
@@ -691,8 +720,8 @@
                 var listInfo = JSON.stringify(list).replace(/id/g, 'value').replace(/deptName/g, 'label').replace(/subDeptList/g, 'children');
                 self.departmentList = JSON.parse(listInfo);
             },
-            // 获取部门信息
-            "getDepartmentList": function (type) {
+            // 获取部门树状信息
+            "getDepartmentTreeList": function (type) {
                 var self = this;
                 self.departmentList = [];
                 utility.interactWithServer({
@@ -707,6 +736,7 @@
                         if (data.code == 200) {
                             var arr = [];
                             self[type]["deptIds"] = [];
+
                             self.formatSuperiorDeprt(data.data);
 
                             self.getSuper(self.departmentList, self[type]["deptId"], arr);
@@ -716,22 +746,45 @@
                     }
                 });
             },
+            // 获取部门信息
+            "getDepartmentList": function () {
+                var self = this;
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.deptService + "?action=" + CONFIG.ACTION.getDeptList,
+                    actionUrl: CONFIG.SERVICE.deptService,
+                    dataObj: {
+                        pageNum: 1,
+                        pageSize: 10000,
+                        companyId: self.pageInfo.companyId[0] || 0, // 公司ID
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            for (var i = 0, len = data.data.length; i < len; i++) {
+                                filterDepart.push({
+                                    label: data.data[i]["deptName"],
+                                    value: data.data[i]["id"],
+                                });
+                            }
+                        }
+                    }
+                });
+            },
             // 显示视屏
             "showLiveVideo": function (vehicleInfo, isBackPlay) {
                 var self = this;
                 var port = "8080";
                 // var port = "9090";
-                var url = "http://43.247.68.26:"+ port +"/airport/www/module/liveVideo/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
+                var url = "http://43.247.68.26:" + port + "/airport/www/module/liveVideo/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
 
                 if (isBackPlay) {
-                    url = "http://43.247.68.26:"+ port +"/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
+                    url = "http://43.247.68.26:" + port + "/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
                 }
 
                 if (vehicleInfo.providerId == 2) {
                     if (isBackPlay) {
-                        url = "http://43.247.68.26:"+ port +"/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
+                        url = "http://43.247.68.26:" + port + "/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
                     } else {
-                        url = "http://43.247.68.26:"+ port +"/airport/www/module/liveVideoTest1/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&id=" + userInfo["id"] + "&userToken=" + userInfo["userToken"] + "&isBackPlay=" + isBackPlay;
+                        url = "http://43.247.68.26:" + port + "/airport/www/module/liveVideoTest1/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&id=" + userInfo["id"] + "&userToken=" + userInfo["userToken"] + "&isBackPlay=" + isBackPlay;
                     }
                 }
                 window.open(
@@ -801,7 +854,16 @@
                 self.recordIndex = index;
                 self.itemInfo = self.vehicleList[self.recordIndex];
                 self.getVehicleUseRecordList(false);
-            }
+            },
+            "toMapCoordinates": function (vehicleInfo) {
+                var self = this;
+                utility.setSessionStorage("fromInfo",null);
+                utility.setSessionStorage("vehicleInfoFrom", vehicleInfo);
+                setTimeout(function () {
+                    $(window.parent.document).find("#nav_Maps").bind("click");
+                    $(window.parent.document).find("#nav_Maps").trigger("click");
+                }, 200);
+            },
         },
         "created": function () {
             var self = this;
@@ -813,15 +875,16 @@
                 self.getVehicleList(true);
                 self.getCompanyList();
                 self.getTerminalList();
-                // self.getDepartmentList("pageInfo");
 
                 setInterval(function () {
                     self.getVehicleList(false);
-                }, 5000);
+                }, 8000);
 
                 self.$watch('pageInfo', function () {
                     self.getVehicleList(true);
-                }, { deep: true });
+                }, {
+                    deep: true
+                });
             }, 500);
         }
     });

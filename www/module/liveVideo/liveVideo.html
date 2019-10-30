@@ -46,8 +46,8 @@
     <meta name="x5-page-mode" content="app">
     <link rel="icon" href="/airport/www/img/logo.png">
     <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
-    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=2341234erqwer" />
-    <link rel="stylesheet" type="text/css" href="/airport/www/css/liveVideo.min.css?v=3123142341" />
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=1234214eq" />
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/liveVideo.min.css?v=asdfsd" />
 </head>
 
 <body>
@@ -141,25 +141,36 @@
                                 :value="flagChannel[index-1]['value']" />
                         </div>
                         <div class="videoWrap" @click="setCurrentStyle('liveVideo'+(index-1))">
-                            <video playsinline @dblclick="setFullScream('video'+(index-1))"
-                                poster="/airport/www/img/poster.png" :id="'video'+(index-1)" preload="meta" muted
-                                autoplay>无视频</video>
+                            <video playsinline @dblclick="setFullScream('video'+(index-1))" :id="'video'+(index-1)" preload="meta" muted
+                                autoplay controls poster="/airport/www/img/poster.png">无视频</video>
                             <div class="channelIndex">
+                                <!-- <template v-if="typeof hd[index] !='undefined'">
+                                    <span>硬盘({{hd[index]==0?'正常':'故障'}})</span>
+                                </template>
+                                <template v-else>
+                                        <span>硬盘(-)</span>
+                                </template>
+                                <template v-if="typeof hd[index] !='undefined'">
+                                        &nbsp;<span>SD卡({{sd[index]==0?'正常':'故障'}})</span>
+                                </template>
+                                <template v-else>
+                                        <span>SD卡(-)</span>
+                                </template> -->
+                                
                                 <span>
                                     <!-- 25-32：优； 18-25：良；10-17是一般；2-9是差；0-1是没有 <template v-if="netnSignal"> -->
                                     <template v-if="netnSignal">
-                                        设备信号(
-                                        <template v-if="netnSignal && (netnSignal>=0&&netnSignal<=1)">无信号</template>
-                                        <template v-if="netnSignal && (netnSignal>=2&&netnSignal<=9)">差</template>
-                                        <template v-if="netnSignal && (netnSignal>=10&&netnSignal<=17)">一般</template>
-                                        <template v-if="netnSignal && (netnSignal>=18&&netnSignal<=25)">良</template>
-                                        <template v-if="netnSignal && (netnSignal>=25&&netnSignal<=32)">优</template>
+                                        &nbsp;网络(
+                                        <template v-if="netnSignal && (netnSignal==0)">{{netnSignal}}-无数据</template>
+                                        <template v-if="netnSignal && (netnSignal==1)">{{netnSignal}}-无信号</template>
+                                        <template v-if="netnSignal && (netnSignal>=2&&netnSignal<=9)">{{netnSignal}}-差</template>
+                                        <template v-if="netnSignal && (netnSignal>=10&&netnSignal<=17)">{{netnSignal}}-一般</template>
+                                        <template v-if="netnSignal && (netnSignal>=18&&netnSignal<=25)">{{netnSignal}}-良</template>
+                                        <template v-if="netnSignal && (netnSignal>=25&&netnSignal<=32)">{{netnSignal}}-优</template>
                                         )
                                     </template>
 
-                                    <!-- </template> -->
                                 </span>&nbsp;
-                                <!-- <span>{{cNet}}</span>&nbsp;&nbsp; -->
 
                                 <span>{{!!videoInfo[index-1]['videoWidth']?videoInfo[index-1]['videoWidth']:0}}</span>
                                 X
@@ -171,9 +182,17 @@
                                 <span>
                                     <Icon type="ios-videocam-outline" size="14" /></span>
                             </div>
-                            <!-- <div class="playPause">
-                                <div class="play"><Icon @click="playSigleVideo(index-1, seleceChannel[index-1]['value'])" type="md-arrow-dropright-circle" color="#fff"  size="48" /></div>
-                            </div> -->
+                            <div class="playPause playPauseLive">
+                                <div class="play" @click="playSigleVideo(index-1, seleceChannel[index-1]['value'])">
+                                    <i-switch size="large" :value="true" >
+                                        <span slot="open">暂停</span>
+                                        <span slot="close">播放</span>
+                                    </i-switch>
+                                    <!-- <span>
+                                        <Icon @click="playSigleVideo(index-1, seleceChannel[index-1]['value'])"
+                                            type="md-arrow-dropright-circle" color="#fff" size="48" /></span> -->
+                                </div>
+                            </div>
                             <div class="noDowload"></div>
                             <div class="dealWrap">
 
@@ -301,9 +320,9 @@
         </template>
     </div>
 
-    <script src="/airport/assets/js/vsplayer.min.js?v=4714712341823"></script>
-    <script src="/airport/assets/vender/VideoFrame-master/VideoFrame.min.js?v=4714712341823"></script>
-    <script src="/airport/assets/js/LAB.min.js?v=456345654346"></script>
+    <script src="/airport/assets/js/vsplayer.min.js?v=2312341234123"></script>
+    <script src="/airport/assets/vender/VideoFrame-master/VideoFrame.min.js?v=123412341234"></script>
+    <script src="/airport/assets/js/LAB.min.js?v=1234123412314453242"></script>
     <script>
         loadScript(MODUL + "module/liveVideo/liveVideo.min.js");
     </script>

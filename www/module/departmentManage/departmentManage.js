@@ -53,6 +53,12 @@
             },
             "columnsList": [
                 {
+                    "type": "index",
+                    "width": 60,
+                    "align": "center",
+                    "title": "序号"
+                },
+                {
                     "title": { "CN": "公司名称", "EN": "Company name", "TW": "公司名稱" }[language["language"]],
                     "key": "companyName",
                     "width": 180
@@ -64,7 +70,8 @@
                 },
                 {
                     "title": "上级部门",
-                    "key": "paraDeptName"
+                    "key": "paraDeptName",
+                    "width": 180
                 },
                 // {
                 //     "title": { "CN": "部门简称", "EN": "Department Abbreviation", "TW": "部門簡稱" }[language["language"]],
@@ -75,18 +82,18 @@
                 //     "title": { "CN": "部门性质", "EN": "Department Nature", "TW": "部門性質" }[language["language"]],
                 //     "key": "deptTypeName"
                 // },
-                {
-                    "title": { "CN": "负责人", "EN": "Head", "TW": "負責人" }[language["language"]],
-                    "key": "leaderUserName"
-                },
+                // {
+                //     "title": { "CN": "负责人", "EN": "Head", "TW": "負責人" }[language["language"]],
+                //     "key": "leaderUserName"
+                // },
                 {
                     "title": { "CN": "电话", "EN": "Telephone", "TW": "電話" }[language["language"]],
                     "key": "deptTel"
                 },
-                {
-                    "title": { "CN": "备注", "EN": "Remarks", "TW": "備註" }[language["language"]],
-                    "key": "deptRemark"
-                },
+                // {
+                //     "title": { "CN": "备注", "EN": "Remarks", "TW": "備註" }[language["language"]],
+                //     "key": "deptRemark"
+                // },
                 {
                     "title": { "CN": "操作", "EN": "Operation", "TW": "操作" }[language["language"]],
                     "key": "operation",

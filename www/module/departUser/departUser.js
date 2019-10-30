@@ -43,28 +43,31 @@
                 {
                     "type": "index",
                     "width": 60,
-                    "align": "center"
+                    "align": "center",
+                    "title": "序号"
                 },
                 {
-                    "title": { "CN": "公司名称", "EN": "Company name", "TW": "公司名稱" }[language["language"]],
-                    "key": "companyName"
+                    "title": { "CN": "公司", "EN": "Company name", "TW": "公司名稱" }[language["language"]],
+                    "key": "companyName",
+                    "width": 180
                 },
                 {
-                    "title": { "CN": "部门名称", "EN": "Department Name", "TW": "部門名稱" }[language["language"]],
-                    "key": "deptName"
+                    "title": { "CN": "部门", "EN": "Department Name", "TW": "部門名稱" }[language["language"]],
+                    "key": "deptName",
+                    "width": 150
                 },
                 {
-                    "title": { "CN": "姓名", "EN": "Name", "TW": "姓名" }[language["language"]],
+                    "title": { "CN": "用户", "EN": "Name", "TW": "姓名" }[language["language"]],
                     "key": "userName"
                 },
                 {
-                    "title": { "CN": "职位名称", "EN": "Job Title", "TW": "職位名稱" }[language["language"]],
+                    "title": { "CN": "职位", "EN": "Job Title", "TW": "職位名稱" }[language["language"]],
                     "key": "posiName"
                 },
-                {
-                    "title": { "CN": "职位类型", "EN": "Job Type", "TW": "職位類型" }[language["language"]],
-                    "key": "posiType"
-                },
+                // {
+                //     "title": { "CN": "职位类型", "EN": "Job Type", "TW": "職位類型" }[language["language"]],
+                //     "key": "posiType"
+                // },
                 {
                     "title": { "CN": "操作", "EN": "Operation", "TW": "操作" }[language["language"]],
                     "key": "operation",

@@ -60,7 +60,7 @@
                                     <td>
                                         <template>
                                             &nbsp;&nbsp;{{{'CN':'公司','EN':'Company','TW':'公司'}[language]}}:
-                                            <i-select @on-change="getDepartmentList('pageInfo')" v-model="pageInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100px;">
+                                            <i-select @on-change="getDepartmentTreeList('pageInfo')" v-model="pageInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100px;">
                                                 <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
                                                 <i-option v-for="item in companyList" :value="item.id">{{item.companyName}}</i-option>
                                             </i-select>
@@ -68,7 +68,7 @@
                                         <template>
                                             &nbsp;&nbsp;{{{'CN':'部门','EN':'Superior Department','TW':'部門'}[language]}}:
                                             <template>
-                                                <Cascader :data="departmentList" v-model="pageInfo.deptId" style="width:90px; display: inline-block;" trigger="click" :change-on-select="true"></Cascader>
+                                                <Cascader :data="departmentList" v-model="pageInfo.deptIds" style="width:90px; display: inline-block;" trigger="click" :change-on-select="true"></Cascader>
                                             </template>
                                         </template>
                                         <template>

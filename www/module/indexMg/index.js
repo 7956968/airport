@@ -7,7 +7,6 @@
         "data": {
             "userInfo": userInfo,
             "language": !!language ? language["language"] : "CN",
-            "title": { "CN": "特种车辆音视频可视化系统", 'EN': "Mingui Non-Powered Euipment Management System", 'TW': "民貴無動力管理系統" },
             "tabList": {
                 "Welcom": null,
                 "Maps": null,
@@ -85,7 +84,7 @@
                             utility.setLocalStorage("userInfo", null);
                             utility.setLocalStorage("userFuncList", null);
                             setTimeout(function() {
-                                window.location.href = "/airport/www/login.html";
+                                window.location.href = "/airport/www/indexMg.html";
                             }, 150);
                         } else {
                             self.$Message.error(data.message);
@@ -208,19 +207,36 @@
                     self.tabList[id]["isDelete"] = true;
                     self.iframeList[id]["isDelete"] = true;
                 }
-            }
+            },
+            // 获取枚举值保存在本地
+            "getBizParam": function () {
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.commonService + "?action=" + CONFIG.ACTION.getBizParam,
+                    actionUrl: CONFIG.SERVICE.commonService,
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            utility.setLocalStorage("bizParam", data.data);
+                        }
+                    }
+                });
+            },
         },
         "created": function () {
             var self = this;
 
-            document.title = self.title[self.language];
-
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
             utility.isLogin(true);
+
+            // 获取枚举值
+            self.getBizParam();
 
             setTimeout(function() {
                 self.setTabItem("/airport/www/module/welcom/welcom.html", "Welcom");
             }, 1000);
+
+            setInterval(function() {
+                self.getBizParam();
+            }, 60000);
         },
         "mounted": function() {
             var self = this;

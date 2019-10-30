@@ -59,34 +59,38 @@
                                 <tr>
                                     <td>
                                         <template>
-                                            {{{'CN':'终端编号','EN':'Number','TW':'終端編號'}[language]}}:
+                                            {{{'CN':'编号','EN':'Number','TW':'終端編號'}[language]}}:
                                             <i-input v-model="pageInfo.deviceCode" :placeholder="{'CN':'请输入','EN':'Please Input Query Key','TW':'請輸入'}[language]" style="width: 100px"></i-input>
                                         </template>
-                                    </td>
-                                    <td>
                                         <template>
-                                            &nbsp;&nbsp;{{{'CN':'公司','EN':'Company','TW':'公司'}[language]}}:
-                                            <i-select v-model="pageInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100px;">
+                                            &nbsp;{{{'CN':'公司','EN':'Company','TW':'公司'}[language]}}:
+                                            <i-select v-model="pageInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:180px;">
                                                 <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
                                                 <i-option v-for="item in companyList" :value="item.id">{{item.companyName}}</i-option>
                                             </i-select>
                                         </template>
                                         <template>
-                                            &nbsp;&nbsp;{{{'CN':'供应商','EN':'Supplier','TW':'供應商'}[language]}}:
+                                            &nbsp;{{{'CN':'供应商','EN':'Supplier','TW':'供應商'}[language]}}:
                                             <i-select v-model="pageInfo.providerId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100px;">
                                                 <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
                                                 <i-option v-for="item in deviceProviderList" :value="item.type">{{item.name}}</i-option>
                                             </i-select>
                                         </template>
                                         <template>
-                                            &nbsp;&nbsp;{{{'CN':'运行状态','EN':'Working Condition','TW':'運行狀態'}[language]}}:
+                                            &nbsp;{{{'CN':'状态','EN':'Working Condition','TW':'運行狀態'}[language]}}:
                                             <i-select v-model="pageInfo.deviceStatus" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100px;">
                                                 <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
-                                                <i-option v-for="item in terminalStatusList" :value="item.type">{{item.name}}</i-option>
+                                                <template v-for="item in terminalStatusList">
+                                                    <template
+                                                        v-if="item.type==401||item.type==402||item.type==403||item.type==406">
+                                                        <i-option :value="item.type">{{item.name}}</i-option>
+                                                    </template>
+                                                </template>
+                                                <!-- <i-option v-for="item in terminalStatusList" :value="item.type">{{item.name}}</i-option> -->
                                             </i-select>
                                         </template>
                                         <template>
-                                            &nbsp;&nbsp;{{{'CN':'绑定到车辆','EN':'Binding To Vehicles','TW':'綁定到車輛'}[language]}}:
+                                            &nbsp;{{{'CN':'绑定','EN':'Binding To Vehicles','TW':'綁定到車輛'}[language]}}:
                                             <i-select v-model="pageInfo.bindFlag" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100px;">
                                                 <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
                                                 <i-option value="1">{{{'CN':'已被绑定','EN':'Bound','TW':'已被綁定'}[language]}}</i-option>
@@ -171,7 +175,12 @@
                                 <td>
                                     <template>
                                         <i-select v-model="itemInfo.deviceStatus" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
-                                            <i-option v-for="item in terminalStatusList" :value="item.type">{{item.name}}</i-option>
+                                            <template v-for="item in terminalStatusList">
+                                                <template
+                                                    v-if="item.type==401||item.type==402||item.type==403||item.type==406">
+                                                    <i-option :value="item.type">{{item.name}}</i-option>
+                                                </template>
+                                            </template>
                                         </i-select>
                                     </template>
                                 </td>

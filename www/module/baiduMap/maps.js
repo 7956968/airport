@@ -38,8 +38,6 @@
         ak: 'eCaU3zoABU2Ggtuc8vAoTrkc'
     });
 
-    // Vue.use(VueBaiduMap.BmlMarkerClusterer);
-
     window.pageVue = new Vue({
         "el": "#js-vue",
         "components": {
@@ -64,7 +62,7 @@
             "baiduMapInfo": {
                 BMap: null,
                 map: null,
-                mapType: "BMAP_NORMAL_MAP", // 此地图类型展示卫星视图: BMAP_SATELLITE_MAP 此地图类型展示卫星和路网的混合视图: BMAP_HYBRID_MAP
+                mapType: "BMAP_NORMAL_MAP", // "BMAP_NORMAL_MAP", // 此地图类型展示卫星视图: BMAP_SATELLITE_MAP 此地图类型展示卫星和路网的混合视图: BMAP_HYBRID_MAP
                 center: {
                     lng: 0,
                     lat: 0
@@ -89,6 +87,7 @@
                     trajectoryInfo: [],
                     curveInfo: [], // 轨迹线
                     pointInfo: [], // 轨迹点
+                    zeroPointInfo: [],
                     startPoint: {
                         url: CONFIG.HOST + "/airport/assets/img/start.png",
                         size: {
@@ -166,7 +165,7 @@
                 "gpsDeviceCode": "",
             },
             "vehiclePositonPageInfo": {
-                "span": 10, // 距离查询中间点的距离（密），不指定则默认为100米。 // 通过centerPosition+ span两个参数可以联合查询距离中心点多少米内的车辆最近位置
+                "span": 1000, // 距离查询中间点的距离（密），不指定则默认为100米。 // 通过centerPosition+ span两个参数可以联合查询距离中心点多少米内的车辆最近位置
                 "count": 0,
                 "pageNum": 1,
                 "deptId": "", // 部门ID
@@ -317,6 +316,7 @@
                 "areaName": "",
                 "companyId": "",
                 "secureStatus": "",
+                "fromInfo": false,
             },
             "defensAreaDetailInfo": {
                 "id": "",
@@ -375,13 +375,14 @@
                     "width": 120
                 },
                 {
-                    "title": {
-                        "CN": "停留时长",
-                        "EN": "Length Of Stay",
-                        "TW": "停留時長"
-                    } [language["language"]],
+                    "title": "停留时长",
                     "key": "staySecond",
-                    "width": 120
+                    "width": 120,
+                    "render": function(h, params){
+                        return h("div", [
+                            h("span", {}, params.row.staySecond+"（秒）"),
+                        ]);
+                    }
                 },
                 {
                     "title": {
@@ -417,7 +418,6 @@
                                 },
                                 "on": {
                                     "click": function () {
-                                        console.log("111");
                                         setTimeout(function () {
                                             pageVue.deleteDefensArea();
                                         }, 500);
@@ -633,7 +633,7 @@
                     } [language["language"]],
                     "key": "licenseNumber",
                     "fixed": "left",
-                    "width": 130
+                    "width": 110
                 },
                 {
                     "title": {
@@ -662,6 +662,11 @@
                     } [language["language"]],
                     "key": "vehicleCode",
                     "width": 130
+                },
+                {
+                    "title": "地址",
+                    "key": "lastPositionAddress",
+                    "width": 350
                 },
                 {
                     "title": {
@@ -850,81 +855,6 @@
                 });
             },
 
-            // 判断一个点是否在一个区域内
-            isInsidePolygon: function (point, polygon) {
-                if (!(point instanceof BMap.Point) || !(polygon instanceof BMap.Polygon)) {
-                    return false;
-                }
-                var polygonBounds = polygon.getBounds();
-                if (!polygonBounds.containsPoint(point)) {
-                    return false;
-                }
-
-                var pts = polygon.getPath();
-
-                var N = pts.length;
-                var boundOrVertex = true;
-                var intersectCount = 0;
-                var precision = 2e-10;
-                var p1, p2; //neighbour bound vertices
-                var p = point;
-
-                p1 = pts[0]; //left vertex       
-                //check all rays  
-                for (var i = 1; i <= N; ++i) {
-                    if (p.equals(p1)) {
-                        return boundOrVertex; //p is an vertex
-                    }
-                    p2 = pts[i % N]; //right vertex            
-                    //ray is outside of our interests 
-                    if (p.lat < Math.min(p1.lat, p2.lat) || p.lat > Math.max(p1.lat, p2.lat)) {
-                        p1 = p2;
-                        continue; //next ray left point
-                    }
-
-                    if (p.lat > Math.min(p1.lat, p2.lat) && p.lat < Math.max(p1.lat, p2.lat)) {
-                        if (p.lng <= Math.max(p1.lng, p2.lng)) {
-                            if (p1.lat == p2.lat && p.lng >= Math.min(p1.lng, p2.lng)) {
-                                return boundOrVertex;
-                            }
-
-                            if (p1.lng == p2.lng) {
-                                if (p1.lng == p.lng) {
-                                    return boundOrVertex;
-                                } else {
-                                    ++intersectCount;
-                                }
-                            } else {
-                                var xinters = (p.lat - p1.lat) * (p2.lng - p1.lng) / (p2.lat - p1.lat) + p1.lng;
-                                if (Math.abs(p.lng - xinters) < precision) {
-                                    return boundOrVertex;
-                                }
-
-                                if (p.lng < xinters) {
-                                    ++intersectCount;
-                                }
-                            }
-                        }
-                    } else {
-                        if (p.lat == p2.lat && p.lng <= p2.lng) {
-                            var p3 = pts[(i + 1) % N]; //next vertex                    
-                            if (p.lat >= Math.min(p1.lat, p3.lat) && p.lat <= Math.max(p1.lat, p3.lat)) {
-                                ++intersectCount;
-                            } else {
-                                intersectCount += 2;
-                            }
-                        }
-                    }
-                    p1 = p2; //next ray left point
-                }
-
-                if (intersectCount % 2 == 0) { //偶数在多边形外
-                    return false;
-                } else { //奇数在多边形内
-                    return true;
-                }
-            },
-
             // 关闭POP
             "openInfoWindowClose": function () {
                 var self = this;
@@ -932,9 +862,11 @@
                 self.baiduMapInfo.openInfoWindow.type = "";
                 self.openInfoWidth = 0;
                 self.openInfoHeight = 0;
+                self.vehiclePositonPageInfo.licenseNumber = "";
+                self.getAllVehiclePositonList();
                 if (self.baiduMapInfo.animationInfo.pointInfo.length == 0) {
                     self.isTrackItem = false;
-                    self.drawAlVehicleByBaidu();
+                    // self.drawAlVehicleByBaidu();
                 }
             },
 
@@ -962,6 +894,14 @@
             // 当地图可用的时候
             "baiduMapHandle": function (baiduMap) {
                 var self = this;
+                var coordinates = [];
+                var vehicleInfoFrom = utility.getSessionStorage("vehicleInfoFrom");
+
+                if(!!vehicleInfoFrom) {
+                    coordinates = (!!vehicleInfoFrom.lastPosition && vehicleInfoFrom.lastPosition!='null') ? JSON.parse(vehicleInfoFrom.lastPosition)["coordinates"]:'';
+                    self.vehiclePositonPageInfo.licenseNumber = vehicleInfoFrom.licenseNumber;
+                }
+
                 self.hindBaiduCopyRight();
                 self.baiduMapInfo.center.lng = self.airPort[0];
                 self.baiduMapInfo.center.lat = self.airPort[1];
@@ -987,6 +927,19 @@
                 });
                 self.baiduMapInfo.map.addControl(self.baiduMapInfo.overviewMapControl);
 
+                if(!!vehicleInfoFrom) {
+                    if(!!coordinates) {
+                        self.setAnimationByBaidu(coordinates, function (point) {
+                            setTimeout(function() {
+                                self.baiduMapInfo.map.panTo(new BMap.Point(point.lng - 0.00089867, point.lat + 0.00099867));
+                                utility.setSessionStorage("vehicleInfoFrom", null);
+                            }, 1000);
+                        });
+                    } else {
+                        self.$Message.error("车辆【"+ self.vehiclePositonPageInfo.licenseNumber +"】没有定位数据");
+                    }
+                }
+
                 if ($('.radar')[0]) {
                     new Radar($('.radar')[0]).init({
                         scanSpeed: 2
@@ -997,8 +950,6 @@
             // 点击地图
             "baiduMapClick": function (option) {
                 var self = this;
-
-                console.log(option);
 
                 if (option.overlay == null) {
                     // 如果是画摄像机
@@ -1057,12 +1008,6 @@
                             lat: option.point.lat
                         });
 
-                        if (self.baiduMapInfo.defensPath.length >= 3) {
-                            self.baiduMapInfo.isCloseDefensPath = true;
-                        } else {
-                            self.baiduMapInfo.isCloseDefensPath = false;
-                        }
-
                         self.defensAreaDetailInfo = {
                             "id": "",
                             "opType": 1, // 操作状态：1:新增防区 2:修改防区基本信息 3:修改防区地理坐标信息 4:修改防区状态
@@ -1089,8 +1034,9 @@
                         var path = self.baiduMapInfo.defensPath;
                         if (path.length > 0) {
                             for (var i = 0, len = path.length; i < len; i++) {
-                                pathArr.push(path[i].lng + "," + path[i].lat);
+                                pathArr.push(self.convertorByBaiduToGPS([path[i].lng, path[i].lat]).join(","));
                             }
+                            // 实现区域闭环
                             pathArr.push(pathArr[0]);
                             self.defensAreaDetailInfo.areaRangeStr = pathArr.join(";");
                         }
@@ -1127,6 +1073,7 @@
                         self.baiduMapInfo.vehicleMarkers = {};
                         self.vehiclePositonPageInfo.centerPosition = lng + "," + lat;
                         self.getAllVehiclePositonList();
+                        self.modal.isSearch = true;
                     });
                 }, 2000);
             },
@@ -1162,12 +1109,14 @@
                 var result = gcoord.transform([parseFloat(coordinate[0]), parseFloat(coordinate[1])], gcoord.BD09, gcoord.WGS84);
 
                 !!callback && callback(result[0], result[1]);
+                return result;
             },
             // setAnimation
-            "setAnimationByBaidu": function (coordinates) {
+            "setAnimationByBaidu": function (coordinates, callback) {
                 var self = this;
                 self.convertorByBaidu(coordinates, function (point) {
-                    self.baiduMapInfo.map.panTo(point);
+                    // self.baiduMapInfo.map.panTo(point);
+                    !!callback && callback(point);
                 });
             },
 
@@ -1175,6 +1124,7 @@
             // 选择行时设置防区
             "setDefensRowData": function (item, index) {
                 var self = this;
+                var coordinates = [];
                 var coordinate = [];
                 self.defensAreaDetailInfo = self.defensList[index];
                 self.defensAreaDetailInfo.remark = decodeURI(self.defensList[index]["remark"]);
@@ -1184,17 +1134,20 @@
                     return;
                 }
 
-                coordinate = JSON.parse(self.defensAreaDetailInfo.areaRange)["coordinates"][0];
+                coordinates = JSON.parse(self.defensAreaDetailInfo.areaRange)["coordinates"][0];
+                coordinate = utility.convertorByBaidu(coordinates[0], gcoord, BMap);
                 self.getDepartmentList('defensAreaDetailInfo');
                 self.openInfoWidth = 550;
                 self.openInfoHeight = 290;
                 self.baiduMapInfo.openInfoWindow.position = {
-                    lng: coordinate[0][0],
-                    lat: coordinate[0][1]
+                    lng: coordinate[0],
+                    lat: coordinate[1]
                 };
                 self.baiduMapInfo.openInfoWindow.type = "isDefenPop";
                 self.baiduMapInfo.openInfoWindow.show = true;
-                self.baiduMapInfo.map.panTo(new BMap.Point(coordinate[0][0], coordinate[0][1]));
+                self.baiduMapInfo.map.setZoom(18);
+                self.baiduMapInfo.map.panTo(new BMap.Point(coordinate[0] - 0.00089867, coordinate[1] + 0.00059867));
+                self.defensPageInfo.fromInfo = false;
             },
             // 
             "showDefensPop": function (item, event) {
@@ -1211,7 +1164,8 @@
                 };
                 self.baiduMapInfo.openInfoWindow.type = "isDefenPop";
                 self.baiduMapInfo.openInfoWindow.show = true;
-                self.baiduMapInfo.map.panTo(new BMap.Point(point.lng, point.lat));
+                self.baiduMapInfo.map.setZoom(18);
+                self.baiduMapInfo.map.panTo(new BMap.Point(point.lng - 0.00089867, point.lat + 0.00059867));
             },
             // 防区状态变化时，改变防区颜色
             "defensStatuChange": function (item, value) {
@@ -1225,32 +1179,52 @@
                 }
 
             },
+            // 编辑防区
+            "editDefense": function(item) {
+                var self = this;
+                self.baiduMapInfo.defensList["_" + item.id]["canEdit"] = !self.baiduMapInfo.defensList["_" + item.id]["canEdit"];
+                self.openInfoWindowClose();
+            },
             // 画所有防区
             "drawAllDefens": function () {
                 var self = this;
-                self.baiduMapInfo.defensList = {};
+                if(self.defensList.length == 0) {
+                    return;
+                }
                 for (var i = 0, len = self.defensList.length; i < len; i++) {
                     if (self.defensList[i].areaRange) {
                         var coordinate = JSON.parse(self.defensList[i].areaRange)["coordinates"][0];
-                        self.baiduMapInfo.defensList["_" + self.defensList[i]["id"]] = {
-                            id: "_" + self.defensList[i]["id"],
-                            canEdit: !!self.functionInfo.isDefense,
-                            style: !!self.functionInfo.isDefense ? "dashed" : "solid",
-                            fill: self.defensColor["_" + self.defensList[i]["secureStatus"]]["fill"],
-                            stroke: self.defensColor["_" + self.defensList[i]["secureStatus"]]["stroke"],
-                            paths: (function () {
-                                var position = [];
-                                for (var c = 0, clen = coordinate.length; c < clen; c++) {
+                        var positionPath = (function () {
+                            var position = [];
+                            for (var c = 0, clen = coordinate.length; c < clen; c++) {
+                                utility.convertorByBaidu(coordinate[c], gcoord, BMap, function (point, lng, lat) {
                                     position.push({
-                                        lng: coordinate[c][0],
-                                        lat: coordinate[c][1]
+                                        lng: lng,
+                                        lat: lat
                                     });
-                                }
-                                return position;
-                            }()),
-                            item: self.defensList[i]
+                                });                                
+                            }
+                            return position;
+                        }());
+                        if(!!self.baiduMapInfo.defensList["_" + self.defensList[i]["id"]]) {
+                            self.baiduMapInfo.defensList["_" + self.defensList[i]["id"]]["paths"] = positionPath;
+                        } else {
+                            self.baiduMapInfo.defensList["_" + self.defensList[i]["id"]] = {
+                                id: "_" + self.defensList[i]["id"],
+                                canEdit: false,
+                                style: !!self.functionInfo.isDefense ? "dashed" : "solid",
+                                fill: self.defensColor["_" + self.defensList[i]["secureStatus"]]["fill"],
+                                stroke: self.defensColor["_" + self.defensList[i]["secureStatus"]]["stroke"],
+                                paths: positionPath,
+                                item: self.defensList[i]
+                            }
                         }
+                        
                     }
+                }
+
+                if(self.defensPageInfo.fromInfo == true) {
+                   self.setDefensRowData(self.baiduMapInfo.defensList["_" + self.defensList[0]["id"]], 0); 
                 }
             },
             // 为新绘制的防区添加绘制结束事件
@@ -1265,8 +1239,9 @@
 
                 if (path.length > 0) {
                     for (var i = 0, len = path.length; i < len; i++) {
-                        pathArr.push(path[i].lng + "," + path[i].lat);
+                        pathArr.push(self.convertorByBaiduToGPS([path[i].lng, path[i].lat]).join(","));
                     }
+                    // 实现区域闭环
                     pathArr.push(pathArr[0]);
                     self.defensAreaDetailInfo.areaRangeStr = pathArr.join(";");
 
@@ -1313,7 +1288,13 @@
                     utility.interactWithServer({
                         url: CONFIG.HOST + CONFIG.SERVICE.areaService + "?action=" + CONFIG.ACTION.getSecureAreaList,
                         actionUrl: CONFIG.SERVICE.areaService,
-                        dataObj: self.defensPageInfo,
+                        dataObj: {
+                            "pageNum": self.defensPageInfo.pageNum,
+                            "pageSize": self.defensPageInfo.pageSize,
+                            "areaName": encodeURI(self.defensPageInfo.areaName),
+                            "companyId": self.defensPageInfo.companyId,
+                            "secureStatus": self.defensPageInfo.secureStatus,
+                        },
                         successCallback: function (data) {
                             if (data.code == 200) {
                                 self.defensList = data.data;
@@ -1339,11 +1320,14 @@
                 var self = this;
                 self.isAddDefensAction = true;
                 self.baiduMapInfo.defensPath = [];
+                self.baiduMapInfo.map.setDefaultCursor("crosshair");
             },
             // 取消添加绘制控件
             "deleteDefensAction": function () {
                 var self = this;
                 self.isAddDefensAction = false;
+                self.baiduMapInfo.isCloseDefensPath = true;
+                self.baiduMapInfo.map.setDefaultCursor("pointer");
                 self.showDefensPop(self.defensAreaDetailInfo, {
                     point: self.baiduMapInfo.defensPath[0]
                 });
@@ -1372,6 +1356,8 @@
                             },
                             successCallback: function (data) {
                                 if (data.code == 200) {
+                                    delete self.baiduMapInfo.defensList["_" + self.defensAreaDetailInfo.id];
+                                    // self.defensAreaDetailInfo.id
                                     self.getDefensAreaList(true);
                                     self.deleteLoading = false;
                                     self.isDeleteDefens = false;
@@ -1572,7 +1558,8 @@
                     lng: coordinates[0],
                     lat: coordinates[1],
                 };
-                self.baiduMapInfo.map.panTo(new BMap.Point(coordinates[0], coordinates[1]));
+                self.baiduMapInfo.map.setZoom(19);
+                self.baiduMapInfo.map.panTo(new BMap.Point(coordinates[0] - 0.00089867, coordinates[1] + 0.00059867));
                 self.baiduMapInfo.openInfoWindow.type = "isCameraPop";
                 self.baiduMapInfo.openInfoWindow.show = true;
             },
@@ -1590,7 +1577,9 @@
                     self.baiduMapInfo.openInfoWindow.position = marker.position;
                     self.baiduMapInfo.openInfoWindow.type = "isCameraPop";
                     self.cameraDetailInfo = marker.item;
-                    self.baiduMapInfo.map.panTo(new BMap.Point(marker.position.lng, marker.position.lat));
+                    self.baiduMapInfo.map.setZoom(19);
+                    self.baiduMapInfo.map.panTo(new BMap.Point(marker.position.lng - 0.00089867, marker.position.lat + 0.00059867));
+                    // point.lng-0.00089867, point.lat+0.00059867
                 }, 250);
             },
 
@@ -1723,7 +1712,6 @@
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
-                            self.searchDatas = [];
                             self.vehiclePositionList = data.data;
                             self.vehiclePositonPageInfo.count = data.count;
                             self.formatVehiclePositon(); // 格式化车辆数据
@@ -1737,8 +1725,9 @@
             // 格式化实时车辆信息
             "formatVehiclePositon": function () {
                 var self = this;
+                var list = [];
                 for (var i = 0, len = self.vehiclePositionList.length; i < len; i++) {
-                    self.searchDatas.push({
+                    list.push({
                         "o": self.vehiclePositionList[i]["o"], //"",
                         "id": self.vehiclePositionList[i]["id"], //"",
                         "speed": self.vehiclePositionList[i]["speed"], //"",
@@ -1752,6 +1741,7 @@
                         "vehicleCode": self.vehiclePositionList[i]["vehicleCode"], //"",
                         "licenseNumber": self.vehiclePositionList[i]["licenseNumber"], //"",
                         "lastPosition": !!self.vehiclePositionList[i]["lastPosition"] ? JSON.parse(self.vehiclePositionList[i]["lastPosition"])["coordinates"] : null, //"",
+                        "lastPositionAddress": "",
                         "vehicleTypeId": self.vehiclePositionList[i]["vehicleTypeName"], //"",
                         "gpsDeviceCode": self.vehiclePositionList[i]["gpsDeviceCode"], //"",
                         "providerId": self.vehiclePositionList[i]["providerId"], //"",
@@ -1772,6 +1762,26 @@
                             "vehicleStatus": "_" + self.vehiclePositionList[i]["vehicleStatus"]
                         }
                     });
+                }
+                self.searchDatas = list;
+
+                for (var a = 0; a < self.searchDatas.length; a++) {
+                    (function (a) {
+                        if (!!self.searchDatas[a].lastPosition) {
+                            var position = self.searchDatas[a].lastPosition;
+                            if (position[0] != 0 && position[1] != 0) {
+                                utility.convertorByBaidu(position, gcoord, BMap, function (point, lng, lat) {
+                                    utility.getAdressDetail([lng, lat], BMap, function (address) {
+                                        self.searchDatas[a]["lastPositionAddress"] = address;
+                                    });
+                                });
+                            } else {
+                                self.searchDatas[a]["lastPositionAddress"] = "--";
+                            }
+                        } else {
+                            self.searchDatas[a]["lastPositionAddress"] = "--";
+                        }
+                    }(a));
                 }
             },
 
@@ -1816,60 +1826,22 @@
                 });
             },
 
-            // 格式化轨迹坐标数据
-            "formatTrajectoryInfo": function () {
-                var self = this;
-                var track = null;
-                var trajectoryInfo = [];
-                if (!!self.singleVehicleItem && self.singleVehicleItem.track) {
-                    track = self.singleVehicleItem.track.split("/");
-                    for (var i = 0, len = track.length; i < len; i++) {
-                        var trackArr = track[i].split(",");
-                        trajectoryInfo.push({
-                            "time": (function () {
-                                var timeInfo = utility.getDateDetailInfo(trackArr[2]);
-                                return timeInfo.year + "-" + timeInfo.month + "-" + timeInfo.date + " " + timeInfo.hour + ":" + timeInfo.min + ":" + timeInfo.second;
-                            }()),
-                            "speed": trackArr[3],
-                            "coordinate": [parseFloat(trackArr[0], 10), parseFloat(trackArr[1], 10)], //self.transformLat([parseFloat(trackArr[0], 10), parseFloat(trackArr[1], 10)]),
-                            "vehicleCode": self.singleVehicleItem.vehicleCode,
-                            "vehicleStatus": self.singleVehicleItem.vehicleStatus,
-                            "companyName": self.singleVehicleItem.companyName,
-                            "deptName": self.singleVehicleItem.deptName,
-                            "vehicleName": self.singleVehicleItem.vehicleName,
-                            "licenseNumber": self.singleVehicleItem.licenseNumber,
-                            "lastGpsTime": self.singleVehicleItem.lastGpsTime,
-                            "vehicleTypeName": self.singleVehicleItem.vehicleTypeName,
-                        });
-
-                        self.convertorByBaidu([trackArr[0], trackArr[1]], function (point, lng, lat) {
-                            self.baiduMapInfo.animationInfo.coordinates.push({
-                                lng: lng,
-                                lat: lat,
-                            });
-                        });
-                    }
-                }
-
-                self.baiduMapInfo.animationInfo.curveInfo = self.baiduMapInfo.animationInfo.coordinates; // 轨迹线
-                self.baiduMapInfo.animationInfo.pointInfo = self.baiduMapInfo.animationInfo.coordinates; // 轨迹点
-                self.baiduMapInfo.animationInfo.trajectoryInfo = trajectoryInfo;
-            },
-
             // 显示视屏
             "showLiveVideo": function (vehicleInfo, isBackPlay) {
                 var self = this;
-                var url = "http://43.247.68.26:8080/airport/www/module/liveVideo/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
+                 var port = "8080";
+                //  var port = "9090";
+                var url = "http://43.247.68.26:" + port + "/airport/www/module/liveVideo/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
 
                 if (isBackPlay) {
-                    url = "http://43.247.68.26:8080/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
+                    url = "http://43.247.68.26:" + port + "/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
                 }
 
                 if (vehicleInfo.providerId == 2) {
                     if (isBackPlay) {
-                        url = "http://43.247.68.26:8080/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
+                        url = "http://43.247.68.26:" + port + "/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
                     } else {
-                        url = "http://43.247.68.26:8080/airport/www/module/liveVideoTest1/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&id=" + userInfo["id"] + "&userToken=" + userInfo["userToken"] + "&isBackPlay=" + isBackPlay;
+                        url = "http://43.247.68.26:" + port + "/airport/www/module/liveVideoTest1/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&id=" + userInfo["id"] + "&userToken=" + userInfo["userToken"] + "&isBackPlay=" + isBackPlay;
                     }
                 }
                 window.open(
@@ -1889,7 +1861,7 @@
                 var iconSrc = CONFIG.HOST + "/airport/assets/car/success.gif";
                 var vehicleIcon = (self.vehicleTypeInfo[item.vehicleTypeName] + item.vehicleStatus) || item.vehicleStatus;
                 var now = Date.parse(new Date());
-                var lastTime = Date.parse(item.lastGpsTime.replace("-", "/"));
+                var lastTime = Date.parse(item.lastGpsTime.replace(/\-/g, "/"));
                 var day = Math.floor((now - lastTime) / (24 * 3600 * 1000));
                 item['isOverTime'] = false;
                 if (day >= 1) {
@@ -1958,30 +1930,45 @@
                 }
             },
 
+            // 跳转到地图页面
+            "toAlarmPage": function (vehicleName) {
+                var self = this;
+                utility.setSessionStorage("fromMap", {
+                    vehicleName: vehicleName
+                });
+                setTimeout(function () {
+                    $(window.parent.document).find("#nav_Alarm").bind("click");
+                    $(window.parent.document).find("#nav_Alarm").trigger("click");
+                }, 200);
+            },
+
             // 显示车辆POP
             "vehicleOpenPop": function (marker, event) {
                 var self = this;
 
-                // console.log(marker);
-
                 self.baiduMapInfo.openInfoWindow.show = false;
                 self.baiduMapInfo.openInfoWindow.type = "";
                 self.isTrackItem = true;
-                self.openInfoWidth = 360;
-                self.openInfoHeight = 0;
-                setTimeout(function () {
-                    self.vehicleItemPop = marker.item;
-                    self.singleVehiclePageInfo.licenseNumber = self.vehicleItemPop.licenseNumber;
-                    self.trackItem.licenseNumber = self.vehicleItemPop.licenseNumber;
-                    self.getAdressDetail([marker.position.lng, marker.position.lat], self.vehicleItemPop, function () {
-                        self.baiduMapInfo.openInfoWindow.show = true;
-                        self.baiduMapInfo.openInfoWindow.type = "isVehiclePopInfo";
-                        self.baiduMapInfo.openInfoWindow.position = marker.position;
-                        self.baiduMapInfo.map.panTo(new BMap.Point(marker.position.lng, marker.position.lat));
-                        self.drawAlVehicleByBaidu();
-                    });
-                }, 200);
+                self.vehicleItemPop = marker.item;
+                self.singleVehiclePageInfo.licenseNumber = self.vehicleItemPop.licenseNumber;
+                self.trackItem.licenseNumber = self.vehicleItemPop.licenseNumber;
+                self.baiduMapInfo.openInfoWindow.type = "isVehiclePopInfo";
+                self.baiduMapInfo.openInfoWindow.position = marker.position;
+                self.baiduMapInfo.openInfoWindow.show = true;
+                self.getAdressDetail([marker.position.lng, marker.position.lat], self.vehicleItemPop, function () {
+                    if (self.baiduMapInfo.map.getZoom() < 17) {
+                        self.baiduMapInfo.map.setZoom(17);
+                    }
+                    if (self.modal.isSearch == true) {
+                        self.baiduMapInfo.map.panTo(new BMap.Point(marker.position.lng - 0.00089867, marker.position.lat + 0.00099867));
+                    } else {
+                        self.baiduMapInfo.map.panTo(new BMap.Point(marker.position.lng, marker.position.lat + 0.00099867));
+                    }
 
+                    self.drawAlVehicleByBaidu();
+                });
+                self.openInfoWidth = 360;
+                self.openInfoHeight = 300;
             },
 
             // 在地图上画车辆
@@ -2025,7 +2012,16 @@
                     if (coordinates[0] == 0 || coordinates[1] == 0) {
                         self.$Message.error("没有车辆定位数据");
                     } else {
-                        self.setAnimationByBaidu(coordinates);
+                        if (self.baiduMapInfo.map.getZoom() < 17) {
+                            self.baiduMapInfo.map.setZoom(17);
+                        }
+                        self.setAnimationByBaidu(coordinates, function (point) {
+                            if (self.modal.isSearch == true) {
+                                self.baiduMapInfo.map.panTo(new BMap.Point(point.lng - 0.00089867, point.lat + 0.00099867));
+                            } else {
+                                self.baiduMapInfo.map.panTo(new BMap.Point(point.lng, point.lat + 0.00099867));
+                            }
+                        });
 
                         self.openInfoWidth = 360;
                         self.openInfoHeight = 0;
@@ -2057,6 +2053,8 @@
                 var self = this;
                 self.baiduMapInfo.animationInfo.curveInfo = [];
                 self.baiduMapInfo.animationInfo.pointInfo = [];
+                self.baiduMapInfo.animationInfo.coordinates = [];
+                self.baiduMapInfo.animationInfo.trajectoryInfo = [];
                 self.baiduMapInfo.animationInfo.moveVehicle = null;
                 self.isTrackItem = false;
                 self.trackItem.licenseNumber = "";
@@ -2069,8 +2067,8 @@
                 var self = this;
                 var index = 0;
 
-                for (var i = 0, len = self.baiduMapInfo.animationInfo.pointInfo.length; i < len; i++) {
-                    if (JSON.stringify(event.point) == JSON.stringify(self.baiduMapInfo.animationInfo.pointInfo[i])) {
+                for (var i = 0, len = self.baiduMapInfo.animationInfo.trajectoryInfo.length; i < len; i++) {
+                    if (JSON.stringify(event.point) == JSON.stringify(self.baiduMapInfo.animationInfo.trajectoryInfo[i]["point"])) {
                         index = i;
                         break;
                     }
@@ -2088,6 +2086,134 @@
                     self.baiduMapInfo.openInfoWindow.type = "isTrajectPoint";
                     self.baiduMapInfo.openInfoWindow.show = true;
                 });
+            },
+
+            // 根据秒数算出时间
+            "countTimeBySeconds": function (timediff) {
+                var days = Math.floor(timediff / (24 * 3600 * 1000)); //计算出相差天数
+                var leave1 = timediff % (24 * 3600 * 1000) //计算天数后剩余的毫秒数
+                var hours = Math.floor(leave1 / (3600 * 1000)); //计算出小时数
+                var leave2 = leave1 % (3600 * 1000); //计算小时数后剩余的毫秒数
+                var minutes = Math.floor(leave2 / (60 * 1000));
+                //计算相差秒数
+                var leave3 = leave2 % (60 * 1000) //计算分钟数后剩余的毫秒数
+                var seconds = Math.round(leave3 / 1000);
+
+                return {
+                    "day": days,
+                    "hour": hours,
+                    "minute": minutes,
+                    "second": seconds,
+                }
+            },
+
+            // 格式化轨迹坐标数据
+            "formatTrajectoryInfo": function () {
+                var self = this;
+                var track = null;
+                var len = 0;
+                var zeroInfo = {};
+                var zeroPoint = [];
+                var flag = 0;
+                var flag2 = 0;
+                var coordinates = [];
+                var trajectoryInfo = [];
+
+                if (!!self.singleVehicleItem && self.singleVehicleItem.track) {
+                    track = self.singleVehicleItem.track.split("/");
+                    len = track.length;
+
+                    for (var z = 0; z < len; z++) {
+                        var zTrackArr = track[z].split(",");
+                        if (zTrackArr[3] != 0 && (z > 0 && z < len - 1)) {
+                            flag++;
+                        } else {
+                            zeroInfo["_" + flag] = [];
+                        }
+                    }
+
+                    for (var i = 0; i < len; i++) {
+                        var trackArr = track[i].split(",");
+                        var pushItem = {
+                            "time": (function () {
+                                var timeInfo = utility.getDateDetailInfo(trackArr[2]);
+                                return timeInfo.year + "-" + timeInfo.month + "-" + timeInfo.date + " " + timeInfo.hour + ":" + timeInfo.min + ":" + timeInfo.second;
+                            }()),
+                            "timeStmp": Date.parse(new Date(trackArr[2])),
+                            "speed": trackArr[3],
+                            "point": null,
+                            "coordinate": [parseFloat(trackArr[0], 10), parseFloat(trackArr[1], 10)], //self.transformLat([parseFloat(trackArr[0], 10), parseFloat(trackArr[1], 10)]),
+                            "vehicleCode": self.singleVehicleItem.vehicleCode,
+                            "vehicleStatus": self.singleVehicleItem.vehicleStatus,
+                            "companyName": self.singleVehicleItem.companyName,
+                            "deptName": self.singleVehicleItem.deptName,
+                            "vehicleName": self.singleVehicleItem.vehicleName,
+                            "licenseNumber": self.singleVehicleItem.licenseNumber,
+                            "lastGpsTime": self.singleVehicleItem.lastGpsTime,
+                            "vehicleTypeName": self.singleVehicleItem.vehicleTypeName,
+                            "stayTime": !!parseFloat(trackArr[4], 10) ? self.countTimeBySeconds(parseFloat(trackArr[4], 10) * 1000) : null,
+                        };
+
+                        if(i == 0 || i == len - 1) {
+                            trajectoryInfo.push(pushItem);
+                        }
+
+                        if (trackArr[3] != 0 && (i > 0 && i < len - 1)) {
+                            flag2++;
+                            trajectoryInfo.push(pushItem);
+                        } else {
+                            zeroInfo["_" + flag2].push(pushItem);
+                        }
+                    }
+                }
+
+                for (var key in zeroInfo) {
+                    if (zeroInfo.hasOwnProperty(key)) {
+                        var item = zeroInfo[key];
+                        if (item.length > 0) {
+                            if (item.length >= 2) {
+                                var timeDiff = utility.timeDiff(item[0]["lastGpsTime"], item[item.length - 1]["lastGpsTime"]);
+                                if (timeDiff.timeStamp == 0) {
+                                    item[0]["stayTime"] = null;
+                                } else {
+                                    item[0]["stayTime"] = timeDiff;
+                                }
+                            }
+                            trajectoryInfo.push(item[0]);
+                        }
+                    }
+                }
+
+                trajectoryInfo = trajectoryInfo.sort(function (a, b) {
+                    return a.timeStmp - b.timeStmp;
+                });
+
+                for (var t = 0; t < trajectoryInfo.length; t++) {
+
+                    self.convertorByBaidu(trajectoryInfo[t]["coordinate"], function (point, lng, lat) {
+                        coordinates.push({
+                            lng: lng,
+                            lat: lat,
+                        });
+                        trajectoryInfo[t]["point"] = {
+                            lng: lng,
+                            lat: lat,
+                        };
+                        if (!!trajectoryInfo[t].stayTime) {
+                            zeroPoint.push({
+                                lng: lng,
+                                lat: lat,
+                            });
+                        }
+                    });
+                }
+
+                self.baiduMapInfo.animationInfo.trajectoryInfo = trajectoryInfo;
+                self.baiduMapInfo.animationInfo.coordinates = coordinates;
+                self.baiduMapInfo.animationInfo.pointInfo = coordinates;
+                self.baiduMapInfo.animationInfo.zeroPointInfo = zeroPoint;
+                self.baiduMapInfo.animationInfo.curveInfo = coordinates;
+
             },
 
             // 获取单台车的轨迹
@@ -2231,7 +2357,7 @@
                     if (!(self.baiduMapInfo.openInfoWindow.type == "isCameraPop" || self.baiduMapInfo.openInfoWindow.type == "isDefenPop")) {
                         self.getAllVehiclePositonList(); // 获取所有实时车辆
                     }
-                }, 10000);
+                }, 15000);
             },
             //#endregion
 
@@ -2256,6 +2382,8 @@
                 if (!!fromInfo) {
                     self.showModal(fromInfo.type);
                     self.vehiclePositonPageInfo.vehicleStatus = fromInfo.vehicleStatus;
+                    self.defensPageInfo.areaName = fromInfo.areaName || "";
+                    self.defensPageInfo.fromInfo = !!fromInfo.areaName;
                     setTimeout(function () {
                         utility.cleanSessionStorage();
                         clearInterval(fromInfoTime);

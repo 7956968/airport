@@ -68,52 +68,68 @@
                 {
                     "type": "index",
                     "width": 60,
-                    "align": "center"
+                    "align": "center",
+                    "title": "序号",
+                    // "fixed": "left",
                 },
                 {
                     "title": { "CN": "车辆编号", "EN": "Vehicle Number", "TW": "車輛编号" }[language["language"]],
-                    "key": "vehicleCode"
+                    "key": "vehicleCode",
+                    // "width": 160,
+                    // "fixed": "left",
                 },
                 {
                     "title": { "CN": "车辆类型", "EN": "Vehicle Type", "TW": "車輛類型" }[language["language"]],
-                    "key": "vehicleTypeName"
+                    "key": "vehicleTypeName",
+                    // "width": 160,
                 },
-                {
-                    "title": { "CN": "车辆颜色", "EN": "Vehicle Color", "TW": "車輛颜色" }[language["language"]],
-                    "key": "vehicleColorName"
-                },
-                {
-                    "title": { "CN": "车辆品牌", "EN": "Vehicle Brand", "TW": "車輛品牌" }[language["language"]],
-                    "key": "vehicleBrandName"
-                },
+                // {
+                //     "title": { "CN": "车辆颜色", "EN": "Vehicle Color", "TW": "車輛颜色" }[language["language"]],
+                //     "key": "vehicleColorName"
+                // },
+                // {
+                //     "title": { "CN": "车辆品牌", "EN": "Vehicle Brand", "TW": "車輛品牌" }[language["language"]],
+                //     "key": "vehicleBrandName"
+                // },
                 {
                     "title": { "CN": "本次保养日期", "EN": "This Maintenance Date", "TW": "本次保養日期" }[language["language"]],
-                    "key": "currMaintainTime"
+                    "key": "currMaintainTime",
+                    "align": "center",
+                    // "width": 160,
                 },
                 {
                     "title": { "CN": "保养项目", "EN": "Maintenance Projects", "TW": "保養項目" }[language["language"]],
-                    "key": "maintainRemark"
+                    "key": "maintainRemark",
+                    // "width": 160,
                 },
                 {
                     "title": { "CN": "保养单位", "EN": "Maintenance Company", "TW": "保養單位" }[language["language"]],
-                    "key": "lastMaintainDeptName"
+                    "key": "lastMaintainDeptName",
+                    // "width": 200,
+                },
+                // {
+                //     "title": { "CN": "保养责任人", "EN": "Maintenance Responsible Person", "TW": "保養責任人" }[language["language"]],
+                //     "key": "lastMaintainUserName",
+                //     "width": 200,
+                // },
+                {
+                    "title": { "CN": "当前里程数(公里)", "EN": "Current Mileage", "TW": "當前里程數" }[language["language"]],
+                    "key": "currMiles",
+                    "align": "center",
+                    // "width": 160,
                 },
                 {
-                    "title": { "CN": "保养责任人", "EN": "Maintenance Responsible Person", "TW": "保養責任人" }[language["language"]],
-                    "key": "lastMaintainUserName"
-                },
-                {
-                    "title": { "CN": "当前里程数", "EN": "Current Mileage", "TW": "當前里程數" }[language["language"]],
-                    "key": "currMiles"
-                },
-                {
-                    "title": { "CN": "下次保养里程", "EN": "Number Of Miles Next Maintained", "TW": "下次保養里程" }[language["language"]],
-                    "key": "nextMaintainMiles"
+                    "title": { "CN": "下次保养里程(公里)", "EN": "Number Of Miles Next Maintained", "TW": "下次保養里程" }[language["language"]],
+                    "key": "nextMaintainMiles",
+                    "align": "center",
+                    // "width": 160,
                 },
                 {
                     "title": { "CN": "操作", "EN": "Operation", "TW": "操作" }[language["language"]],
                     "key": "operation",
                     "width": 180,
+                    "align": "center",
+                    // "fixed": "right",
                     "render": function (h, params) {
                         return h("div", [
                             h("Button", {

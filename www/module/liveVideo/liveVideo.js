@@ -6,8 +6,10 @@
             "vehicleInfo": JSON.parse(decodeURI(utility.getQueryParams().vehicleInfo)),
             "queryInfo": utility.getQueryParams(),
             "mIP": "220.231.225.7", // socket登录IP
+            // "mIP": "120.79.197.241", // socket登录IP
             "mPort": 7668, // socket登录端口
             "mUserName": "mgkj", // 登录用户名
+            // "mUserName": "test1", // 登录用户名
             "mPwd": "888888", // socket密码
             "mVideoCount": 8, // 分屏数
             "maxVideoNum": 10, // 最大视频数
@@ -61,6 +63,8 @@
             "timeSelect": "120",
             "timeLenOut": null,
             "netnSignal": "",
+            "hd": [],
+            "sd": [],
             "msgType": "primary",
             "msgInfo": "",
             "isFullScream": false,
@@ -75,31 +79,67 @@
                 "sourceStyle": "",
                 "targetStyle": ""
             },
-            "splitArea": [1, 4, 6, 8, 9], // 分屏类型
+            "splitArea": [1, 3, 4, 5, 6, 8, 9], // 分屏类型
             "videoWinSplit": {
                 "_1": {
                     count: 1,
-                    normal: [
-                        {
+                    normal: [{
+                        top: '0px',
+                        left: '0px',
+                        width: 'calc(100% - 4px)',
+                        height: 'calc(100% - 4px)' //calc运算符一定要有空格，要不然解析不了
+                    }],
+                    page: [{
+                        top: '0px',
+                        left: '0px',
+                        width: 'calc(100% - 4px)',
+                        height: 'calc(100% - 4px)' //calc运算符一定要有空格，要不然解析不了
+                    }]
+                },
+                "_3": {
+                    count: 3,
+                    normal: [{
                             top: '0px',
                             left: '0px',
-                            width: 'calc(100% - 4px)',
-                            height: 'calc(100% - 4px)'//calc运算符一定要有空格，要不然解析不了
+                            width: 'calc(70% - 4px)',
+                            height: 'calc(100% - 4px)'
+                        },
+                        {
+                            top: '0px',
+                            left: '70%',
+                            width: 'calc(30% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
+                        {
+                            top: '50%',
+                            left: '70%',
+                            width: 'calc(30% - 4px)',
+                            height: 'calc(50% - 4px)'
                         }
                     ],
-                    page: [
-                        {
+                    page: [{
                             top: '0px',
                             left: '0px',
-                            width: 'calc(100% - 4px)',
-                            height: 'calc(100% - 4px)'//calc运算符一定要有空格，要不然解析不了
+                            width: 'calc(70% - 4px)',
+                            height: 'calc(100% - 4px)'
+                        },
+                        {
+                            top: '0px',
+                            left: '70%',
+                            width: 'calc(30% - 4px)',
+                            height: 'calc(50% - 4px)'
+                        },
+                        {
+                            top: '50%',
+                            left: '70%',
+                            width: 'calc(30% - 4px)',
+                            height: 'calc(50% - 4px)'
                         }
-                    ]
+                    ],
                 },
                 "_4": {
                     count: 4,
-                    normal: [
-                        {
+                    normal: [{
                             top: '0px',
                             left: '0px',
                             width: 'calc(50% - 4px)',
@@ -124,8 +164,7 @@
                             height: 'calc(50% - 4px)'
                         }
                     ],
-                    page: [
-                        {
+                    page: [{
                             top: '0px',
                             left: '0px',
                             width: 'calc(50% - 4px)',
@@ -148,92 +187,154 @@
                             left: '50%',
                             width: 'calc(50% - 4px)',
                             height: 'calc(50% - 4px)'
+                        }
+                    ],
+                },
+                "_5": {
+                    count: 5,
+                    normal: [{
+                            top: '0px',
+                            left: '0px',
+                            width: 'calc(70% - 4px)',
+                            height: 'calc(100% - 4px)'
+                        },
+                        {
+                            top: '0px',
+                            left: '70%',
+                            width: 'calc(30% - 4px)',
+                            height: 'calc(25% - 4px)'
+                        },
+                        {
+                            top: '25%',
+                            left: '70%',
+                            width: 'calc(30% - 4px)',
+                            height: 'calc(25% - 4px)'
+                        },
+                        {
+                            top: '50%',
+                            left: '70%',
+                            width: 'calc(30% - 4px)',
+                            height: 'calc(25% - 4px)'
+                        },
+                        {
+                            top: '75%',
+                            left: '70%',
+                            width: 'calc(30% - 4px)',
+                            height: 'calc(25% - 4px)'
+                        }
+                    ],
+                    page: [{
+                            top: '0px',
+                            left: '0px',
+                            width: 'calc(70% - 4px)',
+                            height: 'calc(100% - 4px)'
+                        },
+                        {
+                            top: '0px',
+                            left: '70%',
+                            width: 'calc(30% - 4px)',
+                            height: 'calc(25% - 4px)'
+                        },
+                        {
+                            top: '25%',
+                            left: '70%',
+                            width: 'calc(30% - 4px)',
+                            height: 'calc(25% - 4px)'
+                        },
+                        {
+                            top: '50%',
+                            left: '70%',
+                            width: 'calc(30% - 4px)',
+                            height: 'calc(25% - 4px)'
+                        },
+                        {
+                            top: '75%',
+                            left: '70%',
+                            width: 'calc(30% - 4px)',
+                            height: 'calc(25% - 4px)'
                         }
                     ],
                 },
                 "_6": {
                     count: 6,
-                    normal: [
-                        {
+                    normal: [{
                             top: '0px',
                             left: '0px',
                             width: 'calc(100% / 3 * 2 - 6px)',
                             height: 'calc(100% / 3 * 2 - 8px)'
-                        },//大屏
+                        }, //大屏
                         {
                             top: 'calc(100% / 3 * 2 - 4px)',
                             left: '0px',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1)'
-                        },//左下1
+                        }, //左下1
                         {
                             top: 'calc(100% / 3 * 2 - 4px)',
                             left: 'calc(100% / 3 * 1 - 0px)',
                             width: 'calc(100% / 3 * 1 - 6px)',
                             height: 'calc(100% / 3 * 1)'
-                        },//左下2
+                        }, //左下2
                         {
                             top: 'calc(100% / 3 * 2 - 4px)',
                             left: 'calc(100% / 3 * 2 - 2px)',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1)'
-                        },//左下3
+                        }, //左下3
                         {
                             top: '0px',
                             left: 'calc(100% / 3 * 2 - 2px)',
                             width: 'calc(100% / 3 * 1 - 2px)',
                             height: 'calc(100% / 3 * 1 - 8px)'
-                        },//右上1
+                        }, //右上1
                         {
                             top: 'calc(100% / 3 * 1 - 4px)',
                             left: 'calc(100% / 3 * 2 - 2px)',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 4px)'
-                        }//右上2
+                        } //右上2
                     ],
-                    page: [
-                        {
+                    page: [{
                             top: '0px',
                             left: '0px',
                             width: 'calc(100% / 3 * 2 - 6px)',
                             height: 'calc(100% / 3 * 2 - 8px)'
-                        },//大屏
+                        }, //大屏
                         {
                             top: 'calc(100% / 3 * 2 - 4px)',
                             left: '0px',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1)'
-                        },//左下1
+                        }, //左下1
                         {
                             top: 'calc(100% / 3 * 2 - 4px)',
                             left: 'calc(100% / 3 * 1 - 0px)',
                             width: 'calc(100% / 3 * 1 - 6px)',
                             height: 'calc(100% / 3 * 1)'
-                        },//左下2
+                        }, //左下2
                         {
                             top: 'calc(100% / 3 * 2 - 4px)',
                             left: 'calc(100% / 3 * 2 - 2px)',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1)'
-                        },//左下3
+                        }, //左下3
                         {
                             top: '0px',
                             left: 'calc(100% / 3 * 2 - 2px)',
                             width: 'calc(100% / 3 * 1 - 2px)',
                             height: 'calc(100% / 3 * 1 - 8px)'
-                        },//右上1
+                        }, //右上1
                         {
                             top: 'calc(100% / 3 * 1 - 4px)',
                             left: 'calc(100% / 3 * 2 - 2px)',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 4px)'
-                        }//右上2
+                        } //右上2
                     ]
                 },
                 "_8": {
                     count: 8,
-                    page: [
-                        {
+                    page: [{
                             top: '0px',
                             left: '0px',
                             width: 'calc(50% - 4px)',
@@ -282,191 +383,184 @@
                             height: 'calc(50% - 4px)'
                         }
                     ],
-                    normal: [
-                        {
+                    normal: [{
                             top: '0px',
                             left: '0px',
                             width: 'calc(100% / 4 * 3 - 6px)',
                             height: 'calc(100% / 4 * 3 - 8px)'
-                        },//大屏
+                        }, //大屏
                         {
                             top: '0px',
                             left: 'calc(100% / 4 * 3 - 2px)',
                             width: 'calc(100% / 4 * 1 - 4px)',
                             height: 'calc(100% / 4 * 1 - 6px)'
-                        },//右上1
+                        }, //右上1
                         {
                             top: 'calc(100% / 4 * 1 - 2px)',
                             left: 'calc(100% / 4 * 3 - 2px)',
                             width: 'calc(100% / 4 * 1 - 4px)',
                             height: 'calc(100% / 4 * 1 - 6px)'
-                        },//右上2
+                        }, //右上2
 
                         {
                             top: 'calc(100% / 4 * 2 - 4px)',
                             left: 'calc(100% / 4 * 3 - 2px)',
                             width: 'calc(100% / 4 * 1 - 4px)',
                             height: 'calc(100% / 4 * 1 - 4px)'
-                        },//右上3
+                        }, //右上3
                         {
                             top: 'calc(100% / 4 * 3 - 4px)',
                             left: '0px',
                             width: 'calc(100% / 4 * 1 - 4px)',
                             height: 'calc(100% / 4 * 1)'
-                        },//左下3
+                        }, //左下3
                         {
                             top: 'calc(100% / 4 * 3 - 4px)',
                             left: 'calc(100% / 4 * 1 - 0px)',
                             width: 'calc(100% / 4 * 1 - 6px)',
                             height: 'calc(100% / 4 * 1)'
-                        },//右上4
+                        }, //右上4
                         {
                             top: 'calc(100% / 4 * 3 - 4px)',
                             left: 'calc(100% / 4 * 2 - 2px)',
                             width: 'calc(100% / 4 * 1 - 4px)',
                             height: 'calc(100% / 4 * 1)'
-                        },//左下1
+                        }, //左下1
                         {
                             top: 'calc(100% / 4 * 3 - 4px)',
                             left: 'calc(100% / 4 * 3 - 2px)',
                             width: 'calc(100% / 4 * 1 - 2px)',
                             height: 'calc(100% / 4 * 1)'
-                        },//左下2
+                        }, //左下2
                     ]
                 },
                 "_9": {
                     count: 9,
-                    normal: [
-                        {
+                    normal: [{
                             top: '0px',
                             left: '0px',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 6px)'
-                        },//1,1
+                        }, //1,1
                         {
                             top: '0px',
                             left: 'calc(100% / 3 * 1)',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 6px)'
-                        },//1,2
+                        }, //1,2
                         {
                             top: '0px',
                             left: 'calc(100% / 3 * 2)',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 6px)'
-                        },//1,3
+                        }, //1,3
                         {
                             top: 'calc(100% / 3 * 1 - 2px)',
                             left: '0px',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 2px)'
-                        },//2,1
+                        }, //2,1
                         {
                             top: 'calc(100% / 3 * 1 - 2px)',
                             left: 'calc(100% / 3 * 1)',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 2px)'
-                        },//2,2
+                        }, //2,2
                         {
                             top: 'calc(100% / 3 * 1 - 2px)',
                             left: 'calc(100% / 3 * 2)',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 2px)'
-                        },//2,3
+                        }, //2,3
                         {
                             top: 'calc(100% / 3 * 2)',
                             left: '0px',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 4px)'
-                        },//3,1
+                        }, //3,1
                         {
                             top: 'calc(100% / 3 * 2)',
                             left: 'calc(100% / 3 * 1)',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 4px)'
-                        },//3,2
+                        }, //3,2
                         {
                             top: 'calc(100% / 3 * 2)',
                             left: 'calc(100% / 3 * 2)',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 4px)'
-                        }//3,3
+                        } //3,3
                     ],
-                    page: [
-                        {
+                    page: [{
                             top: '0px',
                             left: '0px',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 6px)'
-                        },//1,1
+                        }, //1,1
                         {
                             top: '0px',
                             left: 'calc(100% / 3 * 1)',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 6px)'
-                        },//1,2
+                        }, //1,2
                         {
                             top: '0px',
                             left: 'calc(100% / 3 * 2)',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 6px)'
-                        },//1,3
+                        }, //1,3
                         {
                             top: 'calc(100% / 3 * 1 - 2px)',
                             left: '0px',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 2px)'
-                        },//2,1
+                        }, //2,1
                         {
                             top: 'calc(100% / 3 * 1 - 2px)',
                             left: 'calc(100% / 3 * 1)',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 2px)'
-                        },//2,2
+                        }, //2,2
                         {
                             top: 'calc(100% / 3 * 1 - 2px)',
                             left: 'calc(100% / 3 * 2)',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 2px)'
-                        },//2,3
+                        }, //2,3
                         {
                             top: 'calc(100% / 3 * 2)',
                             left: '0px',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 4px)'
-                        },//3,1
+                        }, //3,1
                         {
                             top: 'calc(100% / 3 * 2)',
                             left: 'calc(100% / 3 * 1)',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 4px)'
-                        },//3,2
+                        }, //3,2
                         {
                             top: 'calc(100% / 3 * 2)',
                             left: 'calc(100% / 3 * 2)',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 4px)'
-                        }//3,3
+                        } //3,3
                     ]
                 }
             },
             "isNormal": false,
-            "videoWinSplitDemo": [
-                {
+            "videoWinSplitDemo": [{
                     count: 1,
-                    param: [
-                        {
-                            top: '0px',
-                            left: '0px',
-                            width: 'calc(100% - 4px)',
-                            height: 'calc(100% - 4px)'//calc运算符一定要有空格，要不然解析不了
-                        }
-                    ]
-                },//1分屏
+                    param: [{
+                        top: '0px',
+                        left: '0px',
+                        width: 'calc(100% - 4px)',
+                        height: 'calc(100% - 4px)' //calc运算符一定要有空格，要不然解析不了
+                    }]
+                }, //1分屏
                 {
                     count: 4,
-                    param: [
-                        {
+                    param: [{
                             top: '0px',
                             left: '0px',
                             width: 'calc(50% - 4px)',
@@ -491,52 +585,50 @@
                             height: 'calc(50% - 4px)'
                         }
                     ]
-                },//4分屏
+                }, //4分屏
                 {
                     count: 6,
-                    param: [
-                        {
+                    param: [{
                             top: '0px',
                             left: '0px',
                             width: 'calc(100% / 3 * 2 - 6px)',
                             height: 'calc(100% / 3 * 2 - 8px)'
-                        },//大屏
+                        }, //大屏
                         {
                             top: 'calc(100% / 3 * 2 - 4px)',
                             left: '0px',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1)'
-                        },//左下1
+                        }, //左下1
                         {
                             top: 'calc(100% / 3 * 2 - 4px)',
                             left: 'calc(100% / 3 * 1 - 0px)',
                             width: 'calc(100% / 3 * 1 - 6px)',
                             height: 'calc(100% / 3 * 1)'
-                        },//左下2
+                        }, //左下2
                         {
                             top: 'calc(100% / 3 * 2 - 4px)',
                             left: 'calc(100% / 3 * 2 - 2px)',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1)'
-                        },//左下3
+                        }, //左下3
                         {
                             top: '0px',
                             left: 'calc(100% / 3 * 2 - 2px)',
                             width: 'calc(100% / 3 * 1 - 2px)',
                             height: 'calc(100% / 3 * 1 - 8px)'
-                        },//右上1
+                        }, //右上1
                         {
                             top: 'calc(100% / 3 * 1 - 4px)',
                             left: 'calc(100% / 3 * 2 - 2px)',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 4px)'
-                        }//右上2
+                        } //右上2
                     ]
-                },//6分屏
+                }, //6分屏
                 {
                     count: 8,
-                    param: [
-                        {
+                    param: [{
                             top: '0px',
                             left: '0px',
                             width: 'calc(50% - 4px)',
@@ -633,66 +725,65 @@
                         //     height: 'calc(100% / 4 * 1 - 4px)'
                         // }//右上3
                     ]
-                },//8分屏
+                }, //8分屏
                 {
                     count: 9,
-                    param: [
-                        {
+                    param: [{
                             top: '0px',
                             left: '0px',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 6px)'
-                        },//1,1
+                        }, //1,1
                         {
                             top: '0px',
                             left: 'calc(100% / 3 * 1)',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 6px)'
-                        },//1,2
+                        }, //1,2
                         {
                             top: '0px',
                             left: 'calc(100% / 3 * 2)',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 6px)'
-                        },//1,3
+                        }, //1,3
                         {
                             top: 'calc(100% / 3 * 1 - 2px)',
                             left: '0px',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 2px)'
-                        },//2,1
+                        }, //2,1
                         {
                             top: 'calc(100% / 3 * 1 - 2px)',
                             left: 'calc(100% / 3 * 1)',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 2px)'
-                        },//2,2
+                        }, //2,2
                         {
                             top: 'calc(100% / 3 * 1 - 2px)',
                             left: 'calc(100% / 3 * 2)',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 2px)'
-                        },//2,3
+                        }, //2,3
                         {
                             top: 'calc(100% / 3 * 2)',
                             left: '0px',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 4px)'
-                        },//3,1
+                        }, //3,1
                         {
                             top: 'calc(100% / 3 * 2)',
                             left: 'calc(100% / 3 * 1)',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 4px)'
-                        },//3,2
+                        }, //3,2
                         {
                             top: 'calc(100% / 3 * 2)',
                             left: 'calc(100% / 3 * 2)',
                             width: 'calc(100% / 3 * 1 - 4px)',
                             height: 'calc(100% / 3 * 1 - 4px)'
-                        }//3,3
+                        } //3,3
                     ]
-                }//9分屏
+                } //9分屏
             ]
         },
         "methods": {
@@ -760,7 +851,7 @@
             "playSigleVideo": function (channel, video) {
                 var self = this;
                 var info = video.split("-");
-                if ($("body").find("#video" + info[1]).attr("src").length < 10) {
+                if ($("body").find("#video" + info[1]).attr("src").indexOf("blob:http://") == -1) {
                     vsclientSession.startPlay({
                         name: self.vehicleInfo.licenseNumber,
                         channel: channel,
@@ -776,84 +867,88 @@
                 var left = $("body").find(".left");
                 var right = $("body").find(".right");
                 self.isNormal = !self.isNormal;
-                self.updateVideoWin(8);
-                if (self.isNormal == true) {
-                    left.css({
-                        zIndex: 1000,
-                        opacity: 1,
-                    });
-                    right.css({
-                        zIndex: 1000,
-                        opacity: 1,
-                    });
-                    left.each(function (item) {
-                        var video = $(this).attr("data-id");
-                        var index = $(this).attr("data-index");
-                        if ($("#" + video).attr("src").length < 20) {
-                            $("#" + video).attr("controls", true);
-                            vsclientSession.startPlay({
-                                name: self.vehicleInfo.licenseNumber,
-                                channel: index,
-                                videoCtrl: $("#" + video)[0],
-                                codeType: self.codeType
-                            });
-                        }
-                    });
-                    right.each(function (item) {
-                        var video = $(this).attr("data-id");
-                        var index = $(this).attr("data-index");
-                        if ($("#" + video).attr("src").length < 20) {
-                            $("#" + video).attr("controls", true);
-                            vsclientSession.startPlay({
-                                name: self.vehicleInfo.licenseNumber,
-                                channel: index,
-                                videoCtrl: $("#" + video)[0],
-                                codeType: self.codeType
-                            });
-                        }
-                    });
-                } else {
-                    left.css({
-                        zIndex: 1000,
-                        opacity: 1,
-                    });
-                    right.css({
-                        zIndex: 10,
-                        opacity: 0,
-                    });
-                    left.each(function (item) {
-                        var video = $(this).attr("data-id");
-                        var index = $(this).attr("data-index");
-                        if ($("#" + video).attr("src").length < 20) {
-                            $("#" + video).attr("controls", true);
-                            vsclientSession.startPlay({
-                                name: self.vehicleInfo.licenseNumber,
-                                channel: index,
-                                videoCtrl: $("#" + video)[0],
-                                codeType: self.codeType
-                            });
-                        }
-                    });
-                    right.each(function (item) {
-                        var video = $(this).attr("data-id");
-                        var index = $(this).attr("data-index");
-                        vsclientSession.stopPlay($("body").find("#" + video)[0]);
-                    });
-                }
-                clearInterval(self.timeLenOut);
-                self.timeLenOut = null;
+
                 setTimeout(function () {
-                    self.timeLenOut = setInterval(function () {
-                        self.timeLen--;
-                        self.$Message.destroy();
-                        if (self.timeLen <= 0 || self.isStop == true) {
-                            self.stopVideo("");
-                            clearInterval(self.timeLenOut);
-                        }
-                    }, 1000);
-                    self.stopAudio();
-                    $("body").find("video").removeAttr("controls");;
-                }, 5000);
+                    self.updateVideoWin(8);
+                    if (self.isNormal == true) {
+                        left.css({
+                            zIndex: 1000,
+                            opacity: 1,
+                        });
+                        right.css({
+                            zIndex: 1000,
+                            opacity: 1,
+                        });
+                        left.each(function (item) {
+                            var video = $(this).attr("data-id");
+                            var index = $(this).attr("data-index");
+                            if (!$("#" + video).attr("src") || $("#" + video).attr("src").length < 20) {
+                                $("#" + video).attr("controls", true);
+                                vsclientSession.startPlay({
+                                    name: self.vehicleInfo.licenseNumber,
+                                    channel: index,
+                                    videoCtrl: $("#" + video)[0],
+                                    codeType: self.codeType
+                                });
+                            }
+                        });
+                        right.each(function (item) {
+                            var video = $(this).attr("data-id");
+                            var index = $(this).attr("data-index");
+                            if (!$("#" + video).attr("src") || $("#" + video).attr("src").length < 20) {
+                                $("#" + video).attr("controls", true);
+                                vsclientSession.startPlay({
+                                    name: self.vehicleInfo.licenseNumber,
+                                    channel: index,
+                                    videoCtrl: $("#" + video)[0],
+                                    codeType: self.codeType
+                                });
+                            }
+                        });
+                    } else {
+                        left.css({
+                            zIndex: 1000,
+                            opacity: 1,
+                        });
+                        right.css({
+                            zIndex: 10,
+                            opacity: 0,
+                        });
+                        left.each(function (item) {
+                            var video = $(this).attr("data-id");
+                            var index = $(this).attr("data-index");
+                            if ($("#" + video).attr("src").length < 20) {
+                                $("#" + video).attr("controls", true);
+                                vsclientSession.startPlay({
+                                    name: self.vehicleInfo.licenseNumber,
+                                    channel: index,
+                                    videoCtrl: $("#" + video)[0],
+                                    codeType: self.codeType
+                                });
+                            }
+                        });
+                        right.each(function (item) {
+                            var video = $(this).attr("data-id");
+                            var index = $(this).attr("data-index");
+                            vsclientSession.stopPlay($("body").find("#" + video)[0]);
+                        });
+                    }
+                    clearInterval(self.timeLenOut);
+                    self.timeLenOut = null;
+                    setTimeout(function () {
+                        self.timeLenOut = setInterval(function () {
+                            self.timeLen--;
+                            self.$Message.destroy();
+                            if (self.timeLen <= 0 || self.isStop == true) {
+                                self.stopVideo("");
+                                clearInterval(self.timeLenOut);
+                            }
+                        }, 1000);
+                        self.stopAudio();
+                        $("body").find("video").removeAttr("controls");;
+                    }, 5000);
+                }, 500);
+
             },
             "pageSizeChange": function (value) {
                 var self = this;
@@ -980,8 +1075,8 @@
                     onServerConnectionLost: function () {
                         self.$Message.destroy();
                         self.msgType = "error";
-                        self.msgInfo = "车辆【 " + self.vehicleInfo.licenseNumber + " 】连接失败";
-                        self.stopVideo(self.msgInfo);
+                        self.msgInfo = "服务链接断开";
+                        // self.stopVideo(self.msgInfo);
                     },
                     // 数据流状态
                     onStreamPlayStatus: function (status) {
@@ -1021,11 +1116,15 @@
                                 break;
                         }
                     },
-                    onGpsData: function (frontGpsData) {//车辆信息+GPS信
+                    onGpsData: function (frontGpsData) { //车辆信息+GPS信
                         self.netnSignal = frontGpsData.gps.net_signal;
+                        self.hd = frontGpsData.gps.storage.hd;
+                        self.sd = frontGpsData.gps.storage.sd;
+                        console.log(frontGpsData.gps.storage);
                     }
                 };
                 window.vsclientSession = new VSClientSession(callback);
+                self.stopVideo();
                 vsclientSession.login(self.mUserName, self.mPwd, self.mIP, self.mPort);
 
                 self.msgInfo = "";
@@ -1041,26 +1140,26 @@
                 var lastCurrTime = 0;
                 var lastFrameCount = 0;
                 var fps = 0;
-                setInterval(function() {
+                setInterval(function () {
                     var currTime = $("#video" + videoId)[0].currentTime;
-                        var videoHeight = $("#video" + videoId)[0].videoHeight;
-                        var videoWidth = $("#video" + videoId)[0].videoWidth;
-                        var webkitDecodedFrameCount = $("#video" + videoId)[0].webkitDecodedFrameCount;
-                        
-                        if (currTime == 0) {
-                            lastCurrTime = 0;
-                            lastFrameCount = 0;
-                        }
-                        if (currTime != 0) {
-                            fps = (webkitDecodedFrameCount - lastFrameCount) / (currTime - lastCurrTime);
-                            lastCurrTime = currTime;
-                            lastFrameCount = webkitDecodedFrameCount;
-                        }
-                        self.videoInfo[videoId] = {
-                            videoWidth: videoWidth,
-                            videoHeight: videoHeight,
-                            fps: fps.toFixed(0)
-                        };
+                    var videoHeight = $("#video" + videoId)[0].videoHeight;
+                    var videoWidth = $("#video" + videoId)[0].videoWidth;
+                    var webkitDecodedFrameCount = $("#video" + videoId)[0].webkitDecodedFrameCount;
+
+                    if (currTime == 0) {
+                        lastCurrTime = 0;
+                        lastFrameCount = 0;
+                    }
+                    if (currTime != 0) {
+                        fps = (webkitDecodedFrameCount - lastFrameCount) / (currTime - lastCurrTime);
+                        lastCurrTime = currTime;
+                        lastFrameCount = webkitDecodedFrameCount;
+                    }
+                    self.videoInfo[videoId] = {
+                        videoWidth: videoWidth,
+                        videoHeight: videoHeight,
+                        fps: fps.toFixed(0)
+                    };
                 }, 1000);
             },
             // listenVideoFrame
@@ -1132,7 +1231,14 @@
                         clearInterval(self.timeLenOut);
                         return;
                     }
-                    curVideoWin.css({ "top": param[idx].top, "left": param[idx].left, "width": param[idx].width, "height": param[idx].height, "display": "block" });
+                    curVideoWin.attr("data-style", "top: " + param[idx].top + "; left:" + param[idx].left + ";width: " + param[idx].width + ";height:" + param[idx].height + ";display:block;");
+                    curVideoWin.css({
+                        "top": param[idx].top,
+                        "left": param[idx].left,
+                        "width": param[idx].width,
+                        "height": param[idx].height,
+                        "display": "block"
+                    });
                     self.getVideoFrame(idx);
                 }
 
@@ -1190,7 +1296,7 @@
                     for (var i = 0; i < channelNum; i++) {
                         $("#video" + i).removeAttr("controls");
                     }
-                }, 20000);
+                }, 10000);
 
                 if (ret) {
                     self.isStop = false;
@@ -1293,6 +1399,8 @@
             // 播放声音
             "playAudio": function (channel) {
                 var self = this;
+
+                console.log(channel);
 
                 self.channelIndex = channel;
                 vsclientSession.stopListening();

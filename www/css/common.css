@@ -173,7 +173,7 @@ table .ivu-table-cell {
 }
 .loginPage .login.loginPhone .header .label {
   display: block;
-  font-size: 24px;
+  font-size: 18px;
   top: auto;
   left: auto;
 }
@@ -191,6 +191,7 @@ table .ivu-table-cell {
 .loginPage .login.loginPhone .copyRight {
   background-color: transparent;
   color: #464545;
+  font-size: 12px;
 }
 .loginPage .login .wrap {
   position: absolute;
@@ -800,7 +801,7 @@ table .ivu-table-cell {
 }
 .tableWrap {
   padding-left: 2px;
-  padding-right: 1px;
+  padding-right: 1px; 
 }
 .tableWrap .ivu-table-wrapper {
   border: none;
@@ -818,9 +819,6 @@ table .ivu-table-cell {
   background-color: #3e4864;
   color: white;
   font-size: 13px;
-}
-.tableWrap .ivu-table i {
-  font-size: 18px;
 }
 .tableWrap .ivu-table-stripe .ivu-table-fixed-body tr.ivu-table-row-highlight:nth-child(2n) td {
   color: #fff;
@@ -940,7 +938,7 @@ table .ivu-table-cell {
 }
 .mapContainer.mapContainerPhone .menuWrap .swipeWrap .swipeIcon {
   position: relative;
-  z-index: 10; 
+  z-index: 10;
   top: -6px;
   left: -13px;
 }
@@ -958,18 +956,6 @@ table .ivu-table-cell {
 }
 .mapContainer.mapContainerPhone .radar .scanning-circle .radar-scanner {
   width: 20em;
-}
-.mapContainer.mapContainerPhone .eareFind {
-  position: fixed;
-  z-index: 10000;
-  left: 10px;
-  top: 60px;
-  width: 100%;
-}
-.mapContainer.mapContainerPhone .eareFind .label span {
-  padding: 5px 10px;
-  color: #769995;
-  background-color: #f5f3f0;
 }
 .mapContainer.mapContainerPhone .faskMenu {
   display: none;
@@ -996,6 +982,23 @@ table .ivu-table-cell {
   border-radius: 50%;
   background-color: #fff;
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+}
+.mapContainer.mapContainerPhone .eareFind {
+  left: 13px;
+  top: 60px;
+}
+.mapContainer .eareFind {
+  position: fixed;
+  z-index: 10000;
+  left: 430px;
+  left: 50px;
+  top: 100px;
+  width: 100%;
+}
+.mapContainer .eareFind .label span {
+  padding: 5px 10px;
+  color: #769995;
+  background-color: #f5f3f0;
 }
 .mapContainer .mapWrap {
   position: fixed;
@@ -1064,6 +1067,9 @@ table .ivu-table-cell {
 }
 .mapContainer .mapWrap .ol-zoomslider {
   top: 90px;
+}
+.mapContainer .mapWrap .ivu-slider-wrap {
+  margin: 3px 0;
 }
 .mapContainer .searchWrap {
   position: absolute;

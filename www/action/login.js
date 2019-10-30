@@ -27,16 +27,20 @@
                 //     "label": "繁體",
                 // }
             ],
-            "airPort": "113.310746,23.396745",
+            "airPort": "121.34210660807666,31.198845194982827",
             "airPortList": [
                 {
                     "value": "0",
                     "label": "全部",
                 },
-                {
-                    "value": "113.310746,23.396745",
-                    "label": "广州白云机场",
-                },
+                // {
+                //     "value": "116.5924,40.0791",
+                //     "label": "北京首都机场",
+                // },
+                // {
+                //     "value": "113.310746,23.396745",
+                //     "label": "广州白云机场",
+                // },
                 {
                     "value": "121.34210660807666,31.198845194982827",
                     "label": "上海虹桥国际机场",
@@ -46,7 +50,7 @@
                     "label": "上海浦东国际机场",
                 }
             ],
-            "title": { "CN": "特种车辆音视频可视化系统", 'EN': "Mingui Non-Powered Euipment Management System", 'TW': "民貴無動力管理系統" }
+            "title": { "CN": "航空地面服务特种车辆管理系统", 'EN': "Mingui Non-Powered Euipment Management System", 'TW': "民貴無動力管理系統" }
         },
         "watch": {
             "language": function (value) {
@@ -142,6 +146,8 @@
                         },
                         successCallback: function (data) {
                             if (data.code == 200) {
+                                utility.cleanSessionStorage();
+                                utility.cleanLocalStorage();
                                 utility.setLocalStorage("userInfo", data.data);
                                 utility.setLocalStorage("language", { "language": self.language });
                                 utility.setLocalStorage("airPort", { "airPort": self.airPort });
@@ -194,7 +200,7 @@
             self.getBizParam();
 
             // 获取省份数据
-            self.getProvinceList();
+            // self.getProvinceList();
 
             document.onkeydown = function (e) {
                 var e = e || event;

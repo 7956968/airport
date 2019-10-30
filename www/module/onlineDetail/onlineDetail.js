@@ -3,6 +3,8 @@
     var userInfo = utility.getLocalStorage("userInfo");
     var bizParam = utility.getLocalStorage("bizParam");
     var onlineStatItemInfo = utility.getSessionStorage("onlineStatItemInfo");
+    var filterCompany = [];
+    var filterDepart = [];
     var pageVue = new Vue({
         "el": "#js-vue",
         "data": {
@@ -35,13 +37,30 @@
             },
             "columnsList": [
                 {
+                    "type": "index",
+                    "width": 60,
+                    "title": "序号",
+                    "align": "center"
+                },
+                {
                     "title": { "CN": "公司", "EN": "Company", "TW": "公司" }[language["language"]],
                     "key": "companyName",
-                    "width": 200
+                    "width": 200,
+                    "filters": filterCompany,
+                    "filterMultiple": false,
+                    "filterRemote"(value, row) {
+                        pageVue.pageInfo.companyId = value;
+                        pageVue.getDepartmentList();
+                    }
                 },
                 {
                     "title": { "CN": "部门", "EN": "Department", "TW": "部門" }[language["language"]],
-                    "key": "deptName"
+                    "key": "deptName",
+                    "filters": filterDepart,
+                    "filterMultiple": false,
+                    "filterRemote"(value, row) {
+                        pageVue.pageInfo.deptIds = value;
+                    },
                 },
                 {
                     "title": { "CN": "车辆名称", "EN": "Vehicle Name", "TW": "車輛名稱" }[language["language"]],
@@ -54,10 +73,14 @@
                 {
                     "title": "统计日期",
                     "key": "statDay",
+                    "sortable": true,
+                    "sortType": "des",
                 },
                 {
                     "title": "上下线时间",
-                    "key": "changeTime"
+                    "key": "changeTime",
+                    "sortable": true,
+                    "sortType": "des",
                 },
                 {
                     "title": "上下线类型",
@@ -162,7 +185,7 @@
                     dataObj: {
                         "pageNum": self.page.pageNum,
                         "pageSize": self.page.pageSize,
-                        "deptId": self.pageInfo.deptId, // 部门ID
+                        "deptId": self.pageInfo.deptIds[self.pageInfo.deptIds.length - 1] || 0, //self.pageInfo.deptId, // 部门ID
                         "companyId": self.pageInfo.companyId, // 所属公司ID
                         "statusType": self.pageInfo.statusType,  //上下线类型： -1：全部 0：下线 1：上线
                         "vehicleName": encodeURI(self.pageInfo.vehicleName),// 车辆名称
@@ -187,7 +210,7 @@
             },
             "changeToGetDetp": function () {
                 var self = this;
-                self.getDepartmentList();
+                self.getDepartmentTreeList();
             },
             "getSuper": function (list, value, arr) {
                 var self = this;
@@ -210,7 +233,7 @@
                 self.departmentList = JSON.parse(listInfo);
             },
             // 获取部门信息
-            "getDepartmentList": function () {
+            "getDepartmentTreeList": function () {
                 var self = this;
                 self.departmentList = [];
                 utility.interactWithServer({
@@ -234,6 +257,29 @@
                     }
                 });
             },
+            // 获取部门信息
+            "getDepartmentList": function () {
+                var self = this;
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.deptService + "?action=" + CONFIG.ACTION.getDeptList,
+                    actionUrl: CONFIG.SERVICE.deptService,
+                    dataObj: {
+                        pageNum: 1,
+                        pageSize: 10000,
+                        companyId: self.pageInfo.companyId[0] || 0, // 公司ID
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            for (var i = 0, len = data.data.length; i < len; i++) {
+                                filterDepart.push({
+                                    label: data.data[i]["deptName"],
+                                    value: data.data[i]["id"],
+                                });
+                            }
+                        }
+                    }
+                });
+            },
             // 获取公司列表
             "getCompanyList": function () {
                 var self = this;
@@ -247,6 +293,12 @@
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.companyList = data.data;
+                            for (var i = 0, len = self.companyList.length; i < len; i++) {
+                                filterCompany.push({
+                                    label: self.companyList[i]["companyName"],
+                                    value: self.companyList[i]["id"]
+                                });
+                            }
                         }
                     }
                 });
@@ -265,7 +317,7 @@
             setTimeout(function () {
                 self.getVehicleOnlineDetail(true);
                 self.getCompanyList();
-                self.getDepartmentList();
+                
                 self.$watch('pageInfo', function () {
                     self.getVehicleOnlineDetail(true);
                 }, { deep: true });

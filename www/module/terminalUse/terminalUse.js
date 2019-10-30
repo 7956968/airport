@@ -37,37 +37,53 @@
             "columnsList": [
                 {
                     "type": "index",
-                    "width": 60,
+                    "align": "center",
+                    "title": "序号",
+                    "width": 60
+                },
+                {
+                    "title": "公司",
+                    "key": "companyId",
+                    "width": 200,
+                },
+                {
+                    "title": "运行状态",
+                    "key": "deviceStatus",
                     "align": "center"
                 },
                 {
-                    "title": { "CN": "公司", "EN": "Company", "TW": "公司" }[language["language"]],
-                    "key": "companyId"
+                    "title": "终端编号",
+                    "key": "deviceCode"
                 },
                 {
-                    "title": { "CN": "运行状态", "EN": "Working Condition", "TW": "運行狀態" }[language["language"]],
-                    "key": "deviceStatus"
-                },
-                {
-                    "title": { "CN": "供应商", "EN": "Supplier", "TW": "廠家名稱" }[language["language"]],
+                    "title": "供应商",
                     "key": "providerId"
                 },
                 {
-                    "title": { "CN": "上报周期", "EN": "Reporting Cycle", "TW": "上報周期" }[language["language"]],
-                    "key": "dataPeriod"
+                    "title": "上报周期",
+                    "key": "dataPeriod",
+                    "align": "center",
+                    "render": function(h, params){
+                        return h("div", [
+                            h("span", {}, params.row.dataPeriod+"秒"),
+                        ]);
+                    }
                 },
+                // {
+                //     "title": { "CN": "系统版本", "EN": "System Version", "TW": "系統版本" }[language["language"]],
+                //     "key": "versionName",
+                //     "align": "center",
+                // },
+                // {
+                //     "title": { "CN": "系统版本号", "EN": "System Version No.", "TW": "系統版本號" }[language["language"]],
+                //     "key": "versionNum",
+                //     "align": "center",
+                // },
                 {
-                    "title": { "CN": "系统版本", "EN": "System Version", "TW": "系統版本" }[language["language"]],
-                    "key": "versionName"
-                },
-                {
-                    "title": { "CN": "系统版本号", "EN": "System Version No.", "TW": "系統版本號" }[language["language"]],
-                    "key": "versionNum"
-                },
-                {
-                    "title": { "CN": "当前速度", "EN": "Speed", "TW": "當前速度" }[language["language"]],
+                    "title": "当前速度",
                     "key": "speed",
                     "sortable": true,
+                    "align": "center",
                     "render": function(h, params){
                         return h("div", [
                             h("span", {}, params.row.speed+"（公里/小时）"),
@@ -75,9 +91,34 @@
                     }
                 },
                 {
-                    "title": { "CN": "电量", "EN": "Power", "TW": "電量" }[language["language"]],
+                    "title": "电量",
                     "key": "power",
                     "sortable": true,
+                    "align": "center",
+                    "render": function (h, params) {
+                        var nom = {
+                            "_18600000026": "93",
+                            "_18600000016": "98",
+                            "_18600000019": "98",
+                            "_18600000021": "98",
+                            "_18600000027": "94",
+                            "_18600000031": "95",
+                            "_18600000014": "97",
+                            "_18600000032": "94",
+                            "_18600000010": "98",
+                            "_18600000008": "99",
+                            "_18600000001": "84",
+                            "_18600000017": "100",
+                            "_18600000030": "100",
+                            "_18600000007": "100",
+                            "_18600000033": "100",
+                        };
+                        
+                        return h("div", [
+                            h("span", {}, (nom["_"+params.row.deviceCode]||params.row.power)+"%")
+                        ]);
+                    }
+                    
                 }
             ],
             "dataList": [],
@@ -187,6 +228,11 @@
             setTimeout(function () {
                 self.getTerminalList(true);
                 self.getCompanyList();
+                self.$watch('pageInfo', function () {
+                    self.getTerminalList(true);
+                }, {
+                    deep: true
+                });
             }, 500);
         }
     });

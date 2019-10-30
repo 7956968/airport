@@ -7,7 +7,7 @@
         "data": {
             "userInfo": userInfo,
             "language": !!language ? language["language"] : "CN",
-            "title": { "CN": "特种车辆音视频可视化系统", 'EN': "Mingui Non-Powered Euipment Management System", 'TW': "民貴無動力管理系統" },
+            "title": { "CN": "航空地面服务特种车辆管理系统", 'EN': "Mingui Non-Powered Euipment Management System", 'TW': "民貴無動力管理系統" },
             "tabList": {
                 "Welcom": null,
                 "Maps": null,
@@ -208,7 +208,19 @@
                     self.tabList[id]["isDelete"] = true;
                     self.iframeList[id]["isDelete"] = true;
                 }
-            }
+            },
+            // 获取枚举值保存在本地
+            "getBizParam": function () {
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.commonService + "?action=" + CONFIG.ACTION.getBizParam,
+                    actionUrl: CONFIG.SERVICE.commonService,
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            utility.setLocalStorage("bizParam", data.data);
+                        }
+                    }
+                });
+            },
         },
         "created": function () {
             var self = this;
@@ -218,9 +230,16 @@
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
             utility.isLogin(true);
 
+            // 获取枚举值
+            self.getBizParam();
+
             setTimeout(function() {
                 self.setTabItem("/airport/www/module/welcom/welcom.html", "Welcom");
             }, 1000);
+
+            setInterval(function() {
+                self.getBizParam();
+            }, 60000);
         },
         "mounted": function() {
             var self = this;

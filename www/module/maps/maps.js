@@ -276,6 +276,11 @@
                 "beginTime": "00:00:00",
                 "endTime": "23:59:59"
             },
+            "disabledDate": {
+                disabledDate(date) {
+                    return date && date.valueOf() > Date.now();
+                }
+            },
             "singleVehicleItem": {},
             //#endregion
 
@@ -819,7 +824,10 @@
             },
             // countNewCoor
             "countNewCoordinate": function (coordinate) {
-                return [coordinate[0] + 0.005511, coordinate[1] - 0.002568];
+                var result = gcoord.transform([parseFloat(coordinate[0]), parseFloat(coordinate[1])], gcoord.WGS84, gcoord.GCJ02);
+                // return [coordinate[0] + 0.005511, coordinate[1] - 0.002568];
+                console.log(result);
+                return [result[0], result[1]];
                 // return [coordinate[0] + 0.005551, coordinate[1] - 0.002691];
             },
             "transformLat": function (coordinate) {
@@ -2185,6 +2193,8 @@
                 var self = this;
                 var timeDiff = null;
 
+                self.clearTrack(); // 先清除轨迹
+
                 if (self.dateTimeInfo.beginDate.length == 0) {
                     self.dateTimeInfo.beginDate = (function () {
                         var dateInfo = utility.getDateDetailInfo();
@@ -2210,10 +2220,11 @@
                 self.singleVehiclePageInfo.beginTime = self.dateTimeInfo.beginDate + " " + self.dateTimeInfo.beginTime;
                 self.singleVehiclePageInfo.endTime = self.dateTimeInfo.endDate + " " + self.dateTimeInfo.endTime;
 
+                console.log(self.singleVehiclePageInfo.beginTime);
+                console.log(self.singleVehiclePageInfo.endTime);
+
                 timeDiff = utility.timeDiff(self.singleVehiclePageInfo.beginTime, self.singleVehiclePageInfo.endTime);
 
-                // 先清空原有轨迹
-                self.clearTrack();
                 self.$Message.destroy();
 
                 if (timeDiff.isOver == false) {
@@ -2229,6 +2240,7 @@
                 self.$Message.loading({
                     "content": "正在加载轨迹..."
                 });
+
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getSingleVehicleTrack,
                     actionUrl: CONFIG.SERVICE.vehicleService,
@@ -2451,9 +2463,9 @@
             // 清空轨迹数据
             "clearTrack": function () {
                 var self = this;
-                // self.cancelTrack();
+                self.cancelTrack();
                 self.stopVehicleAnimation(false);
-                // self.mapContainer.sourceInfo.trajectory.clear();
+                self.mapContainer.sourceInfo.trajectory.clear();
                 if (!!self.mapContainer.overlayInfo["trajectory"]) {
                     self.mapContainer.overlayInfo["trajectory"].setPosition(undefined)
                 }
@@ -2747,53 +2759,6 @@
                 self.getCompanyList();// 获取公司
                 self.getAllVehiclePositonList(); // 获取所有实时车辆
 
-                // $("body").find(".ol-overviewmap-map").on("click", function (event) {
-                //     var div = $("body").find(".ol-overviewmap-map").offset(); 
-                //     var x = event.pageX - div.left; // Get the horizontal coordinate 
-                //     var y = event.pageY - div.top; // Get the vertical coordinate 
-                //     var coor = "X coords: " + x + ", Y coords: " + y;
-                //     console.log(coor);
-                //     $("body").find(".ol-overlay-container").css("left", x);
-                //     $("body").find(".ol-overlay-container").css("top", y);
-                // });
-
-//                 $("body").find(".ol-overviewmap-map").on("click", function (event) {
-//                     // var dragEle = $("body").find(".ol-overviewmap-box");
-//                     // var overviewmap = $("body").find(".ol-overviewmap-map").offset();
-//                     // // var offsetX = event.offsetX;
-//                     // // var offsetY = event.offsetY;
-//                     // var overviewWidth = overviewmap.left;
-//                     // var overviewmapHeight = overviewmap.top;
-//                     // var map = self.mapContainer.map;
-//                     // var dragingWidth = dragEle.width();
-//                     // var dragingHeight = dragEle.height();
-//                     // var dragingSize = [dragingWidth, dragingHeight];
-//                     // var mapSize = map.getSize();
-//                     // var xMove = overviewWidth * (Math.abs(mapSize[0] / dragingSize[0]));
-//                     // var yMove = overviewmapHeight * (Math.abs(mapSize[1] / dragingSize[1]));
-//                     // var bottomLeft = [xMove, yMove];
-//                     // // var topRight = [mapSize[0] + xMove, yMove];
-//                     // var coordinate = map.getCoordinateFromPixel(bottomLeft);
-//                     // // var top = map.getCoordinateFromPixel(topRight);
-//                     // // var extent = [left[0], left[1], top[0], top[1]];
-//                     // // map.getView().fit(extent, map.getSize());
-//                     // // map.getView().setResolution(c);
-// 
-//                     // map.getView().setResolution(map.getView().getResolution());
-//                     // self.setAnimation(coordinate, map.getView().getZoom());
-// 
-//                     // var offsetX = event.offsetX;
-//                     // var offsetY = event.offsetY;
-//                     var map = self.mapContainer.map;
-//                     var mapSize = map.getSize();
-//                     var div = $("body").find(".ol-overviewmap-map").offset(); 
-//                     var x = mapSize[0] - div.left; // Get the horizontal coordinate 
-//                     var y = mapSize[1] - div.top; // Get the vertical coordinate 
-//                     var coordinate = map.getCoordinateFromPixel([x, y]);
-//                     map.getView().setResolution(map.getView().getResolution());
-//                     self.setAnimation(coordinate, map.getView().getZoom());
-//                 });
-
                 timePosition = setInterval(function () {
                     self.getVehicleList(true);
                     self.getAllVehiclePositonList(); // 获取所有实时车辆
@@ -2810,10 +2775,6 @@
                         }, 2000);
                     }
                 }, 100);
-
-                // self.mapContainer.controlsInfo.overviewMap.on("singleclick", function(event) {
-                //     console.log(event);
-                // });
 
                 // 点击地图
                 self.mapContainer.map.on("singleclick", function (event) {
@@ -2855,11 +2816,6 @@
                     }
                 });
 
-                // 监听视图变化
-                // self.mapContainer.map.getView().on('change:resolution', function (event) {
-                //     self.drawAlVehicle();
-                // });
-
                 // 双击地图
                 self.mapContainer.map.on("dblclick", function (event) {
                     var coordinate = event.coordinate;
@@ -2870,9 +2826,7 @@
                 self.$watch('vehiclePositonPageInfo', function () {
                     var fromInfo = utility.getSessionStorage("fromInfo") || null;
                     self.clearAllVehicle();
-                    // if (fromInfo == null || (!!fromInfo && fromInfo.type == "isSearch")) {
-                    //     self.showModal("isSearch");
-                    // }
+
                     clearInterval(timePosition);
                     self.getAllVehiclePositonList();
                     timePosition = setInterval(function () {

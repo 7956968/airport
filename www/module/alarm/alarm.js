@@ -2,9 +2,68 @@
     var language = utility.getLocalStorage("language");
     var userInfo = utility.getLocalStorage("userInfo");
     var bizParam = utility.getLocalStorage("bizParam");
+    var fromMap = utility.getSessionStorage("fromMap");
+    var filterCompany = [];
+    var filterDepart = [];
+    // 1：拆卸
+    // 2：超速
+    // 3：电量低
+    // 501：进入防区
+    // 502：离开防区
+    // 503：防区内停留
+    // 504：防区内行驶
+    // 505：防区内超速 
+    var eventList = [{
+            label: "拆卸",
+            value: 1
+        },
+        {
+            label: "超速",
+            value: 2
+        },
+        {
+            label: "电量低",
+            value: 3
+        },
+        {
+            label: "进入防区",
+            value: 501
+        },
+        {
+            label: "离开防区",
+            value: 502
+        },
+        {
+            label: "防区内停留",
+            value: 503
+        },
+        {
+            label: "防区内行驶",
+            value: 504
+        },
+        {
+            label: "防区内超速",
+            value: 505
+        },
+    ];
+    var dealFlagList = [
+        {
+            label: "未处理",
+            value: 0,
+        },
+        {
+            label: "处理中",
+            value: 1,
+        },
+        {
+            label: "已处理",
+            value: 2,
+        }
+    ];
     var pageVue = new Vue({
         "el": "#js-vue",
         "data": {
+            "filterDepart": [],
             "language": !!language ? language["language"] : "CN",
             "isTableLoading": true,
             "isShowModal": false,
@@ -23,6 +82,7 @@
                 "eventTypeId": "",
                 "dealFlag": "",
                 "vehicleName": "",
+                "licenseNumber": "",
                 "beginTime": "",
                 "endTime": ""
             },
@@ -39,46 +99,110 @@
                 "createUserId": userInfo["id"], // 创建用户ID，新增时必传
                 "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传
             },
-            "columnsList": [
+            "columnsList": [{
+                    "type": "index",
+                    "align": "center",
+                    "title": "序号",
+                    "width": 60,
+                    "fixed": "left",
+                },
                 {
-                    "title": { "CN": "公司名称", "EN": "Company name", "TW": "公司名稱" }[language["language"]],
+                    "title": "公司名称",
                     "key": "companyName",
-                    "width": 200
+                    "width": 180,
+                    "fixed": "left",
+                    "filters": filterCompany,
+                    "filterMultiple": false,
+                    "filterRemote"(value, row) {
+                        pageVue.pageInfo.companyId = value;
+                        pageVue.getDepartmentList();
+                    }
                 },
                 {
-                    "title": { "CN": "部门名称", "EN": "Department Name", "TW": "部門名稱" }[language["language"]],
-                    "key": "deptName"
+                    "title": "部门名称",
+                    "key": "deptName",
+                    "width": 150,
+                    "filters": filterDepart,
+                    "filterMultiple": false,
+                    "filterRemote"(value, row) {
+                        pageVue.pageInfo.deptIds = value;
+                    },
                 },
                 {
-                    "title": { "CN": "报警类型", "EN": "Name", "TW": "姓名" }[language["language"]],
-                    "key": "alarmTypeDesc"
+                    "title": "报警类型",
+                    "key": "alarmTypeDesc",
+                    "width": 100
                 },
                 {
-                    "title": { "CN": "处理状态", "EN": "Job Title", "TW": "職位名稱" }[language["language"]],
-                    "key": "dealDesc"
+                    "title": "处理状态",
+                    "key": "dealDesc",
+                    "width": 100,
+                    "filters": dealFlagList,
+                    "filterMultiple": false,
+                    "filterRemote"(value, row) {
+                        pageVue.pageInfo.dealFlag = value[0];
+                    },
                 },
                 {
-                    "title": { "CN": "警报事件", "EN": "Job Title", "TW": "職位名稱" }[language["language"]],
-                    "key": "eventTypeDesc"
+                    "title": "警报事件",
+                    "key": "eventTypeDesc",
+                    "width": 100,
+                    "filters": eventList,
+                    "filterMultiple": false,
+                    "filterRemote"(value, row) {
+                        pageVue.pageInfo.eventTypeId = value[0];
+                    },
+                    "render": function (h, params) {
+                        var alarmType = {
+                            "_1": "拆卸",
+                            "_2": "超速",
+                            "_3": "电量低",
+                            "_501": "进入防区",
+                            "_502": "离开防区",
+                            "_503": "防区内停留",
+                            "_504": "防区内行驶",
+                            "_505": "防区内超速"
+                        };
+                        return h("div", [
+                            h("span", {}, params.row.eventTypeDesc || alarmType["_" + params.row.eventTypeId]),
+                        ]);
+                    }
                 },
                 {
-                    "title": { "CN": "车辆名称", "EN": "Job Type", "TW": "職位類型" }[language["language"]],
+                    "title": "车辆名称",
                     "key": "vehicleName",
                     "width": 150
                 },
                 {
-                    "title": { "CN": "报警时间", "EN": "Job Type", "TW": "職位類型" }[language["language"]],
+                    "title": "报警时间",
                     "key": "alarmTime",
                     "width": 130
                 },
                 {
-                    "title": { "CN": "报警内容", "EN": "Job Type", "TW": "職位類型" }[language["language"]],
+                    "title": "报警内容",
                     "key": "alarmInfo",
-                    "width": 180
+                    "width": 400
                 },
                 {
-                    "title": { "CN": "操作", "EN": "Operation", "TW": "操作" }[language["language"]],
+                    "title": "报警坐标",
+                    "key": "gpsPositionStr",
+                    "width": 120
+                },
+                {
+                    "title": "报警地址",
+                    "key": "alarmAddress",
+                    "width": 350
+                },
+                {
+                    "title": {
+                        "CN": "操作",
+                        "EN": "Operation",
+                        "TW": "操作"
+                    } [language["language"]],
                     "key": "operation",
+                    "fixed": "right",
+                    "align": "center",
+                    "width": 160,
                     "render": function (h, params) {
                         return h("div", [
                             h("Button", {
@@ -96,7 +220,7 @@
                                         pageVue.showDetail();
                                     }
                                 }
-                            }, { "CN": "详情", "EN": "Detail", "TW": "詳情" }[language["language"]]),
+                            }, "详情"),
                             h("Button", {
                                 "props": {
                                     "type": "warning",
@@ -112,14 +236,14 @@
                                         pageVue.editItem();
                                     }
                                 }
-                            }, { "CN": "编辑", "EN": "Edite", "TW": "編輯" }[language["language"]]),
+                            }, "处理异常")
                         ]);
                     }
                 }
             ],
+            "tableRowList": [],
             "userList": [],
             "companyList": [],
-            "tableRowList": [],
             "alarmList": [],
             "superiorDepartmentList": [],
             "deptUserPositionTypeList": bizParam["departmentPositionType"]
@@ -141,7 +265,11 @@
                 var self = this;
                 self.isShowModal = true;
                 self.isModalLoading = true;
-                self.modalTitle = { "CN": "新增", "EN": "Add", "TW": "新增" }[self.language];
+                self.modalTitle = {
+                    "CN": "新增",
+                    "EN": "Add",
+                    "TW": "新增"
+                } [self.language];
                 self.itemInfo = {
                     "remark": "",
                     "dealFlag": "",
@@ -155,7 +283,11 @@
                 utility.showMessageTip(self, function () {
                     self.itemInfo = self.alarmList[self.index];
                     self.isShowModal = true;
-                    self.modalTitle = { "CN": "修改", "EN": "Edit", "TW": "修改" }[self.language];
+                    self.modalTitle = {
+                        "CN": "修改",
+                        "EN": "Edit",
+                        "TW": "修改"
+                    } [self.language];
                 });
             },
             // 查看详情
@@ -166,7 +298,7 @@
                     self.isShowDetail = true;
                 });
             },
-           
+
             // 时间变化
             "beginRepairTime": function (value, item) {
                 var self = this;
@@ -260,12 +392,34 @@
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
-                            self.alarmList = data.data;
+                            var list = [];
+
                             self.pageInfo.count = data.count;
 
-                            // 格式化表格数据
-                            // self.formatTableList();
+                            for (var i = 0, len = data.data.length; i < len; i++) {
+                                list.push(data.data[i]);
+                                list[i]["alarmAddress"] = "";
+                            }
+                            self.alarmList = list;
 
+                            for (var a = 0; a < data.data.length; a++) {
+                                (function (a) {
+                                    if (!!data.data[a].lastPosition) {
+                                        var position = JSON.parse(data.data[a].lastPosition)["coordinates"];
+                                        if (position[0] != 0 && position[1] != 0) {
+                                            utility.convertorByBaidu(position, gcoord, BMap, function (point, lng, lat) {
+                                                utility.getAdressDetail([lng, lat], BMap, function (address) {
+                                                    self.alarmList[a]["alarmAddress"] = address;
+                                                });
+                                            });
+                                        } else {
+                                            self.alarmList[a]["alarmAddress"] = "--";
+                                        }
+                                    } else {
+                                        self.alarmList[a]["alarmAddress"] = "--";
+                                    }
+                                }(a));
+                            }
                         }
                     }
                 });
@@ -283,6 +437,12 @@
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.companyList = data.data;
+                            for (var i = 0, len = self.companyList.length; i < len; i++) {
+                                filterCompany.push({
+                                    label: self.companyList[i]["companyName"],
+                                    value: self.companyList[i]["id"]
+                                });
+                            }
                         }
                     }
                 });
@@ -330,6 +490,30 @@
                     }
                 });
             },
+            // 获取部门信息
+            "getDepartmentList": function () {
+                var self = this;
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.deptService + "?action=" + CONFIG.ACTION.getDeptList,
+                    actionUrl: CONFIG.SERVICE.deptService,
+                    dataObj: {
+                        pageNum: 1,
+                        pageSize: 10000,
+                        companyId: self.pageInfo.companyId[0] || 0, // 公司ID
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            var arr = [];
+                            for (var i = 0, len = data.data.length; i < len; i++) {
+                                filterDepart.push({
+                                    label: data.data[i]["deptName"],
+                                    value: data.data[i]["id"],
+                                });
+                            }
+                        }
+                    }
+                });
+            },
             // 获取用户信息
             "getUserList": function (callback) {
                 var self = this;
@@ -364,14 +548,19 @@
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
             utility.isLogin(false);
 
+            if (!!fromMap) {
+                self.pageInfo.vehicleName = fromMap.vehicleName;
+            }
+
             setTimeout(function () {
                 self.getAlarmList(true);
                 self.getCompanyList();
-                // self.getSuperiorDeprtList("pageInfo");
 
                 self.$watch('pageInfo', function () {
                     self.getAlarmList(true);
-                }, { deep: true });
+                }, {
+                    deep: true
+                });
             }, 500);
         }
     });

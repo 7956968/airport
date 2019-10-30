@@ -45,14 +45,14 @@
     <!-- QQ应用模式 -->
     <meta name="x5-page-mode" content="app">
     <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
-    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=03030" />
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=12341234123" />
 </head>
 
 <body class="innerPage">
     <div id="js-vue" class="tableContainer">
         <div class="top">
-            <Row type="flex" justify="start" gutter="10">
-                <i-col span="21">
+            <Row type="flex" justify="start" gutter="0">
+                <i-col span="20">
                     <div class="searchWrap">
                         <table>
                             <tbody>
@@ -60,10 +60,10 @@
                                     <td>
                                         <template>
                                             &nbsp;&nbsp;{{{'CN':'公司','EN':'Company','TW':'公司'}[language]}}:
-                                            <i-select @on-change="getDepartmentList('pageInfo')"
+                                            <i-select @on-change="getDepartmentTreeList('pageInfo')"
                                                 v-model="pageInfo.companyId" clearable
                                                 :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"
-                                                style="width:140px;">
+                                                style="width:150px;">
                                                 <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}
                                                 </i-option>
                                                 <i-option v-for="item in companyList" :value="item.id">
@@ -73,13 +73,13 @@
                                         <template>
                                             &nbsp;&nbsp;{{{'CN':'部门','EN':'Superior Department','TW':'部門'}[language]}}:
                                             <template>
-                                                <Cascader :data="departmentList" v-model="pageInfo.deptId"
-                                                    style="width:140px; display: inline-block;" trigger="click"
+                                                <Cascader :data="departmentList" v-model="pageInfo.deptIds"
+                                                    style="width:150px; display: inline-block;" trigger="click"
                                                     :change-on-select="true"></Cascader>
                                             </template>
                                         </template>
                                         <template>
-                                            &nbsp;&nbsp;运动状态:
+                                            &nbsp;&nbsp;状态:
                                             <i-select v-model="pageInfo.vehicleStatus" clearable
                                                 :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"
                                                 style="width:100px;">
@@ -101,10 +101,10 @@
                                             </i-select>
                                         </template> -->
                                         <template>
-                                            &nbsp;&nbsp;{{{'CN':'车辆类型','EN':'Vehicle Type','TW':'車輛類型'}[language]}}:
+                                            &nbsp;&nbsp;{{{'CN':'类型','EN':'Vehicle Type','TW':'車輛類型'}[language]}}:
                                             <i-select v-model="pageInfo.vehicleTypeId" clearable
                                                 :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"
-                                                style="width:80px;">
+                                                style="width:100px;">
                                                 <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}
                                                 </i-option>
                                                 <i-option v-for="item in vehicleTypeList" :value="item.type">
@@ -114,8 +114,8 @@
                                         <template>
                                             &nbsp;&nbsp;{{{'CN':'车牌号','EN':'Plate No.','TW':'車牌號'}[language]}}:
                                             <i-input v-model="pageInfo.licenseNumber"
-                                                :placeholder="{'CN':'请输入车牌号','EN':'Plate No.','TW':'請輸入車牌號'}[language]"
-                                                style="width: 100px"></i-input>
+                                                :placeholder="{'CN':'请输入','EN':'Plate No.','TW':'請輸入車牌號'}[language]"
+                                                style="width: 120px"></i-input>
                                         </template>
                                         <!-- <template>
                                             &nbsp;&nbsp;{{{'CN':'颜色','EN':'Vehicle Type','TW':'顔色'}[language]}}:
@@ -142,7 +142,7 @@
                         </table>
                     </div>
                 </i-col>
-                <i-col span="3">
+                <i-col span="4">
                     <div class="actionWrap">
                         <template>
                             <i-buttonGroup>
@@ -209,7 +209,7 @@
                                 </td>
                                 <td>
                                     <template>
-                                        <i-select @on-change="getDepartmentList('itemInfo')"
+                                        <i-select @on-change="getDepartmentTreeList('itemInfo')"
                                             v-model="itemInfo.companyId" clearable
                                             :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
                                             <i-option v-for="item in companyList" :value="item.id">{{item.companyName}}

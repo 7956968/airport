@@ -229,7 +229,7 @@ table {
 
                 .label {
                     display: block;
-                    font-size: 24px;
+                    font-size: 18px;
                     top: auto;
                     left: auto;
                 }
@@ -250,6 +250,7 @@ table {
             .copyRight {
                 background-color: transparent;
                 color: #464545;
+                font-size: 12px;
             }
         }
 
@@ -1045,10 +1046,6 @@ table {
             color: white;
             font-size: 13px;
         }
-
-        i {
-            font-size: 18px;
-        }
     }
 
     .ivu-table-stripe .ivu-table-fixed-body tr.ivu-table-row-highlight:nth-child(2n) td {
@@ -1249,20 +1246,7 @@ table {
                 }
             }
         }
-        .eareFind {
-            position: fixed;
-            z-index: 10000;
-            left: 10px;
-            top: 60px; 
-            width: 100%;
-            .label {
-                span {
-                    padding: 5px 10px;
-                    color: #769995;
-                    background-color: #f5f3f0;
-                }
-            }
-        }
+        
 
         .faskMenu {
             display: none;
@@ -1293,8 +1277,27 @@ table {
             box-shadow: 0 0 6px rgba(0,0,0,.2);
         }
 
-    }
+        .eareFind {
+            left: 13px;
+            top: 60px; 
+        }
 
+    }
+    .eareFind {
+        position: fixed;
+        z-index: 10000;
+        left: 430px;
+        left: 50px;
+        top: 100px;  
+        width: 100%;
+        .label {
+            span {
+                padding: 5px 10px;
+                color: #769995;
+                background-color: #f5f3f0;
+            }
+        }
+    }
     .mapWrap {
         position: fixed;
         z-index: 5;
@@ -1376,6 +1379,9 @@ table {
 
         .ol-zoomslider {
             top: 90px;
+        }
+        .ivu-slider-wrap {
+            margin: 3px 0;
         }
     }
 
