@@ -72,6 +72,7 @@
                 "pageNum": 1,
                 "pageSize": 10,
                 "count": 0,
+                "vehicleStatus": "",
                 "licenseNumber": ""
             },
             "isTableLoading": false,
@@ -79,28 +80,37 @@
             "statuItemInfo": {},
             "statuColumns": [{
                     "title": "车牌号",
-                    "key": "licenseNumber",
-                    // "filters": licenseNumberList,
-                    // "filterMultiple": false,
-                    // "filterRemote"(value, row) {
-                    //     pageVue.statuPageInfo.licenseNumber = value;
-                    //     pageVue.getStatuVehicleList(true, false);
-                    // }
+                    "key": "licenseNumber"
                 },
                 {
                     "title": "车辆名称",
                     "key": "vehicleName",
-                    // "width": 140
                 },
                 {
                     "title": "车辆状态",
                     "key": "vehicleStatusName",
                     "align": "center",
-                    // "width": 120
+                    "filters": (function(){
+                        var statu = bizParam["terminalStatus"];
+                        var arr = [];
+                        for(var i = 0, len = statu.length; i < len; i++) {
+                            if (statu[i]["type"] == 401 || statu[i]["type"] == 402 || statu[i]["type"] == 403 || statu[i]["type"] == 406) {
+                                arr.push({
+                                    label: statu[i]["name"],
+                                    value: statu[i]["type"]
+                                });
+                            }
+                        }
+                        return arr;
+                    }()),
+                    "filterMultiple": false,
+                    "filterRemote"(value, row) {
+                        pageVue.statuPageInfo.vehicleStatus = value;
+                        pageVue.getStatuVehicleList(true);
+                    },
                 },
                 {
                     "title": "最后上线时间",
-                    // "width": 180,
                     "render": function (h, params) {
                         var classType = "normalDay";
                         var now = Date.parse(new Date());
@@ -118,24 +128,10 @@
                         ]);
                     }
                 },
-                // {
-                //     "title": "最后上线地点",
-                //     "key": "lastAddress",
-                //     "width": 300,
-                //     "render": function (h, params) {
-
-                //         return h("div", [
-                //             h("span", {}, params.row.lastAddress),
-                //         ]);
-                //     }
-                // },
-
                 {
                     "title": "操作",
                     "key": "operation",
                     "align": "center",
-                    // "fixed": "right",
-                    // "width": 140,
                     "render": function (h, params) {
                         var type = "primary";
                         var txt = "详情";
@@ -199,7 +195,8 @@
                 "pageNum": 1,
                 "pageSize": 10,
                 "beginTime": "",
-                "endTime": ""
+                "endTime": "",
+                "licenseNumber": ""
             },
             "onlineStatColumns": [{
                     "title": "车牌号",
@@ -511,6 +508,7 @@
                         "pageSize": self.onlineStatPageInfo.pageSize,
                         "beginTime": self.onlineStatPageInfo.beginTime,
                         "endTime": self.onlineStatPageInfo.endTime,
+                        "licenseNumber": self.onlineStatPageInfo.licenseNumber
                     },
                     beforeSendCallback: function () {
                         self.isloadStae = true;
@@ -559,7 +557,7 @@
                 self.current = value;
                 self.statuPageInfo.pageNum = parseInt(value, 10);
                 setTimeout(function () {
-                    self.getStatuVehicleList(false, false);
+                    self.getStatuVehicleList(false);
                 }, 200);
             },
             // 切换每页条数时的回调
@@ -567,18 +565,15 @@
                 var self = this;
                 self.statuPageInfo.pageSize = parseInt(value, 10);
                 setTimeout(function () {
-                    self.getStatuVehicleList(false, false);
+                    self.getStatuVehicleList(false);
                 }, 200);
             },
             // 获取车辆不同天数的状态信息信息
-            "getStatuVehicleList": function (bool, isAll) {
+            "getStatuVehicleList": function (bool) {
                 var self = this;
                 if (bool == true) {
                     self.current = 1;
                     self.statuPageInfo.pageNum = 1;
-                }
-                if(isAll==true) {
-                    self.statuPageInfo.pageSize = 10000;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getVehicleList,
@@ -588,6 +583,7 @@
                         online: parseInt(self.statuPageInfo.online),
                         daySpan: parseInt(self.statuPageInfo.daySpan),
                         pageSize: self.statuPageInfo.pageSize,
+                        vehicleStatus: self.statuPageInfo.vehicleStatus,
                         pageNum: self.statuPageInfo.pageNum,
                         licenseNumber: encodeURI($.trim(self.statuPageInfo.licenseNumber)),
                     },
@@ -605,32 +601,25 @@
 
                             for (var i = 0, len = data.data.length; i < len; i++) {
                                 // vehicleName licenseNumber vehicleCode lastGpsTime vehicleStatusName vehicleStatus
-                                if(isAll == true) {
-                                    licenseNumberList.push({
-                                        label: data.data[i]["licenseNumber"],
-                                        value: data.data[i]["licenseNumber"]
-                                    });
-                                } else {
-                                    list.push({
-                                        "alarmFlag": decodeURI(data.data[i]["alarmFlag"]),
-                                        "companyName": decodeURI(data.data[i]["companyName"]),
-                                        "deptName": decodeURI(data.data[i]["deptName"]),
-                                        "vehicleName": decodeURI(data.data[i]["vehicleName"]),
-                                        "licenseNumber": decodeURI(data.data[i]["licenseNumber"]),
-                                        "vehicleCode": decodeURI(data.data[i]["vehicleCode"]),
-                                        "lastGpsTime": decodeURI(data.data[i]["lastGpsTime"]),
-                                        "lastOnlineTime": decodeURI(data.data[i]["lastOnlineTime"]),
-                                        "lastPosition": decodeURI(data.data[i]["lastPosition"]),
-                                        "useStatusName": decodeURI(data.data[i]["useStatusName"]),
-                                        "providerName": decodeURI(data.data[i]["providerName"]),
-                                        "gpsDeviceCode": decodeURI(data.data[i]["gpsDeviceCode"]),
-                                        "lastAddress": "",
-                                        "vehicleStatusName": decodeURI(data.data[i]["vehicleStatusName"]),
-                                        "cellClassName": {
-                                            "vehicleStatusName": "_" + data.data[i]["vehicleStatus"]
-                                        }
-                                    });
-                                }
+                                list.push({
+                                    "alarmFlag": decodeURI(data.data[i]["alarmFlag"]),
+                                    "companyName": decodeURI(data.data[i]["companyName"]),
+                                    "deptName": decodeURI(data.data[i]["deptName"]),
+                                    "vehicleName": decodeURI(data.data[i]["vehicleName"]),
+                                    "licenseNumber": decodeURI(data.data[i]["licenseNumber"]),
+                                    "vehicleCode": decodeURI(data.data[i]["vehicleCode"]),
+                                    "lastGpsTime": decodeURI(data.data[i]["lastGpsTime"]),
+                                    "lastOnlineTime": decodeURI(data.data[i]["lastOnlineTime"]),
+                                    "lastPosition": decodeURI(data.data[i]["lastPosition"]),
+                                    "useStatusName": decodeURI(data.data[i]["useStatusName"]),
+                                    "providerName": decodeURI(data.data[i]["providerName"]),
+                                    "gpsDeviceCode": decodeURI(data.data[i]["gpsDeviceCode"]),
+                                    "lastAddress": "",
+                                    "vehicleStatusName": decodeURI(data.data[i]["vehicleStatusName"]),
+                                    "cellClassName": {
+                                        "vehicleStatusName": "_" + data.data[i]["vehicleStatus"]
+                                    }
+                                });
                             }
                             self.statuDataList = list;
                         }
@@ -835,7 +824,7 @@
                 self.getAllVehicleList();
 
                 // 获取车辆不同天数的状态信息信息
-                self.getStatuVehicleList(true, false);
+                self.getStatuVehicleList(true);
 
                 // 获取车辆在线统计情况
                 self.getVehicleOnlineStat();
@@ -848,9 +837,6 @@
 
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
             utility.isLogin(false);
-
-            // self.resetVehicleBizParamInfo();
-            self.getStatuVehicleList(false, true);
 
             // 初始化数据
             self.init();

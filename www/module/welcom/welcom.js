@@ -5,7 +5,7 @@
     var airPort = utility.getLocalStorage("airPort");
     var userFuncList = utility.getLocalStorage("userFuncList");
     var licenseNumberList = [];
-    console.log(bizParam["terminalStatus"]);
+
     var functionInfo = (function () {
         var info = {
             isViewVideo: false,
