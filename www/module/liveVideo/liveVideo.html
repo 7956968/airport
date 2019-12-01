@@ -177,7 +177,8 @@
                                 <span>{{!!videoInfo[index-1]['videoHeight']?videoInfo[index-1]['videoHeight']:0}}</span>&nbsp;
                                 <span>{{videoInfo[index-1]['fps']!='NaN'?videoInfo[index-1]['fps']:0}}fps</span>&nbsp;
                                 <template v-if="!!frontChildren[index-1]">
-                                    <span>{{(frontChildren[index-1]['name'])}}</span>
+                                    <!-- <span>{{(frontChildren[index-1]['name'])}}</span> -->
+                                    <span>{{'通道' + index}}</span>
                                 </template>
                                 <span>
                                     <Icon type="ios-videocam-outline" size="14" /></span>

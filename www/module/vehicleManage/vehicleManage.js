@@ -38,6 +38,14 @@
             "deviceProviderIdList": bizParam["deviceProviderId"], // 定位设备供应商
             "index": 0,
             "selectItem": null,
+            // 车辆信息
+            "vehicleInfo": {
+                "list": [],
+                "count": 0,
+                "_401": 0,
+                "_402": 0,
+                "_406": 0
+            },
             "itemInfo": {
                 "id": "", // 车辆ID
                 "companyId": "", // 所属公司ID
@@ -660,6 +668,39 @@
                     }
                 });
             },
+            // 获取车辆信息
+            "getAllVehicleList": function () {
+                var self = this;
+
+                self.vehicleInfo = {
+                    "list": [],
+                    "count": 0,
+                    "_401": 0,
+                    "_402": 0,
+                    "_406": 0,
+                };
+
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getVehicleList,
+                    actionUrl: CONFIG.SERVICE.vehicleService,
+                    dataObj: {
+                        id: "",
+                        pageSize: 10000,
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            self.vehicleInfo.count = data.count;
+                            self.vehicleInfo.list = data.data;
+
+                            for (var i = 0, len = self.vehicleInfo.list.length; i < len; i++) {
+                                if(self.vehicleInfo.list[i]["vehicleStatus"] == 401 || self.vehicleInfo.list[i]["vehicleStatus"] == 402 || self.vehicleInfo.list[i]["vehicleStatus"] == 406) {
+                                    self.vehicleInfo["_" + self.vehicleInfo.list[i]["vehicleStatus"]] = self.vehicleInfo["_" + self.vehicleInfo.list[i]["vehicleStatus"]] + 1;
+                                }
+                            }
+                        }
+                    }
+                });
+            },
             // 获取公司列表
             "getCompanyList": function () {
                 var self = this;
@@ -873,11 +914,13 @@
 
             setTimeout(function () {
                 self.getVehicleList(true);
+                self.getAllVehicleList();
                 self.getCompanyList();
                 self.getTerminalList();
 
                 setInterval(function () {
                     self.getVehicleList(false);
+                    self.getAllVehicleList();
                 }, 8000);
 
                 self.$watch('pageInfo', function () {

@@ -80,7 +80,14 @@
                                             &nbsp;&nbsp;{{{'CN':'运行状态','EN':'Working Condition','TW':'運行狀態'}[language]}}:
                                             <i-select v-model="pageInfo.deviceStatus" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:100px;">
                                                 <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
-                                                <i-option v-for="item in terminalStatusList" :value="item.type">{{item.name}}</i-option>
+                                                <!-- <i-option v-for="item in terminalStatusList" :value="item.type">{{item.name}}</i-option> -->
+                                                <template v-for="item in terminalStatusList">
+                                                    <template
+                                                        v-if="item.type==401||item.type==402||item.type==406">
+                                                        <i-option :value="item.type">{{item.name}}</i-option>
+                                                    </template>
+                                                    <!-- ||item.type==403 -->
+                                                </template>
                                             </i-select>
                                         </template>
                                         <template>

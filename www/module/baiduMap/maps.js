@@ -1861,13 +1861,19 @@
                 var iconSrc = CONFIG.HOST + "/airport/assets/car/success.gif";
                 var vehicleIcon = (self.vehicleTypeInfo[item.vehicleTypeName] + item.vehicleStatus) || item.vehicleStatus;
                 var now = Date.parse(new Date());
-                var lastTime = Date.parse(item.lastGpsTime.replace(/\-/g, "/"));
-                var day = Math.floor((now - lastTime) / (24 * 3600 * 1000));
+                var lastGpsTime = Date.parse(item.lastGpsTime.replace(/\-/g, "/"));
+                var lastOnTime = Date.parse(item.lastOnlineTime.replace(/\-/g, "/"));
+                var gpsDay = Math.floor((now - lastGpsTime) / (24 * 3600 * 1000));
+                var onday = Math.floor((now - lastOnTime) / (24 * 3600 * 1000));
                 item['isOverTime'] = false;
-                if (day >= 1) {
+                item['isOnTime'] = false;
+                if (gpsDay >= 1) {
                     vehicleIcon = self.vehicleTypeInfo[item.vehicleTypeName] + 406 || 406;
-                    isOverTime = true;
                     item['isOverTime'] = true;
+                }
+
+                if (onday >= 1) {
+                    item['isOnTime'] = true;
                 }
 
                 iconSrc = CONFIG.HOST + "/airport/assets/car/" + vehicleIcon + ".gif?v=" + Date.parse(new Date());
@@ -1931,10 +1937,10 @@
             },
 
             // 跳转到地图页面
-            "toAlarmPage": function (vehicleName) {
+            "toAlarmPage": function (licenseNumber) {
                 var self = this;
                 utility.setSessionStorage("fromMap", {
-                    vehicleName: vehicleName
+                    licenseNumber: licenseNumber
                 });
                 setTimeout(function () {
                     $(window.parent.document).find("#nav_Alarm").bind("click");

@@ -69,13 +69,16 @@
                             <p>车辆速度：{{vehicleItemPop.speed}} 公里/小时</p>
                             <p>最新GPS时间：<span
                                     :style="{background: vehicleItemPop.isOverTime?'#fbd048':''}"><span>{{vehicleItemPop.lastGpsTime}}
-                                        {{vehicleItemPop.isOverTime?'超过24小时未上线':''}}</span></span></p>
+                                        {{vehicleItemPop.isOverTime?'超过24小时未定位':''}}</span></span></p>
+                            <p>最后上线时间：<span
+                                    :style="{background: vehicleItemPop.isOnTime?'#fbd048':''}"><span>{{vehicleItemPop.lastOnlineTime}}
+                                        {{vehicleItemPop.isOnTime?'超过24小时未上线':''}}</span></span></p>
                             <p>运动状态：<span
                                     :class="'_'+vehicleItemPop.vehicleStatus"><span>{{vehicleItemPop.vehicleStatusName}}</span></span>
                             </p>
                             <template v-if="vehicleItemPop.alarmFlag==1">
                                 <p style="padding: 3px 0;">报警详情：<i-button size="small"
-                                        @click="toAlarmPage(vehicleItemPop.vehicleName)" type="primary">有未处理报警信息,查看详情
+                                        @click="toAlarmPage(vehicleItemPop.licenseNumber)" type="primary">有未处理报警信息,查看详情
                                     </i-button>
                                 </p>
                             </template>

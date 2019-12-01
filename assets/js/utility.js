@@ -320,7 +320,7 @@ window.utility = (function (utility) {
     };
 
     // 判断是否已经登录，如果没有登录，则直接退出到登录页面
-    utility.isLogin = function (isParent) {
+    utility.isLogin = function (isParent, isDemo) {
         var userInfo = utility.getLocalStorage("userInfo");
 
         // 判断是否有用户信息
@@ -328,10 +328,19 @@ window.utility = (function (utility) {
             alert("请先登录！");
             utility.setLocalStorage("userInfo", null);
             utility.setLocalStorage("userFuncList", null);
-            if (isParent == true) {
-                window.location.href = "/airport/www/login.html";
-            } else if (isParent == false) {
-                window.parent.window.location.href = "/airport/www/login.html";
+            
+            if(typeof isDemo != 'undefined') {
+                if (isParent == true) {
+                    window.location.href = "/airport/www/indexMg.html";
+                } else if (isParent == false) {
+                    window.parent.window.location.href = "/airport/www/indexMg.html";
+                }
+            } else {
+                if (isParent == true) {
+                    window.location.href = "/airport/www/login.html";
+                } else if (isParent == false) {
+                    window.parent.window.location.href = "/airport/www/login.html";
+                }
             }
         }
     };

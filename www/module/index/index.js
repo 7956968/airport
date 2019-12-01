@@ -85,7 +85,7 @@
                             utility.setLocalStorage("userInfo", null);
                             utility.setLocalStorage("userFuncList", null);
                             setTimeout(function() {
-                                window.location.href = "/airport/www/login.html";
+                                window.location.href = "/airport/www/indexMg.html";
                             }, 150);
                         } else {
                             self.$Message.error(data.message);

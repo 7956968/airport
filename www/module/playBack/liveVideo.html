@@ -79,7 +79,7 @@
                             <div class="videoWrap" :style="{height: (innerHeight-45) + 'px'}">
                                 <div class="search">
                                     <Row>
-                                        <i-col span="12">
+                                        <i-col span="24">
                                             <!-- <span class="label">车牌号</span>
                                             <template>
                                                 <i-select v-model="vehicleInfo.licenseNumber" style="width:100px">
@@ -139,7 +139,7 @@
                                                 @dragover="dragOver($event)">
                                                 <div class="innerItem">
                                                     <video playsinline @dblclick="setFullScream('backVedio'+index)"
-                                                        muted poster="/airport/www/img/poster.png"
+                                                        poster="/airport/www/img/poster.png"
                                                         :id="'backVedio'+index" preload="meta" loop controls
                                                         autoplay></video>
                                                     <div class="channelIndex">
@@ -183,7 +183,8 @@
                                                                 <span>{{videoInfo[index]['videoHeight']||0}}</span>&nbsp;
                                                                 <span>{{videoInfo[index]['fps']||0}}fps</span>&nbsp;
                                                             </template>
-                                                            <span>{{(front.children[index]['name'])}}</span>
+                                                            <!-- <span>{{(front.children[index]['name'])}}</span> -->
+                                                            <span>{{'通道' + (index+1)}}</span>
                                                             <span>
                                                                 <Icon type="ios-videocam-outline" size="18" /></span>
                                                         </div>
@@ -214,7 +215,9 @@
                                                     <template v-for="(value, key) in backPlay.channelInfo">
                                                         <template v-if="value.isChannel">
                                                             <Panel :name="key" :id="'channel'+value.channel">
-                                                                {{((front.children[value.channel]['name']))}} <span
+                                                                <!-- {{((front.children[value.channel]['name']))}}  -->
+                                                                {{'通道' + (value.channel+1)}}
+                                                                <span
                                                                     class="totalVideo">( {{value.list.length + '个'}}
                                                                     )</span> <span class="playNum">当前播放第<span
                                                                         :id="key">{{parseInt(value.radioIndex,10)+1}}</span>个视频</span>
@@ -360,8 +363,8 @@
             OSnow();
         </script>
         <script src="/airport/assets/js/LAB.min.js?v=1341234124"></script>
-        <script src="./Player.js?v=1341234124"></script>
-        <script src="./VSClientSession.js?v=1341234124"></script>
+        <script src="/airport/assets/js//Player.js?v=adadasdf"></script>
+        <script src="/airport/assets/js//VSClientSession.js?v=asdasdfas"></script>
         <script>
             loadScript(MODUL + "module/playBack/liveVideo.min.js");
         </script>

@@ -154,7 +154,10 @@
                                     "click": function () {
                                         pageVue.showStatuDetail = true;
                                         pageVue.statuItemInfo = pageVue.statuDataList[params.index];
-                                        pageVue.statuItemInfo.lastPosition = JSON.parse(pageVue.statuItemInfo.lastPosition)["coordinates"].join(",")
+                                        console.log(pageVue.statuItemInfo);
+                                        pageVue.statuItemInfo.lastPosition = pageVue.statuItemInfo.lastPosition!='null'?JSON.parse(pageVue.statuItemInfo.lastPosition)["coordinates"].join(","):null;
+
+                                        console.log(pageVue.statuItemInfo.lastPosition);
 
                                         var now = Date.parse(new Date());
                                         var lastTime = Date.parse(params.row.lastGpsTime.replace(/\-/g, "/"));
@@ -376,7 +379,9 @@
                     category.push(totalChartDataList[i]["day"]);
                     for (var s = 0, slen = totalChartDataList[i]["useStat"].length; s < slen; s++) {
                         if (totalChartDataList[i]["useStat"][s]["vehicleTypeId"]) {
-                            self.vehicleTypeInfo["_" + totalChartDataList[i]["useStat"][s]["vehicleTypeId"]]["list"][i] = (totalChartDataList[i]["useStat"][s]["totalVehicleNum"]);
+                            if(!!self.vehicleTypeInfo["_" + totalChartDataList[i]["useStat"][s]["vehicleTypeId"]]) {
+                                self.vehicleTypeInfo["_" + totalChartDataList[i]["useStat"][s]["vehicleTypeId"]]["list"][i] = (totalChartDataList[i]["useStat"][s]["totalVehicleNum"]);
+                            }
                         }
                     }
                 }
@@ -399,6 +404,9 @@
                     }
                 }
 
+                console.log(legendLabel);
+                console.log(seriesList);
+
                 // option
                 option = {
                     backgroundColor: '#0f375f',
@@ -409,11 +417,22 @@
                         }
                     },
                     legend: {
-                        top: 20,
+                        left: 20,
+                        right: 10,
+                        top: 5,
+                        padding: [5,2],
+                        itemWidth: 15,
+                        itemGap: 5,
                         data: legendLabel,
                         textStyle: {
                             color: '#ccc'
                         }
+                    },
+                    grid: {
+                        left: 40,
+                        top: 80,
+                        right: 50,
+                        bottom: 40
                     },
                     xAxis: {
                         name: "日期",
@@ -452,7 +471,7 @@
                     "count": 0
                 };
                 for (var i = 0, len = self.vehicleTypeList.length; i < len; i++) {
-                    if (self.vehicleTypeList[i]["type"] != 302 && self.vehicleTypeList[i]["type"] != 303) {
+                    if (self.vehicleTypeList[i]["type"] != 302 && self.vehicleTypeList[i]["type"] != 303 && self.vehicleTypeList[i]["type"] != 109 && self.vehicleTypeList[i]["type"] != 111 && self.vehicleTypeList[i]["type"] != 112) {
                         
                         self.vehicleTypeInfo["_" + self.vehicleTypeList[i]["type"]] = {
                             "value": 0,
@@ -474,19 +493,19 @@
             "startDateChange": function (value) {
                 var self = this;
                 self.onlineStatPageInfo.beginTime = value;
-                self.getVehicleOnlineStat();
+                self.getVehicleOnlineStat(false);
             },
             "endDateChange": function (value) {
                 var self = this;
                 self.onlineStatPageInfo.endTime = value;
-                self.getVehicleOnlineStat();
+                self.getVehicleOnlineStat(false);
             },
             // 页数改变时的回调
             "onlineStatPageSizeChange": function (value) {
                 var self = this;
                 self.onlineStatPageInfo.pageNum = parseInt(value, 10);
                 setTimeout(function () {
-                    self.getVehicleOnlineStat();
+                    self.getVehicleOnlineStat(false);
                 }, 200);
             },
             // 切换每页条数时的回调
@@ -494,12 +513,15 @@
                 var self = this;
                 self.onlineStatPageInfo.pageSize = parseInt(value, 10);
                 setTimeout(function () {
-                    self.getVehicleOnlineStat();
+                    self.getVehicleOnlineStat(false);
                 }, 200);
             },
             // 获取车辆在线统计情况
-            "getVehicleOnlineStat": function () {
+            "getVehicleOnlineStat": function (bool) {
                 var self = this;
+                if (bool == true) {
+                    self.onlineStatPageInfo.pageNum = 1;
+                }
                 // 如果是查询，则重新从第一页开始
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getVehicleOnlineStat,
@@ -509,7 +531,7 @@
                         "pageSize": self.onlineStatPageInfo.pageSize,
                         "beginTime": self.onlineStatPageInfo.beginTime,
                         "endTime": self.onlineStatPageInfo.endTime,
-                        "licenseNumber": self.onlineStatPageInfo.licenseNumber
+                        "licenseNumber": encodeURI($.trim(self.onlineStatPageInfo.licenseNumber))
                     },
                     beforeSendCallback: function () {
                         self.isloadStae = true;
@@ -828,7 +850,7 @@
                 self.getStatuVehicleList(true);
 
                 // 获取车辆在线统计情况
-                self.getVehicleOnlineStat();
+                self.getVehicleOnlineStat(true);
             }
         },
         "created": function () {

@@ -46,6 +46,11 @@
     <meta name="x5-page-mode" content="app">
     <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
     <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css" />
+    <style>
+    .noBeiJing {
+        display: none;
+    }
+    </style>
 </head>
 
 <body class="innerPage">
@@ -82,9 +87,10 @@
                                                 <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
                                                 <template v-for="item in terminalStatusList">
                                                     <template
-                                                        v-if="item.type==401||item.type==402||item.type==403||item.type==406">
+                                                        v-if="item.type==401||item.type==402||item.type==406">
                                                         <i-option :value="item.type">{{item.name}}</i-option>
                                                     </template>
+                                                    <!-- ||item.type==403 -->
                                                 </template>
                                                 <!-- <i-option v-for="item in terminalStatusList" :value="item.type">{{item.name}}</i-option> -->
                                             </i-select>
@@ -124,7 +130,7 @@
 
         <div class="tableWrap">
             <template>
-                <i-table :height="tableHeight" :loading="isTableLoading" highlight-row :columns="columnsList" :data="dataList" stripe="true"
+                <i-table :height="tableHeight" :loading="isTableLoading" highlight-row :columns="isBeijing?columnsList1:columnsList" :data="dataList" stripe="true"
                     size="small" @on-row-click="setCurrentRowData"></i-table>
             </template>
         </div>
@@ -177,9 +183,10 @@
                                         <i-select v-model="itemInfo.deviceStatus" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
                                             <template v-for="item in terminalStatusList">
                                                 <template
-                                                    v-if="item.type==401||item.type==402||item.type==403||item.type==406">
+                                                    v-if="item.type==401||item.type==402||item.type==406">
                                                     <i-option :value="item.type">{{item.name}}</i-option>
                                                 </template>
+                                                <!-- ||item.type==403 -->
                                             </template>
                                         </i-select>
                                     </template>

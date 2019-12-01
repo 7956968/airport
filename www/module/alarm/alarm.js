@@ -169,8 +169,8 @@
                     }
                 },
                 {
-                    "title": "车辆名称",
-                    "key": "vehicleName",
+                    "title": "车牌号",
+                    "key": "licenseNumber",
                     "width": 150
                 },
                 {
@@ -378,7 +378,7 @@
                         "alarmTypeId": self.pageInfo.alarmTypeId,
                         "eventTypeId": self.pageInfo.eventTypeId,
                         "dealFlag": self.pageInfo.dealFlag,
-                        "vehicleName": encodeURI(self.pageInfo.vehicleName),
+                        "licenseNumber": encodeURI(self.pageInfo.licenseNumber),
                         "beginTime": self.pageInfo.beginTime,
                         "endTime": self.pageInfo.endTime,
                         "companyId": self.pageInfo.companyId, // 公司ID
@@ -550,6 +550,7 @@
 
             if (!!fromMap) {
                 self.pageInfo.vehicleName = fromMap.vehicleName;
+                self.pageInfo.licenseNumber = fromMap.licenseNumber;
             }
 
             setTimeout(function () {

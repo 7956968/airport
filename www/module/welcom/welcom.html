@@ -230,25 +230,28 @@
                                 <Card bordered="false" style="width: 100%;" padding="0">
                                     <div slot="title" class="tile">
                                         <span class="label">车辆在线统计</span>
-                                        <!-- <template>
-                                            <div class="select">总数:
-                                                <strong class="count">{{onlineStatPageInfo.count}}</strong>
-                                            </div>
-                                        </template> -->
                                         <template>
-                                            <div class="select">结束日期:
+                                            <div class="select">结束:
                                                 <date-picker type="date" @on-change="endDateChange" size="small"
                                                     v-model="onlineStatPageInfo.endTime" placeholder="结束日期"
-                                                    style="width: 90px;">
+                                                    style="width: 80px;">
                                                 </date-picker>
                                             </div>
                                         </template>
                                         <template>
-                                            <div class="select">开始日期:
+                                            <div class="select">开始:
                                                 <date-picker type="date" @on-change="startDateChange"
                                                     v-model="onlineStatPageInfo.beginTime" size="small"
-                                                    placeholder="开始日期" style="width: 90px;">
+                                                    placeholder="开始日期" style="width: 80px;">
                                                 </date-picker>
+                                            </div>
+                                        </template>
+                                        <template>
+                                            <div class="select">车牌号:
+                                                <i-input style="display: inline-block; width: 90px;" size="small"
+                                                    maxlength="16" @on-change="getVehicleOnlineStat(true)"
+                                                    v-model="onlineStatPageInfo.licenseNumber" placeholder="请输入车牌号">
+                                                </i-input>
                                             </div>
                                         </template>
 
@@ -441,7 +444,7 @@
 
                                 <tr class="detailInfo">
                                     <td class="detailLabel"><span>当时经纬度坐标：</span></td>
-                                    <td><span v-text="statuItemInfo.lastPosition"></span></td>
+                                    <td><span v-text="!!statuItemInfo.lastPosition?statuItemInfo.lastPosition:'未定位'"></span></td>
 
                                     <td class="detailLabel"><span>车辆当时使用状态：</span></td>
                                     <td><span v-text="statuItemInfo.useStatusName"></span></td>

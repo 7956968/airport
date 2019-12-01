@@ -2,7 +2,7 @@
 <html lang="zh">
 
 <head>
-    <title>北京空港航空地面服务特种车辆管理系统</title>
+    <title>航空地面服务特种车辆管理系统</title>
 
     <!-- 页面字符编码 -->
     <meta charset="utf-8">
@@ -53,7 +53,7 @@
     <div id="js-vue" class="index">
         <div class="header">
             <div class="logo">
-                <img src="https://www.minguicloud.com/airport/assets/img/logoDemo.png" />
+                <img src="/airport/assets/img/logo.png" />
                 <p v-text="userInfo.userName"></p>
             </div>
             <div class="navWrap">
@@ -375,7 +375,7 @@
             <template v-for="(value, key) in iframeList">
                 <template v-if="!!value">
                     <iframe v-if="!value.isDelete" :class="{active: value.isActive}" frameborder="0" :id="'iframe_'+key"
-                        :src="value.src?time=Date.parse(new Date())"></iframe>
+                        :src="value.src"></iframe>
                 </template>
             </template>
         </div>
@@ -383,7 +383,7 @@
     </div>
     <script src="/airport/assets/js/LAB.min.js?v=3423841237481237"></script>
     <script>
-        loadScript(MODUL + "module/indexMg/index.min.js");
+        loadScript(MODUL + "module/index/index.min.js");
     </script>
 
 </body>

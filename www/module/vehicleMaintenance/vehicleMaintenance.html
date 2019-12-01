@@ -59,10 +59,10 @@
                                 <tr>
                                     <td>
                                         <template>
-                                            {{{'CN':'车辆','EN':'Vehicle','TW':'選擇車輛'}[language]}}:
+                                            {{{'CN':'车牌号','EN':'Vehicle','TW':'選擇車輛'}[language]}}:
                                             <i-select v-model="pageInfo.vehicleId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:140px;">
                                                 <i-option value="0" v-text="{'CN':'全部','EN':'All','TW':'全部'}[language]"></i-option>
-                                                <i-option v-for="item in vehicleList" :value="item.id">{{item.vehicleName}}</i-option>
+                                                <i-option v-for="item in vehicleList" :value="item.id">{{item.licenseNumber}}</i-option>
                                             </i-select>
                                         </template>
                                         <!-- <template>

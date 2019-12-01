@@ -86,9 +86,10 @@
                                                 <i-option value="">全部</i-option>
                                                 <template v-for="item in vehicleStatuList">
                                                     <template
-                                                        v-if="item.type==401||item.type==402||item.type==403||item.type==406">
+                                                        v-if="item.type==401||item.type==402||item.type==406">
                                                         <i-option :value="item.type">{{item.name}}</i-option>
                                                     </template>
+                                                    <!-- ||item.type==403 -->
                                                 </template>
 
                                             </i-select>
@@ -187,10 +188,22 @@
         </div>
 
         <div class="pageWrap">
-            <template>
-                <Page :total="pageInfo.count" @on-change="pageSizeChange" @on-page-size-change="pageRowChange"
-                    :page-size="20" show-sizer show-total />
-            </template>
+            <Row type="flex" justify="start" gutter="0">
+                <i-col span="12">
+                    <template>
+                        <Page :total="pageInfo.count" @on-change="pageSizeChange" @on-page-size-change="pageRowChange"
+                            :page-size="20" show-sizer show-total />
+                    </template>
+                </i-col>
+                <i-col span="12">
+                    <template>
+                        <div style="font-size: 14px; color: #333; padding-top: 5px; text-align: right;">
+                            <span style="padding-right: 10px;">在线车辆：<strong>{{vehicleInfo['_401'] + vehicleInfo['_402']}}</strong> 台</span>
+                            <span>离线车辆：<strong>{{vehicleInfo['_406']}}</strong> 台</span>
+                        </div>
+                    </template>
+                </i-col>
+            </Row>
         </div>
 
         <!-- 修改、编辑 -->

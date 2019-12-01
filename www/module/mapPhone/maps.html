@@ -59,8 +59,11 @@
 							</p>
 							<p>{{{'CN':'车辆速度','EN':'Speed','TW':'車輛速度'}[language]}}：{{vehicleItemPop.speed}} 公里/小时</p>
 							<p>最新GPS时间：<span
-									:style="{background: vehicleItemPop.isOverTime?'#fbd048':''}"><span>{{vehicleItemPop.lastGpsTime}}{{vehicleItemPop.isOverTime?'超过7天未上线':''}}</span></span>
-							</p>
+								:style="{background: vehicleItemPop.isOverTime?'#fbd048':''}"><span>{{vehicleItemPop.lastGpsTime}}
+									{{vehicleItemPop.isOverTime?'超过24小时未定位':''}}</span></span></p>
+						<p>最后上线时间：<span
+								:style="{background: vehicleItemPop.isOnTime?'#fbd048':''}"><span>{{vehicleItemPop.lastOnlineTime}}
+									{{vehicleItemPop.isOnTime?'超过24小时未上线':''}}</span></span></p>
 							<p>{{{'CN':'运动状态','EN':'State','TW':'車輛狀態'}[language]}}：<span
 									:class="'_'+vehicleItemPop.vehicleStatus"><span>{{vehicleItemPop.vehicleStatusName}}</span></span>
 							</p>

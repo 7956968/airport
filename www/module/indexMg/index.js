@@ -7,6 +7,7 @@
         "data": {
             "userInfo": userInfo,
             "language": !!language ? language["language"] : "CN",
+            "title": { "CN": "航空地面服务特种车辆管理系统", 'EN': "Mingui Non-Powered Euipment Management System", 'TW': "民貴無動力管理系統" },
             "tabList": {
                 "Welcom": null,
                 "Maps": null,
@@ -174,7 +175,7 @@
                 };
                 
                 self.iframeList[id] = {
-                    "src": src,
+                    "src": src+"?v=" + Date.parse(new Date()),
                     "isActive": true,
                     "isDelete": false,
                 };
@@ -224,8 +225,10 @@
         "created": function () {
             var self = this;
 
+            document.title = self.title[self.language];
+
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
-            utility.isLogin(true);
+            utility.isLogin(true, true);
 
             // 获取枚举值
             self.getBizParam();

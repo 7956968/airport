@@ -5,7 +5,7 @@
             "isShowDetail": true,
             "vehicleInfo": JSON.parse(decodeURI(utility.getQueryParams().vehicleInfo)),
             // "vehicleInfo": {
-            //     "licenseNumber": "民航-B3090"
+            //     "licenseNumber": ""
             // },
             "queryInfo": utility.getQueryParams(),
             "mIP": "220.231.225.7", // socket登录IP
@@ -89,21 +89,19 @@
                 "connectError": false,
                 "tabs": "info"
             },
+            "currentChannel": 0,
             "radioIndex": "",
             "front": null,
             "splitArea": [1, 4, 6, 8, 9], // 分屏类型
             "innerHeight": window.innerHeight,
             "videoWinSplit": {
-                "count_1": [
-                    {
-                        top: '0px',
-                        left: '0px',
-                        width: 'calc(100% - 4px)',
-                        height: 'calc(100% - 4px)'//calc运算符一定要有空格，要不然解析不了
-                    }
-                ],
-                "count_3": [
-                    {
+                "count_1": [{
+                    top: '0px',
+                    left: '0px',
+                    width: 'calc(100% - 4px)',
+                    height: 'calc(100% - 4px)' //calc运算符一定要有空格，要不然解析不了
+                }],
+                "count_3": [{
                         top: '0px',
                         left: '0px',
                         width: 'calc(70% - 4px)',
@@ -122,8 +120,7 @@
                         height: 'calc(50% - 4px)'
                     }
                 ],
-                "count_4": [
-                    {
+                "count_4": [{
                         top: '0px',
                         left: '0px',
                         width: 'calc(50% - 4px)',
@@ -148,8 +145,7 @@
                         height: 'calc(50% - 4px)'
                     }
                 ],
-                "count_5": [
-                    {
+                "count_5": [{
                         top: '0px',
                         left: '0px',
                         width: 'calc(70% - 4px)',
@@ -180,8 +176,7 @@
                         height: 'calc(25% - 4px)'
                     }
                 ],
-                "count_6": [
-                    {
+                "count_6": [{
                         top: '0px',
                         left: '0px',
                         width: 'calc(33.333% - 4px)',
@@ -218,102 +213,100 @@
                         height: 'calc(50% - 4px)'
                     }
                 ],
-                "count_7": [
-                    {
+                "count_7": [{
                         top: '0px',
                         left: '0px',
                         width: 'calc(100% / 4 * 3 - 6px)',
                         height: 'calc(100% / 4 * 3 - 8px)'
-                    },//大屏
+                    }, //大屏
                     {
                         top: '0px',
                         left: 'calc(100% / 4 * 3 - 2px)',
                         width: 'calc(100% / 4 * 1 - 4px)',
                         height: 'calc(100% / 4 * 1 - 6px)'
-                    },//右上1
+                    }, //右上1
                     {
                         top: 'calc(100% / 4 * 1 - 2px)',
                         left: 'calc(100% / 4 * 3 - 2px)',
                         width: 'calc(100% / 4 * 1 - 4px)',
                         height: 'calc(100% / 4 * 1 - 6px)'
-                    },//右上2
+                    }, //右上2
 
                     {
                         top: 'calc(100% / 4 * 2 - 4px)',
                         left: 'calc(100% / 4 * 3 - 2px)',
                         width: 'calc(100% / 4 * 1 - 4px)',
                         height: 'calc(100% / 4 * 1 - 4px)'
-                    },//右上3
+                    }, //右上3
                     {
                         top: 'calc(100% / 4 * 3 - 4px)',
                         left: '0px',
                         width: 'calc(100% / 4 * 1 - 4px)',
                         height: 'calc(100% / 4 * 1)'
-                    },//左下3
+                    }, //左下3
                     {
                         top: 'calc(100% / 4 * 3 - 4px)',
                         left: 'calc(100% / 4 * 1 - 0px)',
                         width: 'calc(100% / 4 * 1 - 6px)',
                         height: 'calc(100% / 4 * 1)'
-                    },//右上4
+                    }, //右上4
                     {
                         top: 'calc(100% / 4 * 3 - 4px)',
                         left: 'calc(100% / 4 * 2 - 2px)',
                         width: 'calc(100% / 4 * 1 - 4px)',
                         height: 'calc(100% / 4 * 1)'
-                    },//左下1
+                    }, //左下1
 
                 ],
-                "count_8": [
-                    {
+                "count_8": [{
                         top: '0px',
                         left: '0px',
                         width: 'calc(100% / 4 * 3 - 6px)',
                         height: 'calc(100% / 4 * 3 - 8px)'
-                    },//大屏
+                    }, //大屏
                     {
                         top: '0px',
                         left: 'calc(100% / 4 * 3 - 2px)',
                         width: 'calc(100% / 4 * 1 - 4px)',
                         height: 'calc(100% / 4 * 1 - 6px)'
-                    },//右上1
+                    }, //右上1
                     {
                         top: 'calc(100% / 4 * 1 - 2px)',
                         left: 'calc(100% / 4 * 3 - 2px)',
                         width: 'calc(100% / 4 * 1 - 4px)',
                         height: 'calc(100% / 4 * 1 - 6px)'
-                    },//右上2
+                    }, //右上2
 
                     {
                         top: 'calc(100% / 4 * 2 - 4px)',
                         left: 'calc(100% / 4 * 3 - 2px)',
                         width: 'calc(100% / 4 * 1 - 4px)',
                         height: 'calc(100% / 4 * 1 - 4px)'
-                    },//右上3
+                    }, //右上3
                     {
                         top: 'calc(100% / 4 * 3 - 4px)',
                         left: '0px',
                         width: 'calc(100% / 4 * 1 - 4px)',
                         height: 'calc(100% / 4 * 1)'
-                    },//左下3
+                    }, //左下3
                     {
                         top: 'calc(100% / 4 * 3 - 4px)',
                         left: 'calc(100% / 4 * 1 - 0px)',
                         width: 'calc(100% / 4 * 1 - 6px)',
                         height: 'calc(100% / 4 * 1)'
-                    },//右上4
+                    }, //右上4
                     {
                         top: 'calc(100% / 4 * 3 - 4px)',
                         left: 'calc(100% / 4 * 2 - 2px)',
                         width: 'calc(100% / 4 * 1 - 4px)',
                         height: 'calc(100% / 4 * 1)'
-                    },//左下1
+                    }, //左下1
                     {
                         top: 'calc(100% / 4 * 3 - 4px)',
                         left: 'calc(100% / 4 * 3 - 2px)',
                         width: 'calc(100% / 4 * 1 - 2px)',
                         height: 'calc(100% / 4 * 1)'
-                    },//左下2
+                    }, //左下2
 
                 ]
             },
@@ -340,12 +333,12 @@
                 var self = this;
                 self.logout();
 
-                if(!self.vehicleInfo.licenseNumber) {
+                if (!self.vehicleInfo.licenseNumber) {
                     self.backPlay.channelTotal = 0;
                     self.msgInfo = "请输入车牌号";
                     return;
                 }
-                setTimeout(function(){
+                setTimeout(function () {
                     self.connectNet();
                 }, 1000);
             },
@@ -422,6 +415,9 @@
             // 链接 socket 服务器
             "connectNet": function () {
                 var self = this;
+                if(self.vehicleInfo.licenseNumber.length == 0) {
+                    return;
+                }
                 var callback = {
                     // 登录失败
                     onLoginFailed: function () {
@@ -483,6 +479,15 @@
                     // 数据流状态
                     onStreamPlayStatus: function (status) {
                         console.log(status);
+                    },
+                    //历史回放的音频信息
+                    onHistoryForListening: function (msg) {
+                        //返回的音频流Id和所需要的通道号Chancel,不设置时默认为当前点击视频的通道号
+                        var streamId = msg.streamID;
+                        console.log("音频信息");
+                        console.log(msg);
+                        console.log("channel=" + self.currentChannel);
+                        vsclientSession.startReplayAudio(streamId);
                     },
                     onGpsData: function (frontGpsData) { //车辆信息+GPS信
                         self.netnSignal = frontGpsData.gps.net_signal;
@@ -681,14 +686,11 @@
                 var self = this;
                 var video = $("#backVedio" + self.backPlay.channelInfo[key]["list"][index]["channel"]);
                 $("body").find("#hidden" + current).val(index + "-" + key + "-" + current);
+
+                self.currentChannel = self.backPlay.channelInfo[key]["list"][index]["channel"];
                 vsclientSession.stopReplay(video[0]);
+                vsclientSession.stopReAudio(self.currentChannel);
                 setTimeout(function () {
-                    // vsclientSession.startReplay({
-                    //     name: self.vehicleInfo.licenseNumber,
-                    //     videoCtrl: video[0],
-                    //     info: self.backPlay.channelInfo[key]["list"][index]["source"],
-                    //     codeType: self.codeType
-                    // });
                     self.backPlay.channelInfo[key]["radioIndex"] = index;
                     vsclientSession.startReplay(self.vehicleInfo.licenseNumber, current, video[0], self.backPlay.channelInfo[key]["list"][index]["source"]);
                 }, 1000);
@@ -785,7 +787,7 @@
                 var index = self.backPlay.channelInfo[key]["list"][videoId]["channel"];
                 setInterval(function () {
                     var currTime = $("#backVedio" + index)[0].currentTime;
-                    if(typeof currTime == 'undefined') {
+                    if (typeof currTime == 'undefined') {
                         return;
                     }
                     var videoHeight = $("#backVedio" + index)[0].videoHeight;
