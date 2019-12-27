@@ -45,7 +45,7 @@
     <!-- QQ应用模式 -->
     <meta name="x5-page-mode" content="app">
     <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
-    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css" />
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=30321sda" />
 </head>
 
 <body class="innerPage">
@@ -65,13 +65,13 @@
                                                 <i-option v-for="item in companyList" :value="item.id">{{item.companyName}}</i-option>
                                             </i-select>
                                         </template>
-                                        <template>
+                                        <!-- <template>
                                             &nbsp;&nbsp;{{{'CN':'分组类型','EN':'Group Type','TW':'分組類型'}[language]}}:
                                             <i-select v-model="pageInfo.groupTypeId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:150px;">
                                                 <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
                                                 <i-option v-for="item in groupTypeList" :value="item.type">{{item.name}}</i-option>
                                             </i-select>
-                                        </template>
+                                        </template> -->
                                         <template>
                                             &nbsp;&nbsp;{{{'CN':'组名称','EN':'Group Name','TW':'組名稱'}[language]}}:
                                             <i-input v-model="pageInfo.groupName" :placeholder="{'CN':'请输入查询关键字','EN':'Please Input Query Key','TW':'請輸入查詢關鍵字'}[language]" style="width: 120px"></i-input>
@@ -142,7 +142,7 @@
                                     </template>
                                 </td>
                             </tr>
-                            <tr>
+                            <!-- <tr>
                                 <td class="label">
                                     <span class="request">＊</span>
                                     <span v-text="{'CN':'分组类型','EN':'Group Type','TW':'分組類型'}[language]"></span>
@@ -154,7 +154,7 @@
                                         </i-select>
                                     </template>
                                 </td>
-                            </tr>
+                            </tr> -->
                             <tr>
                                 <td class="label">
                                     <span class="request">＊</span>
@@ -228,7 +228,7 @@
                     </div>
                     <div class="tableWrap">
                         <template>
-                            <i-table height="400" @on-selection-change="selectMemberChange" :loading="isTableLoading" highlight-row :columns="groupMemberColumsList" :data="groupMemberDataList" stripe="true"
+                            <i-table height="400" @on-selection-change="selectMemberChange" :loading="isAddTableLoading" highlight-row :columns="groupMemberColumsList" :data="groupMemberDataList" stripe="true"
                                 size="small"></i-table>
                         </template>
                     </div>
@@ -246,7 +246,7 @@
             <Modal v-model="isShowGroupTypeList" 
                 :styles="{top: '80px'}" 
                 width="58"
-                :title="{'CN':'组成员','EN':'Group Members','TW':'組成員'}[language]" 
+                :title="{'CN':'新增组成员','EN':'Group Members','TW':'組成員'}[language]" 
                 :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
                 :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
                 :loading="isModalLoading" 
@@ -254,13 +254,13 @@
                 @on-ok="addGroupTypeMember">
                 <div class="modifiedWrap">
                     <div class="tableWrap">
-                        <template v-if="groupTypeDataList.length>0">
-                            <i-table :height="300" @on-selection-change="selectTypeMemberChange" :loading="isTableLoading" highlight-row :columns="groupTypeColumsList" :data="groupTypeDataList" stripe="true" size="small"></i-table>
+                        <template>
+                            <i-table :height="300" @on-selection-change="selectTypeMemberChange" :loading="isAddTableLoading" highlight-row :columns="groupTypeColumsList" :data="groupTypeDataList" stripe="true" size="small"></i-table>
                         </template>
                     </div>
                     <template>
                         <div class="pageWrap">
-                            <Page :total="groupTypePageInfo.count" @on-change="groupTypePageRowChange" :page-size="groupTypePageInfo.pageSize" @on-page-size-change="groupTypePageSizeChange" show-sizer show-total />
+                            <Page :total="groupTypePageInfo.count" @on-change="groupTypePageRowChange" :page-size="groupTypePageInfo.pageSize" @on-page-size-change="groupTypePageSizeChange" show-total />
                         </div>
                     </template>
                 </div>
@@ -303,7 +303,7 @@
                     </div>
                     <div class="tableWrap">
                         <template>
-                            <i-table height="400" :loading="isTableLoading" highlight-row :columns="permissionsColumnsList" :data="permissionsTableRowList" stripe="true"
+                            <i-table height="400" :loading="isAddTableLoading" highlight-row :columns="permissionsColumnsList" :data="permissionsTableRowList" stripe="true"
                                 size="small" @on-selection-change="selectPermissionChange"></i-table>
                         </template>
                     </div>
@@ -330,7 +330,7 @@
                 <div class="modifiedWrap">
                     <div class="tableWrap">
                         <template>
-                            <i-table height="300" @on-selection-change="selectFunctionsChange" :loading="isTableLoading" highlight-row :columns="functionsColumnsList" :data="functionsTableRowList" stripe="true" size="small"></i-table>
+                            <i-table height="300" @on-selection-change="selectFunctionsChange" :loading="isAddTableLoading" highlight-row :columns="functionsColumnsList" :data="functionsTableRowList" stripe="true" size="small"></i-table>
                         </template>
                     </div>
                     <template>

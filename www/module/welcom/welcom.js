@@ -154,10 +154,7 @@
                                     "click": function () {
                                         pageVue.showStatuDetail = true;
                                         pageVue.statuItemInfo = pageVue.statuDataList[params.index];
-                                        console.log(pageVue.statuItemInfo);
                                         pageVue.statuItemInfo.lastPosition = pageVue.statuItemInfo.lastPosition!='null'?JSON.parse(pageVue.statuItemInfo.lastPosition)["coordinates"].join(","):null;
-
-                                        console.log(pageVue.statuItemInfo.lastPosition);
 
                                         var now = Date.parse(new Date());
                                         var lastTime = Date.parse(params.row.lastGpsTime.replace(/\-/g, "/"));
@@ -347,6 +344,7 @@
                 "createUserId": userInfo["id"], // 创建用户ID，新增时必传
                 "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传
             },
+            "vehicleCateReport": []
         },
         "methods": {
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
@@ -404,9 +402,6 @@
                     }
                 }
 
-                console.log(legendLabel);
-                console.log(seriesList);
-
                 // option
                 option = {
                     backgroundColor: '#0f375f',
@@ -459,6 +454,88 @@
                 };
                 myChart.setOption(option);
 
+            },
+            // setVehicleEchart
+            "setVehicleEchart": function() {
+                var self = this;
+                var colorList = [];
+                var seriesList = [];
+                var legendLabel = [];
+                var myChart = echarts.init(document.getElementById('totalEchart'));
+
+                for (var key in self.vehicleTypeInfo) {
+                    for(var i = 0, len = self.vehicleCateReport.length; i < len; i++) {
+                        (function(i){
+                            if (key == "_"+self.vehicleCateReport[i]["vehicleTypeId"]) {
+                                legendLabel.push(self.vehicleTypeInfo["_"+self.vehicleCateReport[i]["vehicleTypeId"]]["name"]);
+                                seriesList.push({
+                                    "value": self.vehicleCateReport[i]["totalVehicleNum"],
+                                    "itemStyle": {
+                                        "color": self.vehicleTypeInfo["_"+self.vehicleCateReport[i]["vehicleTypeId"]]["color"]
+                                    },
+                                    "label": {
+                                        "normal": {
+                                            "show": true,
+                                            "position": 'top',
+                                            "fontSize": 14
+                                        }
+                                    },
+                                });
+                            }
+                        })(i);
+                    }
+                }
+
+                var option = {
+                    tooltip : {
+                        trigger: 'axis',
+                        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                        }
+                    },
+                    grid: {
+                        left: 40,
+                        top: 40,
+                        right: 70,
+                        bottom: 60
+                    },
+                    xAxis : {
+                        name:'车辆类型',
+                        type : 'category',
+                        data : legendLabel,
+                        axisLabel: {
+                            interval: 0,
+                            rotate: 30
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: '#ccc'
+                            }
+                        }
+                    },
+                    yAxis : {
+                        name: "单位:辆",
+                        minInterval: 1,
+                        splitLine: {
+                            show: false
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: '#ccc'
+                            }
+                        }
+                    },
+                    series : [
+                        {
+                            name:'车辆类型',
+                            type:'bar',
+                            barWidth: '60%',
+                            data: seriesList
+                        }
+                    ]
+                };
+
+                myChart.setOption(option);
             },
             // 重置
             "resetVehicleBizParamInfo": function () {
@@ -697,7 +774,8 @@
                     actionUrl: CONFIG.SERVICE.getVehicleCateReport,
                     successCallback: function (data) {
                         if (data.code == 200) {
-                            // console.log(data);
+                            self.vehicleCateReport = data.data;
+                            self.setVehicleEchart();
                         }
                     }
                 });
@@ -841,7 +919,7 @@
                 self.resetVehicleBizParamInfo();
 
                 // 获取按车辆类型的车辆使用情况统计数据接口
-                self.getVehicleRunReport();
+                // self.getVehicleRunReport();
 
                 // 车辆数据
                 self.getAllVehicleList();
@@ -851,6 +929,8 @@
 
                 // 获取车辆在线统计情况
                 self.getVehicleOnlineStat(true);
+
+                self.getVehicleCateReport();
             }
         },
         "created": function () {

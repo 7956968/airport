@@ -129,22 +129,22 @@
                                         </p>
                                     </template>
                                     <template v-if="item.functionCode=='org_manage_role'">
-                                        <p @click="setTabItem('/airport/www/module/roleManage/roleManage.html', 'RoleManage', $event)"
+                                        <p @click="setTabItem('/airport/www/module/roleManageData/roleManage.html', 'RoleManage', $event)"
                                             id="nav_RoleManage">
                                             <span>
                                                 <Icon type="md-person-add" /></span>
                                             <span v-text="{'CN':'角色管理','EN':'RoleManage','TW':'角色管理'}[language]"></span>
                                         </p>
                                     </template>
-                                    <!-- <template v-if="item.functionCode=='org_manage_data_permission'">
+                                    <template v-if="item.functionCode=='org_manage_data_permission'">
                                         <p @click="setTabItem('/airport/www/module/dataGroup/dataGroup.html', 'DataGroup', $event)"
                                             id="nav_DataGroup">
                                             <span>
                                                 <Icon type="ios-magnet" /></span>
                                             <span
-                                                v-text="{'CN':'数据权限组','EN':'DataGroup','TW':'數據權限組'}[language]"></span>
+                                                v-text="{'CN':'资源分组管理','EN':'DataGroup','TW':'數據權限組'}[language]"></span>
                                         </p>
-                                    </template> -->
+                                    </template>
                                 </template>
                             </div>
                         </li>
@@ -383,7 +383,7 @@
     </div>
     <script src="/airport/assets/js/LAB.min.js?v=3423841237481237"></script>
     <script>
-        loadScript(MODUL + "module/index/index.min.js");
+        loadScript(MODUL + "module/indexData/index.min.js");
     </script>
 
 </body>

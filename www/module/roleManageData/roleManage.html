@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title></title>
+
+    <!-- 页面字符编码 -->
+    <meta charset="utf-8">
+
+    <!-- 避免IE使用兼容模式 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!-- 启用360浏览器的极速模式(webkit) -->
+    <meta name="renderer" content="webkit">
+    <!-- 微软的老式浏览器 -->
+    <meta name="MobileOptimized" content="320">
+
+    <!-- 关键字描述 -->
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <!-- 设置移动端视图 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+    <meta name="HandheldFriendly" content="true">
+
+    <!-- 删除苹果默认的工具栏和菜单栏 -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <!-- 设置苹果工具栏颜色 -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+    <!-- 忽略页面中的数字识别为电话，忽略email识别 -->
+    <meta name="format-detection" content="telphone=no, email=no" />
+
+    <!-- uc强制竖屏 -->
+    <meta name="screen-orientation" content="portrait">
+    <!-- QQ强制竖屏 -->
+    <meta name="x5-orientation" content="portrait">
+    <!-- UC强制全屏 -->
+    <meta name="full-screen" content="yes">
+    <!-- QQ强制全屏 -->
+    <meta name="x5-fullscreen" content="true">
+    <!-- UC应用模式 -->
+    <meta name="browsermode" content="application">
+    <!-- QQ应用模式 -->
+    <meta name="x5-page-mode" content="app">
+    <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=0393939" />
+</head>
+
+<body class="innerPage">
+    <div id="js-vue" class="tableContainer">
+        <div class="top">
+            <Row type="flex" justify="start" gutter="10">
+                <i-col span="18" class-name="">
+                    <div class="searchWrap">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <template>
+                                            {{{'CN':'归属公司','EN':'Ownership Company','TW':'歸屬公司'}[language]}}:
+                                            <i-select v-model="pageInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:150px;">
+                                                <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
+                                                <i-option v-for="item in companyList" :value="item.id">{{item.companyName}}</i-option>
+                                            </i-select>
+                                        </template>
+                                        <template>
+                                            &nbsp;&nbsp;{{{'CN':'角色名称','EN':'Role Name','TW':'角色名稱'}[language]}}:
+                                            <i-input v-model="pageInfo.roleName" :placeholder="{'CN':'请输入查询关键字','EN':'Please Input Query Key','TW':'請輸入查詢關鍵字'}[language]" style="width: 200px"></i-input>
+                                        </template>
+                                    </td>
+                                    <td>
+                                        <template>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <i-button @click="getRoleDataList(true)" size="small" type="primary" icon="ios-search-outline">{{{'CN':'查询','EN':'Search','TW':'查詢'}[language]}}</i-button>
+                                        </template>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </i-col>
+                <i-col span="6">
+                    <div class="actionWrap">
+                        <template>
+                            <i-buttonGroup>
+                                <i-button @click="refresh" size="small" icon="ios-refresh">{{{'CN':'刷新','EN':'Refresh','TW':'刷新'}[language]}}</i-button>
+                                <i-button @click="addItem" size="small" type="success" icon="ios-add-circle-outline">{{{'CN':'新增','EN':'Add','TW':'新增'}[language]}}</i-button>
+                                <!-- <i-button @click="editItem" size="small" type="warning" icon="ios-paper-outline">{{{'CN':'编辑','EN':'Edit','TW':'編輯'}[language]}}</i-button>
+                                <i-button @click="delItem" size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除','EN':'Delete','TW':'刪除'}[language]}}</i-button> -->
+                                <!-- <i-button @click="selectMembers" size="small" type="info" icon="ios-people-outline">{{{'CN':'角色成员','EN':'Role Members','TW':'角色成員'}[language]}}</i-button> -->
+                            </i-buttonGroup>
+                        </template>
+                    </div>
+                </i-col>
+            </Row>
+        </div>
+
+        <div class="tableWrap">
+            <template>
+                <i-table :height="tableHeight" :loading="isTableLoading" highlight-row :columns="columnsList" :data="tableRowList" stripe="true"
+                    size="small" @on-row-click="setCurrentRowData"></i-table>
+            </template>
+        </div>
+
+        <div class="pageWrap">
+            <template>
+                <Page :total="pageInfo.count" @on-change="pageSizeChange" @on-page-size-change="pageRowChange" :page-size="20" show-sizer show-total />
+            </template>
+        </div>
+
+        <!-- 新增或编辑 -->
+        <template>
+            <Modal v-model="isShowModal" 
+                :styles="{top: '60px'}" 
+                width="30" 
+                :title="modalTitle" 
+                :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
+                :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
+                :loading="isModalLoading" 
+                @on-ok="uploadDataToServer">
+                <div class="modifiedWrap">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td class="label" style="width: 90px;">
+                                    <span class="request">＊</span>
+                                    <span v-text="{'CN':'所在公司','EN':'Company Name','TW':'所在公司'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <i-select v-model="itemInfo.companyId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <i-option v-for="item in companyList" :value="item.id">{{item.companyName}}</i-option>
+                                        </i-select>
+                                    </template>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <span v-text="{'CN':'角色编号','EN':'Role Number','TW':'角色編號'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input v-model="itemInfo.roleCode" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <span class="request">＊</span>
+                                    <span v-text="{'CN':'角色名称','EN':'Role Name','TW':'角色名稱'}[language]"></span>
+                                </td>
+                                <td>
+                                    <i-input v-model="itemInfo.roleName"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <span v-text="{'CN':'是否公共角色','EN':'Public','TW':'是否公共角色'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <i-select v-model="itemInfo.isPublic" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <i-option :value="1">{{{'CN':'是','EN':'Yes','TW':'是'}[language]}}</i-option>
+                                            <i-option :value="0">{{{'CN':'否','EN':'No','TW':'否'}[language]}}</i-option>
+                                        </i-select>
+                                    </template>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <span class="request">＊</span>
+                                    <span v-text="{'CN':'是否可用','EN':'Effective','TW':'是否可用'}[language]"></span>
+                                </td>
+                                <td>
+                                    <template>
+                                        <i-select v-model="itemInfo.isValid" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
+                                            <i-option :value="1">{{{'CN':'是','EN':'Yes','TW':'是'}[language]}}</i-option>
+                                            <i-option :value="0">{{{'CN':'否','EN':'No','TW':'否'}[language]}}</i-option>
+                                        </i-select>
+                                    </template>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label" style="vertical-align: top;">
+                                    <span v-text="{'CN':'角色描述','EN':'Role Description','TW':'角色描述'}[language]"></span>
+                                </td>
+                                <td colspan="3">
+                                    <i-input v-model="itemInfo.roleDesc" type="textarea" :rows="4" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </Modal>
+        </template>
+
+        <!-- 角色成员 -->
+        <template>
+            <Modal v-model="isShowMember" 
+                :styles="{top: '60px'}" width="60" 
+                :title="{'CN':'角色成员','EN':'Role Members','TW':'角色成員'}[language]"
+                :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
+                :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
+                :loading="isModalLoading"
+                :footer-hide="true"
+                class-name="treeModel">
+                <div class="modifiedWrap">
+                    <div class="top">
+                        <Row type="flex" justify="start" gutter="10">
+                            <i-col span="10"></i-col>
+                            <i-col span="14">
+                                <div class="actionWrap">
+                                    <template>
+                                        <i-buttonGroup>
+                                            <i-button @click="showUserLayer('isUserListTree')" size="small" type="success" icon="ios-add-circle-outline">{{{'CN':'按部门添加','EN':'Add Members','TW':'按部門添加'}[language]}}</i-button>
+                                            <i-button @click="showUserLayer('isUserList')" size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'按用户添加','EN':'Add Members','TW':'按用戶添加'}[language]}}</i-button>
+                                            <i-button @click="deleteRoleMember" size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除成员','EN':'Delete Members','TW':'刪除成員'}[language]}}</i-button>
+                                        </i-buttonGroup>
+                                    </template>
+                                </div>
+                            </i-col>
+                        </Row>
+                    </div>
+                    <div class="tableWrap">
+                        <template>
+                            <i-table height="400" highlight-row :columns="roleMemberColumsList" :data="roleMemberTableRowList" stripe="true"
+                                size="small" @on-selection-change="selectMemberChange"></i-table>
+                        </template>
+                    </div>
+                    <template>
+                        <div class="pageWrap">
+                            <Page :total="roleMemberPageInfo.count" @on-change="roleMemberPageSizeChange" @on-page-size-change="roleMemberPageRowChange" :page-size="20" show-sizer show-total />
+                        </div>
+                    </template>
+                </div>
+            </Modal>
+        </template>
+
+        <!-- 按用户选择角色成员 -->
+        <template>
+            <Modal v-model="isUserList" 
+                :styles="{top: '80px'}" 
+                width="58"
+                :title="{'CN':'用户列表','EN':'User List','TW':'用戶列表'}[language]" 
+                :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
+                :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
+                :loading="isModalLoading" 
+                class-name="hasActionList"
+                @on-ok="addRoleMember">
+                <div class="modifiedWrap">
+                    <div class="top">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <template v-if="selectItem">
+                                            公司：{{selectItem.companyName}}
+                                        </template>
+                                    </td>
+                                    <td style="width: 70px;">
+                                        {{{'CN':'部门名称','EN':'Department','TW':'部門名稱'}[language]}}:
+                                    </td>
+                                    <td>
+                                        <template>
+                                            <Cascader @on-change="getUserListByDept" trigger="click" :change-on-select="true" :data="superiorDepartmentList" v-model="userPageInfo.deptId" style="width:200px;"></Cascader>
+                                        </template>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tableWrap">
+                        <template>
+                            <i-table height="300" @on-selection-change="selectUserChange" highlight-row :columns="userColumnsList" :data="userTableRowList" stripe="true" size="small"></i-table>
+                        </template>
+                    </div>
+                    <template>
+                        <div class="pageWrap">
+                            <Page :total="userPageInfo.count" @on-change="userPageSizeChange" @on-page-size-change="userPageRowChange" :page-size="20" show-sizer show-total />
+                        </div>
+                    </template>
+                </div>
+            </Modal>
+        </template>
+
+        <!-- 按部门选择角色成员 -->
+        <template>
+            <Modal v-model="isUserListTree" 
+                :styles="{top: '80px'}" 
+                width="30"
+                :title="{'CN':'部门菜单','EN':'Department Menu','TW':'部門菜單'}[language]" 
+                :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
+                :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
+                :loading="isModalLoading" 
+                class-name="hasActionList"
+                @on-ok="addRoleMember">
+                <div class="modifiedWrap">
+                    <div class="tableWrap" style="height: 300px; overflow-y: auto;">
+                        <template>
+                            <Tree :data="superiorDepartmentTree" @on-check-change="selectDepartmentTreeChange" show-checkbox></Tree>
+                        </template>
+                    </div>
+                </div>
+            </Modal>
+        </template>
+
+        <!-- 角色功能 -->
+        <template>
+            <Modal v-model="isShowFunctions" 
+                :styles="{top: '60px'}" width="60" 
+                :title="{'CN':'角色功能','EN':'Role Functions','TW':'角色功能'}[language]"
+                :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
+                :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
+                :loading="isModalLoading"
+                :footer-hide="true"
+                class-name="treeModel">
+                <div class="modifiedWrap">
+                    <div class="top">
+                        <Row type="flex" justify="start" gutter="10">
+                            <i-col span="14"></i-col>
+                            <i-col span="10">
+                                <div class="actionWrap">
+                                    <template>
+                                        <i-buttonGroup>
+                                            <i-button @click="showFunctionsLayer" size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'新增功能','EN':'Add Functions','TW':'新增功能'}[language]}}</i-button>
+                                            <i-button @click="deleteRoleFunctions" size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除功能','EN':'Delete Functions','TW':'刪除功能'}[language]}}</i-button>
+                                        </i-buttonGroup>
+                                    </template>
+                                </div>
+                            </i-col>
+                        </Row>
+                    </div>
+                    <div class="tableWrap">
+                        <template>
+                            <i-table height="400" @on-selection-change="selectRoleFunctionsChange" highlight-row :columns="roleFunctionColumsList" :data="roleFunctionTableRowList" stripe="true" size="small"></i-table>
+                        </template>
+                    </div>
+                    <template>
+                        <div class="pageWrap">
+                            <Page :total="roleFunctionPageInfo.count" @on-change="roleFunctionsPageSizeChange" @on-page-size-change="roleFunctionsPageRowChange" :page-size="20" show-sizer show-total />
+                        </div>
+                    </template>
+                </div>
+            </Modal>
+        </template>
+
+        <!-- 所有功能列表 -->
+        <template>
+            <Modal v-model="isFunctionList" 
+                :styles="{top: '80px'}" 
+                width="30"
+                :title="{'CN':'功能列表','EN':'User List','TW':'功能列表'}[language]" 
+                :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
+                :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
+                :loading="isModalLoading" 
+                class-name="hasActionList"
+                @on-ok="uploadFunctionDataToServer">
+                <div class="modifiedWrap" style="position: relative; z-index: 0; height: 300px; overflow: auto;">
+                    <div class="tableWrap">
+                        <template>
+                            <Tree :data="functionsTableRowList" @on-check-change="selectFunctionsChange" show-checkbox></Tree>
+                        </template>
+                    </div>
+                </div>
+            </Modal>
+        </template>
+
+        <!-- 数据组权限 -->
+        <template>
+            <Modal v-model="isShowDataGroup" 
+                :styles="{top: '60px'}" width="60" 
+                :title="{'CN':'角色数据权限','EN':'Role Members','TW':'角色數據权限'}[language]"
+                :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
+                :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
+                :loading="isModalLoading"
+                :footer-hide="true"
+                class-name="treeModel">
+                <div class="modifiedWrap">
+                    <div class="top">
+                        <Row type="flex" justify="start" gutter="10">
+                            <i-col span="14"></i-col>
+                            <i-col span="10">
+                                <div class="actionWrap">
+                                    <template>
+                                        <i-buttonGroup>
+                                            <i-button @click="showDataGroupLayer()" size="small" type="primary" icon="ios-add-circle-outline">{{{'CN':'新增数据权限','EN':'Add DataGroup','TW':'新增數據權限'}[language]}}</i-button>
+                                            <i-button @click="deleteRoleDataGroup" size="small" type="error" icon="ios-trash-outline">{{{'CN':'删除数据权限','EN':'Delete DataGroup','TW':'刪除數據組權限'}[language]}}</i-button>
+                                        </i-buttonGroup>
+                                    </template>
+                                </div>
+                            </i-col>
+                        </Row>
+                    </div>
+                    <div class="tableWrap">
+                        <template>
+                            <i-table height="400" highlight-row :columns="roleDataGroupColumsList" :data="roleDataGroupTableRowList" stripe="true"
+                                size="small" @on-selection-change="selectRoleDataGroupChange"></i-table>
+                        </template>
+                    </div>
+                    <template>
+                        <div class="pageWrap">
+                            <Page :total="roleDataGroupPageInfo.count" @on-change="roleDataGroupPageSizeChange" @on-page-size-change="roleDataGroupPageRowChange" :page-size="20" show-sizer show-total />
+                        </div>
+                    </template>
+                </div>
+            </Modal>
+        </template>
+
+        <!-- 添加数据权限组 -->
+        <template>
+            <Modal v-model="isDataGroupList" 
+                :styles="{top: '80px'}" 
+                width="58"
+                :title="{'CN':'数据权限列表','EN':'User List','TW':'數據權限列表'}[language]" 
+                :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
+                :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" 
+                :loading="isModalLoading" 
+                class-name="hasActionList"
+                @on-ok="addRoleDataGroup">
+                <div class="modifiedWrap">
+                    <div class="tableWrap">
+                        <template>
+                            <i-table height="300" @on-selection-change="selectDataGroupChange" highlight-row :columns="dataGroupColumnsList" :data="dataGroupTableRowList" stripe="true" size="small"></i-table>
+                        </template>
+                    </div>
+                    <template>
+                        <div class="pageWrap">
+                            <Page :total="dataGroupPageInfo.count" @on-change="dataGroupPageSizeChange" @on-page-size-change="dataGroupPageRowChange" :page-size="20" show-sizer show-total />
+                        </div>
+                    </template>
+                </div>
+            </Modal>
+        </template>
+    </div>
+
+    <script src="/airport/assets/js/LAB.min.js?v=3423841237481237"></script>
+    <script>
+        loadScript(MODUL+"module/roleManageData/roleManage.min.js");
+    </script>
+</body>
+
+</html>

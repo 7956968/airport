@@ -7,6 +7,7 @@
         "data": {
             "language": !!language ? language["language"] : "CN",
             "isTableLoading": true,
+            "isAddTableLoading": true,
             "isShowModal": false,
             "isModalLoading": true,
             "modalTitle": "",
@@ -27,7 +28,7 @@
                 "pageSize": 20,
                 "groupName": "", // 查询关键字（用户名称）
                 "companyId": "", // 公司ID
-                "groupTypeId": "", // 查询关键字（用户名称）
+                "groupTypeId": 123, // 查询关键字（用户名称）
             },
             "selectItem": null,
             "itemInfo": {
@@ -35,8 +36,8 @@
                 "companyId": "",
                 "groupName": "",
                 "groupDesc": "",
-                "isValid": "1",
-                "groupTypeId": "",
+                "isValid": 1,
+                "groupTypeId": 123,
                 "createUserId": userInfo["id"], // 创建用户ID，新增时必传
                 "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传
             },
@@ -48,7 +49,8 @@
                 },
                 {
                     "title": { "CN": "所在公司", "EN": "Company Name", "TW": "所在公司" }[language["language"]],
-                    "key": "companyName"
+                    "key": "companyName",
+                    "width": 180
                 },
                 {
                     "title": { "CN": "组名称", "EN": "Group Name", "TW": "組名稱" }[language["language"]],
@@ -76,71 +78,6 @@
                     "width": 200,
                     "align": "center",
                     "render": function (h, params) {
-                        // var groupTypeId = pageVue.groupList[params.index]["groupTypeId"];
-                        // var actionList = [];
-                        // if(groupTypeId==121) {
-                        //     actionList = [
-                        //         h('Button', {
-                        //             "props": {
-                        //                 "type": "primary",
-                        //                 "size": "small"
-                        //             },
-                        //             "style": {
-                        //                 "marginRight": "5px"
-                        //             },
-                        //             "on": {
-                        //                 "click": function () {
-                        //                     pageVue.groupMemberPageInfo.groupId = pageVue.groupList[params.index]["id"];
-                        //                     pageVue.groupMemberPageInfo.companyId = pageVue.groupList[params.index]["companyId"];
-                        //                     pageVue.groupTypeId = pageVue.groupList[params.index]["groupTypeId"];
-                        //                     pageVue.itemInfo.id = pageVue.groupList[params.index]["id"];
-                        //                     pageVue.isShowMember = true;
-                        //                     pageVue.getGroupMemberList(true);
-                        //                 }
-                        //             }
-                        //         }, { 'CN': '组成员', 'EN': 'Group Members', 'TW': '組成員' }[language["language"]]),
-                        //         h('Button', {
-                        //             "props": {
-                        //                 "type": "info",
-                        //                 "size": "small"
-                        //             },
-                        //             "style": {
-                        //                 "marginRight": "5px"
-                        //             },
-                        //             "on": {
-                        //                 "click": function () {
-                        //                     pageVue.permissionsPageInfo.groupId = pageVue.groupList[params.index]["id"];
-                        //                     pageVue.permissionsPageInfo.companyId = pageVue.groupList[params.index]["companyId"];
-                        //                     pageVue.groupTypeId = pageVue.groupList[params.index]["groupTypeId"];
-                        //                     pageVue.isPermissions = true;
-                        //                     pageVue.getPermissionsDataList(true);
-                        //                 }
-                        //             }
-                        //         }, { "CN": "数据权限", "EN": "Data Permissions", "TW": "數據權限" }[language["language"]])
-                        //     ]
-                        // } else {
-                        //     actionList = [
-                        //         h('Button', {
-                        //             "props": {
-                        //                 "type": "primary",
-                        //                 "size": "small"
-                        //             },
-                        //             "style": {
-                        //                 "marginRight": "5px"
-                        //             },
-                        //             "on": {
-                        //                 "click": function () {
-                        //                     pageVue.groupMemberPageInfo.groupId = pageVue.groupList[params.index]["id"];
-                        //                     pageVue.groupMemberPageInfo.companyId = pageVue.groupList[params.index]["companyId"];
-                        //                     pageVue.groupTypeId = pageVue.groupList[params.index]["groupTypeId"];
-                        //                     pageVue.itemInfo.id = pageVue.groupList[params.index]["id"];
-                        //                     pageVue.isShowMember = true;
-                        //                     pageVue.getGroupMemberList(true);
-                        //                 }
-                        //             }
-                        //         }, { 'CN': '组成员', 'EN': 'Group Members', 'TW': '組成員' }[language["language"]])
-                        //     ]
-                        // }
                         return h('div', [
                             h('Button', {
                                 "props": {
@@ -154,7 +91,8 @@
                                     "click": function () {
                                         pageVue.groupMemberPageInfo.groupId = pageVue.groupList[params.index]["id"];
                                         pageVue.groupMemberPageInfo.companyId = pageVue.groupList[params.index]["companyId"];
-                                        pageVue.groupTypeId = pageVue.groupList[params.index]["groupTypeId"];
+                                        // pageVue.groupTypeId = pageVue.groupList[params.index]["groupTypeId"];
+                                        pageVue.groupTypeId = 123;
                                         pageVue.itemInfo.id = pageVue.groupList[params.index]["id"];
                                         pageVue.isShowMember = true;
                                         pageVue.getGroupMemberList(true);
@@ -224,11 +162,11 @@
                     "width": 60,
                     "align": "center"
                 },
-                {
-                    "title": { "CN": "ID", "EN": "ID", "TW": "ID" }[language["language"]],
-                    "width": 60,
-                    "key": "id"
-                },
+                // {
+                //     "title": { "CN": "ID", "EN": "ID", "TW": "ID" }[language["language"]],
+                //     "width": 60,
+                //     "key": "id"
+                // },
                 {
                     "title": { "CN": "公司名称", "EN": "Company Name", "TW": "公司名稱" }[language["language"]],
                     "key": "companyName"
@@ -244,15 +182,16 @@
             ],
             "groupMemberDataList": [],
 
-            "groupTypeId": "121",
+            "groupTypeId": 123,
             "groupTypePageInfo": {
                 "count": 0,
                 "pageNum": 1,
-                "pageSize": 20
+                "pageSize": 10000
             },
             "groupTypeColumsList": [],
             "groupTypeDataList": [],
             "selectTypeMember": [],
+            "selectMember": [],
 
             // 接口信息
             "groupTypeInterFace": {
@@ -308,11 +247,11 @@
                     "width": 60,
                     "align": "center"
                 },
-                {
-                    "title": { "CN": "ID", "EN": "ID", "TW": "ID" }[language["language"]],
-                    "width": 60,
-                    "key": "id"
-                },
+                // {
+                //     "title": { "CN": "ID", "EN": "ID", "TW": "ID" }[language["language"]],
+                //     "width": 60,
+                //     "key": "id"
+                // },
                 {
                     "title": { "CN": "用户姓名", "EN": "Name", "TW": "姓名" }[language["language"]],
                     "key": "userName"
@@ -375,31 +314,31 @@
                     "width": 60,
                     "align": "center"
                 },
-                {
-                    "title": { "CN": "ID", "EN": "ID", "TW": "ID" }[language["language"]],
-                    "width": 60,
-                    "key": "id"
-                },
+                // {
+                //     "title": { "CN": "ID", "EN": "ID", "TW": "ID" }[language["language"]],
+                //     "width": 60,
+                //     "key": "id"
+                // },
                 {
                     "title": { "CN": "公司", "EN": "Company", "TW": "公司" }[language["language"]],
                     "key": "companyName"
                 },
                 {
-                    "title": { "CN": "名称", "EN": "Name", "TW": "名稱" }[language["language"]],
-                    "key": "vehicleName"
+                    "title": { "CN": "车牌号", "EN": "Name", "TW": "名稱" }[language["language"]],
+                    "key": "licenseNumber"
                 },
                 {
                     "title": { "CN": "类型", "EN": "Type", "TW": "類型" }[language["language"]],
                     "key": "vehicleTypeName"
                 },
-                {
-                    "title": { "CN": "编码", "EN": "Code", "TW": "編碼" }[language["language"]],
-                    "key": "vehicleCode"
-                },
-                {
-                    "title": { "CN": "状态", "EN": "State", "TW": "狀態" }[language["language"]],
-                    "key": "vehicleStatus"
-                }
+                // {
+                //     "title": { "CN": "编码", "EN": "Code", "TW": "編碼" }[language["language"]],
+                //     "key": "vehicleCode"
+                // },
+                // {
+                //     "title": { "CN": "状态", "EN": "State", "TW": "狀態" }[language["language"]],
+                //     "key": "vehicleStatus"
+                // }
             ],
             "vehicleTableRowList": [],
 
@@ -411,11 +350,11 @@
                     "width": 60,
                     "align": "center"
                 },
-                {
-                    "title": { "CN": "ID", "EN": "ID", "TW": "ID" }[language["language"]],
-                    "width": 60,
-                    "key": "id"
-                },
+                // {
+                //     "title": { "CN": "ID", "EN": "ID", "TW": "ID" }[language["language"]],
+                //     "width": 60,
+                //     "key": "id"
+                // },
                 {
                     "title": { "CN": "公司", "EN": "Company", "TW": "公司" }[language["language"]],
                     "key": "companyName"
@@ -447,11 +386,11 @@
                     "width": 60,
                     "align": "center"
                 },
-                {
-                    "title": { "CN": "ID", "EN": "ID", "TW": "ID" }[language["language"]],
-                    "width": 60,
-                    "key": "id"
-                },
+                // {
+                //     "title": { "CN": "ID", "EN": "ID", "TW": "ID" }[language["language"]],
+                //     "width": 60,
+                //     "key": "id"
+                // },
                 {
                     "title": { "CN": "公司", "EN": "Company", "TW": "公司" }[language["language"]],
                     "key": "companyName"
@@ -504,11 +443,11 @@
                     "width": 60,
                     "align": "center"
                 },
-                {
-                    "title": { "CN": "ID", "EN": "ID", "TW": "ID" }[language["language"]],
-                    "width": 60,
-                    "key": "id"
-                },
+                // {
+                //     "title": { "CN": "ID", "EN": "ID", "TW": "ID" }[language["language"]],
+                //     "width": 60,
+                //     "key": "id"
+                // },
                 {
                     "title": { "CN": "组名称", "EN": "Group Name", "TW": "組名稱" }[language["language"]],
                     "key": "groupName"
@@ -538,11 +477,11 @@
                     "width": 60,
                     "align": "center"
                 },
-                {
-                    "title": { "CN": "ID", "EN": "ID", "TW": "ID" }[language["language"]],
-                    "width": 60,
-                    "key": "id"
-                },
+                // {
+                //     "title": { "CN": "ID", "EN": "ID", "TW": "ID" }[language["language"]],
+                //     "width": 60,
+                //     "key": "id"
+                // },
                 {
                     "title": { "CN": "功能层级", "EN": "Functions Name", "TW": "功能層級" }[language["language"]],
                     "key": "functionLevel"
@@ -583,10 +522,10 @@
                 self.itemInfo = {
                     "id": "",
                     "companyId": "",
-                    "groupTypeId": "",
+                    "groupTypeId": 123,
                     "groupName": "",
                     "groupDesc": "",
-                    "isValid": "",
+                    "isValid": 1,
                     "createUserId": userInfo["id"], // 创建用户ID，新增时必传
                     "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传
                 };
@@ -777,10 +716,10 @@
                     actionUrl: CONFIG.SERVICE.groupService,
                     dataObj: self.groupMemberPageInfo,
                     beforeSendCallback: function () {
-                        self.isTableLoading = true;
+                        self.isAddTableLoading = true;
                     },
                     completeCallback: function () {
-                        self.isTableLoading = false;
+                        self.isAddTableLoading = false;
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
@@ -811,10 +750,10 @@
                         modifyUserId: userInfo["id"], // 修改用户的id
                     },
                     beforeSendCallback: function () {
-                        self.isTableLoading = true;
+                        self.isAddTableLoading = true;
                     },
                     completeCallback: function () {
-                        self.isTableLoading = false;
+                        self.isAddTableLoading = false;
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
@@ -889,14 +828,15 @@
                     url: CONFIG.HOST + self.groupTypeInterFace[self.groupTypeId]["service"] + "?action=" + self.groupTypeInterFace[self.groupTypeId]["action"],
                     actionUrl: self.groupTypeInterFace[self.groupTypeId]["service"],
                     dataObj: {
+                        companyId: self.groupMemberPageInfo.companyId,
                         pageNum: self.groupTypePageInfo.pageNum,
                         pageSize: self.groupTypePageInfo.pageSize,
                     },
                     beforeSendCallback: function () {
-                        self.isTableLoading = true;
+                        self.isAddTableLoading = true;
                     },
                     completeCallback: function () {
-                        self.isTableLoading = false;
+                        self.isAddTableLoading = false;
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
@@ -980,10 +920,10 @@
                         modifyUserId: userInfo["id"], // 修改用户的id
                     },
                     beforeSendCallback: function () {
-                        self.isTableLoading = true;
+                        self.isAddTableLoading = true;
                     },
                     completeCallback: function () {
-                        self.isTableLoading = false;
+                        self.isAddTableLoading = false;
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
@@ -1044,10 +984,10 @@
                     actionUrl: CONFIG.SERVICE.permissionService,
                     dataObj: self.permissionsPageInfo,
                     beforeSendCallback: function () {
-                        self.isTableLoading = true;
+                        self.isAddTableLoading = true;
                     },
                     completeCallback: function () {
-                        self.isTableLoading = false;
+                        self.isAddTableLoading = false;
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {

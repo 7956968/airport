@@ -53,7 +53,7 @@
                 <!-- 车辆POP -->
                 <template v-if="baiduMapInfo.openInfoWindow.type=='isVehiclePopInfo'">
                     <template v-if="!!vehicleItemPop">
-                        <div id="popup-content" style="width: 360px;">
+                        <div id="popup-content" style="width: 340px;">
                             <p>公司名称：{{vehicleItemPop.companyName}}</p>
                             <p>部门名称：{{vehicleItemPop.deptName}}</p>
                             <p v-if="vehicleItemPop.address">车辆位置：{{vehicleItemPop.address}}</p>
@@ -1015,7 +1015,7 @@
 
         <!-- 图层控制 -->
         <template>
-            <Modal value="true" :styles="{top: '90px', right: '0', position: 'absolute'}" width="9" footer-hide="true"
+            <Modal value="true" :styles="{top: '90px', right: '0', position: 'absolute'}" width="12" footer-hide="true"
                 :mask="false" :closable="false" class-name="mapModal">
                 <!-- <div slot="header" class="modalTitle">
                     <span class="icon">

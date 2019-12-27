@@ -146,12 +146,12 @@
                             <tr>
                                 <td class="label" style="width: 90px;">
                                     <span class="request">＊</span>
-                                    <span v-text="{'CN':'车辆','EN':'Vehicle','TW':'車輛'}[language]"></span>
+                                    <span>车牌号</span>
                                 </td>
                                 <td>
                                     <template>
                                         <i-select v-model="itemInfo.vehicleId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]">
-                                            <i-option v-for="item in vehicleList" :value="item.id">{{item.vehicleName}}</i-option>
+                                            <i-option v-for="item in vehicleList" :value="item.id">{{item.licenseNumber}}</i-option>
                                         </i-select>
                                     </template>
                                 </td>
@@ -250,7 +250,6 @@
                             </tr>
                             <tr>
                                 <td class="label">
-                                    <span class="request">＊</span>
                                     <span v-text="{'CN':'备注','EN':'Remark','TW':'備註'}[language]"></span>
                                 </td>
                                 <td>

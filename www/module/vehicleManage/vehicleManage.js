@@ -921,7 +921,7 @@
                 setInterval(function () {
                     self.getVehicleList(false);
                     self.getAllVehicleList();
-                }, 8000);
+                }, 3000);
 
                 self.$watch('pageInfo', function () {
                     self.getVehicleList(true);

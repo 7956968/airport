@@ -266,6 +266,7 @@
                 "vehicleStatusName": "", // 车辆运行状态名称
             },
             "vehiclePositionList": [],
+            "hasDrawVehicleList": [],
             "singleVehiclePageInfo": {
                 "date": new Date(),
                 "endTime": "", // 查询结束时间
@@ -663,11 +664,11 @@
                     "key": "vehicleCode",
                     "width": 130
                 },
-                {
-                    "title": "地址",
-                    "key": "lastPositionAddress",
-                    "width": 350
-                },
+                // {
+                //     "title": "地址",
+                //     "key": "lastPositionAddress",
+                //     "width": 350
+                // },
                 {
                     "title": {
                         "CN": "操作",
@@ -997,6 +998,7 @@
                             self.baiduMapInfo.openInfoWindow.show = true;
                             self.isAddCameraAction = false;
                         });
+
                     } else if (self.isAddDefensAction == true) {
                         if (self.baiduMapInfo.layersInfo.isDefense == false) {
                             self.$Message.destroy();
@@ -1040,10 +1042,16 @@
                             pathArr.push(pathArr[0]);
                             self.defensAreaDetailInfo.areaRangeStr = pathArr.join(";");
                         }
+
+                    } else if(self.baiduMapInfo.openInfoWindow.show) {
+                        setTimeout(function(){
+                            self.openInfoWindowClose();
+                        }, 250);
                     } else {
                         return false;
                     }
                 }
+        
             },
 
             // 重置范围查询
@@ -1712,8 +1720,8 @@
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
-                            self.vehiclePositionList = data.data;
                             self.vehiclePositonPageInfo.count = data.count;
+                            self.vehiclePositionList = data.data;
                             self.formatVehiclePositon(); // 格式化车辆数据
                             self.resetClickSearch();
                             self.drawAlVehicleByBaidu(); /// 画百度车辆
@@ -1763,26 +1771,26 @@
                         }
                     });
                 }
-                self.searchDatas = list;
 
-                for (var a = 0; a < self.searchDatas.length; a++) {
-                    (function (a) {
-                        if (!!self.searchDatas[a].lastPosition) {
-                            var position = self.searchDatas[a].lastPosition;
-                            if (position[0] != 0 && position[1] != 0) {
-                                utility.convertorByBaidu(position, gcoord, BMap, function (point, lng, lat) {
-                                    utility.getAdressDetail([lng, lat], BMap, function (address) {
-                                        self.searchDatas[a]["lastPositionAddress"] = address;
-                                    });
-                                });
-                            } else {
-                                self.searchDatas[a]["lastPositionAddress"] = "--";
-                            }
-                        } else {
-                            self.searchDatas[a]["lastPositionAddress"] = "--";
-                        }
-                    }(a));
-                }
+                // for (var a = 0; a < list.length; a++) {
+                //     (function (a) {
+                //         if (!!list[a].lastPosition) {
+                //             var position = list[a].lastPosition;
+                //             if (position[0] != 0 && position[1] != 0) {
+                //                 utility.convertorByBaidu(position, gcoord, BMap, function (point, lng, lat) {
+                //                     utility.getAdressDetail([lng, lat], BMap, function (address) {
+                //                         list[a]["lastPositionAddress"] = address;
+                //                     });
+                //                 });
+                //             } else {
+                //                 list[a]["lastPositionAddress"] = "--";
+                //             }
+                //         } else {
+                //             list[a]["lastPositionAddress"] = "--";
+                //         }
+                //     }(a));
+                // }
+                self.searchDatas = list;
             },
 
             // 查询实时车辆数据
@@ -1822,7 +1830,9 @@
                         target.address = rs.surroundingPois[0]["address"] + "(" + rs.surroundingPois[0]["title"] + ")";
                     } else {
                         target.address = rs.address;
-                    }!!callback && callback();
+                    }
+                    console.log(target.address);
+                    !!callback && callback();
                 });
             },
 
@@ -1876,19 +1886,27 @@
                     item['isOnTime'] = true;
                 }
 
-                iconSrc = CONFIG.HOST + "/airport/assets/car/" + vehicleIcon + ".gif?v=" + Date.parse(new Date());
+                iconSrc = CONFIG.HOST + "/airport/assets/car/" + vehicleIcon + ".gif?v=12341234";
 
-                self.convertorByBaidu(coordinate, function (point, lng, lat) {
-                    if (!!self.baiduMapInfo.vehicleMarkers["_" + item.id]) {
-                        if (!(self.baiduMapInfo.vehicleMarkers["_" + item.id].position.lng - lng == 0 && self.baiduMapInfo.vehicleMarkers["_" + item.id].position.lat - lat == 0)) {
-                            self.baiduMapInfo.vehicleMarkers["_" + item.id]["item"] = item;
-                            self.baiduMapInfo.vehicleMarkers["_" + item.id]["zIndex"] = self.baiduMapInfo.vehicleMarkers["_" + item.id]["zIndex"] || 0;
-                            self.baiduMapInfo.vehicleMarkers["_" + item.id]["position"] = {
-                                lng: lng,
-                                lat: lat
-                            };
-                        }
+                // 如果车辆的坐标没有变化过，则不用从新画车辆
+                if (!!self.baiduMapInfo.vehicleMarkers["_" + item.id]) {
+                    if(item["lastPosition"] != self.baiduMapInfo.vehicleMarkers["_" + item.id]["item"]["lastPosition"]) {
+                        self.convertorByBaidu(coordinate, function (point, lng, lat) {
+                            if (!(self.baiduMapInfo.vehicleMarkers["_" + item.id].position.lng - lng == 0 && self.baiduMapInfo.vehicleMarkers["_" + item.id].position.lat - lat == 0)) {
+                                self.baiduMapInfo.vehicleMarkers["_" + item.id]["item"] = item;
+                                self.baiduMapInfo.vehicleMarkers["_" + item.id]["zIndex"] = self.baiduMapInfo.vehicleMarkers["_" + item.id]["zIndex"] || 0;
+                                self.baiduMapInfo.vehicleMarkers["_" + item.id]["position"] = {
+                                    lng: lng,
+                                    lat: lat
+                                };
+                            }
+                            !!callback && callback(lng, lat);
+                        });
                     } else {
+                        self.baiduMapInfo.vehicleMarkers["_" + item.id]["item"] = item;
+                    }
+                } else {
+                    self.convertorByBaidu(coordinate, function (point, lng, lat) {
                         self.baiduMapInfo.vehicleMarkers["_" + item.id] = {
                             id: "_" + item.id,
                             icon: {
@@ -1908,10 +1926,10 @@
                             animation: "",
                             item: item
                         };
-                    }
+                        !!callback && callback(lng, lat);
+                    });
+                }
 
-                    !!callback && callback(lng, lat);
-                });
             },
 
             // 鼠标指向的车辆在最上层
@@ -1922,7 +1940,7 @@
                     self.baiduMapInfo.vehicleMarkers[marker.id]["top"] = true;
                     self.baiduMapInfo.vehicleMarkers[marker.id]["animation"] = "";
                 }
-                self.openInfoWidth = 360;
+                self.openInfoWidth = 350;
                 self.openInfoHeight = 0;
             },
 
@@ -1954,33 +1972,37 @@
 
                 self.baiduMapInfo.openInfoWindow.show = false;
                 self.baiduMapInfo.openInfoWindow.type = "";
-                self.isTrackItem = true;
-                self.vehicleItemPop = marker.item;
-                self.singleVehiclePageInfo.licenseNumber = self.vehicleItemPop.licenseNumber;
-                self.trackItem.licenseNumber = self.vehicleItemPop.licenseNumber;
-                self.baiduMapInfo.openInfoWindow.type = "isVehiclePopInfo";
-                self.baiduMapInfo.openInfoWindow.position = marker.position;
-                self.baiduMapInfo.openInfoWindow.show = true;
-                self.getAdressDetail([marker.position.lng, marker.position.lat], self.vehicleItemPop, function () {
-                    if (self.baiduMapInfo.map.getZoom() < 17) {
-                        self.baiduMapInfo.map.setZoom(17);
-                    }
-                    if (self.modal.isSearch == true) {
-                        self.baiduMapInfo.map.panTo(new BMap.Point(marker.position.lng - 0.00089867, marker.position.lat + 0.00099867));
-                    } else {
-                        self.baiduMapInfo.map.panTo(new BMap.Point(marker.position.lng, marker.position.lat + 0.00099867));
-                    }
 
-                    self.drawAlVehicleByBaidu();
-                });
-                self.openInfoWidth = 360;
-                self.openInfoHeight = 300;
+                setTimeout(function(){
+                    self.isTrackItem = true;
+                    self.vehicleItemPop = marker.item;
+                    self.singleVehiclePageInfo.licenseNumber = self.vehicleItemPop.licenseNumber;
+                    self.trackItem.licenseNumber = self.vehicleItemPop.licenseNumber;
+                    self.baiduMapInfo.openInfoWindow.type = "isVehiclePopInfo";
+                    self.baiduMapInfo.openInfoWindow.position = marker.position;
+                    self.baiduMapInfo.openInfoWindow.show = true;
+                    self.getAdressDetail([marker.position.lng, marker.position.lat], self.vehicleItemPop, function () {
+                        if (self.baiduMapInfo.map.getZoom() < 17) {
+                            self.baiduMapInfo.map.setZoom(17);
+                        }
+                        if (self.modal.isSearch == true) {
+                            self.baiduMapInfo.map.panTo(new BMap.Point(marker.position.lng - 0.00089867, marker.position.lat + 0.00099867));
+                        } else {
+                            self.baiduMapInfo.map.panTo(new BMap.Point(marker.position.lng, marker.position.lat + 0.00099867));
+                        }
+
+                        self.drawAlVehicleByBaidu();
+                    });
+                    self.openInfoWidth = 350;
+                    self.openInfoHeight = 340;
+                }, 250);
             },
 
             // 在地图上画车辆
             "drawAlVehicleByBaidu": function () {
                 var self = this;
 
+                // 如果在画轨迹的时候
                 if (self.isTrackItem) {
                     self.baiduMapInfo.vehicleMarkers = {};
                     for (var t = 0, tlen = self.vehiclePositionList.length; t < tlen; t++) {
@@ -2029,7 +2051,7 @@
                             }
                         });
 
-                        self.openInfoWidth = 360;
+                        self.openInfoWidth = 350;
                         self.openInfoHeight = 0;
 
                         setTimeout(function () {
@@ -2327,7 +2349,7 @@
                 var vehicleIcon = (self.vehicleTypeInfo[item.vehicleTypeName] + item.vehicleStatus) || item.vehicleStatus;
                 self.baiduMapInfo.animationInfo.moveVehicle = {
                     icon: {
-                        url: CONFIG.HOST + "/airport/assets/car/" + vehicleIcon + ".gif?v=" + Date.parse(new Date()),
+                        url: CONFIG.HOST + "/airport/assets/car/" + vehicleIcon + ".gif?v=030303939",
                         size: {
                             width: 28,
                             height: 35
@@ -2363,7 +2385,7 @@
                     if (!(self.baiduMapInfo.openInfoWindow.type == "isCameraPop" || self.baiduMapInfo.openInfoWindow.type == "isDefenPop")) {
                         self.getAllVehiclePositonList(); // 获取所有实时车辆
                     }
-                }, 15000);
+                }, 10000);
             },
             //#endregion
 

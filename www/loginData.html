@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>特种车辆音视频可视化系统</title>
+
+    <!-- 页面字符编码 -->
+    <meta charset="utf-8">
+
+    <!-- 避免IE使用兼容模式 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!-- 启用360浏览器的极速模式(webkit) -->
+    <meta name="renderer" content="webkit">
+    <!-- 微软的老式浏览器 -->
+    <meta name="MobileOptimized" content="320">
+
+    <!-- 关键字描述 -->
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <!-- 设置移动端视图 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <!-- 针对手持设备优化，主要是针对一些老的不识别viewport的浏览器，比如黑莓 -->
+    <meta name="HandheldFriendly" content="true">
+
+    <!-- 删除苹果默认的工具栏和菜单栏 -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <!-- 设置苹果工具栏颜色 -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+    <!-- 忽略页面中的数字识别为电话，忽略email识别 -->
+    <meta name="format-detection" content="telphone=no, email=no" />
+
+    <!-- uc强制竖屏 -->
+    <meta name="screen-orientation" content="portrait">
+    <!-- QQ强制竖屏 -->
+    <meta name="x5-orientation" content="portrait">
+    <!-- UC强制全屏 -->
+    <meta name="full-screen" content="yes">
+    <!-- QQ强制全屏 -->
+    <meta name="x5-fullscreen" content="true">
+    <!-- UC应用模式 -->
+    <meta name="browsermode" content="application">
+    <!-- QQ应用模式 -->
+    <meta name="x5-page-mode" content="app">
+    <link rel="icon" href="/airport/assets/img/favicon.ico">
+    <link rel="stylesheet" href="/airport/assets/vender/iView/styles/iView.min.css">
+    <link rel="stylesheet" type="text/css" href="/airport/www/css/common.min.css?v=742834834283" />
+</head>
+
+<body class="loginPage">
+    <div id="js-vue" class="login">
+        <div class="wrap">
+            <div class="header">
+                <img src="/airport/assets/img/logo.png" />
+                <span class="label">特种车辆音视频可视化系统</span>
+            </div>
+            <div class="inputInfo">
+                <template>
+                    <label>
+                        <i-input prefix="ios-contact" v-model="loginInfo.userCode" size="large" :placeholder="{'CN':'用户名','EN':'userName','TW':'用戶名'}[language]" />
+                    </label>
+                    <label>
+                        <i-input prefix="md-unlock" v-model="loginInfo.userPwd" size="large" type="password"
+                            :placeholder="{'CN':'密码','EN':'password','TW':'密碼'}[language]" />
+                    </label>
+                    <!-- <label>
+                        <i-select v-model="language" size="large">
+                            <i-option v-for="(item, index) in languageList" :value="item.value" :key="index">{{item.label}}</i-option>
+                        </i-select>
+                    </label> -->
+                    <label>
+                        <template>
+                            <i-select v-model="airPort" placeholder="请选择机场">
+                                <template v-for="item in airPortList">
+                                    <i-option :value="item.value">{{item.label}}</i-option>
+                                </template>
+                            </i-select>
+                        </template>
+                    </label>
+                    <Checkbox v-model="loginInfo.remember">{{{'CN':'记住我','EN':'Remember Me','TW':'記住我'}[language]}}</Checkbox>
+                    <label>
+                        <i-button @click="loginAction" type="primary" size="large" :loading="loading" long>
+                            <span v-if="!loading" v-text="{'CN':'登录','EN':'Login','TW':'登錄'}[language]"></span>
+                            <span v-else>Loading...</span>
+                        </i-button>
+                    </label>
+                </template>
+            </div>
+        </div>
+    </div>
+    <script src="/airport/assets/js/LAB.min.js?v=3423841237481237"></script>
+    <script>
+        loadScript(MODUL+"action/loginData.min.js");
+    </script>
+</body>
+
+</html>
