@@ -38,6 +38,8 @@
             "deviceProviderIdList": bizParam["deviceProviderId"], // 定位设备供应商
             "index": 0,
             "selectItem": null,
+            "vehicleModalBrandList": [],
+            "vehicleModalTypeList": [],
             // 车辆信息
             "vehicleInfo": {
                 "list": [],
@@ -64,9 +66,9 @@
                 "gpsDeviceId": "", // 定位终端ID
                 "gpsDeviceCode": "", // 定位终端编号
                 "vehicleStatus": "", // 车辆运行状态ID：
+                "vehicleModelId": "", // 车辆运行状态ID：
             },
             "pageInfo": {
-                "count": 0,
                 "companyId": "", // 所属公司ID，手动从公司列表选择
                 "deptId": "", // 部门ID，可选
                 "deptIds": [], // 部门ID，可选
@@ -84,10 +86,12 @@
                 "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传 
             },
             "page": {
+                "count": 0,
                 "pageSize": 20,
                 "pageNum": 1,
             },
             "vehicleList": [],
+            "vehicleBrandTypeList": [],
             "columnsList": [{
                     "type": "index",
                     "width": 60,
@@ -258,6 +262,7 @@
                                 },
                                 "on": {
                                     "click": function () {
+                                        console.log(params.row);
                                         pageVue.toOnlineDetail(params.row);
                                     }
                                 }
@@ -277,17 +282,17 @@
                 },
                 {
                     "title": "车辆类型",
-                    "key": "vehicleTypeId",
+                    "key": "vehicleTypeName",
                     "width": 120
                 },
-                // {
-                //     "title": { "CN": "车辆颜色", "EN": "Vehicle Color", "TW": "車輛顔色" }[language["language"]],
-                //     "key": "vehicleColorId",
-                //     "width": 120
-                // },
                 {
                     "title": "品牌",
-                    "key": "vehicleBrandId",
+                    "key": "vehicleBrandName",
+                    "width": 120
+                },
+                {
+                    "title": "品牌型号",
+                    "key": "vehicleModelName",
                     "width": 120
                 },
                 {
@@ -461,6 +466,9 @@
                         "EN": "Edit",
                         "TW": "修改"
                     } [self.language];
+                    self.getSysParaList("vehicleBrand");
+                    self.getSysParaList("vehicleType");
+                    self.getVehicleModelList();
                     self.getDepartmentTreeList("itemInfo");
                 });
             },
@@ -511,7 +519,7 @@
                 var self = this;
                 self.page.pageSize = parseInt(value, 10);
                 setTimeout(function () {
-                    self.getVehicleList(false);
+                    self.getVehicleList(true);
                 }, 200);
             },
             // 当选择的行发生变化时 
@@ -555,6 +563,7 @@
                         "vehicleBrandId": self.itemInfo["vehicleBrandId"], // 
                         "providerId": self.itemInfo["providerId"], // // 设备供应商ID
                         "remark": encodeURI($.trim(self.itemInfo["remark"])), // 
+                        "vehicleModelId": encodeURI($.trim(self.itemInfo["vehicleModelId"])), // 
                         "createUserId": userInfo["id"], // 创建用户ID，新增时必传
                         "modifyUserId": userInfo["id"] // 修改用户ID，修改时必传 
                     },
@@ -574,8 +583,9 @@
             // 格式化车辆信息
             "formatVehicle": function () {
                 var self = this;
+                var list = [];
                 for (var i = 0, len = self.vehicleList.length; i < len; i++) {
-                    self.dataList.push({
+                    list.push({
                         "companyId": self.vehicleList[i]["companyName"], // 所属公司ID，手动从公司列表选择
                         "deptId": self.vehicleList[i]["deptName"], // 部门ID，可选
                         "vehicleName": decodeURI(self.vehicleList[i]["vehicleName"]), // 车辆名称
@@ -583,51 +593,26 @@
                         "licenseNumber": decodeURI(self.vehicleList[i]["licenseNumber"] || ""), // 车牌号
                         "gpsDeviceId": self.vehicleList[i]["gpsDeviceCode"], // 
                         "useStatus": self.vehicleList[i]["useStatusName"], // 
-                        "vehicleColorId": (function () {
-                            var label = "";
-                            for (var c = 0, clen = self.vehicleColorList.length; c < clen; c++) {
-                                if (self.vehicleList[i]["vehicleColorId"] == self.vehicleColorList[c]["type"]) {
-                                    label = self.vehicleColorList[c]["name"];
-                                    break;
-                                }
-                            }
-                            return label;
-                        }()), // self.vehicleList[i]["vehicleColorName"], // 
-                        "vehicleTypeId": (function () {
-                            var label = "";
-                            for (var t = 0, tlen = self.vehicleTypeList.length; t < tlen; t++) {
-                                if (self.vehicleList[i]["vehicleTypeId"] == self.vehicleTypeList[t]["type"]) {
-                                    label = self.vehicleTypeList[t]["name"];
-                                    break;
-                                }
-                            }
-                            return label;
-                        }()), // self.vehicleList[i]["vehicleTypeName"], // 
-                        "vehicleBrandId": (function () {
-                            var label = "";
-                            for (var b = 0, blen = self.vehicleBrandList.length; b < blen; b++) {
-                                if (self.vehicleList[i]["vehicleBrandId"] == self.vehicleBrandList[b]["type"]) {
-                                    label = self.vehicleBrandList[b]["name"];
-                                    break;
-                                }
-                            }
-                            return label;
-                        }()), // self.vehicleList[i]["vehicleBrandName"], // 
+                        "vehicleTypeName": self.vehicleList[i]["vehicleTypeName"], // 
+                        "vehicleTypeId": self.vehicleList[i]["vehicleTypeId"], // 
+                        "vehicleBrandId": self.vehicleList[i]["vehicleBrandId"], // self.vehicleList[i]["vehicleBrandId"], // 
+                        "vehicleModelName": self.vehicleList[i]["vehicleModelName"], // self.vehicleList[i]["vehicleBrandName"], // 
+                        "vehicleBrandName": self.vehicleList[i]["vehicleBrandName"], // self.vehicleList[i]["vehicleBrandName"], // 
                         "vehicleStatus": self.vehicleList[i]["vehicleStatusName"], // 
                         "cellClassName": {
                             "vehicleStatus": "_" + self.vehicleList[i]["vehicleStatus"]
                         }
                     });
                 }
+                self.dataList = list;
             },
             // 获取车辆信息
             "getVehicleList": function (bool) {
                 var self = this;
-                self.vehicleList = [];
                 // 如果是查询，则重新从第一页开始
                 if (bool == true) {
-                    // self.dataList = [];
-                    self.pageInfo.pageNum = 1;
+                    self.page.pageNum = 1;
+                    self.page.count = 0;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getVehicleList,
@@ -658,11 +643,11 @@
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
-                            self.dataList = [];
                             self.vehicleList = data.data.sort(function (a, b) {
                                 return a.vehicleStatus - b.vehicleStatus;
                             });
-                            self.pageInfo.count = data.count;
+
+                            self.page.count = data.count;
                             self.formatVehicle();
                         }
                     }
@@ -671,14 +656,6 @@
             // 获取车辆信息
             "getAllVehicleList": function () {
                 var self = this;
-
-                self.vehicleInfo = {
-                    "list": [],
-                    "count": 0,
-                    "_401": 0,
-                    "_402": 0,
-                    "_406": 0,
-                };
 
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getVehicleList,
@@ -689,6 +666,11 @@
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
+                            self.vehicleInfo = {
+                                "_401": 0,
+                                "_402": 0,
+                                "_406": 0,
+                            };
                             self.vehicleInfo.count = data.count;
                             self.vehicleInfo.list = data.data;
 
@@ -762,9 +744,17 @@
                 self.departmentList = JSON.parse(listInfo);
             },
             // 获取部门树状信息
-            "getDepartmentTreeList": function (type) {
+            "getDepartmentTreeList": function (type, bool) {
                 var self = this;
                 self.departmentList = [];
+
+                if(type == "itemInfo" && !!bool) {
+                    self.itemInfo.vehicleTypeId = "";
+                    self.itemInfo.vehicleBrandId = "";
+                    self.getSysParaList("vehicleBrand");
+                    self.getSysParaList("vehicleType");
+                }
+                
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.deptService + "?action=" + CONFIG.ACTION.getDeptTreeList,
                     actionUrl: CONFIG.SERVICE.deptService,
@@ -813,8 +803,8 @@
             // 显示视屏
             "showLiveVideo": function (vehicleInfo, isBackPlay) {
                 var self = this;
-                var port = "8080";
-                // var port = "9090";
+                // var port = "8080";
+                var port = "9090";
                 var url = "http://43.247.68.26:" + port + "/airport/www/module/liveVideo/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
 
                 if (isBackPlay) {
@@ -905,6 +895,73 @@
                     $(window.parent.document).find("#nav_Maps").trigger("click");
                 }, 200);
             },
+            // 获取品牌型号
+            "getVehicleModelList": function (bool) {
+                var self = this;
+                self.vehicleBrandTypeList = [];
+                if(!!bool) {
+                    self.itemInfo.vehicleModelId = "";
+                }
+                
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.vehicleModelService + "?action=" + CONFIG.ACTION.getVehicleModelList,
+                    actionUrl: CONFIG.SERVICE.vehicleModelService,
+                    dataObj: {
+                        "pageNum": 0,
+                        "pageSize": 1000000,
+                        "companyId": self.itemInfo["companyId"], // 参数名称
+                        "vehicleBrandId": (function() {
+                            var id = "";
+                            for(var i = 0, len = self.vehicleModalBrandList.length; i < len; i++) {
+                                if(self.itemInfo.vehicleBrandId == self.vehicleModalBrandList[i]["type"]) {
+                                    id = self.vehicleModalBrandList[i]["id"];
+                                    break;
+                                }
+                            }
+                            return id;
+                        }()), // 参数名称
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            self.vehicleBrandTypeList = data.data;
+                        }
+                    }
+                });
+            },
+            // 
+            "getSysParaList": function (cateCode, bool) {
+                var self = this;
+                if(cateCode == "vehicleBrand") {
+                    self.vehicleModalBrandList = [];
+                } else if(cateCode == "vehicleType") {
+                    self.vehicleModalTypeList = [];
+                }
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.sysParaService + "?action=" + CONFIG.ACTION.getSysParaList,
+                    actionUrl: CONFIG.SERVICE.sysParaService,
+                    dataObj: {
+                        "pageNum": 1,
+                        "pageSize": 1000,
+                        "companyId": self.itemInfo.companyId, // 参数名称
+                        "cateCode": cateCode,
+                    },
+                    beforeSendCallback: function () {
+                        // self.isTableLoading = true;
+                    },
+                    completeCallback: function () {
+                        self.isTableLoading = false;
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            if(cateCode == "vehicleBrand") {
+                                self.vehicleModalBrandList = data.data;
+                            } else if(cateCode == "vehicleType") {
+                                self.vehicleModalTypeList = data.data;
+                            }
+                        }
+                    }
+                });
+            },
         },
         "created": function () {
             var self = this;
@@ -928,6 +985,11 @@
                 }, {
                     deep: true
                 });
+
+                setInterval(function() {
+                    bizParam = utility.getLocalStorage("bizParam")
+                }, 10000);
+                
             }, 500);
         }
     });

@@ -112,7 +112,7 @@
                     if (funcList[i]["functionCode"].indexOf("org_manage_") != -1) {
                         funcInfo["menu_org"].push(funcList[i]);
                     }
-                    if (funcList[i]["functionCode"].indexOf("device_manage_") != -1) {
+                    if (funcList[i]["functionCode"].indexOf("device_") != -1) {
                         funcInfo["menu_device"].push(funcList[i]);
                     }
                     if (funcList[i]["functionCode"].indexOf("report_") != -1) {
@@ -154,9 +154,28 @@
                                 utility.setLocalStorage("demo", { "demo": false });
                                 self.formatFunMenu(data.data);
 
-                                setTimeout(function () {
+                                // 获取枚举值
+                                // self.getBizParam(data.data.companyId, function() {
+                                //     window.location.href = "/airport/www/module/index/index.html";
+                                // });
+
+                                self.getBizParam(data.data.companyId, function() {
+                                    if(!!data.data.modifyTime) {
+                                        var mTs = data.data.modifyTime.split(" ");
+                                        var years = mTs[0].split("-");
+                                        var year = parseInt(years[0],10) + 1;
+                                        var diffTime = utility.timeDiff(year + "/" + years[1] + "/" + years[2] + " " + mTs[1]);
+
+                                        if(diffTime.day <= 7) {
+                                            alert("密码更换周期不低于一年一次 \n 最迟 "+ year + "-" + years[1] + "-" + years[2] + " " + mTs[1]+" 前修改一次密码");
+                                        }
+                                    }
                                     window.location.href = "/airport/www/module/indexData/index.html";
-                                }, 500);
+                                });
+
+                                // setTimeout(function () {
+                                //     window.location.href = "/airport/www/module/indexData/index.html";
+                                // }, 500);
                             } else {
                                 self.$Message.error(data.message);
                             }
@@ -165,13 +184,17 @@
                 }
             },
             // 获取枚举值保存在本地
-            "getBizParam": function () {
+            "getBizParam": function (companyId, callback) {
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.commonService + "?action=" + CONFIG.ACTION.getBizParam,
                     actionUrl: CONFIG.SERVICE.commonService,
+                    dataObj: {
+                        companyId: companyId
+                    },
                     successCallback: function (data) {
                         if (data.code == 200) {
                             utility.setLocalStorage("bizParam", data.data);
+                            !!callback && callback();
                         }
                     }
                 });

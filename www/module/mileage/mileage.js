@@ -18,9 +18,6 @@
             "vehicleBrandList": bizParam["vehicleBrand"], // 车辆品牌
             "pageInfo": {
                 "id": "", // 指定的维护记录ID
-                "count": 0,
-                "pageNum": 1,
-                "pageSize": 20,
                 "deptId": "", // 部门ID
                 "companyId": "", // 所属公司ID
                 "vehicleCode": "",// 车辆编码
@@ -33,6 +30,11 @@
                 "beginTime": "", // 开始时间
                 "endTime": "", // 结束时间
                 "orderType": 1
+            },
+            "page": {
+                "count": 0,
+                "pageNum": 1,
+                "pageSize": 20,
             },
             "columnsList": [
                 {
@@ -103,7 +105,7 @@
             // 页数改变时的回调
             "pageSizeChange": function (value) {
                 var self = this;
-                self.pageInfo.pageNum = parseInt(value, 10);
+                self.page.pageNum = parseInt(value, 10);
                 setTimeout(function () {
                     self.getVehicleMilesReport(false);
                 }, 200);
@@ -111,9 +113,9 @@
             // 切换每页条数时的回调
             "pageRowChange": function (value) {
                 var self = this;
-                self.pageInfo.pageSize = parseInt(value, 10);
+                self.page.pageSize = parseInt(value, 10);
                 setTimeout(function () {
-                    self.getVehicleMilesReport(false);
+                    self.getVehicleMilesReport(true);
                 }, 200);
             },
             // 画违章图表
@@ -264,12 +266,28 @@
                 var self = this;
                 self.vehicleList = [];
                 if (bool == true) {
-                    self.pageInfo.pageNum = 1;
+                    self.page.pageNum = 1;
+                    self.page.count = 0;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getVehicleMilesReport,
                     actionUrl: CONFIG.SERVICE.vehicleService,
-                    dataObj: self.pageInfo,
+                    dataObj: {
+                        "pageNum": self.page.pageNum, //0,
+                        "pageSize": self.page.pageSize, //20,
+                        "deptId": self.pageInfo.deptId, // 部门ID
+                        "companyId": self.pageInfo.companyId, // 所属公司ID
+                        "vehicleCode": encodeURI(self.pageInfo.vehicleCode),// 车辆编码
+                        "vehicleColorId": self.pageInfo.vehicleColorId,// 所属公司ID
+                        "vehicleTypeId": self.pageInfo.vehicleTypeId,// 车辆颜色ID
+                        "vehicleBrandId": self.pageInfo.vehicleBrandId,// 车辆类型ID
+                        "vehicleTypeId": self.pageInfo.vehicleTypeId,// 车辆品牌ID
+                        "beginMiles": self.pageInfo.beginMiles,// 最大里程数
+                        "endMiles": self.pageInfo.endMiles,// 最大里程数
+                        "beginTime": self.pageInfo.beginTime, // 开始时间
+                        "endTime": self.pageInfo.endTime, // 结束时间
+                        "orderType": 1, // 排列顺序
+                    }, //self.pageInfo,
                     beforeSendCallback: function () {
                         self.isTableLoading = true;
                     },
@@ -279,7 +297,7 @@
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.vehicleList = data.data;
-                            self.pageInfo.count = data.count;
+                            self.page.count = data.count;
                         }
                     }
                 });

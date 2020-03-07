@@ -103,7 +103,8 @@ window.utility = (function (utility) {
 
     // 验证密码格式
     utility.checkPass = function (str) {
-        return str.match(/^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{6,16}$/) ? true : false;
+        return str.match(/(?!^(\d+|[a-zA-Z]+|[~!@#$%^&*?]+)$)^[\w~!@#$%^&*?]{6,20}$/) ? true : false;
+        // return str.match(/(?!^(\d+|((?=.*[A-Z])(?=.*[a-z]))|[~!@#$%^&*?]+)$)^[\w~!@#$%^&*?]{6,20}$/) ? true : false;
     };
 
     //验证是否是生日
@@ -123,6 +124,11 @@ window.utility = (function (utility) {
             bool = true;
         }
         return bool;
+    };
+
+    // 验证是不是整数
+    utility.checkIsNum = function (str) {
+        return str.match(/^[0-9]\d*$/) ? true : false;
     };
 
     // 验证是不是整数

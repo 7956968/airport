@@ -134,17 +134,14 @@
 
         <div class="pageWrap">
             <template>
-                <Page :total="pageInfo.count" @on-change="pageSizeChange" @on-page-size-change="pageRowChange"
+                <Page :total="page.count" @on-change="pageSizeChange" @on-page-size-change="pageRowChange"
                     :page-size="20" show-sizer show-total />
             </template>
         </div>
 
         <!-- 新增、修改 -->
         <template>
-            <Modal v-model="isShowModal" :styles="{top: '60px'}" :mask-closable="false" width="45" :title="modalTitle"
-                :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
-                :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" :loading="isModalLoading"
-                @on-ok="uploadDataToServer">
+            <Modal v-model="isShowModal" :styles="{top: '60px'}" :mask-closable="false" width="45" :title="modalTitle">
                 <div class="modifiedWrap">
                     <table>
                         <tbody>
@@ -301,11 +298,24 @@
                                     <span v-text="{'CN':'备注','EN':'Remarks','TW':'備註'}[language]"></span>
                                 </td>
                                 <td colspan="3">
-                                    <i-input v-model="itemInfo.remark" type="textarea" :rows="4" />
+                                    <i-input v-model="itemInfo.remark" type="textarea" :rows="2" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td colspan="3">
+                                    <p class="request">密码注意事项：</p>
+                                    <p class="request">1：密码长度必须为6个以上字符</p>
+                                    <p class="request">2：必须同时包含大小写字母、数字、特殊字符中的任意两种</p>
+                                    <p class="request">3：密码更换周期不低于一年一次</p>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+                <div Slot="footer">
+                    <i-button @click="isShowModal=false">取消</i-button>
+                    <i-button type="primary" :loading="isModalLoading" @click="uploadDataToServer">确定</i-button>
                 </div>
             </Modal>
         </template>
@@ -378,7 +388,7 @@
         </template>
 
     </div>
-    <script src="/airport/assets/js/LAB.min.js?v=3423841237481237"></script>
+    <script src="/airport/assets/js/LAB.min.js?v=q41234weqwer"></script>
     <script>
         loadScript(MODUL + "module/userManage/userManage.js");
     </script>

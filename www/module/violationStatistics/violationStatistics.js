@@ -17,10 +17,7 @@
             }()),
             "vehiclePassType": bizParam["vehiclePassType"], // 穿越类型
             "pageInfo": {
-                "count": 0,
-                "pageNum": 1,
                 "areaId": "",
-                "pageSize": 20,
                 "areaName": "",
                 "areaCode": "",
                 "vehicleId": "",
@@ -28,6 +25,11 @@
                 "vehicleName": "",
                 "vehicleCode": "",
                 "crossTypeId": ""
+            },
+            "page": {
+                "count": 0,
+                "pageSize": 20,
+                "pageNum": 1,
             },
             "columnsList": [{
                     "type": "index",
@@ -97,7 +99,7 @@
                         "TW": "座標位置"
                     } [language["language"]],
                     "key": "currPosition",
-                    // "width": 160,
+                    "width": 180,
                     "render": function (h, params) {
                         var coordinates = JSON.parse(pageVue.dataList[params.index]["currPosition"])["coordinates"].join(",");
                         return h("div", coordinates);
@@ -131,7 +133,7 @@
             // 页数改变时的回调
             "pageSizeChange": function (value) {
                 var self = this;
-                self.pageInfo.pageNum = parseInt(value, 10);
+                self.page.pageNum = parseInt(value, 10);
                 setTimeout(function () {
                     self.getCrossAreaList(false);
                 }, 200);
@@ -139,9 +141,9 @@
             // 切换每页条数时的回调
             "pageRowChange": function (value) {
                 var self = this;
-                self.pageInfo.pageSize = parseInt(value, 10);
+                self.page.pageSize = parseInt(value, 10);
                 setTimeout(function () {
-                    self.getCrossAreaList(false);
+                    self.getCrossAreaList(true);
                 }, 200);
             },
             // 获取车辆信息
@@ -150,15 +152,16 @@
                 // 如果是查询，则重新从第一页开始
                 self.dataList = [];
                 if (bool == true) {
-                    self.pageInfo.pageNum = 0;
+                    self.page.pageNum = 0;
+                    self.page.count = 0;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getCrossAreaList,
                     actionUrl: CONFIG.SERVICE.vehicleService,
                     dataObj: {
-                        "pageNum": self.pageInfo.pageNum,
-                        "areaId": self.pageInfo.pageNum,
-                        "pageSize": self.pageInfo.pageNum,
+                        "pageNum": self.page.pageNum,
+                        "pageSize": self.page.pageSize,
+                        "areaId": self.pageInfo.areaId,
                         "areaName": encodeURI(self.pageInfo.areaName),
                         "areaCode": encodeURI(self.pageInfo.areaCode),
                         "vehicleId": self.pageInfo.vehicleId,
@@ -176,7 +179,7 @@
                     successCallback: function (data) {
                         if (data.code == 200) {
                             var list = [];
-                            self.pageInfo.count = data.count;
+                            self.page.count = data.count;
                             for (var i = 0, len = data.data.length; i < len; i++) {
                                 list.push(data.data[i]);
                                 list[i]["lastAddress"] = "";

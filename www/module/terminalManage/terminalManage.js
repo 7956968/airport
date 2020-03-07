@@ -43,7 +43,6 @@
                 "lastDataTime": "", // 数据最后上报时间
             },
             "pageInfo": {
-                "count": 0,
                 "id": "", // 车辆ID
                 "companyId": "", // 所属公司ID，手动从公司列表选择
                 "deptId": "", // 部门ID，可选
@@ -58,6 +57,7 @@
                 "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传 
             },
             "page": {
+                "count": 0,
                 "pageNum": 1,
                 "pageSize": 20,
             },
@@ -512,7 +512,7 @@
                 var self = this;
                 self.page.pageSize = parseInt(value, 10);
                 setTimeout(function () {
-                    self.getTerminalList(false);
+                    self.getTerminalList(true);
                 }, 200);
             },
             // 当选择的行发生变化时 
@@ -585,6 +585,7 @@
                 // 如果是查询，则重新从第一页开始
                 if (bool == true) {
                     self.page.pageNum = 1;
+                    self.page.count = 0;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.deviceService + "?action=" + CONFIG.ACTION.getDeviceList,
@@ -593,6 +594,7 @@
                         "pageNum": self.page.pageNum,
                         "pageSize": self.page.pageSize,
                         "companyId": self.pageInfo.companyId, // 所属公司ID，手动从公司列表选择
+                        "deptId": self.pageInfo.deptId, // 所属公司ID，手动从公司列表选择
                         "providerId": self.pageInfo.providerId, // 供应商ID
                         "deviceStatus": self.pageInfo.deviceStatus, // 定位设备运行状态
                         "deviceCode": encodeURI(self.pageInfo.deviceCode), // 定位终端设备编号
@@ -611,7 +613,7 @@
                             self.dataList = [];
                             self.terminalList = [];
                             self.terminalList = data.data;
-                            self.pageInfo.count = data.count;
+                            self.page.count = data.count;
                             self.formatTerminal();
                         }
                     }

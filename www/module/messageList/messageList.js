@@ -93,7 +93,7 @@
                 var self = this;
                 self.pageInfo.pageSize = parseInt(value, 10);
                 setTimeout(function () {
-                    self.getCrossAreaList(false);
+                    self.getCrossAreaList(true);
                 }, 200);
             },
             // 实时防区信息
@@ -102,6 +102,7 @@
                 self.msgTableList = [];
                 if(bool == true) {
                     self.pageInfo.pageNum = 1;
+                    self.pageInfo.count = 0;
                 }
                 // 如果是查询，则重新从第一页开始
                 utility.interactWithServer({

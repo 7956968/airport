@@ -14,9 +14,9 @@
   border-radius: 10px;
   box-shadow: inset 0 0 6px rgba(208, 219, 245, 0.3);
   background-color: #555;
-}
+} 
 .video_main {
-  position: absolute; 
+  position: absolute;
   border: 0px;
   margin: 0px;
   padding: 0px;
@@ -224,13 +224,13 @@
 .modifiedWrap {
   font-size: 16px;
   color: #fff;
-  padding: 10px 20px;
+  padding: 10px;
 }
 .modifiedWrap .detailInfo {
   color: #fff;
 }
 .modifiedWrap .detailInfo td {
-  padding-bottom: 5px;
+  padding: 2px 2px 5px 2px;
 }
 .modifiedWrap .detailInfo td span {
   font-size: 16px;

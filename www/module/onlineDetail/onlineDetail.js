@@ -21,7 +21,6 @@
             "vehicleBrandList": bizParam["vehicleBrand"], // 车辆品牌
             "pageInfo": {
                 "id": "", // 指定的维护记录ID
-                "count": 0,
                 "deptId": "", // 部门ID
                 "deptIds": "", // 部门ID
                 "companyId": "", // 所属公司ID
@@ -32,6 +31,7 @@
                 "endTime": "", // 结束时间
             },
             "page": {
+                "count": 0,
                 "pageSize": 20,
                 "pageNum": 1,
             },
@@ -137,7 +137,7 @@
                 var self = this;
                 self.page.pageSize = parseInt(value, 10);
                 setTimeout(function () {
-                    self.getVehicleOnlineDetail(false);
+                    self.getVehicleOnlineDetail(true);
                 }, 200);
             },
             // 下载Excel
@@ -178,6 +178,7 @@
                 self.vehicleList = [];
                 if (bool == true) {
                     self.page.pageNum = 0;
+                    self.page.count = 0;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getVehicleOnlineDetail,
@@ -202,7 +203,7 @@
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.vehicleList = data.data;
-                            self.pageInfo.count = data.count;
+                            self.page.count = data.count;
                             // utility.setSessionStorage("onlineStatItemInfo", null);
                         }
                     }

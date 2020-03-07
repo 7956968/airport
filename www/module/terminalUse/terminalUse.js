@@ -18,9 +18,6 @@
             "terminalStatusList": bizParam["terminalStatus"], // 车辆状态
             "deviceProviderList": bizParam["deviceProviderId"], // 车辆状态
             "pageInfo": {
-                "count": 0,
-                "pageSize": 20,
-                "pageNum": 1,
                 "id": "", // 车辆ID
                 "companyId": "", // 所属公司ID，手动从公司列表选择
                 "deptId": "", // 部门ID，可选
@@ -33,6 +30,11 @@
                 "bindFlag": 0, // 是否被绑定到车辆：
                 "createUserId": userInfo["id"], // 创建用户ID，新增时必传
                 "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传 
+            },
+            "page": {
+                "count": 0,
+                "pageSize": 20,
+                "pageNum": 1,
             },
             "columnsList": [
                 {
@@ -141,7 +143,7 @@
             // 页数改变时的回调
             "pageSizeChange": function (value) {
                 var self = this;
-                self.pageInfo.pageNum = parseInt(value, 10);
+                self.page.pageNum = parseInt(value, 10);
                 setTimeout(function () {
                     self.getTerminalList(false);
                 }, 200);
@@ -149,9 +151,9 @@
             // 切换每页条数时的回调
             "pageRowChange": function (value) {
                 var self = this;
-                self.pageInfo.pageSize = parseInt(value, 10);
+                self.page.pageSize = parseInt(value, 10);
                 setTimeout(function () {
-                    self.getTerminalList(false);
+                    self.getTerminalList(true);
                 }, 200);
             },
             // 格式化车辆信息
@@ -178,14 +180,28 @@
             "getTerminalList": function (bool) {
                 var self = this;
                 self.dataList = [];
+                self.terminalList = [];
                 // 如果是查询，则重新从第一页开始
                 if (bool == true) {
-                    self.pageInfo.pageNum = 1;
+                    self.page.pageNum = 1;
+                    self.page.count = 0;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.deviceService + "?action=" + CONFIG.ACTION.getDeviceList,
                     actionUrl: CONFIG.SERVICE.deviceService,
-                    dataObj: self.pageInfo,
+                    dataObj: {
+                        "pageNum": self.page.pageNum,
+                        "pageSize": self.page.pageSize,
+                        "companyId": self.pageInfo.companyId, // 所属公司ID，手动从公司列表选择
+                        "deptId": self.pageInfo.deptId, // 部门ID，可选
+                        "providerId": self.pageInfo.providerId, // 供应商ID
+                        "deviceStatus": self.pageInfo.deviceStatus, // 定位设备运行状态
+                        "deviceCode": encodeURI(self.pageInfo.deviceCode), // 定位终端设备编号
+                        "dataPeriod": self.pageInfo.dataPeriod, // 数据上报周期(单位秒)
+                        "versionName": encodeURI(self.pageInfo.versionName), // 系统软件版本名
+                        "versionNum": self.pageInfo.versionNum, // 系统软件版本号，如100
+                        "bindFlag": self.pageInfo.bindFlag, // 是否被绑定到车辆：
+                    }, //self.pageInfo,
                     beforeSendCallback: function () {
                         self.isTableLoading = true;
                     },
@@ -195,7 +211,7 @@
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.terminalList = data.data;
-                            self.pageInfo.count = data.count;
+                            self.page.count = data.count;
                             self.formatTerminal();
                         }
                     }

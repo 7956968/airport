@@ -24,11 +24,11 @@
             "groupTypeList": bizParam["groupType"],
             "pageInfo": {
                 "id": 0,
-                "count": 0,
                 "roleName": "", // 查询关键字（角色名称）
                 "companyId": "", // 公司ID
             },
             "page": {
+                "count": 0,
                 "pageSize": 20,
                 "pageNum": 1,
             },
@@ -526,7 +526,7 @@
                 var self = this;
                 self.page.pageSize = parseInt(value, 10);
                 setTimeout(function () {
-                    self.getRoleDataList(false);
+                    self.getRoleDataList(true);
                 }, 200);
             },
             // 显示用户层
@@ -646,7 +646,7 @@
                 var self = this;
                 self.userPageInfo.pageSize = parseInt(value, 10);
                 setTimeout(function () {
-                    self.getUserList(false);
+                    self.getUserList(true);
                 }, 200);
             },
             // 角色成员
@@ -752,6 +752,7 @@
                 self.tableRowList = [];
                 if (bool == true) {
                     self.page.pageNum = 1;
+                    self.page.count = 0;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.permissionService + "?action=" + CONFIG.ACTION.getRoleList,
@@ -773,7 +774,7 @@
                         if (data.code == 200) {
                             self.roleList = data.data;
 
-                            self.pageInfo.count = data.count;
+                            self.page.count = data.count;
 
                             // 格式化表格数据
                             self.formatRoleTableList();

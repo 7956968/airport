@@ -7,7 +7,7 @@
         "data": {
             "userInfo": userInfo,
             "language": !!language ? language["language"] : "CN",
-            "title": { "CN": "航空地面服务特种车辆管理系统", 'EN': "Mingui Non-Powered Euipment Management System", 'TW': "民貴無動力管理系統" },
+            "title": "航空地面服务特种车辆管理系统",
             "tabList": {
                 "Welcom": null,
                 "Maps": null,
@@ -34,6 +34,7 @@
                 "MessageList": null,
                 "TerminalParame": null,
                 "BaiduMap": null,
+                "DataGroupType": null,
             },
             "iframeList": {
                 "Welcom": null,
@@ -61,6 +62,7 @@
                 "MessageList": null,
                 "TerminalParame": null,
                 "BaiduMap": null,
+                "DataGroupType": null,
             },
             "userFuncList": userFuncList,
             "innerWidth": window.innerWidth,
@@ -85,7 +87,8 @@
                             utility.setLocalStorage("userInfo", null);
                             utility.setLocalStorage("userFuncList", null);
                             setTimeout(function() {
-                                window.location.href = "/airport/www/indexMg.html";
+                                window.location.href = "/airport/www/login.html"; // 有动力
+                                // window.location.href = "/airport/www/indexMG.html"; // 无动力
                             }, 150);
                         } else {
                             self.$Message.error(data.message);
@@ -179,6 +182,14 @@
                     "isActive": true,
                     "isDelete": false,
                 };
+
+                // if(id=="Alarm") {
+                //     setTimeout(function() {
+                //         if(!!utility.getSessionStorage("fromMap")) {
+                //             utility.setSessionStorage("fromMap", null);
+                //         }
+                //     }, 1000);
+                // }
             },
             // tab切换
             "switchTab": function (id, event) {
@@ -225,7 +236,7 @@
         "created": function () {
             var self = this;
 
-            document.title = self.title[self.language];
+            // document.title = self.title[self.language];
 
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
             utility.isLogin(true, true);

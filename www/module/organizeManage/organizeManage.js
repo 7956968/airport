@@ -18,11 +18,11 @@
             }()),
             "pageInfo": {
                 "id": 0,
-                "count": 0,
                 "companyName": "", // 查询关键字（公司名称）
                 "paraCompanyId": "", // 上级公司ID
             },
             "page": {
+                "count": 0,
                 "pageSize": 20,
                 "pageNum": 1,
             },
@@ -284,7 +284,7 @@
                 var self = this;
                 self.page.pageSize = parseInt(value, 10);
                 setTimeout(function () {
-                    self.getCompanyList(false);
+                    self.getCompanyList(true);
                 }, 200);
             },
             // 验证所有输入
@@ -367,8 +367,10 @@
                 var self = this;
                 // 如果是查询，则重新从第一页开始
                 self.tableRowList = [];
+                self.companyList = [];
                 if (bool == true) {
-                    self.pageInfo.pageNum = 0;
+                    self.page.pageNum = 0;
+                    self.page.count = 0;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.companyService + "?action=" + CONFIG.ACTION.getCompanyList,
@@ -388,7 +390,7 @@
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.companyList = data.data;
-                            self.pageInfo.count = data.count;
+                            self.page.count = data.count;
 
                             // 格式化表格数据
                             self.formatTableList();

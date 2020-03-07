@@ -17,13 +17,13 @@
             }()),
             "pageInfo": {
                 "id": 0,
-                "count": 0,
                 "deptName": "", // 查询关键字（部门名称）
                 "companyId": "", // 公司ID
                 "paraDeptId": "", // 上级部门ID
                 "paraDeptIds": [], // 上级部门ID
             },
             "page": {
+                "count": 0,
                 "pageSize": 20,
                 "pageNum": 0,
             },
@@ -335,7 +335,7 @@
                 var self = this;
                 self.page.pageSize = parseInt(value, 10);
                 setTimeout(function () {
-                    self.getDepartmentDataList(false);
+                    self.getDepartmentDataList(true);
                 }, 200);
             },
             // 当选择的负责人改变时
@@ -371,9 +371,11 @@
             "getDepartmentDataList": function (bool) {
                 var self = this;
                 // 如果是查询，则重新从第一页开始
+                self.departmentList = [];
+                self.tableRowList = [];
                 if (bool == true) {
-                    self.tableRowList = [];
                     self.page.pageNum = 0;
+                    self.page.count = 0;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.deptService + "?action=" + CONFIG.ACTION.getDeptList,
@@ -394,7 +396,7 @@
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.departmentList = data.data;
-                            self.pageInfo.count = data.count;
+                            self.page.count = data.count;
 
                             // 格式化表格数据
                             self.formatTableList();

@@ -323,7 +323,7 @@
                 var self = this;
                 self.page.pageSize = parseInt(value, 10);
                 setTimeout(function () {
-                    self.getmaintenanceList(false);
+                    self.getmaintenanceList(true);
                 }, 200);
             },
             // 当选择的行发生变化时 
@@ -434,8 +434,10 @@
                 var self = this;
                 // 如果是查询，则重新从第一页开始
                 self.dataList = [];
+                self.maintenanceList = [];
                 if (bool == true) {
                     self.page.pageNum = 1;
+                    self.page.count = 0;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleRepairService + "?action=" + CONFIG.ACTION.getVehicleRepairList,
@@ -444,8 +446,8 @@
                         "pageNum": self.page.pageNum,
                         "pageSize": self.page.pageSize,
                         "vehicleId": self.pageInfo.vehicleId, // 车辆ID
-                        "vehicleName": self.pageInfo.vehicleName,// 车辆名称
-                        "vehicleCode": self.pageInfo.vehicleCode,// 车辆编码
+                        "vehicleName": encodeURI(self.pageInfo.vehicleName),// 车辆名称
+                        "vehicleCode": encodeURI(self.pageInfo.vehicleCode),// 车辆编码
                         "vehicleColorId": self.pageInfo.vehicleColorId,// 所属公司ID
                         "vehicleTypeId": self.pageInfo.vehicleTypeId,// 车辆颜色ID
                         "vehicleBrandId": self.pageInfo.vehicleBrandId,// 车辆类型ID
@@ -464,7 +466,7 @@
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.maintenanceList = data.data;
-                            self.pageInfo.count = data.count;
+                            self.page.count = data.count;
                             self.formatMaintenanceData();
                         }
                     }

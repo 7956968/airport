@@ -15,14 +15,17 @@
                 return containerHeight - 100;
             }()),
             "pageInfo": {
-                "pageNum": 1,
-                "pageSize": 20,
                 "userCode": "",
                 "beginTime": "",
                 "endTime": "",
                 "opTypeCode": "1",
                 "opFunctionCode": "",
                 "opFunctionDesc": "",
+            },
+            "page": {
+                "count": 0,
+                "pageNum": 1,
+                "pageSize": 20,
             },
             "columnsList": [
                 {
@@ -72,7 +75,6 @@
             "dataList": [],
         },
         "watch": {
-
         },
         "methods": {
             // 刷新
@@ -98,7 +100,7 @@
             // 页数改变时的回调
             "pageSizeChange": function (value) {
                 var self = this;
-                self.pageInfo.pageNum = parseInt(value, 10);
+                self.page.pageNum = parseInt(value, 10);
                 setTimeout(function () {
                     self.getUserLogList(false);
                 }, 200);
@@ -106,27 +108,38 @@
             // 切换每页条数时的回调
             "pageRowChange": function (value) {
                 var self = this;
-                self.pageInfo.pageSize = parseInt(value, 10);
+                self.page.pageSize = parseInt(value, 10);
                 setTimeout(function () {
-                    self.getUserLogList(false);
+                    self.getUserLogList(true);
                 }, 200);
             },
             "getLogByCode": function(code) {
                 var self = this;
+                self.page.pageNum = 0;
                 self.pageInfo.opTypeCode = code;
-                self.getUserLogList(true);
             },
             // 获取车辆信息
             "getUserLogList": function (bool) {
                 var self = this;
                 self.logList = [];
+                self.dataList = [];
                 if (bool == true) {
-                    self.pageInfo.pageNum = 1;
+                    self.page.pageNum = 1;
+                    self.page.count = 0;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.userService + "?action=" + CONFIG.ACTION.getUserLogList,
                     actionUrl: CONFIG.SERVICE.userService,
-                    dataObj: self.pageInfo,
+                    dataObj: {
+                        "pageNum": self.page.pageNum,
+                        "pageSize": self.page.pageSize,
+                        "userCode": encodeURI(self.pageInfo.userCode),
+                        "beginTime": self.pageInfo.beginTime,
+                        "endTime": self.pageInfo.endTime,
+                        "opTypeCode": self.pageInfo.opTypeCode,
+                        "opFunctionCode": encodeURI(self.pageInfo.opFunctionCode),
+                        "opFunctionDesc": encodeURI(self.pageInfo.opFunctionDesc),
+                    }, //self.pageInfo,
                     beforeSendCallback: function () {
                         self.isTableLoading = true;
                     },
@@ -136,7 +149,7 @@
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.dataList = data.data;
-                            self.pageInfo.count = data.count;
+                            self.page.count = data.count;
                         }
                     }
                 });

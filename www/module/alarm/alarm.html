@@ -250,7 +250,7 @@
                             </tr>
                             <tr class="detailInfo">
                                 <td class="detailLabel"><span>报警时间：</span></td>
-                                <td><span v-text="itemInfo.vehicleName"></span></td>
+                                <td><span v-text="itemInfo.alarmTime"></span></td>
                             </tr>
                             <tr class="detailInfo">
                                 <td class="detailLabel"><span>报警类型：</span></td>
@@ -265,8 +265,15 @@
                                 <td><span v-text="itemInfo.eventTypeDesc"></span></td>
                             </tr>
                             <tr class="detailInfo">
-                                <td class="detailLabel"><span>报警内容：</span></td>
+                                <td class="detailLabel" style="vertical-align: top;"><span>报警内容：</span></td>
                                 <td><span v-text="itemInfo.alarmInfo"></span></td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td class="detailLabel" style="vertical-align: top;"><span>报警地址：</span></td>
+                                <td>
+                                    <span v-text="itemInfo.alarmAddress"></span>
+                                    <i-button @click="toMapTrack(itemInfo)" size="small" type="info" icon="md-pin">行迹查询</i-button>
+                                </td>
                             </tr>
                             <tr class="detailInfo">
                                 <td class="detailLabel"><span>处理人：</span></td>

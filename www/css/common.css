@@ -693,7 +693,7 @@ table .ivu-table-cell {
 }
 .index .mainWrap.mainWrapMg iframe {
   z-index: 100000;
-  opacity: 1; 
+  opacity: 1;
 }
 .index .mainWrap iframe {
   position: absolute;

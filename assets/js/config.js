@@ -4,8 +4,8 @@
 var CONFIG = (function (CONFIG) {
     // 服务器信息配置
     // CONFIG.HOST = LOCATION;
-    // CONFIG.HOST = "https://www.minguicloud.com";
-    CONFIG.HOST = "https://test2.cityeasyplay.com";
+    CONFIG.HOST = "https://www.minguicloud.com";
+    // CONFIG.HOST = "https://test2.cityeasyplay.com";
     // 
     // 接口服务
     CONFIG.SERVICE = {
@@ -22,6 +22,8 @@ var CONFIG = (function (CONFIG) {
         "vehicleRepairService": "/airportCore/core/vehicleRepairService", // 车辆保养
         "providerService": "/airportCore/third/providerService", // 设备商
         "alarmService": "/airportCore/core/alarmService", // 系统报警
+        "sysParaService": "/airportCore/base/sysParaService", // 系统参数列
+        "vehicleModelService": "/airportCore/base/vehicleModelService", // 车辆型号
     };
 
     // 接口动作
@@ -87,6 +89,9 @@ var CONFIG = (function (CONFIG) {
         "getUserGroupDataResList": "getUserGroupDataResList", // 获取用户角色可访问的业务数据对象列表接口
         "delUserGroupDataResList": "delUserGroupDataResList", // 删除角色可访问的业务对象接口
         "getUserGroupDataResList": "getUserGroupDataResList", // 获取用户组可访问的业务数据对象列表接口
+        "saveUserGroups": "saveUserGroups", // 新增用户的业务数据组权限接口
+        "delUserGroups": "delUserGroups", // 删除用户可访问的数据组接口
+        "getUserGroupList": "getUserGroupList", // 获取用户可访问的业务数据组列表接口
 
         // vehicleService：车辆服务
         "delVehicle": "delVehicle", // 删除车辆接口
@@ -134,6 +139,16 @@ var CONFIG = (function (CONFIG) {
         // alarmService
         "getAlarmList": "getAlarmList", // 获取系统报警信息接口
         "updateAlarmStatus": "updateAlarmStatus", // 获取系统报警信息接口
+
+        // sysParaService 系统参数
+        "getSysParaList": "getSysParaList", // 获取系统参数列表接口 
+        "saveSysPara": "saveSysPara", // 保存系统参数接口
+        "delSysPara": "delSysPara", // 删除系统参数接口
+
+        // vehicleModelService 车辆型号
+        "saveVehicleModel": "saveVehicleModel",
+        "getVehicleModelList": "getVehicleModelList",
+        "delVehicleModel": "delVehicleModel",
     };
 
     return CONFIG;

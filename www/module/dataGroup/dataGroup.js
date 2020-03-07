@@ -15,6 +15,7 @@
             "isShowGroupTypeList": false,
             "isPermissions": false,
             "isFunctionList": false,
+            "vehicleTypeList": bizParam["vehicleType"], // 车辆类型
             "tableHeight": (function () {
                 var containerHeight = $(".tableContainer").height();
                 return containerHeight - 100;
@@ -23,12 +24,14 @@
             "index": 0,
             "pageInfo": {
                 "id": "", // 查询关键字（角色名称）
-                "count": 0,
-                "pageNum": 1,
-                "pageSize": 20,
                 "groupName": "", // 查询关键字（用户名称）
                 "companyId": "", // 公司ID
                 "groupTypeId": 123, // 查询关键字（用户名称）
+            },
+            "page": {
+                "count": 0,
+                "pageNum": 1,
+                "pageSize": 20,
             },
             "selectItem": null,
             "itemInfo": {
@@ -56,10 +59,10 @@
                     "title": { "CN": "组名称", "EN": "Group Name", "TW": "組名稱" }[language["language"]],
                     "key": "groupName"
                 },
-                {
-                    "title": { "CN": "分组类型", "EN": "Gruop Type", "TW": "分組類型" }[language["language"]],
-                    "key": "groupTypeName"
-                },
+                // {
+                //     "title": { "CN": "分组类型", "EN": "Gruop Type", "TW": "分組類型" }[language["language"]],
+                //     "key": "groupTypeName"
+                // },
                 {
                     "title": { "CN": "组描述", "EN": "Role Description", "TW": "組描述" }[language["language"]],
                     "key": "groupDesc"
@@ -89,6 +92,7 @@
                                 },
                                 "on": {
                                     "click": function () {
+                                        pageVue.groupMemberItem = params.row;
                                         pageVue.groupMemberPageInfo.groupId = pageVue.groupList[params.index]["id"];
                                         pageVue.groupMemberPageInfo.companyId = pageVue.groupList[params.index]["companyId"];
                                         // pageVue.groupTypeId = pageVue.groupList[params.index]["groupTypeId"];
@@ -154,6 +158,7 @@
                 "pageSize": 20,
                 "groupId": "", //组ID
                 "companyId": "", //公司ID
+                "objTypeId": "", //公司ID
             },
             "selectGroupMember": [],
             "groupMemberColumsList": [
@@ -167,17 +172,21 @@
                 //     "width": 60,
                 //     "key": "id"
                 // },
+                // {
+                //     "title": { "CN": "公司名称", "EN": "Company Name", "TW": "公司名稱" }[language["language"]],
+                //     "key": "companyName"
+                // },
+                // {
+                //     "title": { "CN": "组名称", "EN": "Group Name", "TW": "組名稱" }[language["language"]],
+                //     "key": "groupName"
+                // },
                 {
-                    "title": { "CN": "公司名称", "EN": "Company Name", "TW": "公司名稱" }[language["language"]],
-                    "key": "companyName"
+                    "title": { "CN": "车牌号", "EN": "Group Name", "TW": "組名稱" }[language["language"]],
+                    "key": "objCode"
                 },
                 {
-                    "title": { "CN": "组名称", "EN": "Group Name", "TW": "組名稱" }[language["language"]],
-                    "key": "groupName"
-                },
-                {
-                    "title": { "CN": "成员名称", "EN": "Member Name", "TW": "成員名稱" }[language["language"]],
-                    "key": "objectName"
+                    "title": { "CN": "类型", "EN": "Member Name", "TW": "成員名稱" }[language["language"]],
+                    "key": "objTypeName"
                 }
             ],
             "groupMemberDataList": [],
@@ -186,7 +195,12 @@
             "groupTypePageInfo": {
                 "count": 0,
                 "pageNum": 1,
-                "pageSize": 10000
+                "pageSize": 10000,
+            },
+            "groupTypePageInfoModal": {
+                "vehicleTypeId": "",
+                "licenseNumber": "",
+                "companyId": "", //公司ID
             },
             "groupTypeColumsList": [],
             "groupTypeDataList": [],
@@ -617,17 +631,17 @@
             // 页数改变时的回调
             "pageSizeChange": function (value) {
                 var self = this;
-                self.pageInfo.pageNum = parseInt(value, 10);
+                self.page.pageNum = parseInt(value, 10);
                 setTimeout(function () {
-                    self.getDataList(false);
+                    self.getGroupList(false);
                 }, 200);
             },
             // 切换每页条数时的回调
             "pageRowChange": function (value) {
                 var self = this;
-                self.pageInfo.pageSize = parseInt(value, 10);
+                self.page.pageSize = parseInt(value, 10);
                 setTimeout(function () {
-                    self.getDataList(false);
+                    self.getGroupList(true);
                 }, 200);
             },
             // 格式化组数据
@@ -650,13 +664,20 @@
                 var self = this;
                 // 如果是查询，则重新从第一页开始
                 self.tableRowList = [];
+                self.groupList = [];
                 if (bool == true) {
-                    self.pageInfo.pageNum = 0;
+                    self.page.pageNum = 0;
+                    self.page.count = 0;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.groupService + "?action=" + CONFIG.ACTION.getGroupList,
                     actionUrl: CONFIG.SERVICE.groupService,
-                    dataObj: self.pageInfo,
+                    dataObj: {
+                        "pageNum": self.page.pageNum,
+                        "pageSize": self.page.pageSize,
+                        "groupName": encodeURI(self.pageInfo.groupName), // 查询关键字（用户名称）
+                        "companyId": self.pageInfo.companyId, // 公司ID
+                    }, //self.pageInfo,
                     beforeSendCallback: function () {
                         self.isTableLoading = true;
                     },
@@ -666,7 +687,7 @@
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.groupList = data.data;
-                            self.pageInfo.count = data.count;
+                            self.page.count = data.count;
 
                             // 格式化表格数据
                             self.formatGroupData();
@@ -700,6 +721,8 @@
                         "id": decodeURI(self.groupMemberList[i]["id"]), //"组名称",
                         "groupName": decodeURI(self.groupMemberList[i]["groupTypeName"]), //"组名称",
                         "objectName": decodeURI(self.groupMemberList[i]["objectName"]), //"成员名称",
+                        "objCode": decodeURI(self.groupMemberList[i]["objNumber"]), //"成员名称",
+                        "objTypeName": decodeURI(self.groupMemberList[i]["objTypeName"]), //"成员名称",
                         "companyName": decodeURI(self.groupMemberList[i]["companyName"]), //"公司名称",
                     });
                 }
@@ -831,6 +854,8 @@
                         companyId: self.groupMemberPageInfo.companyId,
                         pageNum: self.groupTypePageInfo.pageNum,
                         pageSize: self.groupTypePageInfo.pageSize,
+                        vehicleTypeId: self.groupTypePageInfoModal.vehicleTypeId,
+                        licenseNumber: encodeURI(self.groupTypePageInfoModal.licenseNumber),
                     },
                     beforeSendCallback: function () {
                         self.isAddTableLoading = true;
@@ -844,6 +869,8 @@
                             self.groupTypePageInfo.count = data.count;
                             self.formatGroupTypeData();
                             !!callback && callback();
+                            self.groupTypeColumsList = self[self.groupTypeInterFace[self.groupTypeId]["columnsList"]];
+                            self.groupTypeDataList = self[self.groupTypeInterFace[self.groupTypeId]["tableRowList"]];
                         }
                     }
                 });
@@ -851,9 +878,9 @@
             // 显示不同分组成员列表
             "showGroupTypeList": function (bool) {
                 var self = this;
-                self.getGroupTypeDataList(bool,function () {
-                    self.groupTypeColumsList = self[self.groupTypeInterFace[self.groupTypeId]["columnsList"]];
-                    self.groupTypeDataList = self[self.groupTypeInterFace[self.groupTypeId]["tableRowList"]];
+                self.getGroupTypeDataList(bool, function () {
+                    // self.groupTypeColumsList = self[self.groupTypeInterFace[self.groupTypeId]["columnsList"]];
+                    // self.groupTypeDataList = self[self.groupTypeInterFace[self.groupTypeId]["tableRowList"]];
                     if(self.groupTypeDataList.lengt==0) {
                         self.$Message.error("没有成员数组");
                         return;
@@ -1153,6 +1180,7 @@
         },
         "created": function () {
             var self = this;
+            var timeOut = null;
 
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
             utility.isLogin(false);
@@ -1161,6 +1189,16 @@
                 self.getGroupList(true);
                 self.getCompanyList();
             }, 500);
+
+            self.$watch('pageInfo', function () {
+                clearTimeout(timeOut);
+                timeOut = setTimeout(function() {
+                    self.getGroupList(true);
+                }, 500);
+            }, {
+                deep: true
+            });
+            
         }
     });
 

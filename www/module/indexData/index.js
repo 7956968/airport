@@ -7,7 +7,7 @@
         "data": {
             "userInfo": userInfo,
             "language": !!language ? language["language"] : "CN",
-            "title": { "CN": "特种车辆音视频可视化系统", 'EN': "Mingui Non-Powered Euipment Management System", 'TW': "民貴無動力管理系統" },
+            "title": "特种车辆音视频可视化系统",
             "tabList": {
                 "Welcom": null,
                 "Maps": null,
@@ -34,6 +34,7 @@
                 "MessageList": null,
                 "TerminalParame": null,
                 "BaiduMap": null,
+                "DataGroupType": null,
             },
             "iframeList": {
                 "Welcom": null,
@@ -61,6 +62,7 @@
                 "MessageList": null,
                 "TerminalParame": null,
                 "BaiduMap": null,
+                "DataGroupType": null,
             },
             "userFuncList": userFuncList,
             "innerWidth": window.innerWidth,
@@ -180,6 +182,14 @@
                     "isActive": true,
                     "isDelete": false,
                 };
+
+                // if(id=="Alarm") {
+                //     setTimeout(function() {
+                //         if(!!utility.getSessionStorage("fromMap")) {
+                //             utility.setSessionStorage("fromMap", null);
+                //         }
+                //     }, 1000);
+                // }
             },
             // tab切换
             "switchTab": function (id, event) {
@@ -226,7 +236,7 @@
         "created": function () {
             var self = this;
 
-            document.title = self.title[self.language];
+            // document.title = self.title[self.language];
 
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
             utility.isLogin(true);

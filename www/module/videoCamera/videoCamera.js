@@ -29,13 +29,15 @@
             "index": 0,
             "selectItem": null,
             "pageInfo": {
-                "count": 0,
-                "pageNum": 0,
-                "pageSize": 20,
                 "companyId": "",
                 "cameraName": "",
                 "cameraCode": "",
                 "monitorStatus": ""
+            },
+            "page": {
+                "count": 0,
+                "pageSize": 20,
+                "pageNum": 1,
             },
             "itemInfo": {
                 "id": "", // 摄像机ID
@@ -276,7 +278,7 @@
             // 页数改变时的回调
             "pageSizeChange": function (value) {
                 var self = this;
-                self.pageInfo.pageNum = parseInt(value, 10);
+                self.page.pageNum = parseInt(value, 10);
                 setTimeout(function () {
                     self.getCameraList(false);
                 }, 200);
@@ -284,9 +286,9 @@
             // 切换每页条数时的回调
             "pageRowChange": function (value) {
                 var self = this;
-                self.pageInfo.pageSize = parseInt(value, 10);
+                self.page.pageSize = parseInt(value, 10);
                 setTimeout(function () {
-                    self.getCameraList(false);
+                    self.getCameraList(true);
                 }, 200);
             },
             // 当选择的行发生变化时 
@@ -359,13 +361,22 @@
                 var self = this;
                 // 如果是查询，则重新从第一页开始
                 self.dataList = [];
+                self.cameraList = [];
                 if (bool == true) {
-                    self.pageInfo.pageNum = 0;
+                    self.page.pageNum = 0;
+                    self.page.count = 0;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.deviceService + "?action=" + CONFIG.ACTION.getCameraList,
                     actionUrl: CONFIG.SERVICE.deviceService,
-                    dataObj: self.pageInfo,
+                    dataObj: {
+                        "pageNum": self.page.pageNum,
+                        "pageSize": self.page.pageSize,
+                        "companyId": self.pageInfo.companyId,
+                        "cameraName": self.pageInfo.cameraName,
+                        "cameraCode": self.pageInfo.cameraCode,
+                        "monitorStatus": self.pageInfo.monitorStatus
+                    }, //self.pageInfo,
                     beforeSendCallback: function () {
                         self.isTableLoading = true;
                     },
@@ -375,7 +386,7 @@
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.cameraList = data.data;
-                            self.pageInfo.count = data.count;
+                            self.page.count = data.count;
                             self.formatCameraData();
                         }
                     }
@@ -420,6 +431,12 @@
             setTimeout(function () {
                 self.getCameraList(true);
                 self.getCompanyList();
+
+                self.$watch('pageInfo', function () {
+                    self.getCameraList(true);
+                }, {
+                    deep: true
+                });
             }, 500);
         }
     });

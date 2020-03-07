@@ -56,18 +56,20 @@
                         <div id="popup-content" style="width: 340px;">
                             <p>公司名称：{{vehicleItemPop.companyName}}</p>
                             <p>部门名称：{{vehicleItemPop.deptName}}</p>
-                            <p v-if="vehicleItemPop.address">车辆位置：{{vehicleItemPop.address}}</p>
-                            <p>车辆编码：{{vehicleItemPop.vehicleCode}}</p>
+                            
+                            <!-- <p>车辆编码：{{vehicleItemPop.vehicleCode}}</p> -->
                             <template v-if="vehicleItemPop.licenseNumber">
                                 <p>
-                                    车&nbsp;&nbsp;牌&nbsp;&nbsp;号：{{vehicleItemPop.licenseNumber}}
+                                    车牌号码：{{vehicleItemPop.licenseNumber}}
                                 </p>
                             </template>
-                            <p>车辆名称：{{vehicleItemPop.vehicleName}}</p>
-                            <p>车辆类型：{{vehicleItemPop.vehicleTypeName}}</p>
-                            <p>终端设备：{{vehicleItemPop.gpsDeviceCode}}</p>
+                            <p>车辆名称：{{vehicleItemPop.vehicleName||''}}</p>
+                            <p>车辆类型：{{vehicleItemPop.vehicleTypeName||''}}</p>
+                            <!-- <p>终端设备：{{vehicleItemPop.gpsDeviceCode||''}}</p> -->
+                            <p>车辆品牌/型号：{{vehicleItemPop.vehicleBrandName||''}}/{{vehicleItemPop.vehicleModelName||'--'}}</p>
                             <p>车辆速度：{{vehicleItemPop.speed}} 公里/小时</p>
-                            <p>最新GPS时间：<span
+                            <p>车辆位置：{{vehicleItemPop.address}}</p>
+                            <p>GPS更新时间：<span
                                     :style="{background: vehicleItemPop.isOverTime?'#fbd048':''}"><span>{{vehicleItemPop.lastGpsTime}}
                                         {{vehicleItemPop.isOverTime?'超过24小时未定位':''}}</span></span></p>
                             <p>最后上线时间：<span
@@ -76,12 +78,19 @@
                             <p>运动状态：<span
                                     :class="'_'+vehicleItemPop.vehicleStatus"><span>{{vehicleItemPop.vehicleStatusName}}</span></span>
                             </p>
-                            <template v-if="vehicleItemPop.alarmFlag==1">
+                            <p>报警类型：{{vehicleItemPop.alarmEventTypeDesc||'--'}} 
+                                <template v-if="vehicleItemPop.alarmFlag==1">
+                                    
+                                    <i-button size="small" type="error" ghost
+                                    @click="toAlarmPage(vehicleItemPop.licenseNumber)" type="primary">有未处理报警信息,查看详情 <Icon type="ios-arrow-round-forward" />
+                                </i-button>
+                            </template></p>
+                            <!-- <template v-if="vehicleItemPop.alarmFlag==1">
                                 <p style="padding: 3px 0;">报警详情：<i-button size="small"
                                         @click="toAlarmPage(vehicleItemPop.licenseNumber)" type="primary">有未处理报警信息,查看详情
                                     </i-button>
                                 </p>
-                            </template>
+                            </template> -->
                             <template v-if="functionInfo.isViewVideo">
                                 <template v-if="vehicleItemPop.providerId<100">
                                     <template
@@ -100,7 +109,7 @@
                                 </template>
                             </template>
                             <template v-if="functionInfo.isTrack">
-                                <p>回放速度：{{baiduMapInfo.animationInfo.speed}}公里/小时
+                                <p>轨迹回放速度：{{baiduMapInfo.animationInfo.speed}}公里/小时
                                     <Slider style="margin: 10px 0;" v-model="baiduMapInfo.animationInfo.speed" :min="60"
                                         :max="200" show-tip="always">
                                     </Slider>
@@ -1332,7 +1341,7 @@
     <script src="/airport/assets/js/baiduMap.min.js?v=123413"></script>
     <script src="/airport/assets/js/gcoord.min.js?v=123413"></script>
     <script>
-        loadScript(MODUL + "module/baiduMap/maps.min.js");
+        loadScript(MODUL + "module/baiduMap/maps.js");
     </script>
 </body>
 

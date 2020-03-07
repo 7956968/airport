@@ -10,7 +10,7 @@
             "isShowModal": false,
             "isShowReset": false,
             "isShowDetail": false,
-            "isModalLoading": true,
+            "isModalLoading": false,
             "modalTitle": "",
             "tableHeight": (function () {
                 var containerHeight = $(".tableContainer").height();
@@ -46,7 +46,6 @@
             },
             "pageInfo": {
                 "id": 0,
-                "count": 0,
                 "userCode": "", // 查询关键字（角色名称）
                 "userName": "", // 查询关键字（用户名称）
                 "companyId": "", // 公司ID
@@ -54,6 +53,7 @@
                 "deptIds": [],
             },
             "page": {
+                "count": 0,
                 "pageNum": 1,
                 "pageSize": 20,
             },
@@ -216,7 +216,7 @@
             "addItem": function () {
                 var self = this;
                 self.isShowModal = true;
-                self.isModalLoading = true;
+                self.isModalLoading = false;
                 self.modalTitle = { "CN": "新增", "EN": "Add", "TW": "新增" }[self.language];
                 self.itemInfo = {
                     "id": "", // 员工ID，修改员工信息时必传
@@ -266,6 +266,7 @@
                     self.modalTitle = { "CN": "修改", "EN": "Edit", "TW": "修改" }[self.language];
                     self.getSuperiorDeprtList("itemInfo");
                     self.getRoleDataList();
+                    self.isModalLoading = false;
                 });
             },
             // 修改
@@ -344,7 +345,7 @@
                 var self = this;
                 self.page.pageSize = parseInt(value, 10);
                 setTimeout(function () {
-                    self.getUserList(false);
+                    self.getUserList(true);
                 }, 200);
             },
             // 当选择的行发生变化时 
@@ -363,6 +364,7 @@
                     top: 150,
                     duration: 3
                 });
+                self.isModalLoading = true;
                 if (self.itemInfo.deptIds.length != 0) {
                     if (!!!self.itemInfo.posiType) {
                         self.$Message.error("请选择职位类型");
@@ -375,6 +377,17 @@
                         self.isModalLoading = false;
                         return false;
                     }
+                }
+
+                if($.trim(self.itemInfo.userPwd).length > 0 && $.trim(self.itemInfo.userPwd).length<=5) {
+                    self.$Message.error("密码长度为6为以上字符");
+                    self.isModalLoading = false;
+                    return false;
+                }
+                if(!utility.checkPass($.trim(self.itemInfo.userPwd))) {
+                    self.$Message.error("密码格式不正确");
+                    self.isModalLoading = false;
+                    return false;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.userService + "?action=" + CONFIG.ACTION.saveUser,
@@ -463,7 +476,8 @@
                 // 如果是查询，则重新从第一页开始
                 self.tableRowList = [];
                 if (bool == true) {
-                    self.pageInfo.pageNum = 0;
+                    self.page.pageNum = 0;
+                    self.page.count = 0;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.userService + "?action=" + CONFIG.ACTION.getUserList,
@@ -485,7 +499,7 @@
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.userList = data.data;
-                            self.pageInfo.count = data.count;
+                            self.page.count = data.count;
 
                             // 格式化表格数据
                             self.formatTableList();

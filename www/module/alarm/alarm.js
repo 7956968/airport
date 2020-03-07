@@ -186,13 +186,25 @@
                 {
                     "title": "报警坐标",
                     "key": "gpsPositionStr",
-                    "width": 120
+                    "width": 140
                 },
+                // {
+                //     "title": "当时车速(km/h)",
+                //     "key": "speed",
+                //     "width": 140,
+                //     "align": "center",
+                //     "render": function (h, params) {
+                //         return h("div", [
+                //             h("span", {}, params.row.speed==0?'--':params.row.speed),
+                //         ]);
+                //     }
+                // },
                 {
                     "title": "报警地址",
                     "key": "alarmAddress",
                     "width": 350
                 },
+
                 {
                     "title": {
                         "CN": "操作",
@@ -357,7 +369,7 @@
                 var self = this;
                 self.page.pageSize = parseInt(value, 10);
                 setTimeout(function () {
-                    self.getAlarmList(false);
+                    self.getAlarmList(true);
                 }, 200);
             },
 
@@ -366,8 +378,10 @@
                 var self = this;
                 // 如果是查询，则重新从第一页开始
                 self.tableRowList = [];
+                self.alarmList = [];
                 if (bool == true) {
                     self.page.pageNum = 1;
+                    self.page.count = 0;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.alarmService + "?action=" + CONFIG.ACTION.getAlarmList,
@@ -404,8 +418,9 @@
 
                             for (var a = 0; a < data.data.length; a++) {
                                 (function (a) {
-                                    if (!!data.data[a].lastPosition) {
-                                        var position = JSON.parse(data.data[a].lastPosition)["coordinates"];
+                                    if (!!data.data[a].gpsPositionStr) {
+                                        var gpsPositionStr = data.data[a].gpsPositionStr.split(",");
+                                        var position = [gpsPositionStr[0], gpsPositionStr[1]];
                                         if (position[0] != 0 && position[1] != 0) {
                                             utility.convertorByBaidu(position, gcoord, BMap, function (point, lng, lat) {
                                                 utility.getAdressDetail([lng, lat], BMap, function (address) {
@@ -541,6 +556,17 @@
                 self.getUserList();
                 self.getSuperiorDeprtList("itemInfo");
             },
+            // 
+            "toMapTrack": function(vehicleInfo) {
+                var self = this;
+                var self = this;
+                utility.setSessionStorage("fromInfo",null);
+                utility.setSessionStorage("vehicleTrackFrom", vehicleInfo);
+                setTimeout(function () {
+                    $(window.parent.document).find("#nav_Maps").bind("click");
+                    $(window.parent.document).find("#nav_Maps").trigger("click");
+                }, 200);
+            }
         },
         "created": function () {
             var self = this;
@@ -548,10 +574,17 @@
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
             utility.isLogin(false);
 
-            if (!!fromMap) {
-                self.pageInfo.vehicleName = fromMap.vehicleName;
-                self.pageInfo.licenseNumber = fromMap.licenseNumber;
-            }
+            setTimeout(function(){
+                if (!!utility.getSessionStorage("fromMap")) {
+                    // self.pageInfo.vehicleName = utility.getSessionStorage("fromMap").vehicleName;
+                    self.pageInfo.licenseNumber = utility.getSessionStorage("fromMap").licenseNumber;
+
+                    setTimeout(function() {
+                        utility.setSessionStorage("fromMap", null);
+                    }, 3000);
+                }
+            }, 500);
+
 
             setTimeout(function () {
                 self.getAlarmList(true);

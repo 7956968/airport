@@ -1060,12 +1060,12 @@
                     for (var i = 0; i < channelNum; i++) {
                         $("#video" + i).removeAttr("controls");
                     }
-                }, 10000);
+                }, 4000);
 
                 if (ret) {
                     self.isStop = false;
                     self.msgInfo = "";
-                    self.$Message.destroy()
+                    self.$Message.destroy();
                     self.$Message.loading({
                         "content": "正在请求视频......"
                     });
@@ -1164,8 +1164,6 @@
             "playAudio": function (channel) {
                 var self = this;
 
-                console.log(channel);
-
                 self.channelIndex = channel;
                 vsclientSession.stopListening();
 
@@ -1230,6 +1228,8 @@
             // "port": 8001, //7668,
             // "userName": "admin1", //"mgkj",
             // "pwd": "888888",
+
+            console.log(self.vehicleInfo);
             self.init();
 
         }

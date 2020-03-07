@@ -106,7 +106,7 @@
                     if (funcList[i]["functionCode"].indexOf("org_manage_") != -1) {
                         funcInfo["menu_org"].push(funcList[i]);
                     }
-                    if (funcList[i]["functionCode"].indexOf("device_manage_") != -1) {
+                    if (funcList[i]["functionCode"].indexOf("device_") != -1) {
                         funcInfo["menu_device"].push(funcList[i]);
                     }
                     if (funcList[i]["functionCode"].indexOf("report_") != -1) {
@@ -150,6 +150,11 @@
                                 utility.setLocalStorage("isPhone", { "isPhone": true});
                                 self.formatFunMenu(data.data);
 
+                                // 获取枚举值
+                                self.getBizParam(data.data.companyId, function() {
+                                    window.location.href = "/airport/www/module/index/index.html";
+                                });
+
                                 setTimeout(function () {
                                     window.location.href = "/airport/www/module/mapPhone/maps.html";
                                 }, 500);
@@ -161,14 +166,17 @@
                 }
             },
             // 获取枚举值保存在本地
-            "getBizParam": function () {
+            "getBizParam": function (companyId, callback) {
                 utility.interactWithServer({
-                    appType: 1,
                     url: CONFIG.HOST + CONFIG.SERVICE.commonService + "?action=" + CONFIG.ACTION.getBizParam,
                     actionUrl: CONFIG.SERVICE.commonService,
+                    dataObj: {
+                        companyId: companyId
+                    },
                     successCallback: function (data) {
                         if (data.code == 200) {
                             utility.setLocalStorage("bizParam", data.data);
+                            !!callback && callback();
                         }
                     }
                 });

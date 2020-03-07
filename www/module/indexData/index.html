@@ -141,8 +141,15 @@
                                             id="nav_DataGroup">
                                             <span>
                                                 <Icon type="ios-magnet" /></span>
-                                            <span
-                                                v-text="{'CN':'资源分组管理','EN':'DataGroup','TW':'數據權限組'}[language]"></span>
+                                            <span>车辆分组管理</span>
+                                        </p>
+                                    </template>
+                                    <template v-if="item.functionCode=='org_manage_user_data_permission'">
+                                        <p @click="setTabItem('/airport/www/module/dataGroupType/dataGroup.html', 'DataGroupType', $event)"
+                                            id="nav_DataGroupType">
+                                            <span>
+                                                <Icon type="md-attach" /></span>
+                                            <span>车辆分组权限管理</span>
                                         </p>
                                     </template>
                                 </template>
@@ -169,7 +176,7 @@
                                                 v-text="{'CN':'车辆管理','EN':'VehicleManage','TW':'車輛管理'}[language]"></span>
                                         </p>
                                     </template>
-                                    <template v-if="item.functionCode=='device_manage_view_online'">
+                                    <!-- <template v-if="item.functionCode=='device_manage_view_online'">
                                         <p style="display: none;" @click="setTabItem('/airport/www/module/onlineDetail/onlineDetail.html', 'OnlineDetail', $event)"
                                             id="nav_OnlineDetail">
                                             <span>
@@ -177,7 +184,7 @@
                                             <span
                                                 v-text="{'CN':'上下线明细','EN':'VehicleManage','TW':'車輛管理'}[language]"></span>
                                         </p>
-                                    </template>
+                                    </template> -->
                                     <template v-if="item.functionCode=='device_manage_view_alarm'">
                                         <p @click="setTabItem('/airport/www/module/alarm/alarm.html', 'Alarm', $event)"
                                             id="nav_Alarm">
@@ -220,6 +227,20 @@
                                                 <Icon type="ios-videocam" /></span>
                                             <span
                                                 v-text="{'CN':'摄像机管理','EN':'VideoCamera','TW':'攝像機管理'}[language]"></span>
+                                        </p>
+                                    </template>
+                                    <template v-if="item.functionCode=='device_manage_vehicle_type_manage'">
+                                        <p @click="setTabItem('/airport/www/module/deviceTypeManage/deviceTypeManage.html', 'DeviceTypeManage', $event)"
+                                            id="nav_DeviceTypeManage">
+                                            <span><Icon type="ios-appstore" /></span>
+                                            <span v-text="item.functionName"></span>
+                                        </p>
+                                    </template>
+                                    <template v-if="item.functionCode=='device_manage_vehicle_brand_manage'">
+                                        <p @click="setTabItem('/airport/www/module/deviceBrandManage/deviceBrandManage.html', 'DeviceBrandManage', $event)"
+                                            id="nav_DeviceBrandManage">
+                                            <span><Icon type="ios-analytics" /></span>
+                                            <span v-text="item.functionName"></span>
                                         </p>
                                     </template>
 

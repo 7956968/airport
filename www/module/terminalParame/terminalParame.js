@@ -53,8 +53,13 @@
                     self.loading = false;
                     return;
                 }
-                if(utility.checkLen($.trim(self.newPass), 0)) {
-                    self.$Message.error("新密码不能为空");
+                if($.trim(self.newPass).length<=5) {
+                    self.$Message.error("新密码长度为6为以上字符");
+                    self.loading = false;
+                    return;
+                }
+                if(!utility.checkPass($.trim(self.newPass))) {
+                    self.$Message.error("新密码格式不正确");
                     self.loading = false;
                     return;
                 }
@@ -78,7 +83,11 @@
                             self.$Message.success("修改成功!");
                             self.reLogin();
                         } else {
-                            self.$Message.error(data.message);
+                            if(data.code == 1056) {
+                                self.$Message.error("旧密码错误");
+                            } else {
+                                self.$Message.error(data.message);
+                            }
                         }
                     }
                 });

@@ -112,7 +112,7 @@
 
         <div class="pageWrap">
             <template>
-                <Page :total="pageInfo.count" @on-change="pageSizeChange" @on-page-size-change="pageRowChange" :page-size="20" show-sizer show-total />
+                <Page :total="page.count" @on-change="pageSizeChange" @on-page-size-change="pageRowChange" :page-size="20" show-sizer show-total />
             </template>
         </div>
 
@@ -196,7 +196,7 @@
         <template>
             <Modal v-model="isShowMember" 
                 :styles="{top: '60px'}" width="60" 
-                :title="{'CN':'组成员','EN':'Role Members','TW':'组成員'}[language]"
+                :title="'组成员('+ groupMemberItem.companyName + groupMemberItem.groupName +')'"
                 :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
                 :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]"
                 :loading="isModalLoading"
@@ -206,12 +206,13 @@
                     <div class="top">
                         <Row type="flex" justify="start" gutter="10">
                             <i-col span="14">
-                                <!-- <template>
-                                    &nbsp;&nbsp;{{{'CN':'新增成员组类型','EN':'Group Type','TW':'新增成員組類型'}[language]}}:
-                                    <i-select v-model="groupTypeId" clearable :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]" style="width:250px;">
-                                        <i-option v-for="item in groupTypeList" :value="item.type">{{item.name}}</i-option>
+                                车辆类型：
+                                <template>
+                                    <i-select @on-change="getGroupMemberList(true)" v-model="groupMemberPageInfo.objTypeId" clearable placeholder="请选择车辆类型" style="width:160px;">
+                                        <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
+                                        <i-option v-for="item in vehicleTypeList" :value="item.type">{{item.name}}</i-option>
                                     </i-select>
-                                </template> -->
+                                </template>
                             </i-col>
                             <i-col span="10">
                                 <div class="actionWrap">
@@ -252,6 +253,19 @@
                 :loading="isModalLoading" 
                 class-name="hasActionList"
                 @on-ok="addGroupTypeMember">
+                <div style="padding: 10px;">
+                    车辆类型：
+                    <template>
+                        <i-select v-model="groupTypePageInfoModal.vehicleTypeId" clearable placeholder="请选择车辆类型" style="width:160px;">
+                            <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}</i-option>
+                            <i-option v-for="item in vehicleTypeList" :value="item.type">{{item.name}}</i-option>
+                        </i-select>
+                    </template>
+                    <template>
+                        车牌号
+                        <i-input v-model="groupTypePageInfoModal.licenseNumber" placeholder="请输入车牌号" style="width: 160px"></i-input>
+                    </template>
+                </div>
                 <div class="modifiedWrap">
                     <div class="tableWrap">
                         <template>

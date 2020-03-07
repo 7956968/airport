@@ -626,6 +626,7 @@
                 }
                 return type;
             }()),
+            "vehicleTypeIconList": ["108", "108", "109", "110", "111", "112", "300", "301", "302", "303", "304", "305", "306", "307", "308", "309", "310", "311"],
             "searchColumns": [{
                     "title": {
                         "CN": "车牌号",
@@ -897,6 +898,7 @@
                 var self = this;
                 var coordinates = [];
                 var vehicleInfoFrom = utility.getSessionStorage("vehicleInfoFrom");
+                var vehicleTrackFrom = utility.getSessionStorage("vehicleTrackFrom");
 
                 if(!!vehicleInfoFrom) {
                     coordinates = (!!vehicleInfoFrom.lastPosition && vehicleInfoFrom.lastPosition!='null') ? JSON.parse(vehicleInfoFrom.lastPosition)["coordinates"]:'';
@@ -938,6 +940,39 @@
                         });
                     } else {
                         self.$Message.error("车辆【"+ self.vehiclePositonPageInfo.licenseNumber +"】没有定位数据");
+                    }
+                }
+
+                // 报警轨迹
+                if(!!vehicleTrackFrom) {
+                    var gpsPositionStr = vehicleTrackFrom.gpsPositionStr.split(",");
+                    var trackCoordinate = [gpsPositionStr[0], gpsPositionStr[1]];
+                    if(!!trackCoordinate) {
+                        var alarmTime = vehicleTrackFrom.alarmTime.split(" ");
+                        var time = alarmTime[1].split(":");
+
+                        self.vehicleItemPop = {};
+                        
+                        self.vehicleItemPop = vehicleTrackFrom;
+                        self.vehicleItemPop.gpsDeviceCode = vehicleTrackFrom.deviceCode;
+
+                        self.dateTimeInfo.beginDate = alarmTime[0];
+                        self.dateTimeInfo.endDate = alarmTime[0];
+                        self.dateTimeInfo.beginTime = alarmTime[1];
+                        self.dateTimeInfo.endTime = (parseInt(time[0], 10)+1) + ":" + time[1] + ":" + time[2];
+                        self.singleVehiclePageInfo.licenseNumber = vehicleTrackFrom.licenseNumber;
+
+                        self.showModal("isHistory");
+                    
+                        self.getSingleVehicleTrackByBaidu();
+                        self.setAnimationByBaidu(trackCoordinate, function (point) {
+                            setTimeout(function() {
+                                self.baiduMapInfo.map.panTo(new BMap.Point(point.lng - 0.00089867, point.lat + 0.00099867));
+                                utility.setSessionStorage("vehicleTrackFrom", null);
+                            }, 1000);
+                        });
+                    } else {
+                        self.$Message.error("车辆【"+ vehicleTrackFrom.licenseNumber +"】没有定位数据");
                     }
                 }
 
@@ -1689,8 +1724,11 @@
 
             //#region 车辆管理
             // 获取车辆最新位置数据接口
-            "getAllVehiclePositonList": function () {
+            "getAllVehiclePositonList": function (bool) {
                 var self = this;
+                if(bool == true) {
+                    self.baiduMapInfo.vehicleMarkers = {};
+                }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getAllVehiclePositonList,
                     actionUrl: CONFIG.SERVICE.vehicleService,
@@ -1740,6 +1778,7 @@
                         "id": self.vehiclePositionList[i]["id"], //"",
                         "speed": self.vehiclePositionList[i]["speed"], //"",
                         "power": self.vehiclePositionList[i]["power"], //"",
+                        "alarmEventTypeDesc": self.vehiclePositionList[i]["alarmEventTypeDesc"], //"",
                         "deptId": self.vehiclePositionList[i]["deptId"], //"",
                         "deptName": self.vehiclePositionList[i]["deptName"], //"",
                         "modifyTime": self.vehiclePositionList[i]["modifyTime"], //"",
@@ -1793,11 +1832,11 @@
                 self.searchDatas = list;
             },
 
-            // 查询实时车辆数据
-            "searchTimeVehicle": function () {
-                var self = this;
-                self.getAllVehiclePositonList();
-            },
+            // // 查询实时车辆数据
+            // "searchTimeVehicle": function () {
+            //     var self = this;
+            //     self.getAllVehiclePositonList();
+            // },
 
             // 获取开始时间
             "getBeginDate": function (value) {
@@ -1831,7 +1870,7 @@
                     } else {
                         target.address = rs.address;
                     }
-                    console.log(target.address);
+                    // console.log(target.address);
                     !!callback && callback();
                 });
             },
@@ -1869,7 +1908,7 @@
                 }
                 var coordinate = JSON.parse(item["lastPosition"])["coordinates"];
                 var iconSrc = CONFIG.HOST + "/airport/assets/car/success.gif";
-                var vehicleIcon = (self.vehicleTypeInfo[item.vehicleTypeName] + item.vehicleStatus) || item.vehicleStatus;
+                var vehicleIcon = (!!self.vehicleTypeIconList && self.vehicleTypeIconList.indexOf(item.vehicleTypeName)!=-1) ? (self.vehicleTypeInfo[item.vehicleTypeName] + item.vehicleStatus) : item.vehicleStatus;
                 var now = Date.parse(new Date());
                 var lastGpsTime = Date.parse(item.lastGpsTime.replace(/\-/g, "/"));
                 var lastOnTime = Date.parse(item.lastOnlineTime.replace(/\-/g, "/"));
@@ -1878,7 +1917,7 @@
                 item['isOverTime'] = false;
                 item['isOnTime'] = false;
                 if (gpsDay >= 1) {
-                    vehicleIcon = self.vehicleTypeInfo[item.vehicleTypeName] + 406 || 406;
+                    vehicleIcon = (!!self.vehicleTypeIconList && self.vehicleTypeIconList.indexOf(item.vehicleTypeName)!=-1) ? self.vehicleTypeInfo[item.vehicleTypeName] + 406 : 406;
                     item['isOverTime'] = true;
                 }
 
@@ -1887,6 +1926,8 @@
                 }
 
                 iconSrc = CONFIG.HOST + "/airport/assets/car/" + vehicleIcon + ".gif?v=12341234";
+
+                // console.log(iconSrc);
 
                 // 如果车辆的坐标没有变化过，则不用从新画车辆
                 if (!!self.baiduMapInfo.vehicleMarkers["_" + item.id]) {
@@ -1957,13 +1998,17 @@
             // 跳转到地图页面
             "toAlarmPage": function (licenseNumber) {
                 var self = this;
-                utility.setSessionStorage("fromMap", {
-                    licenseNumber: licenseNumber
-                });
+                
                 setTimeout(function () {
                     $(window.parent.document).find("#nav_Alarm").bind("click");
                     $(window.parent.document).find("#nav_Alarm").trigger("click");
                 }, 200);
+
+                setTimeout(function() {
+                    utility.setSessionStorage("fromMap", {
+                        licenseNumber: licenseNumber
+                    });
+                }, 500);
             },
 
             // 显示车辆POP
@@ -1976,6 +2021,7 @@
                 setTimeout(function(){
                     self.isTrackItem = true;
                     self.vehicleItemPop = marker.item;
+                    // console.log(self.vehicleItemPop);
                     self.singleVehiclePageInfo.licenseNumber = self.vehicleItemPop.licenseNumber;
                     self.trackItem.licenseNumber = self.vehicleItemPop.licenseNumber;
                     self.baiduMapInfo.openInfoWindow.type = "isVehiclePopInfo";
@@ -2251,6 +2297,11 @@
                 // 先清空原有轨迹
                 self.clearTrackByBaidu();
 
+                if(self.singleVehiclePageInfo.licenseNumber.length == 0) {
+                    self.$Message.error("请输入车牌号");
+                    return;
+                }
+
                 if (self.dateTimeInfo.beginDate.length == 0) {
                     self.dateTimeInfo.beginDate = (function () {
                         var dateInfo = utility.getDateDetailInfo();
@@ -2346,7 +2397,7 @@
                 var index = 0;
                 var item = self.vehicleItemPop;
                 var coordinates = self.baiduMapInfo.animationInfo.coordinates;
-                var vehicleIcon = (self.vehicleTypeInfo[item.vehicleTypeName] + item.vehicleStatus) || item.vehicleStatus;
+                var vehicleIcon = item.vehicleStatus;
                 self.baiduMapInfo.animationInfo.moveVehicle = {
                     icon: {
                         url: CONFIG.HOST + "/airport/assets/car/" + vehicleIcon + ".gif?v=030303939",
@@ -2385,7 +2436,7 @@
                     if (!(self.baiduMapInfo.openInfoWindow.type == "isCameraPop" || self.baiduMapInfo.openInfoWindow.type == "isDefenPop")) {
                         self.getAllVehiclePositonList(); // 获取所有实时车辆
                     }
-                }, 10000);
+                }, 1500);
             },
             //#endregion
 
@@ -2393,6 +2444,7 @@
         "created": function () {
             var self = this;
             var fromInfoTime = null;
+            var timeOut = null;
 
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
             utility.isLogin(false);
@@ -2421,11 +2473,18 @@
 
             self.$watch('vehiclePositonPageInfo', function () {
                 clearInterval(self.timePosition);
-                self.getAllVehiclePositonList();
-                self.getAllVehicleInterval();
+                clearTimeout(timeOut);
+                timeOut = setTimeout(function() {
+                    self.getAllVehiclePositonList(true);
+                    self.getAllVehicleInterval();
+                }, 500);
             }, {
                 deep: true
             });
+
+            setInterval(function() {
+                bizParam = utility.getLocalStorage("bizParam")
+            }, 10000);
 
         },
         mouted: function () {

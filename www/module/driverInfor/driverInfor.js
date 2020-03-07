@@ -425,8 +425,6 @@
             "setCurrentRowData": function (event) {
                 var self = this;
 
-                console.log(event);
-
                 if (!!event) {
                     self.itemInfo = event;
                 }

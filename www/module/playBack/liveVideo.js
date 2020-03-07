@@ -833,6 +833,7 @@
             // "userName": "admin1", //"mgkj",
             // "pwd": "888888",
             // self.vehicleInfo.licenseNumber = self.vehicleList[0];
+            console.log(self.vehicleInfo);
             self.init();
 
         }

@@ -15,16 +15,17 @@
                 var containerHeight = $(".tableContainer").height();
                 return containerHeight - 100;
             }()),
+            "count": 0,
             "pageInfo": {
                 "id": 0,
-                "count": 0,
                 "userCode": "", // 查询关键字（用户账户名）
                 "userName": "", // 查询关键字（用户姓名）
                 "posiName": "", // 查询关键字（职位名称）
                 "companyId": "", // 公司ID
-                "deptIds": [], // 部门ID
+                "deptIds": "", // 公司ID
             },
             "page": {
+                "count": 0,
                 "pageSize": 20,
                 "pageNum": 0,
             },
@@ -129,6 +130,42 @@
             "departUserList": [],
             "superiorDepartmentList": [],
             "deptUserPositionTypeList": bizParam["departmentPositionType"]
+        },
+        "watch": {
+            // "pageInfo.userCode": function(){
+            //     var self = this;
+            //     self.getDepartUserDataList(true);
+            // }, // 查询关键字（用户账户名）
+            // "pageInfo.userName": function(){
+            //     var self = this;
+            //     self.getDepartUserDataList(true);
+            // }, // 查询关键字（用户姓名）
+            // "pageInfo.posiName": function(){
+            //     var self = this;
+            //     self.getDepartUserDataList(true);
+            // }, // 查询关键字（职位名称）
+            // "pageInfo.companyId": function(){
+            //     var self = this;
+            //     self.getDepartUserDataList(true);
+            // }, // 公司ID
+            // "pageInfo.deptId": function(){
+            //     var self = this;
+            //     // self.tableRowList = [];
+            //     // self.departUserList = [];
+            //     // setTimeout(function() {
+            //     //     self.getDepartUserDataList(true);
+            //     // }, 500);
+            // }, // 公司ID
+            // "pageInfo.deptIds": function(){
+            //     var self = this;
+            //     setTimeout(function() {
+            //         self.getDepartUserDataList(true);
+            //     }, 500);
+            //     // self.tableRowList = [];
+            //     // self.departUserList = [];
+            //     // self["pageInfo"]["deptId"] = self["pageInfo"]["deptIds"][self["pageInfo"]["deptIds"].length-1] || 0; // 部门ID
+            // }
+            
         },
         "methods": {
             // 刷新
@@ -269,13 +306,13 @@
                 var self = this;
                 self.page.pageSize = parseInt(value, 10);
                 setTimeout(function () {
-                    self.getDepartUserDataList(false);
+                    self.getDepartUserDataList(true);
                 }, 200);
             },
             // 从获取回来的列表中，格式化出显示在表格上的内容
             "formatTableList": function () {
                 var self = this;
-
+                self.tableRowList = [];
                 for (var i = 0, len = self.departUserList.length; i < len; i++) {
                     self.tableRowList.push({
                         "deptName": decodeURI(self.departUserList[i]["deptName"]), //"部门名称",
@@ -298,9 +335,10 @@
             // 获取机构用户信息
             "getDepartUserDataList": function (bool) {
                 var self = this;
-                // 如果是查询，则重新从第一页开始
                 self.tableRowList = [];
+                self.departUserList = [];
                 if (bool == true) {
+                    // 如果是查询，则重新从第一页开始
                     self.page.pageNum = 1;
                 }
                 utility.interactWithServer({
@@ -316,7 +354,7 @@
                         "deptId": self.pageInfo.deptIds[self.pageInfo.deptIds.length-1] || 0, // 部门ID
                     },
                     beforeSendCallback: function () {
-                        self.isTableLoading = true;
+                        // self.isTableLoading = true;
                     },
                     completeCallback: function () {
                         self.isTableLoading = false;
@@ -324,7 +362,7 @@
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.departUserList = data.data;
-                            self.pageInfo.count = data.count;
+                            self.page.count = data.count;
 
                             // 格式化表格数据
                             self.formatTableList();
@@ -433,6 +471,8 @@
                 // self.getSuperiorDeprtList("pageInfo");
 
                 self.$watch('pageInfo', function () {
+                    self.tableRowList = [];
+                    self.departUserList = [];
                     self.getDepartUserDataList(true);
                 }, { deep: true });
             }, 500);

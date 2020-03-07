@@ -37,6 +37,11 @@
                 "vehicleBrandId": "", // 车辆品牌ID
                 "centerPosition": "", // 查询中心点坐标，格式为：经度,纬度
             },
+            "page": {
+                "count": 0,
+                "pageSize": 20,
+                "pageNum": 1,
+            },
             "columnsList": [{
                     "type": "index",
                     "align": "center",
@@ -148,7 +153,7 @@
             // 页数改变时的回调
             "pageSizeChange": function (value) {
                 var self = this;
-                self.vehiclePositonPageInfo.pageNum = parseInt(value, 10);
+                self.page.pageNum = parseInt(value, 10);
                 setTimeout(function () {
                     self.getVehicleList(false);
                 }, 200);
@@ -156,9 +161,9 @@
             // 切换每页条数时的回调
             "pageRowChange": function (value) {
                 var self = this;
-                self.vehiclePositonPageInfo.pageSize = parseInt(value, 10);
+                self.page.pageSize = parseInt(value, 10);
                 setTimeout(function () {
-                    self.getVehicleList(false);
+                    self.getVehicleList(true);
                 }, 200);
             },
             // 获取车辆使用情况
@@ -166,7 +171,8 @@
                 var self = this;
                 self.vehiclePositionList = [];
                 if (bool == true) {
-                    self.vehiclePositonPageInfo.pageNum = 1;
+                    self.page.pageNum = 1;
+                    self.page.count = 0;
                 }
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getVehicleList,
@@ -174,8 +180,8 @@
                     dataObj: {
                         "span": self.vehiclePositonPageInfo.span, //"", // 距离查询中间点的距离（密），不指定则默认为100米。 // 通过centerPosition+ span两个参数可以联合查询距离中心点多少米内的车辆最近位置
                         "deptId": self.vehiclePositonPageInfo.deptId, //"", // 部门ID
-                        "pageNum": self.vehiclePositonPageInfo.pageNum, //0,
-                        "pageSize": self.vehiclePositonPageInfo.pageSize, //20,
+                        "pageNum": self.page.pageNum, //0,
+                        "pageSize": self.page.pageSize, //20,
                         "vihecleId": self.vehiclePositonPageInfo.vihecleId, //"", // 车辆ID
                         "companyId": self.vehiclePositonPageInfo.companyId, //"", // 所属公司ID
                         "gpsDeviceCode": self.vehiclePositonPageInfo.gpsDeviceCode, //"", // 定位终端编号
@@ -198,7 +204,7 @@
                         if (data.code == 200) {
                             var list = [];
 
-                            self.vehiclePositonPageInfo.count = data.count;
+                            self.page.count = data.count;
                             for (var i = 0, len = data.data.length; i < len; i++) {
                                 list.push(data.data[i]);
                                 list[i]["lastAddress"] = "";
@@ -336,8 +342,8 @@
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getAllVehiclePositonList,
                     actionUrl: CONFIG.SERVICE.vehicleService,
                     dataObj: {
-                        // "pageNum": 1, //0,
-                        // "pageSize": 10000000, //20,
+                        "pageNum": 1, //0,
+                        "pageSize": 10000000, //20,
                         // "span": self.vehiclePositonPageInfo.span, //"", // 距离查询中间点的距离（密），不指定则默认为100米。 // 通过centerPosition+ span两个参数可以联合查询距离中心点多少米内的车辆最近位置
                         // "deptId": self.vehiclePositonPageInfo.deptId, //"", // 部门ID
                         // "vihecleId": self.vehiclePositonPageInfo.vihecleId, //"", // 车辆ID

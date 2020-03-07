@@ -41,17 +41,17 @@
                 "staySecond": "", // 最大允许停留时长(单位秒)
             },
             "pageInfo": {
-                "count": 0,
-                "pageSize": 20,
-                "pageNum": 0,
                 "areaName": "", // 查询关键字（防区名称）
                 "companyId": "", // 所属公司ID
                 "secureStatus": "", // 防区状态
                 "canEnter": "", // 是否允许车辆进入：720：不设限 721：禁止驶入 722：允许驶入
                 "canExit": "", // 是否允许车辆驶出： 720：不设限 723：禁止驶出 724：允许驶出
                 "canStay": "", //是否允许车辆停留： 720：不设限 725：禁止停留 726：允许停留
-                "createUserId": userInfo["id"], // 创建用户ID，新增时必传
-                "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传 
+            },
+            "page": {
+                "count": 0,
+                "pageSize": 20,
+                "pageNum": 0,
             },
             "columnsList": [
                 {
@@ -309,7 +309,7 @@
             // 页数改变时的回调
             "pageSizeChange": function (value) {
                 var self = this;
-                self.pageInfo.pageNum = parseInt(value, 10);
+                self.page.pageNum = parseInt(value, 10);
                 setTimeout(function () {
                     self.getDefensAreaList(false);
                 }, 200);
@@ -317,9 +317,9 @@
             // 切换每页条数时的回调
             "pageRowChange": function (value) {
                 var self = this;
-                self.pageInfo.pageSize = parseInt(value, 10);
+                self.page.pageSize = parseInt(value, 10);
                 setTimeout(function () {
-                    self.getDefensAreaList(false);
+                    self.getDefensAreaList(true);
                 }, 200);
             },
             // 当选择的行发生变化时 
@@ -393,14 +393,25 @@
                 var self = this;
                 // 如果是查询，则重新从第一页开始
                 self.dataList = [];
+                self.defensList = [];
                 if (bool == true) {
-                    self.pageInfo.pageNum = 0;
+                    self.page.pageNum = 0;
+                    self.page.count = 0;
                 }
                 setTimeout(function () {
                     utility.interactWithServer({
                         url: CONFIG.HOST + CONFIG.SERVICE.areaService + "?action=" + CONFIG.ACTION.getSecureAreaList,
                         actionUrl: CONFIG.SERVICE.areaService,
-                        dataObj: self.pageInfo,
+                        dataObj: {
+                            "pageNum": self.page.pageNum,
+                            "pageSize": self.page.pageSize,
+                            "areaName": encodeURI(self.pageInfo.areaName), // 查询关键字（防区名称）
+                            "companyId":  self.pageInfo.companyId, // 所属公司ID
+                            "secureStatus":  self.pageInfo.secureStatus, // 防区状态
+                            "canEnter":  self.pageInfo.canEnter, // 是否允许车辆进入：720：不设限 721：禁止驶入 722：允许驶入
+                            "canExit":  self.pageInfo.canExit, // 是否允许车辆驶出： 720：不设限 723：禁止驶出 724：允许驶出
+                            "canStay":  self.pageInfo.canStay, //是否允许车辆停留： 720：不设限 725：禁止停留 726：允许停留
+                        }, //self.pageInfo,
                         beforeSendCallback: function () {
                             self.isTableLoading = true;
                         },
@@ -410,7 +421,7 @@
                         successCallback: function (data) {
                             if (data.code == 200) {
                                 self.defensList = data.data;
-                                self.pageInfo.count = data.count;
+                                self.page.count = data.count;
                                 self.formatDefensData();
                             }
                         }
@@ -470,6 +481,10 @@
             setTimeout(function () {
                 self.getDefensAreaList(true);
                 self.getCompanyList();
+
+                self.$watch('pageInfo', function () {
+                    self.getDefensAreaList(true);
+                }, { deep: true });
             }, 500);
         }
     });
