@@ -9,11 +9,11 @@
             // },
             "queryInfo": utility.getQueryParams(),
             "mIP": "220.231.225.7", // socket登录IP
-            // "mIP": "120.79.197.241", // socket登录IP
             "mPort": 7668, // socket登录端口
-            // "mUserName": "test1", // 登录用户名
             "mUserName": "mgkj", // 登录用户名
             "mPwd": "888888", // socket密码
+            // "mUserName": "test1", // 登录用户名
+            // "mIP": "120.79.197.241", // socket登录IP
             "msgInfo": "",
             "codeType": true,
             "netnSignal": "",
@@ -438,21 +438,21 @@
                     // 登录成功
                     onlogin: function (info) {
                         var front = vsclientSession.findFrontByName(self.vehicleInfo.licenseNumber);
-                        self.front = front;
-                        self.$Message.destroy();
-                        self.msgType = "success";
-                        self.msgInfo = "车辆 【" + self.vehicleInfo.licenseNumber + "】登录成功";
-
+                    
                         if (front == null) {
                             self.msgType = "error";
-                            self.msgInfo = "车辆【 " + self.vehicleInfo.licenseNumber + " 】不存在";
+                            self.msgInfo = "没有找到车辆【 " + self.vehicleInfo.licenseNumber + " 】";
                             self.isStop = true;
-                            return;
+                        } else {
+                            self.front = front;
+                            self.$Message.destroy();
+                            self.msgType = "success";
+                            self.msgInfo = "车辆 【" + self.vehicleInfo.licenseNumber + "】登录成功";
+                            console.log("登录");
+                            self.backPlay.connectError = false;
+                            self.getReplayVedio();
                         }
 
-                        console.log("登录");
-                        self.backPlay.connectError = false;
-                        self.getReplayVedio();
                     },
                     // 当车辆下线的时候
                     onOnOffline: function (front) {

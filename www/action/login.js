@@ -27,7 +27,8 @@
                 //     "label": "繁體",
                 // }
             ],
-            "airPort": "121.34210660807666,31.198845194982827",
+            // {lng: 121.812257, lat: 31.16046}
+            "airPort": "121.812257,31.16046",
             "airPortList": [
                 {
                     "value": "0",
@@ -46,7 +47,7 @@
                     "label": "上海虹桥国际机场",
                 },
                 {
-                    "value": "121.804854898899,31.151142510137117",
+                    "value": "121.812257,31.16046",
                     "label": "上海浦东国际机场",
                 }
             ],
@@ -142,7 +143,7 @@
                             self.loading = true;
                         },
                         completeCallback: function () {
-                            self.loading = false;
+                            
                         },
                         successCallback: function (data) {
                             if (data.code == 200) {
@@ -156,6 +157,7 @@
 
                                 // 获取枚举值
                                 self.getBizParam(data.data.companyId, function() {
+                                    self.loading = false;
                                     if(!!data.data.modifyTime) {
                                         var mTs = data.data.modifyTime.split(" ");
                                         var years = mTs[0].split("-");
@@ -172,6 +174,7 @@
                                 });
 
                             } else {
+                                self.loading = false;
                                 self.$Message.error(data.message);
                             }
                         }

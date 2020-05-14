@@ -6,11 +6,11 @@
             "vehicleInfo": JSON.parse(decodeURI(utility.getQueryParams().vehicleInfo)),
             "queryInfo": utility.getQueryParams(),
             "mIP": "220.231.225.7", // socket登录IP
-            // "mIP": "120.79.197.241", // socket登录IP
             "mPort": 7668, // socket登录端口
             "mUserName": "mgkj", // 登录用户名
-            // "mUserName": "test1", // 登录用户名
             "mPwd": "888888", // socket密码
+            // "mUserName": "test1", // 登录用户名
+            // "mIP": "120.79.197.241", // socket登录IP
             "mVideoCount": 8, // 分屏数
             "maxVideoNum": 10, // 最大视频数
             "codeType": true, // true是网络码流 false是主码流
@@ -65,6 +65,7 @@
             "netnSignal": "",
             "hd": [],
             "sd": [],
+            "storage_new": 0,
             "msgType": "primary",
             "msgInfo": "",
             "isFullScream": false,
@@ -796,28 +797,31 @@
                     // 登录成功
                     onlogon: function (info) {
                         var front = vsclientSession.findFrontByName(self.vehicleInfo.licenseNumber);
-                        self.front = front;
-                        self.frontChildren = self.front.children;
-                        self.$Message.destroy();
-                        self.msgType = "success";
-                        self.msgInfo = "车辆 【" + self.vehicleInfo.licenseNumber + "】登录成功";
 
                         if (front == null) {
                             self.msgType = "error";
-                            self.msgInfo = "车辆【 " + self.vehicleInfo.licenseNumber + " 】不存在";
+                            self.msgInfo = "没有找到车辆【 " + self.vehicleInfo.licenseNumber + " 】";
                             self.isStop = true;
                             clearInterval(self.timeLenOut);
                             return;
+                        } else {
+                            self.front = front;
+                            self.frontChildren = self.front.children;
+                            self.$Message.destroy();
+                            self.msgType = "success";
+                            self.msgInfo = "车辆 【" + self.vehicleInfo.licenseNumber + "】登录成功";
+                            self.pageNum = self.frontChildren.length > 8 ? 8 : self.frontChildren.length;
+                            // 登录成功后马上开始播放视频
+                            self.startVideo();
+                            // self.listenVideoFrame();
                         }
-                        self.pageNum = self.frontChildren.length > 8 ? 8 : self.frontChildren.length;
-                        // 登录成功后马上开始播放视频
-                        self.startVideo();
-                        // self.listenVideoFrame();
+                        
                     },
                     // // 设备离线或上线
                     onOnOffline: function (front) {
                         if (front.name == self.vehicleInfo.licenseNumber) {
                             if (front.online == false) {
+                                self.updateVehicleOnlineStatus();
                                 self.$Message.destroy();
                                 self.msgType = "error";
                                 self.msgInfo = "车辆【 " + self.vehicleInfo.licenseNumber + " 】已经下线";
@@ -881,10 +885,20 @@
                         }
                     },
                     onGpsData: function (frontGpsData) { //车辆信息+GPS信
+                        var storage = frontGpsData.gps.storage.storage_new;
                         self.netnSignal = frontGpsData.gps.net_signal;
                         self.hd = frontGpsData.gps.storage.hd;
                         self.sd = frontGpsData.gps.storage.sd;
-                        console.log(frontGpsData.gps.storage);
+
+                        if(!!storage) {
+                            for (var i= 0, len = storage.length; i < len; i++) {
+                                if(storage[i] == 1) {
+                                    self.storage_new = 1;
+                                    break;
+                                }
+                            }
+                        }
+                        console.log("storage_new:"+frontGpsData.gps.storage_new);
                     }
                 };
                 window.vsclientSession = new VSClientSession(callback);
@@ -1029,6 +1043,7 @@
             "playVideo": function (front) {
                 var self = this;
                 if (!front.online) {
+                    self.updateVehicleOnlineStatus();
                     self.$Message.destroy();
                     self.msgType = "error";
                     self.isStop = true;
@@ -1207,6 +1222,15 @@
             "backPage": function () {
                 var self = this;
                 window.close();
+            },
+            // 修改车辆状态
+            "updateVehicleOnlineStatus": function() {
+                var self = this;
+                utility.interactWithServer({
+					url: "http://" + window.location.host + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.updateVehicleOnlineStatus+"&vehicleId="+ self.vehicleInfo.id +"&status=406",
+					actionUrl: CONFIG.SERVICE.vehicleService,
+					successCallback: function (data) {}
+				});
             }
         },
         "mounted": function () {
@@ -1228,6 +1252,13 @@
             // "port": 8001, //7668,
             // "userName": "admin1", //"mgkj",
             // "pwd": "888888",
+
+            console.log(window.location.host);
+
+            utility.setLocalStorage("userInfo", {
+                "id": self.queryInfo.id,
+                "userToken": self.queryInfo.userToken
+            });
 
             console.log(self.vehicleInfo);
             self.init();

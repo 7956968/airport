@@ -50,7 +50,26 @@
 
 <body class="innerPage">
     <div id="js-vue" class="tableContainer">
-        <div class="top">
+
+        <div class="echartWrap" style="border: none; position: relative; z-index: 0;">
+            <Row>
+                <i-col span="6">
+                    <div :style="{height: tableHeight/2+'px'}" id="illegaInfo"></div>
+                </i-col>
+                <i-col span="18">
+                    <div :style="{height: tableHeight/2+'px'}" id="milleInfo"></div>
+                </i-col>
+            </Row>
+            <div style="position: absolute; z-index: 100; top: 6px; left: 22%;font-size: 16px; font-weight: bolder;color: #000;">
+                <span v-text="'总流量：'+ countCar + '辆车 X 12G = ' +Math.round(totalNumber/1024)+'G'"></span>
+                <span style="padding-left: 20px;">月份:</span>
+                <i-select size="large" @on-change="changeMonth" placeholder="月份" v-model="currentMonth" clearable style="width:90px;">
+                    <i-option v-for="i in 12" :value="i" :label="i+'月'"></i-option>
+                </i-select>
+            </div>
+        </div>
+
+        <div class="top" style="background-color: #f2f2f2;">
             <Row type="flex" justify="start" gutter="10">
                 <i-col span="22">
                     <div class="searchWrap">
@@ -59,11 +78,11 @@
                                 <tr>
                                     <td>
                                         <template>
-                                            {{{'CN':'归属公司','EN':'Ownership Company','TW':'歸屬公司'}[language]}}:
+                                            归属公司
                                             <i-select @on-change="getSuperiorDeprtList('pageInfo')"
                                                 v-model="pageInfo.companyId" clearable
                                                 :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"
-                                                style="width:120px;">
+                                                style="width:160px;">
                                                 <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}
                                                 </i-option>
                                                 <i-option v-for="item in companyList" :value="item.id">
@@ -72,7 +91,7 @@
                                         </template>
                                     </td>
                                     <td>
-                                        <template>&nbsp;{{{'CN':'部门','EN':'Superior Department','TW':'部門'}[language]}}:</template>
+                                        <template>&nbsp;&nbsp;{{{'CN':'部门','EN':'Superior Department','TW':'部門'}[language]}}:</template>
                                     </td>
                                     <td>
                                         <template>
@@ -83,54 +102,26 @@
                                     </td>
                                     <td>
                                         <template>
-                                            &nbsp;车牌号
+                                            &nbsp;&nbsp;车牌号
                                             <i-input v-model="pageInfo.licenseNumber"
                                                 :placeholder="{'CN':'请输入','EN':'Input','TW':'請輸入'}[language]"
-                                                style="width: 100px"></i-input>
+                                                style="width: 120px"></i-input>
                                         </template>
                                     </td>
+                                    <template>
+                                        &nbsp;&nbsp;车辆类型:
+                                        <i-select v-model="pageInfo.vehicleTypeId" clearable
+                                            :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"
+                                            style="width:100px;">
+                                            <i-option value="0">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}
+                                            </i-option>
+                                            <i-option v-for="item in vehicleTypeList" :value="item.type">
+                                                {{item.name}}</i-option>
+                                        </i-select>
+                                    </template>
                                     <td>
                                         <template>
-                                            &nbsp;事件:
-                                            <i-select v-model="pageInfo.eventTypeId" clearable
-                                                :placeholder="{'CN':'请选择','EN':'Please Choose','TW':'請選擇'}[language]"
-                                                style="width:100px;">
-                                                <i-option value="">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}
-                                                </i-option>
-                                                <i-option value="1">拆卸</i-option>
-                                                <i-option value="2">超速</i-option>
-                                                <i-option value="3">电量低</i-option>
-                                                <i-option value="4">硬盘故障</i-option>
-                                                <i-option value="501">进入防区</i-option>
-                                                <i-option value="502">离开防区</i-option>
-                                                <i-option value="503">防区内停留</i-option>
-                                                <i-option value="504">防区内行驶</i-option>
-                                                <i-option value="505">防区内超速</i-option>
-                                                <!-- 
-                                                    1：拆卸
-                                                    2：超速
-                                                    3：电量低
-                                                    501：进入防区
-                                                    502：离开防区
-                                                    503：防区内停留
-                                                    504：防区内行驶
-                                                    505：防区内超速 
-                                                -->
-                                            </i-select>
-                                        </template>
-                                        <template>
-                                            &nbsp;状态:
-                                            <i-select v-model="pageInfo.dealFlag" clearable placeholder="请选择"
-                                                style="width:80px;">
-                                                <i-option value="">{{{'CN':'全部','EN':'All','TW':'全部'}[language]}}
-                                                </i-option>
-                                                <i-option value="0">未处理</i-option>
-                                                <i-option value="1">处理中</i-option>
-                                                <i-option value="2">已处理</i-option>
-                                            </i-select>
-                                        </template>
-                                        <template>
-                                            &nbsp;{{{'CN':'时间','EN':'Time','TW':'時間'}[language]}}:
+                                            &nbsp;&nbsp;{{{'CN':'时间','EN':'Time','TW':'時間'}[language]}}:
                                             <date-picker @on-change="beginRepairTime" type="date" confirm
                                                 :placeholder="{'CN':'请选择','EN':'Choose','TW':'請選擇'}[language]"
                                                 style="width:90px;"></date-picker>
@@ -172,57 +163,28 @@
 
         <div class="tableWrap">
             <template>
-                <i-table :height="tableHeight" :loading="isTableLoading" highlight-row :columns="columnsList"
+                <i-table :height="(tableHeight/2-30)" :loading="isTableLoading" highlight-row :columns="columnsList"
                     :data="alarmList" stripe="true" size="small" @on-row-click="setCurrentRowData"></i-table>
             </template>
         </div>
 
         <div class="pageWrap">
-            <template>
-                <Page :total="pageInfo.count" @on-change="pageSizeChange" @on-page-size-change="pageRowChange"
-                    :page-size="20" show-sizer show-total />
-            </template>
+            <Row type="flex" justify="start" gutter="0">
+                <i-col span="12">
+                    <template>
+                        <Page :total="page.count" @on-change="pageSizeChange" @on-page-size-change="pageRowChange"
+                            :page-size="20" show-sizer show-total />
+                    </template>
+                </i-col>
+                <i-col span="12">
+                    <template>
+                        <div style="font-size: 14px; color: #333; padding-top: 5px; text-align: right;">
+                            <span>总使用流量：<strong>{{sumNumber}}</strong> M</span>
+                        </div>
+                    </template>
+                </i-col>
+            </Row>
         </div>
-
-        <template>
-            <Modal v-model="isShowModal" :styles="{top: '60px'}" width="25" :title="modalTitle"
-                :ok-text="{'CN':'确定','EN':'Confirm','TW':'確定'}[language]"
-                :cancel-text="{'CN':'取消','EN':'Cancel','TW':'取消'}[language]" :loading="isModalLoading"
-                @on-ok="uploadDataToServer">
-                <div class="modifiedWrap">
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td class="label">
-                                    <span class="request">＊</span>
-                                    <span>状态：</span>
-                                </td>
-                                <td>
-                                    <template>
-                                        <i-select v-model="itemInfo.dealFlag" clearable placeholder="请选择">
-                                            <i-option value="0">未处理</i-option>
-                                            <i-option value="1">处理中</i-option>
-                                            <i-option value="2">已处理</i-option>
-                                        </i-select>
-                                    </template>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="label">
-                                    <span class="request">＊</span>
-                                    <span>处理描述</span>
-                                </td>
-                                <td>
-                                    <template>
-                                        <i-input v-model="itemInfo.remark" type="textarea"/>
-                                    </template>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </Modal>
-        </template>
 
         <template>
             <Modal v-model="isShowDetail" :footer-hide="true" :styles="{top: '60px'}" width="30" title="查看详情">
@@ -246,43 +208,24 @@
                                 <td><span v-text="itemInfo.vehicleName"></span></td>
                             </tr>
                             <tr class="detailInfo">
-                                <td class="detailLabel"><span>车辆编号：</span></td>
-                                <td><span v-text="itemInfo.vehicleCode"></span></td>
+                                <td class="detailLabel"><span>车牌号：</span></td>
+                                <td><span v-text="itemInfo.licenseNumber"></span></td>
                             </tr>
                             <tr class="detailInfo">
-                                <td class="detailLabel"><span>报警时间：</span></td>
-                                <td><span v-text="itemInfo.alarmTime"></span></td>
+                                <td class="detailLabel"><span>车辆类型：</span></td>
+                                <td><span v-text="itemInfo.vehicleTypeName"></span></td>
                             </tr>
                             <tr class="detailInfo">
-                                <td class="detailLabel"><span>报警类型：</span></td>
-                                <td><span v-text="itemInfo.alarmTypeDesc"></span></td>
+                                <td class="detailLabel"><span>总使用流量：</span></td>
+                                <td><span v-text="itemInfo.dayCardFlow+'M'"></span></td>
                             </tr>
                             <tr class="detailInfo">
-                                <td class="detailLabel"><span>处理状态：</span></td>
-                                <td><span v-text="itemInfo.dealDesc"></span></td>
+                                <td class="detailLabel"><span>开始统计时间：</span></td>
+                                <td><span v-text="itemInfo.beginTime"></span></td>
                             </tr>
                             <tr class="detailInfo">
-                                <td class="detailLabel"><span>警报事件：</span></td>
-                                <td><span v-text="itemInfo.eventTypeDesc"></span></td>
-                            </tr>
-                            <tr class="detailInfo">
-                                <td class="detailLabel" style="vertical-align: top;"><span>报警内容：</span></td>
-                                <td><span v-text="itemInfo.alarmInfo"></span></td>
-                            </tr>
-                            <tr class="detailInfo">
-                                <td class="detailLabel" style="vertical-align: top;"><span>报警地址：</span></td>
-                                <td>
-                                    <span v-text="itemInfo.alarmAddress"></span>
-                                    <i-button @click="toMapTrack(itemInfo)" size="small" type="info" icon="md-pin">行迹查询</i-button>
-                                </td>
-                            </tr>
-                            <tr class="detailInfo">
-                                <td class="detailLabel"><span>处理人：</span></td>
-                                <td><span v-text="itemInfo.modifyUserName"></span></td>
-                            </tr>
-                            <tr class="detailInfo">
-                                <td class="detailLabel"><span>处理时间：</span></td>
-                                <td><span v-text="itemInfo.modifyTime"></span></td>
+                                <td class="detailLabel"><span>结束统计时间：</span></td>
+                                <td><span v-text="itemInfo.endTime"></span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -291,10 +234,9 @@
         </template>
     </div>
     <script src="/airport/assets/js/LAB.min.js?v=asdf1341234"></script>
-    <script src="/airport/assets/js/gcoord.min.js?v=123413"></script>
-    <script src="https://api.map.baidu.com/api?v=2.0&ak=eCaU3zoABU2Ggtuc8vAoTrkc"></script>
+    <script src="/airport/assets/js/echarts.min.js?v=173412347"></script>
     <script>
-        loadScript(MODUL + "module/alarm/alarm.min.js");
+        loadScript(MODUL + "module/trafficManage/trafficManage.min.js");
     </script>
 </body>
 

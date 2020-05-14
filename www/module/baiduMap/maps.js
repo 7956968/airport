@@ -987,6 +987,8 @@
             "baiduMapClick": function (option) {
                 var self = this;
 
+                console.log(option);
+
                 if (option.overlay == null) {
                     // 如果是画摄像机
                     if (self.isAddCameraAction == true) {
@@ -1878,21 +1880,22 @@
             // 显示视屏
             "showLiveVideo": function (vehicleInfo, isBackPlay) {
                 var self = this;
-                 var port = "8080";
-                //  var port = "9090";
-                var url = "http://43.247.68.26:" + port + "/airport/www/module/liveVideo/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
+                var port = "8080";
+                // var port = "9090";
+                var baseUrl = "http://43.247.68.26:";
+                var url = baseUrl + port + "/airport/www/module/liveVideo/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&id=" + userInfo["id"] + "&userToken=" + userInfo["userToken"] + "&isBackPlay=" + isBackPlay;
 
                 if (isBackPlay) {
-                    url = "http://43.247.68.26:" + port + "/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
+                    url = baseUrl + port + "/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&id=" + userInfo["id"] + "&userToken=" + userInfo["userToken"] + "&isBackPlay=" + isBackPlay;
                 }
 
-                if (vehicleInfo.providerId == 2) {
-                    if (isBackPlay) {
-                        url = "http://43.247.68.26:" + port + "/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
-                    } else {
-                        url = "http://43.247.68.26:" + port + "/airport/www/module/liveVideoTest1/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&id=" + userInfo["id"] + "&userToken=" + userInfo["userToken"] + "&isBackPlay=" + isBackPlay;
-                    }
-                }
+                // if (vehicleInfo.providerId == 2) {
+                //     if (isBackPlay) {
+                //         url = baseUrl + port + "/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&id=" + userInfo["id"] + "&userToken=" + userInfo["userToken"] + "&isBackPlay=" + isBackPlay;
+                //     } else {
+                //         url = baseUrl + port + "/airport/www/module/liveVideoTest1/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&id=" + userInfo["id"] + "&userToken=" + userInfo["userToken"] + "&isBackPlay=" + isBackPlay;
+                //     }
+                // }
                 window.open(
                     url,
                     "liveVideo",
@@ -2002,13 +2005,13 @@
                 setTimeout(function () {
                     $(window.parent.document).find("#nav_Alarm").bind("click");
                     $(window.parent.document).find("#nav_Alarm").trigger("click");
-                }, 200);
+                }, 0);
 
                 setTimeout(function() {
                     utility.setSessionStorage("fromMap", {
                         licenseNumber: licenseNumber
                     });
-                }, 500);
+                }, 1000);
             },
 
             // 显示车辆POP
@@ -2407,16 +2410,19 @@
                         }
                     },
                     position: {
-                        lng: coordinates[index].lng,
-                        lat: coordinates[index].lat,
+                        // point.lng - 0.00089867, point.lat + 0.00099867
+                        lng: coordinates[index].lng - 0.00089867,
+                        lat: coordinates[index].lat + 0.00099867,
                     },
                     zIndex: 100000,
                     top: true,
                 };
 
+                self.isTrackItem = true;
                 self.baiduMapInfo.openInfoWindow.show = false; // 隐藏弹出层
                 self.baiduMapInfo.map.panTo(new BMap.Point(coordinates[index].lng, coordinates[index].lat));
                 self.baiduMapInfo.animationInfo.timeInterval = setInterval(function () {
+                    self.isTrackItem = true;
                     if (index < coordinates.length) {
                         index++;
                         self.baiduMapInfo.animationInfo.moveVehicle.position = coordinates[index];
@@ -2425,7 +2431,7 @@
                         self.baiduMapInfo.animationInfo.moveVehicle = null;
                         clearInterval(self.baiduMapInfo.animationInfo.timeInterval);
                     }
-                }, (55 + (55 - self.baiduMapInfo.animationInfo.speed)) * 10);
+                }, 500-self.baiduMapInfo.animationInfo.speed);
 
             },
 

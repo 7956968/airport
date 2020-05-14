@@ -803,21 +803,22 @@
             // 显示视屏
             "showLiveVideo": function (vehicleInfo, isBackPlay) {
                 var self = this;
-                // var port = "8080";
-                var port = "9090";
-                var url = "http://43.247.68.26:" + port + "/airport/www/module/liveVideo/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
+                var port = "8080";
+                // var port = "9090";
+                var baseUrl = "http://43.247.68.26:";
+                var url = baseUrl + port + "/airport/www/module/liveVideo/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&id=" + userInfo["id"] + "&userToken=" + userInfo["userToken"] + "&isBackPlay=" + isBackPlay;
 
                 if (isBackPlay) {
-                    url = "http://43.247.68.26:" + port + "/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
+                    url = baseUrl + port + "/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&id=" + userInfo["id"] + "&userToken=" + userInfo["userToken"] + "&isBackPlay=" + isBackPlay;
                 }
 
-                if (vehicleInfo.providerId == 2) {
-                    if (isBackPlay) {
-                        url = "http://43.247.68.26:" + port + "/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&isBackPlay=" + isBackPlay;
-                    } else {
-                        url = "http://43.247.68.26:" + port + "/airport/www/module/liveVideoTest1/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&id=" + userInfo["id"] + "&userToken=" + userInfo["userToken"] + "&isBackPlay=" + isBackPlay;
-                    }
-                }
+                // if (vehicleInfo.providerId == 2) {
+                //     if (isBackPlay) {
+                //         url = baseUrl + port + "/airport/www/module/playBack/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&id=" + userInfo["id"] + "&userToken=" + userInfo["userToken"] + "&isBackPlay=" + isBackPlay;
+                //     } else {
+                //         url = baseUrl + port + "/airport/www/module/liveVideoTest1/liveVideo.html?vehicleInfo=" + encodeURI(JSON.stringify(vehicleInfo)) + "&id=" + userInfo["id"] + "&userToken=" + userInfo["userToken"] + "&isBackPlay=" + isBackPlay;
+                //     }
+                // }
                 window.open(
                     url,
                     "liveVideo",

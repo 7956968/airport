@@ -278,6 +278,7 @@
                             "_1": "拆卸",
                             "_2": "超速",
                             "_3": "电量低",
+                            "_4": "硬盘故障",
                             "_501": "进入防区",
                             "_502": "离开防区",
                             "_503": "防区内停留",
@@ -366,12 +367,15 @@
                 var legendLabel = [];
                 var totalChartDataList = self.totalChartData.reverse();
 
+                // console.log(self.vehicleTypeInfo);
+
                 for (var key in self.vehicleTypeInfo) {
                     self.vehicleTypeInfo[key]['list'] = new Array(self.totalChartData.length);
                     for (var v = 0, vlen = self.totalChartData.length; v < vlen; v++) {
                         self.vehicleTypeInfo[key]['list'][v] = 0;
                     }
                 }
+
 
                 for (var i = 0, len = totalChartDataList.length; i < len; i++) {
                     category.push(totalChartDataList[i]["day"]);
@@ -452,6 +456,8 @@
                     },
                     series: seriesList.reverse()
                 };
+
+                // console.log(legendLabel);
                 myChart.setOption(option);
 
             },
@@ -464,25 +470,29 @@
                 var myChart = echarts.init(document.getElementById('totalEchart'));
 
                 for (var key in self.vehicleTypeInfo) {
-                    for(var i = 0, len = self.vehicleCateReport.length; i < len; i++) {
-                        (function(i){
-                            if (key == "_"+self.vehicleCateReport[i]["vehicleTypeId"]) {
-                                legendLabel.push(self.vehicleTypeInfo["_"+self.vehicleCateReport[i]["vehicleTypeId"]]["name"]);
-                                seriesList.push({
-                                    "value": self.vehicleCateReport[i]["totalVehicleNum"],
-                                    "itemStyle": {
-                                        "color": self.vehicleTypeInfo["_"+self.vehicleCateReport[i]["vehicleTypeId"]]["color"]
-                                    },
-                                    "label": {
-                                        "normal": {
-                                            "show": true,
-                                            "position": 'top',
-                                            "fontSize": 14
-                                        }
-                                    },
-                                });
+                    legendLabel.push(self.vehicleTypeInfo[key]["name"]);
+                    seriesList.push({
+                        "value": 0,
+                        "itemStyle": {
+                            "color": self.vehicleTypeInfo[key]["color"]
+                        },
+                        "label": {
+                            "normal": {
+                                "show": true,
+                                "position": 'top',
+                                "fontSize": 14
                             }
-                        })(i);
+                        },
+                    });
+                }
+
+                for(var l = 0, llen = legendLabel.length; l < llen; l++) {
+                    for(var i = 0, len = self.vehicleCateReport.length; i < len; i++) {
+                        (function(l){
+                            if (legendLabel[l] == self.vehicleCateReport[i]["vehicleTypeName"]) {
+                                seriesList[l]["value"] = seriesList[l]["value"] + self.vehicleCateReport[i]["totalVehicleNum"];
+                            }
+                        })(l);
                     }
                 }
 
@@ -547,6 +557,7 @@
                     "list": [],
                     "count": 0
                 };
+
                 for (var i = 0, len = self.vehicleTypeList.length; i < len; i++) {
                     if (self.vehicleTypeList[i]["type"] != 302 && self.vehicleTypeList[i]["type"] != 303 && self.vehicleTypeList[i]["type"] != 109 && self.vehicleTypeList[i]["type"] != 111 && self.vehicleTypeList[i]["type"] != 112) {
                         
@@ -772,6 +783,9 @@
                 utility.interactWithServer({
                     url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getVehicleCateReport,
                     actionUrl: CONFIG.SERVICE.getVehicleCateReport,
+                    // dataObj: {
+                    //     companyId: userInfo.companyId
+                    // },
                     successCallback: function (data) {
                         if (data.code == 200) {
                             self.vehicleCateReport = data.data;
@@ -919,18 +933,18 @@
                 self.resetVehicleBizParamInfo();
 
                 // 获取按车辆类型的车辆使用情况统计数据接口
-                // self.getVehicleRunReport();
+                // self.getVehicleRunReport(); //  // 正式环境右上角的统计图表
 
                 // 车辆数据
                 self.getAllVehicleList();
 
                 // 获取车辆不同天数的状态信息信息
-                self.getStatuVehicleList(true);
+                self.getStatuVehicleList();
 
                 // 获取车辆在线统计情况
                 self.getVehicleOnlineStat(true);
 
-                self.getVehicleCateReport();
+                self.getVehicleCateReport(); // 测试环境右上角的统计图表
             }
         },
         "created": function () {

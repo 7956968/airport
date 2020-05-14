@@ -26,10 +26,6 @@
             value: 3
         },
         {
-            label: "硬盘故障",
-            value: 4
-        },
-        {
             label: "进入防区",
             value: 501
         },
@@ -74,6 +70,7 @@
             "isShowDetail": false,
             "isModalLoading": true,
             "modalTitle": "",
+            "vehicleTypeList": bizParam["vehicleType"], // 车辆类型
             "tableHeight": (function () {
                 var containerHeight = $(".tableContainer").height();
                 return containerHeight - 100;
@@ -83,8 +80,7 @@
                 "count": 0,
                 "companyId": "", // 公司ID
                 "deptIds": [], // 部门ID
-                "eventTypeId": "",
-                "dealFlag": "",
+                "vehicleTypeId": "",
                 "vehicleName": "",
                 "licenseNumber": "",
                 "beginTime": "",
@@ -93,6 +89,7 @@
             "page": {
                 "pageSize": 20,
                 "pageNum": 1,
+                "count": 0
             },
             "index": 0,
             "selectItem": "",
@@ -108,118 +105,61 @@
                     "align": "center",
                     "title": "序号",
                     "width": 60,
-                    "fixed": "left",
                 },
                 {
                     "title": "公司名称",
                     "key": "companyName",
-                    "width": 180,
-                    "fixed": "left",
-                    "filters": filterCompany,
-                    "filterMultiple": false,
-                    "filterRemote"(value, row) {
-                        pageVue.pageInfo.companyId = value;
-                        pageVue.getDepartmentList();
-                    }
+                    // "filters": filterCompany,
+                    // "filterMultiple": false,
+                    // "filterRemote"(value, row) {
+                    //     pageVue.pageInfo.companyId = value;
+                    //     pageVue.getDepartmentList();
+                    // }
                 },
                 {
                     "title": "部门名称",
                     "key": "deptName",
-                    "width": 150,
-                    "filters": filterDepart,
-                    "filterMultiple": false,
-                    "filterRemote"(value, row) {
-                        pageVue.pageInfo.deptIds = value;
-                    },
+                    // "filters": filterDepart,
+                    // "filterMultiple": false,
+                    // "filterRemote"(value, row) {
+                    //     pageVue.pageInfo.deptIds = value;
+                    // },
                 },
                 {
-                    "title": "报警类型",
-                    "key": "alarmTypeDesc",
-                    "width": 100
-                },
-                {
-                    "title": "处理状态",
-                    "key": "dealDesc",
-                    "width": 100,
-                    "filters": dealFlagList,
-                    "filterMultiple": false,
-                    "filterRemote"(value, row) {
-                        pageVue.pageInfo.dealFlag = value[0];
-                    },
-                },
-                {
-                    "title": "警报事件",
-                    "key": "eventTypeDesc",
-                    "width": 100,
-                    "filters": eventList,
-                    "filterMultiple": false,
-                    "filterRemote"(value, row) {
-                        pageVue.pageInfo.eventTypeId = value[0];
-                    },
-                    "render": function (h, params) {
-                        var alarmType = {
-                            "_1": "拆卸",
-                            "_2": "超速",
-                            "_3": "电量低",
-                            "_4": "硬盘故障",
-                            "_501": "进入防区",
-                            "_502": "离开防区",
-                            "_503": "防区内停留",
-                            "_504": "防区内行驶",
-                            "_505": "防区内超速"
-                        };
-                        return h("div", [
-                            h("span", {}, params.row.eventTypeDesc || alarmType["_" + params.row.eventTypeId]),
-                        ]);
-                    }
+                    "title": "车辆名称",
+                    "key": "vehicleName"
                 },
                 {
                     "title": "车牌号",
-                    "key": "licenseNumber",
-                    "width": 150
+                    "key": "licenseNumber"
                 },
                 {
-                    "title": "报警时间",
-                    "key": "alarmTime",
-                    "width": 130
+                    "title": "车辆类型",
+                    "key": "vehicleTypeName"
                 },
                 {
-                    "title": "报警内容",
-                    "key": "alarmInfo",
-                    "width": 400
-                },
-                {
-                    "title": "报警坐标",
-                    "key": "gpsPositionStr",
-                    "width": 140
+                    "title": "总使用流量",
+                    "key": "dayCardFlow",
+                    "render": function (h, params) {
+                        return h("div", params.row.dayCardFlow+'M');
+                    }
                 },
                 // {
-                //     "title": "当时车速(km/h)",
-                //     "key": "speed",
-                //     "width": 140,
-                //     "align": "center",
-                //     "render": function (h, params) {
-                //         return h("div", [
-                //             h("span", {}, params.row.speed==0?'--':params.row.speed),
-                //         ]);
-                //     }
+                //     "title": "统计日期",
+                //     "key": "statDay"
                 // },
                 {
-                    "title": "报警地址",
-                    "key": "alarmAddress",
-                    "width": 350
+                    "title": "开始统计时间",
+                    "key": "beginTime"
                 },
-
                 {
-                    "title": {
-                        "CN": "操作",
-                        "EN": "Operation",
-                        "TW": "操作"
-                    } [language["language"]],
+                    "title": "结束统计时间",
+                    "key": "endTime"
+                },
+                {
+                    "title": "操作",
                     "key": "operation",
-                    "fixed": "right",
                     "align": "center",
-                    "width": 160,
                     "render": function (h, params) {
                         return h("div", [
                             h("Button", {
@@ -237,23 +177,7 @@
                                         pageVue.showDetail();
                                     }
                                 }
-                            }, "详情"),
-                            h("Button", {
-                                "props": {
-                                    "type": "warning",
-                                    "size": "small",
-                                },
-                                "style": {
-                                    "marginRight": '5px'
-                                },
-                                "on": {
-                                    "click": function () {
-                                        pageVue.index = params.index;
-                                        pageVue.selectItem = params.row;
-                                        pageVue.editItem();
-                                    }
-                                }
-                            }, "处理异常")
+                            }, "详情")
                         ]);
                     }
                 }
@@ -263,7 +187,13 @@
             "companyList": [],
             "alarmList": [],
             "superiorDepartmentList": [],
-            "deptUserPositionTypeList": bizParam["departmentPositionType"]
+            "deptUserPositionTypeList": bizParam["departmentPositionType"],
+            "sumNumber": 0,
+            "totalNumber": 0,
+            "countCar": 0,
+            "currentMonth": "",
+            "monthDays": 0,
+            "dateInfo": {},
         },
         "methods": {
             // 刷新
@@ -333,34 +263,6 @@
                     self.selectItem = item;
                 }
             },
-            // 
-            // 提交信息到服務器
-            "uploadDataToServer": function () {
-                var self = this;
-
-                utility.interactWithServer({
-                    url: CONFIG.HOST + CONFIG.SERVICE.alarmService + "?action=" + CONFIG.ACTION.updateAlarmStatus,
-                    actionUrl: CONFIG.SERVICE.alarmService,
-                    dataObj: {
-                        "id": self.itemInfo.id, // ID 
-                        "createUserId": userInfo["id"], // 创建用户ID，新增时必传
-                        "modifyUserId": userInfo["id"], // 修改用户ID，修改时必传
-                        "dealFlag": self.itemInfo.dealFlag,
-                        "remark": encodeURI(self.itemInfo.remark),
-                    },
-                    completeCallback: function () {
-                        self.isModalLoading = false;
-                    },
-                    successCallback: function (data) {
-                        if (data.code == 200) {
-                            self.getAlarmList(true);
-                            self.isShowModal = false;
-                        } else {
-                            self.$Message.error(data.message);
-                        }
-                    }
-                });
-            },
             // 页数改变时的回调
             "pageSizeChange": function (value) {
                 var self = this;
@@ -379,67 +281,57 @@
             },
 
             // 获取机构用户信息
-            "getAlarmList": function (bool) {
+            "getAlarmList": function (bool, options) {
                 var self = this;
-                // 如果是查询，则重新从第一页开始
-                self.tableRowList = [];
-                self.alarmList = [];
+                var dataObj = {
+                    "pageNum": self.page.pageNum,
+                    "pageSize": self.page.pageSize,
+                    "licenseNumber": encodeURI(self.pageInfo.licenseNumber),
+                    "vehicleTypeId": self.pageInfo.vehicleTypeId,
+                    "beginTime": self.pageInfo.beginTime,
+                    "endTime": self.pageInfo.endTime,
+                    "companyId": self.pageInfo.companyId, // 公司ID
+                    "deptId": self.pageInfo.deptIds[self.pageInfo.deptIds.length - 1] || 0, // 部门ID
+                };
+                
+                if(!options) {
+                    // 如果是查询，则重新从第一页开始
+                    self.tableRowList = [];
+                    self.alarmList = [];
+                    self.isTableLoading = true;
+                }
                 if (bool == true) {
                     self.page.pageNum = 1;
                     self.page.count = 0;
                 }
+
+                if(!!options && options.isChart == true) {
+                    dataObj = {
+                        "pageNum": 1,
+                        "pageSize": 1,
+                        "beginTime": options.beginTime + " 00:00:00",
+                        "endTime": options.endTime + " 23:59:59",
+                    };
+                }
                 utility.interactWithServer({
-                    url: CONFIG.HOST + CONFIG.SERVICE.alarmService + "?action=" + CONFIG.ACTION.getAlarmList,
-                    actionUrl: CONFIG.SERVICE.alarmService,
-                    dataObj: {
-                        "pageNum": self.page.pageNum,
-                        "pageSize": self.page.pageSize,
-                        "alarmTypeId": self.pageInfo.alarmTypeId,
-                        "eventTypeId": self.pageInfo.eventTypeId,
-                        "dealFlag": self.pageInfo.dealFlag,
-                        "licenseNumber": encodeURI(self.pageInfo.licenseNumber),
-                        "beginTime": self.pageInfo.beginTime,
-                        "endTime": self.pageInfo.endTime,
-                        "companyId": self.pageInfo.companyId, // 公司ID
-                        "deptId": self.pageInfo.deptIds[self.pageInfo.deptIds.length - 1] || 0, // 部门ID
-                    },
-                    beforeSendCallback: function () {
-                        self.isTableLoading = true;
-                    },
+                    url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getVehicleCardFlowStat,
+                    actionUrl: CONFIG.SERVICE.vehicleService,
+                    dataObj: dataObj,
+                    async: !!options,
                     completeCallback: function () {
                         self.isTableLoading = false;
                     },
                     successCallback: function (data) {
                         if (data.code == 200) {
-                            var list = [];
-
-                            self.pageInfo.count = data.count;
-
-                            for (var i = 0, len = data.data.length; i < len; i++) {
-                                list.push(data.data[i]);
-                                list[i]["alarmAddress"] = "";
+                            if(!options) {
+                                self.page.count = data.count;
+                                self.sumNumber = data.sum;
+                                self.alarmList = data.data;
                             }
-                            self.alarmList = list;
+                        }
 
-                            for (var a = 0; a < data.data.length; a++) {
-                                (function (a) {
-                                    if (!!data.data[a].gpsPositionStr) {
-                                        var gpsPositionStr = data.data[a].gpsPositionStr.split(",");
-                                        var position = [gpsPositionStr[0], gpsPositionStr[1]];
-                                        if (position[0] != 0 && position[1] != 0) {
-                                            utility.convertorByBaidu(position, gcoord, BMap, function (point, lng, lat) {
-                                                utility.getAdressDetail([lng, lat], BMap, function (address) {
-                                                    self.alarmList[a]["alarmAddress"] = address;
-                                                });
-                                            });
-                                        } else {
-                                            self.alarmList[a]["alarmAddress"] = "--";
-                                        }
-                                    } else {
-                                        self.alarmList[a]["alarmAddress"] = "--";
-                                    }
-                                }(a));
-                            }
+                        if(!!options && options.isChart==true) {
+                            !!options.callback && options.callback(data.sum||0);
                         }
                     }
                 });
@@ -534,31 +426,10 @@
                     }
                 });
             },
-            // 获取用户信息
-            "getUserList": function (callback) {
-                var self = this;
-                self.userList = [];
-                utility.interactWithServer({
-                    url: CONFIG.HOST + CONFIG.SERVICE.userService + "?action=" + CONFIG.ACTION.getUserList,
-                    actionUrl: CONFIG.SERVICE.userService,
-                    dataObj: {
-                        id: 0,
-                        pageSize: 10000,
-                        companyId: self.itemInfo.companyId,
-                    },
-                    successCallback: function (data) {
-                        if (data.code == 200) {
-                            self.userList = data.data;
-                            !!callback && callback();
-                        }
-                    }
-                });
-            },
             // 当选择公司时，动态选择部门用户
             "getDepartAndUser": function () {
                 var self = this;
                 self.itemInfo.userIds = [];
-                self.getUserList();
                 self.getSuperiorDeprtList("itemInfo");
             },
             // 
@@ -571,36 +442,172 @@
                     $(window.parent.document).find("#nav_Maps").bind("click");
                     $(window.parent.document).find("#nav_Maps").trigger("click");
                 }, 200);
+            },
+            // 获取所有车辆使用情况数据
+            "getAllVehicleList": function (callback) {
+                var self = this;
+                utility.interactWithServer({
+                    url: CONFIG.HOST + CONFIG.SERVICE.vehicleService + "?action=" + CONFIG.ACTION.getAllVehiclePositonList,
+                    actionUrl: CONFIG.SERVICE.vehicleService,
+                    dataObj: {
+                        "pageNum": 1, //0,
+                        "pageSize": 1000000000, //20,
+                    },
+                    successCallback: function (data) {
+                        if (data.code == 200) {
+                            !!callback && callback(data.count * 12 * 1024, data.count);
+                        }
+                    }
+                });
+            },
+
+            // 画饼图
+            "drawPie": function(time, userData, totalNumber) {
+                var self = this;
+                var myChart = echarts.init(document.getElementById("illegaInfo"));
+                option = {
+                    color: ['#d14a61', '#2d8cf0'],
+                    title: {
+                        text: time +'月份流量使用情况',
+                        top: 10,
+                        left: 'center'
+                    },
+                    center: "30%",
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: '{c}G({d}%)'
+                    },
+                    series: [
+                        {
+                            type: 'pie',
+                            radius: '60%',
+                            center: [150, 155],
+                            top: 40,
+                            label: {
+                                formatter: '{b}{c}G\n{d}%',
+                            },
+                            data: [
+                                {value: Math.round(userData/1024), name: '使用'},
+                                {value: Math.round((totalNumber-userData)/1024), name: '剩下'},
+                            ]
+                        }
+                    ]
+                };
+                myChart.setOption(option);
+            },
+
+            // 画曲线图
+            "drawLine": function(time, monthDays, data) {
+                var self = this;
+                var myChart = echarts.init(document.getElementById("milleInfo"));
+                option = {
+                    color: ['#d14a61', '#2d8cf0'],
+                    title: {
+                        text: time +'月份每天流量使用情况',
+                        top: 10,
+                        left: 'center'
+                    },
+                    grid: {
+                        left: 80,
+                        top: 60,
+                        right: 20,
+                        bottom: 40
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: '{b}号：{c}M'
+                    },
+                    legend: {
+                        data: ['流量'],
+                        left: 10
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: (function(){
+                            var arr = [];
+                            for(var i = 0; i < monthDays; i++) {
+                                arr.push(i+1);
+                            }
+                            return arr;
+                        }())
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [{
+                        data: data,
+                        type: 'line',
+                        symbolSize: 8,
+                    }]
+                };
+                myChart.setOption(option);
+            },
+            "changeMonth": function(value) {
+                var self = this;
+                self.currentMonth = parseInt(value || self.dateInfo.month, 10);
+                self.monthDays = new Date(self.dateInfo.year,self.currentMonth,0).getDate();
+                self.drawGraph();
+            },
+            "drawGraph": function() {
+                var self = this;
+                var lineData = {};
+                var flg = [];
+                var userDataList = [];
+                self.getAlarmList(false, {
+                    isChart: true,
+                    beginTime: self.dateInfo.year+"-"+self.currentMonth+"-01",
+                    endTime: self.dateInfo.year+"-"+self.currentMonth+"-"+ self.monthDays,
+                    callback: function(userData){
+                        self.drawPie(self.currentMonth, userData, self.totalNumber);
+                    }
+                });
+
+                for(var i = 0; i < self.monthDays; i++) {
+                    (function(i){
+                        self.getAlarmList(false, {
+                            isChart: true,
+                            beginTime: self.dateInfo.year+"-"+self.currentMonth+"-"+ (i+1),
+                            endTime: self.dateInfo.year+"-"+self.currentMonth+"-"+ (i+1),
+                            callback: function(userData){
+                                lineData["_"+i] = userData;
+                                flg.push(userData);
+
+                                if(flg.length == self.monthDays) {
+                                    for(var j = 0; j < self.monthDays; j++) {
+                                        userDataList.push(lineData["_" + j])
+                                    }
+                
+                                    self.drawLine(self.currentMonth, self.monthDays, userDataList);
+                                }
+                            }
+                        });
+                    })(i)
+                }
             }
         },
         "created": function () {
             var self = this;
+            self.dateInfo = utility.getDateDetailInfo();
+            self.currentMonth = parseInt(self.dateInfo.month);
+            self.monthDays = new Date(self.dateInfo.year,self.currentMonth,0).getDate();
 
             // 判断是否已经登录，如果没有登录，则直接退出到登录页面
             utility.isLogin(false);
 
-            setTimeout(function(){
-                if (!!utility.getSessionStorage("fromMap")) {
-                    // self.pageInfo.vehicleName = utility.getSessionStorage("fromMap").vehicleName;
-                    self.pageInfo.licenseNumber = utility.getSessionStorage("fromMap").licenseNumber;
-
-                    setTimeout(function() {
-                        utility.setSessionStorage("fromMap", null);
-                    }, 1500);
-                }
-            }, 500);
-
-
-            setTimeout(function () {
+            self.getAllVehicleList(function(totalNumber, countCar){
+                self.totalNumber = totalNumber;
+                self.countCar = countCar
                 self.getAlarmList(true);
                 self.getCompanyList();
 
-                self.$watch('pageInfo', function () {
-                    self.getAlarmList(true);
-                }, {
-                    deep: true
-                });
-            }, 500);
+                self.drawGraph();
+            });
+
+            self.$watch('pageInfo', function () {
+                self.getAlarmList(true);
+            }, {
+                deep: true
+            });
         }
     });
 

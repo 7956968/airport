@@ -152,12 +152,12 @@
 
                                 // 获取枚举值
                                 self.getBizParam(data.data.companyId, function() {
-                                    window.location.href = "/airport/www/module/index/index.html";
+                                    window.location.href = "/airport/www/module/mapPhone/maps.html";
                                 });
 
-                                setTimeout(function () {
-                                    window.location.href = "/airport/www/module/mapPhone/maps.html";
-                                }, 500);
+                                // setTimeout(function () {
+                                //     window.location.href = "/airport/www/module/mapPhone/maps.html";
+                                // }, 500);
                             } else {
                                 self.$Message.error(data.message);
                             }

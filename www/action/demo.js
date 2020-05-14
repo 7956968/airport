@@ -151,7 +151,7 @@
                             self.loading = true;
                         },
                         completeCallback: function () {
-                            self.loading = false;
+                            
                         },
                         successCallback: function (data) {
                             if (data.code == 200) {
@@ -175,6 +175,7 @@
                                 // });
 
                                 self.getBizParam(data.data.companyId, function() {
+                                    self.loading = false;
                                     if(!!data.data.modifyTime) {
                                         var mTs = data.data.modifyTime.split(" ");
                                         var years = mTs[0].split("-");
@@ -193,6 +194,7 @@
                                 // }, 500);
                             } else {
                                 self.$Message.error(data.message);
+                                self.loading = false;
                             }
                         }
                     });

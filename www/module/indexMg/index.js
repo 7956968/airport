@@ -35,6 +35,7 @@
                 "TerminalParame": null,
                 "BaiduMap": null,
                 "DataGroupType": null,
+                "TrafficManage": null,
             },
             "iframeList": {
                 "Welcom": null,
@@ -63,6 +64,7 @@
                 "TerminalParame": null,
                 "BaiduMap": null,
                 "DataGroupType": null,
+                "TrafficManage": null,
             },
             "userFuncList": userFuncList,
             "innerWidth": window.innerWidth,
@@ -207,7 +209,7 @@
             "closeTab": function (id) {
                 var self = this;
                 var preId = $("body").find("#tab_" + id).prev().attr("id").split("_")[1];
-
+                utility.setSessionStorage("fromMap", null);
                 // 如果关闭的是当前激活的tab
                 if($("body").find("#tab_" + id).hasClass("active")) {
                     self.tabList[id]["isDelete"] = true;

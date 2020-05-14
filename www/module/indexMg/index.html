@@ -186,6 +186,15 @@
                                             <span>系统报警信息</span>
                                         </p>
                                     </template>
+                                    <template v-if="item.functionCode=='device_manage_view_flow'">
+                                        <p @click="setTabItem('/airport/www/module/trafficManage/trafficManage.html', 'TrafficManage', $event)"
+                                            id="nav_TrafficManage">
+                                            <span>
+                                                <Icon type="ios-stats" />
+                                            </span>
+                                            <span>车辆流量统计</span>
+                                        </p>
+                                    </template>
                                     <template v-if="item.functionCode=='device_manage_repair'">
                                         <p @click="setTabItem('/airport/www/module/vehicleMaintenance/vehicleMaintenance.html', 'VehicleMaintenance', $event)"
                                             id="nav_VehicleMaintenance">
@@ -395,7 +404,7 @@
         </div>
 
     </div>
-    <script src="/airport/assets/js/LAB.min.js?v=3423841237481237"></script>
+    <script src="/airport/assets/js/LAB.min.js?v=asdf1341234"></script>
     <script>
         loadScript(MODUL + "module/indexMg/index.min.js");
     </script>

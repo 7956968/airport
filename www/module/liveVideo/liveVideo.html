@@ -112,6 +112,7 @@
                             <i-option value="240">240秒</i-option>
                             <i-option value="300">300秒</i-option>
                             <i-option value="360">360秒</i-option>
+                            <!-- <i-option value="360000">不停</i-option> -->
                         </i-select>
                     </template>
                 </div>
@@ -236,7 +237,7 @@
                 <p slot="header" style="color:#FFF;">
                     <span class="modelTitle">车辆详细信息</span>
                 </p>
-                <div class="modifiedWrap">
+                <div class="modifiedWrap" style="padding-top: 5px;">
                     <table>
                         <tbody>
                             <tr class="detailInfo">
@@ -292,7 +293,7 @@
                             </tr> -->
                             <tr class="detailInfo">
                                 <td>
-                                    <span class="label">车辆品牌：</span><br />
+                                    <span class="label">品牌型号：</span><br />
                                     <span v-text="vehicleInfo.vehicleBrandName"></span>
                                 </td>
                             </tr>
@@ -300,6 +301,17 @@
                                 <td>
                                     <span class="label">品牌类型：</span><br />
                                     <span v-text="vehicleInfo.vehicleModelName"></span>
+                                </td>
+                            </tr>
+                            <tr class="detailInfo">
+                                <td>
+                                    <span class="label">硬盘状态：</span><br />
+                                    <template v-if="storage_new==1">
+                                        <span style="color: red; background-color: #fff;">有故障</span>
+                                    </template>
+                                    <template v-if="storage_new==0">
+                                        <span style="color: green; background-color: #fff;">正常</span>
+                                    </template>
                                 </td>
                             </tr>
                             <tr class="detailInfo">

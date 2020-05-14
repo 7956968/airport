@@ -57,40 +57,33 @@
                 <span class="label">特种车辆音视频可视化系统</span>
             </div>
             <div class="inputInfo">
-                <template>
-                    <label>
-                        <i-input prefix="ios-contact" v-model="loginInfo.userCode" size="large" :placeholder="{'CN':'用户名','EN':'userName','TW':'用戶名'}[language]" />
-                    </label>
-                    <label>
-                        <i-input prefix="md-unlock" v-model="loginInfo.userPwd" size="large" type="password"
-                            :placeholder="{'CN':'密码','EN':'password','TW':'密碼'}[language]" />
-                    </label>
-                    <!-- <label>
-                        <i-select v-model="language" size="large">
-                            <i-option v-for="(item, index) in languageList" :value="item.value" :key="index">{{item.label}}</i-option>
+                <label>
+                    <i-input prefix="ios-contact" v-model="loginInfo.userCode" size="large" placeholder="用户名" />
+                </label>
+                <label>
+                    <i-input prefix="md-unlock" v-model="loginInfo.userPwd" size="large" type="password"
+                        placeholder="密码" />
+                </label>
+                <label>
+                    <template>
+                        <i-select v-model="airPort" placeholder="请选择机场">
+                            <template v-for="item in airPortList">
+                                <i-option :value="item.value">{{item.label}}</i-option>
+                            </template>
                         </i-select>
-                    </label> -->
-                    <label>
-                        <template>
-                            <i-select v-model="airPort" placeholder="请选择机场">
-                                <template v-for="item in airPortList">
-                                    <i-option :value="item.value">{{item.label}}</i-option>
-                                </template>
-                            </i-select>
-                        </template>
-                    </label>
-                    <Checkbox v-model="loginInfo.remember">{{{'CN':'记住我','EN':'Remember Me','TW':'記住我'}[language]}}</Checkbox>
-                    <label>
-                        <i-button @click="loginAction" type="primary" size="large" :loading="loading" long>
-                            <span v-if="!loading" v-text="{'CN':'登录','EN':'Login','TW':'登錄'}[language]"></span>
-                            <span v-else>Loading...</span>
-                        </i-button>
-                    </label>
-                </template>
+                    </template>
+                </label>
+                <Checkbox v-model="loginInfo.remember">记住我</Checkbox>
+                <label>
+                    <i-button @click="loginAction" type="primary" size="large" :loading="loading" long>
+                        <span v-if="!loading">登录</span>
+                        <span v-else>Loading...</span>
+                    </i-button>
+                </label>
             </div>
         </div>
     </div>
-    <script src="/airport/assets/js/LAB.min.js?v=werqwer12341234"></script>
+    <script src="/airport/assets/js/LAB.min.js?v=asdf1341234"></script>
     <script>
         loadScript(MODUL+"action/loginData.min.js");
     </script>

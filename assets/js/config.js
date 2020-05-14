@@ -110,6 +110,8 @@ var CONFIG = (function (CONFIG) {
         "getAllVehiclePositonList": "getAllVehiclePositonList", // 查询车辆最新位置数据接口
         "getVehicleOnlineDetail": "getVehicleOnlineDetail", //获取车辆上下线明细
         "downVehicleOnlineDetail": "downVehicleOnlineDetail", //下载车辆上下线明细excel
+        "getVehicleCardFlowStat": "getVehicleCardFlowStat", // 获取车辆流量统计情况
+        "updateVehicleOnlineStatus": "updateVehicleOnlineStatus", // 获取车辆流量统计情况
         
         // deviceService：设备服务
         "delDevice": "delDevice", // 删除设备接口
