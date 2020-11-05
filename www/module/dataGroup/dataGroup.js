@@ -1198,6 +1198,15 @@
             }, {
                 deep: true
             });
+
+            self.$watch('groupTypePageInfoModal', function () {
+                clearTimeout(timeOut);
+                timeOut = setTimeout(function() {
+                    self.getGroupTypeDataList(true);
+                }, 500);
+            }, {
+                deep: true
+            });
             
         }
     });

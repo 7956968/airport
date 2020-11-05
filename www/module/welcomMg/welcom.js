@@ -48,11 +48,7 @@
             "isLoading": true,
             "innerHeight": window.innerHeight / 2,
             "resizeTime": null,
-            "copyRight": {
-                "CN": "@copyRight 深圳市民贵科技有限公司",
-                'EN': "@copyRight Mingui Non-Powered Euipment Management System",
-                'TW': "@copyRight 民貴無動力管理系統"
-            } [language["language"]],
+            "copyRight": "粤ICP备20021830号 Copyright © 深圳市民贵科技有限公司",
             // 车辆信息
             "vehicleInfo": {
                 "list": [],
